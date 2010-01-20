@@ -1,0 +1,425 @@
+;    labsystem.m-o-p.de - 
+;                    the web based eLearning tool for practical exercises
+;    Copyright (C) 2010  Marc-Oliver Pahl
+;
+;    This program is free software: you can redistribute it and/or modify
+;    it under the terms of the GNU General Public License as published by
+;    the Free Software Foundation, either version 3 of the License, or
+;    any later version.
+;
+;    This program is distributed in the hope that it will be useful,
+;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    GNU General Public License for more details.
+;
+;    You should have received a copy of the GNU General Public License
+;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; Contains the localized Strings that are used in the system.
+;;
+;; You can easily localize here:
+;;   - Name the file appropriately (e.g. de.lng) then and change the entry in the  config*.ini
+;;   - Just translate all the Strings you find below.
+
+Content-Language   = "de" ; take an international language identifier since it is used inside the html header!
+
+DateFormat         = "r" ; formatstring for all dates (-> php-function date() )
+
+
+;; strings that have to be present for each element ***************************************************
+pNumber             = "Seite Nummer "
+mNumber             = "Multiple Choice Nummer "
+iNumber             = "Input Nummer "
+cNumber             = "Collection Nummer "
+lNumber             = "Lab Nummer "
+sNumber             = "Schedule Nummer "
+
+;; manage.php
+pManageTitle        = "SeitenVerwaltung"
+mManageTitle        = "MultipleChoiceVerwaltung"
+iManageTitle        = "InputVerwaltung"
+cManageTitle        = "CollectionVerwaltung"
+lManageTitle        = "LabVerwaltung"
+sManageTitle        = "ScheduleVerwaltung"
+
+;; Which menu should be highlighted when the appropriate manage page is shown?
+pManageMnuEntry     = "elements"
+mManageMnuEntry     = "elements"
+iManageMnuEntry     = "elements"
+cManageMnuEntry     = "elements"
+lManageMnuEntry     = "elements"
+sManageMnuEntry     = "elements"
+
+;; These notes will appear on top of the manage pages
+pManageNote         = "" ;- empty note -
+mManageNote         = ""
+iManageNote         = ""
+cManageNote         = "" 
+lManageNote         = ""
+sManageNote         = ""
+
+
+;; prefixes that will be put in front of any (pre)lab paragraph ***************************************
+; e.g. element 1.3.5 will get lPrefixLab.1.3.5
+lPrefixPreLab       = ""                        ;; appears on the lab's TOC before the prelab's title
+lPrefixLab          = ""                        ;; appears on the lab's TOC before the lab's title
+
+
+;; explanation of the user roles **********************************************************************
+;; user role explanation (found in ../include/user_roles.inc)
+Explain_UR_1        = "ist eingeloggt"                                      ; IS_USER
+Explain_UR_2        = "kann Benutzerrechte setzen."                         ; IS_USER_RIGHTS_EDITOR
+Explain_UR_4        = "kann Inhalte bearbeiten."                            ; IS_CONTENTS_EDITOR
+Explain_UR_8        = "wird im e-mail Menu als Supporter aufgelistet."      ; IS_MAIL_SUPPORTER
+Explain_UR_16       = "kann Mails an ALLE folgenden Nutzer schicken."       ; IS_ALL_MAILER
+Explain_UR_32       = "wird auf der mail2 Seite aufgelistet."               ; IS_MAIL_RECEIVER
+Explain_UR_64       = "kann Schedules machen."                              ; IS_SCHEDULER
+Explain_UR_128      = "kann geschlossene Labs korrigieren."                 ; IS_CORRECTOR
+Explain_UR_256      = "sieht die Musterl&ouml;sungen."                      ; IS_EX_SOLUTION_VIEWER
+Explain_UR_512      = "kann Benutzer im UAI administrieren."                ; IS_DB_USER_ADMIN (only necessary if you use the uai)
+
+
+;; page titles ****************************************************************************************
+TitleLogInPage      = "Login Seite"
+TitleUserRightsPage = "BenutzerrechteVerwaltung"
+titleSchedules      = "Alle Schedules"
+titleSendMail       = "Hier kann man Mails verschicken..."
+titleMyRightsPge    = "meineRechte"
+
+; uaMyData.php
+titleUaMyData       = "Meine Daten"
+titleUaMyPW         = "Mein Passwort"
+titleUaUnPwRem      = "Erinnerungsmail mit Benutzernamen und Passwort"
+titleUaManageUsr    = "Benutzerverwaltung"
+titleUaCreateUsr    = "Erstellen von Nutzern"
+
+;; menu entries ***************************************************************************************
+; login.php
+MnuEntryLogIn       = "einloggen"
+MnuEntryLogOut      = "ausloggen"
+
+; manageUser.php
+MnuEntryUserRights  = "Nutzerrechte"   ;; must be the same as in the menu file for proper highlighting
+
+; myRights.php
+MnuEntryMyRights    = "meineRechte"
+
+;l
+mnuEntryPrelab2Fin  = "&raquo; alle Fragen (Korrektur)" ; appears under the prelab section if the prelab is not finished
+mnuEntryPrelabFin   = "&raquo; alle Fragen" ; same as above but prelab finished
+mnuEntryPreLabStats = "&raquo; PrelabStatus"
+mnuEntryLab2Fin     = "&raquo; alle Fragen (nicht geschlossen!)"
+mnuEntryLabFin      = "&raquo; alle Fragen"
+mnuEntryLabStatus   = "&raquo; LabStatus"
+
+; uaMyData.php
+MnuEntryUaMyData    = "meineDaten"
+MnuEntryUaMyPW      = "meinPasswort"
+MnuEntryUaUnPwRem   = "Passwort vergessen?"
+MnuEntryUaManageUsr = "Benutzerverwaltung"
+MnuEntryUaCreateUsr = "erstelle Benutzer"
+
+;; sysinfos ******************************************************************************************
+DataHasBeenSaved    = "Die Daten wurden gespeichert."
+
+;l
+dataOf              = "Daten von "                ;; In title row when a corrector views someones data (followed by user's name)
+showAllUADesc       = "alle Benutzer"             ;; Follows to the previous if the user views all user's data.
+
+; sendMail.php
+MailHasBeenSent     = "Die Mail wurde verschickt. Absender: "
+
+;; sysalerts *****************************************************************************************
+; authenticate.php
+AlertWrongUsrPw     = "Die Anmeldung ist fehlgeschlagen (Benutzername und/ oder Passwort &uuml;berpr&uuml;fen)!"
+
+; sendMail.php
+NoReceiver          = "Die Mail hat keine Empf&auml;nger!"
+
+; saveFile.php
+errorOpeningFile    = "Es gab einen Fehler beim &Ouml;ffnen der Datei!" ;; ../php/saveFile.php
+errorWritingFile    = "Es gab einen Fehler beim Schreiben der Datei!"   ;; ../php/saveFile.php
+
+; delete.php
+deleted             = "wurde gel&ouml;scht..."
+
+; uaMyPWSave.php
+uaPwRetypeMismath   = "Passwort und Wiederholung stimmen nicht &uuml;berein!"
+uaPwTooShort        = "Das Passwort ist zu kurz!"
+uaUsrNameTooShort   = "Der Benutzername ist zu kurz!"
+uaMailInvalid       = "Die Mailadresse ist ung&uuml;ltig!"
+uaSurNameEmpty      = "Bitte Vor- und Nachnamen angeben!"
+uaAsUsrNmeIsUsedBy  = "als Benutzername wird schon verwendet von"
+uaNotBelong2Usr     = "wurde nicht gefunden. Die Adresse geh&ouml;rt zu keinem Benutzer..."
+
+;i
+CantSaveLockAt      = "Konnte die Antwort nicht speichern. Es gibt bereits ein Lock auf" ;; If the lock got placed on another answer this is not savable anymore.
+LockTakenFrom       = "Das Lock wurde von folgendem Input genommen:" ;; " [idx of input]" gets added
+InputAlreadyClosed  = "Der Input ist bereits geschlossen!"
+
+; Alerts provided saving scripts
+NotAllNecValPosted  = "Nicht alle notwendigen Werte wurden an das Script geschickt!" ; This should only happen when someone tries to hack a script.
+NotAllowedToMkCall  = "Dieser Aufruf ist nicht erlaubt!"              ; Happens for example if a saving script is called by someone having not enough rights.
+
+;; syswarnings ***************************************************************************************
+noAddressPosted     = "Kein address= angegeben!"
+elementNotExist     = "Das Element existiert nicht!"
+
+notAllNecPosted     = "Nicht alle notwendigen Variablen wurden geschickt!"
+
+notAllowed          = "Dieser Aufruf ist nicht erlaubt!"
+
+;; c element parser warnings *************************************************************************
+parseErrNotNum      = "<<<ERROR<<<: [id][num] [num] ist KEINE ZAHL!"
+parseErrIdNotEx     = "<<<ERROR<<<: [id][num] [id] EXISTIERT NICHT!"
+parseErrNumNotEx    = "<<<ERROR<<<: [id][num] [num] das ELEMENT mit diesr Nummer EXISTIERT NICHT!"
+
+;; notes *********************************************************************************************
+; login.php
+TxtLogInPage        = "Als Teilnehmer des <i>__SYSTEMTITLE__</i> kann man sich hier einloggen..."
+NoteLogInPage       = "<b>Benutzername und/ oder Passwort vergessen?</b><br />- sollen ge&auml;ndert werden?<br /><br />&nbsp;Kein Problem, einfach dem <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>Link</a> folgen..."
+NoteNotLicensed     = "Dieses labsystem ist <b>nicht lizensiert</b>. Deshalb existiert der folgende <b>SuperUser</b>-Zugang:"
+NoteLicensed        = "Dieses labsystem ist lizensiert:"
+
+; manageUsers.php
+NoteUserRightsPage  = "<b>Weitere Einstellungen</b> k&ouml;nnen in der <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>Benutzerverwaltung</a>...<br>Wenn Sie den Mauszeiger &uuml;ber die <b>schwarzen Pfeile</b> rechts neben den K&auml;sten bewegen erhalten sie eine <b>Erkl&auml;rung</b> zum Feld.<br /><b>&Auml;nderungen an einem (auch Ihrem) Account werden erst durch erneutes Einloggen oder einen &Auml;nderung auf der meineRechte-Seite wirksam!"
+
+;; myRights.php
+myRightsNote        = "Auf dieser Seite k&ouml;nnen sie tempor&auml;r Ihre Rechte einschr&auml;nken, um z.B. die Editorfunktionalit&auml;t auszublenden. Hier k&ouml;nnen Sie sie sp&auml;ter auch wieder einschalten."
+
+;l
+labStatusNote       = "" ;; appears on the lab status page
+NoteStatusALLLabs   = "Dies sind die Statistiken &uuml;ber <b>alle Labs</b>."
+
+youCanClickOn       = "Auf"
+toReOpenTheLab      = "klicken, um das Lab wieder zu &ouml;ffnen..."
+toCloseTheLab       = "klicken, um das Lab zu schlie&szlig;en... (Um es wieder &ouml;ffnen zu k&ouml;nnen, muss ein laufender Schedule vorhanden sein!)"
+
+labCloseNote        = "Durch Klick auf diesen Knopf werden <b>alle Antworten geschlossen</b>. "
+prelabCheckNote     = "Durch Klick auf diesen Knopf werden <b>alle Antworten korrigiert</b>. Erst wenn alle PreLab-Fragen von allen Teammitgliedern richtig (symbolisiert durch einen gr&uuml;nen Rand) ausgef&uuml;llt wurden, wird das Lab sichtbar.<br />Zur Beantwortung steht die folgende Anzahl an Versuchen zur Verf&uuml;gung: "
+prelabStatusNote    = "Diese Benutzer (in <b>Reihenfolge des Beendens</b>) haben das PreLab schon beendet."
+
+; uaMyData.php
+uaMyDataNote        = "Hier k&ouml;nnen Sie Ihre pers&ouml;nlichen Daten &auml;ndern<br />Bitte geben Sie eine g&uuml;ltige Emailadresse an, die Sie regelm&auml;&szlig;ig abrufen, da Rundmails, vergessene Passw&ouml;rter und &auml;hnliches an diese Adresse geschickt werden..."
+uaMyPwNote          = "Hier k&ouml;nnen Sie Ihr Passwort &auml;ndern."
+uaUnPwRemNote       = "Wenn Sie ein registrierter Benutzer sind, k&ouml;nnen Sie sich von dieser Seite Ihren <b>Benutzernamen und Ihr Passwort an Ihre Mailadresse</b> zuschicken lassen. <br />Geben Sie dazu bitte in das Feld die Mailadresse ein, die Sie im System hinterlegt haben."
+uaManageUsrNote     = "Um die Benutzerdaten zu &auml;ndern, auf die Benutzer klicken. (Sie m&uuml;ssen Korrektor sein!).<br />Die Zuordnungen zu den Kursen k&ouml;nnen auf dieser Seite vorgenommen werden."
+uaCreateUsrNote     = "Sie k&ouml;nnen Benutzer anlegen, indem Sie eine mit Liste von <b>Emailadressen</b> in das Feld eintragen (<b>Eine pro Zeile!</b>).<br />Die Benutzer werden dann mit Emailadresse als Benutzernamen und einem generierten Passwort angelegt und bekommen initial die in der Kurskonfiguration festgelegten Default-Rechte.<br />Beides k&ouml;nnen sie auf der Passwort und/ oder Benutzernamenvergessen-Seite anfordern und dann dort auch &auml;ndern. Das hat den Seiteneffekt, dass die unvollst&auml;ndigen Benutzerdaten vervollst&auml;ndigt werden m&uuml;ssen zum Speichern..."
+
+;; names for the order by selector ********************************************************************
+orderBy             = "geordnet nach "
+team                = "Team"
+rights              = "Rechte"
+title               = "Titel"
+onlyInCollection    = "nur in Collection sichtbar?"
+index               = "Index"
+
+;l
+orderPrelabFin      = "Reihenfolge in der die Benutzer das PreLab abgeschlossen haben"
+
+;s
+start               = "Anfang" ; used in the sorter (manage schedules)
+stop                = "Ende"
+
+
+;; manage users
+foreName            = "Vorname"
+surName             = "Nachname"
+
+
+;; field descriptors **********************************************************************************
+; login.php
+userName            = "Benutzername"
+passWord            = "Passwort"
+
+; sendMail.php
+roundmail           = "Rundmail"
+labSupporter        = "Betreuer"   ;; legend of the fieldset with the mailSupporters
+otherUser           = "Benutzer"         ;; legend of the rest of the mailReceiver users
+yourMail            = "Ihre Mail"
+subject             = "Betreff"
+message             = "Nachricht"
+noCopy2Me           = "Keine Kopie an mich senden."
+mailViaBcc          = "Mailempf&auml;nger verbergen."
+
+; uaMyData.php
+eMail               = "eMail"
+newPW               = "neues Passwort"
+newPWreType         = "Wiederholung des neuen Passwortes"
+
+; uaManageUsers.php
+lastChange          = "letzte &Auml;nderung"   ;; timestamp of last change of the dataset in the user.db
+
+; uaCreateUsers.php
+mailaddressesNewUsr = "Hier die Emailadressen der Benutzer, die angelegt werden sollen eingeben - eine Adresse pro Zeile."
+
+;p
+inputTitle          = "<b>Titel</b> (Wird z.B. f&uuml;r den Browsertitel verwendet.)"
+inputMatchingMnu    = "<b>Zuge&ouml;riges Menu</b> (Der Menueintrag mit diesem Text wird hervorgehoben, wenn diese Seite angezeigt wird [kann leer sein].<br />Wenn Sie Shortcuts (z.B. !p1, !C2) verwenden wird dieser Text als Menueintrag verwendet.)"
+inputContents       = "<b>Inhalt</b>"
+inputContentsHtml   = "(Wenn Sie html-Tags verwenden wollen, muss als Erstes <b>[HTML]</b> stehen)."
+inputReplaceKeys    = "Die folgenden Konstanten werden beim Anzeigen der Seite durch ihre aktuellen Werte ersetzt:"
+
+;m
+question            = "Frage"
+inputAnswers        = "Antworten"
+inputAnswerExpl     = "Warum ist dies die Antwort? (Die Erkl&auml;rung wird nach dem L&ouml;sen oder allen Fehlversuchen angezeigt)"
+isCorrect           = "richtig?"
+
+;i
+inputExSolutionExpl = "Die <b>Musterl&ouml;sung</b> f&uuml;r die Korrektoren."
+Credits             = "Punkte"
+
+;l
+inputPreLab         = "PreLab"                  ;; l-edit field descriptor
+inputLab            = "Lab"                     ;; l-edit field descriptor
+inputIsCorrected    = "Korrigiert?"             ;; Explanation to the corrector's checkbox.
+
+;s
+scheduleFor         = "Der Schedule gilt f&uuml;r"   ;; legend on top of the selector
+year                = "Jahr"
+month               = "Monat"
+day                 = "Tag"
+hour                = "Stunde"
+minute              = "Minute"
+startDate           = "Anfangsdatum"        ;; legend on top of the start date set
+stopDate            = "Enddatum"            ;; legend on top of the stop date set
+currentValue        = "aktueller Wert:"
+comment             = "Kommentar"
+
+
+;many
+properties          = "Eigenschaften"
+visibility          = "Sichtbarkeit"
+visOnlyInColl       = "<b>nur innerhalb einer Collection</b> sichtbar"
+visAlways           = "immer sichtbar"
+visibleFor          = "Die Seite ist sichtbar f&uuml;r Benutzer mit folgenden <b>Rechten</b>:"
+
+saveAsNew           = "Als <b>neues Element</b> speichern."
+
+schedule            = "Schedule"  ;; schedule properties (visibleBefore1stSchedule, ...) fieldset legend title
+visibleBef1stSched  = "sichtbar <b>vor</b> dem ersten Schedule..."
+visibleDuringSched  = "sichtbar <b>w&auml;hrend</b> dem Schedule(s)..."
+visibleAftr1stSched = "sichtbar <b>nach</b> dem ersten Schedule..."
+
+
+;; buttons ********************************************************************************************
+save                = "speichern"          ;; Text of any save button
+
+; sendMail.php
+checkAll            = "alle ausw&auml;hlen"
+unCheckAll          = "keinen ausw&auml;hlen"
+
+; history.php
+back                = "zur&uuml;ck"
+
+;mailForm.php
+sendMail            = "abschicken..."
+
+;myRights.php
+apply               = "&auml;ndern"
+
+;i
+giveAnswer          = "antworten..."
+correct             = "korrigieren"                 ;; button for corector
+
+;l
+checkPrelab         = "PreLab-Fragen korrigieren" ; label of the button...
+closeLab            = "Lab schlie&szlig;en"
+showAllUsersAnswers = "Antworten ALLEr BENUTZER"
+stopSeeingData      = "Ich will keine Daten von anderen mehr sehen." ;; below the user statistic page if the corrector is viewing someones data
+updateStatus        = "Status aktualisieren"
+statusOfAllLabs     = "Statistik aller Labs."
+;; used on the all lab overview page:
+SwitchTo            = "Wechseln auf"
+StandardView        = "Standardansicht"
+CompactView         = "Kompaktansicht"
+
+
+;; legend strings *************************************************************************************
+legend              = "Legende:"
+
+;l
+reMapIconExplain    = "Durch Klick auf dieses Icon wird der entsprechende Benutzer den Antworten des aktuell bei ihm eingestellten Teams zugeordnet.<br />Wenn also jemand das Team wechseln soll, muss man zuerst seine Teamnummer bei seinen Rechten entsprechend &auml;ndern und dann bei den entsprechenden Labs auf dieses ReMap-Icon klicken. (Updaten Sie danach den Status!)"
+prelabAllnoFExplain = "Noch haben nicht alle Teammitglieder das PreLab beendet."
+prelabAllFinExplain = "Alle Teammitglieder haben das PreLab beendet und k&ouml;nnen jetzt das Lab sehen."
+labOpenExplain      = "Das Lab ist noch offen. Die Fragen k&ouml;nnen noch beantwortet werden."
+labClosedExplain    = "Das Lab ist geschlossen und kann korrigiert werden."
+labNoCorrExplain    = "Das Lab/ die Frage ist noch nicht korrigiert."
+labCorrExplain      = "Das Lab/ die Frage ist korrigiert."
+
+
+;; The standard error *********************************************************************************
+;; you get if you want to access an element you do not have enough rights for:
+TxtNotEnoughRights  = "Sie haben <b>nicht gen&uuml;gend Rechte</b>, um diese Seite zu betrachten!<br>&nbsp;Vielleicht m&uuml;ssen Sie sich zuerst <a href='../pages/login.php?redirectTo=__CURRENT_URL__&__LINKQUERY__'><b><u>einloggen</u></b></a>."
+elNotFoundVisible   = "Das angeforderte Element existiert nicht oder ist f&uuml;r Sie nicht sichtbar!"
+doesNotExist        = "existiert nicht!"
+
+;; if you call useradmin pages without config=useradmin
+TxtNotConfigUA      = "Diese Seite kann nur mit config=useradmin betrachtet werden!"
+
+;; tooltips (appear on mouseover) *********************************************************************
+;; element menu's buttons (top tight)
+explainLink2        = "Link zu diesem Element mit angeh&auml;ngtem __LINKQUERY__"
+explainView         = "Die Benutzeransicht des Elements..."
+explainEdit         = "Editieren..."
+explainPrint        = "Druckansicht (alles auf einer Seite)..."
+explainCreateNew    = "Neues Element dieses Typs erstellen..."
+explainManageElmnts = "Elemente verwalten..."
+explainDeleteElemnt = "Dieses Element l&ouml;schen..."
+explainViewStructure= "Struktur des Elements..."
+explainHistory      = "Die Vergangenheit des Elements..."
+explainSaveElement  = "Das aktuelle Element speichern..."
+explainNext         = "n&auml;chste Seite&gt;&gt;"
+explainPrev         = "&lt;&lt;vorherige Seite"
+explainTOC          = "Inhalt..."
+
+;l
+exAllowedToAnswer   = "Darf der Benutzer antworten?"
+exLabClosed         = "Hat der Benutzer das Lab geschlossen?"
+exLabCorrected      = "Ist das Lab korrigiert?"
+reMapUsrTo          = "Den Benutzer remappen auf Team" ;; " USR->CURRTEAM" gets appended
+corrected           = "korrigiert?"    ;; as legend hover on the "which question corrected" states (#q gets put before)
+
+;i
+LockSetButForce     = "Durch klicken auf das Schloss wird das Lock auf diesen Input gesetzt (antwortbar). Momentan steht das Lock auf Input"
+
+
+;; history messages (get into the history) ************************************************************
+; a history entry is "[timestamp]: [user's name]{: [the following texts}}"
+;l
+preLabAllTeamFin    = "- alle Teammitglieder haben das PreLab abgeschlossen -"
+preLabUserFinished  = "- Prelab beendet -"
+labClosed           = "- Lab geschlossen -"
+labReOpened         = "- Lab wieder ge&ouml;ffnet -"
+statusUpdated       = "- Status upgedated -"
+
+dataSetCreated      = "- erzeugt -"
+closesInput         = "- schlie&szlig;t den Input -"
+reOpensInput        = "- &ouml;ffnet den Input wieder -"
+userReMapped        = "- Benutzer neu gemappt -"
+
+
+;; additional texts ***********************************************************************************
+;; l
+inputs              = "Inputs" ; AllLabInputs statistics on top "[17 inputs/ 60 credits]"
+
+;; usr
+unknown             = "unbekannt"
+
+;; history.php
+answerHistory       = "Vergangenheit" ;; put into headerrow of the answer history of m and i elements
+historyOf           = "Vergangenheit von"
+addHistory          = "Zus&auml;tzliche Vergangenheit"
+
+;; viewPage
+VisibleOnlyColl     = "Das Element ist nur in einer Collection sichtbar."  ;; appears on top of an onlyVisInColl element for editors
+
+;; confirm page
+confirmDelete       = "Wollen Sie dieses Element wirklich l&ouml;schen?"  ;; Appears in the delete confirmation dialog.
+yesIconfirm         = "Ja, ich bin mir sicher!"
+  
+;; uaUnPwRemind.php
+uaUnPwRemSubject    = "Benutzername/ Passwort Erinnerung von __SYSTEMTITLE__" ;; Subject of the reminding mail
+uaUnPwRemMailText   = "Hallo,\r\njemand hat eine Erinnerungsmail mit einem neuen Passwort f&uuml;r Ihren Zugang zum  __SYSTEMTITLE__ angefordert.\r\n\r\nSie k&ouml;nnen sich nur noch mit Ihrem neuen Passwort einloggen.\r\Benutzernamen und Passwort k&ouml;nnen Sie auf der Webseite &auml;ndern..."
+uaNewUsrsSubscript  = "Die neu angelegten Benutzer werden diesen Kursen zugeordnet."

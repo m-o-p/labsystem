@@ -1,0 +1,147 @@
+/**
+ * This is the Labsystem's user stylesheet.
+ *
+ * this is the user defined stylesheet
+ * place all the styles you want to use here
+ * the system uses only styles that start with "labsys_mop_", so you feel free choosing your names
+ */
+
+.labsys_mop_contentArea{  /* The systems puts this style around each element's content part */
+     padding-left: 10px;
+     padding-right: 10px;
+}
+
+.labsys_mop_contentArea pre{
+  font-size: 10pt;
+  padding: 0.5em;
+  margin: 1em;
+  border: solid 1px #aaaaaa;
+  background-color: #eeeeee;
+}
+
+h3 {
+     font-weight: normal;
+     margin: 10px 0px 10px 0px; 
+     font-size: 1.4em; 
+     padding-bottom: 5px; 
+     border-bottom: solid 1px black;
+     padding-left: -20px;
+     padding-right: -20px;
+}
+
+
+.indented{
+  margin-left: 100px;
+}
+
+.commandTable{ /* used on lab "the basics" with the netstat explanation */
+  font-size: 0.8em;
+  border: solid 1px #999999;
+}
+.commandTable_command{
+  padding: 5px;
+  background-color: #cccccc;
+  vertical-align: top;
+}
+.commandTable_explanation{
+  padding: 5px;
+  background-color: #dddddd;
+  vertical-align: top;
+}
+
+.bu{ /* bildunterschrift */
+  font-size: 0.6em;
+  text-align: center;
+}
+
+.note{ /* a note p.e. at the setup page "don't forget...) */
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: #eeeeee;
+  border-left: 3px solid red;
+  padding: 5px;
+  font-size: 0.9em;
+}
+
+.standard_table{
+  margin: 10px;
+  text-align: center;
+  font-size: 0.7em;
+  border: solid 1px #999999;
+}
+.standard_table_headerrow{
+  vertical-align: top;
+  padding: 5px;
+  background-color: #cccccc;
+  vertical-align: top;
+}
+.standard_table_bodyrow{
+  vertical-align: top;
+  padding: 5px;
+  background-color: #dddddd;
+  vertical-align: top;
+}
+
+.red{ background-color: #ff0000; color: #ffffff; }
+
+.green{ background-color: #00aa00; color: #ffffff; }
+
+.code{ /* format code (p.e.: "ethereal &") with <span class="code>ethereal &</span> */
+  color: #553333;
+  font-family: times, serif;
+  font-stretch: wider;
+  font-size: 1.1em;
+}
+
+pre{ font-size: 1.1em; }
+
+.uncableHint{ /* The division for "please remove cables... */
+  padding: 5px;
+  background-color: #ffff00;
+}
+
+.labInstructorNote{ /* Hints the instructors have to follow in order to get the lab running */
+  padding: 10px;
+  font-size: 0.8em;
+  border: 1px solid gray;
+  background-color: #ffff00;
+}
+
+/************************* styles on the FAQ page *************************/
+.FAQ_entry{
+  border: solid 1px #eeeeee;
+  padding: 5px;
+  margin-bottom: 15px;
+  margin-top: 5px;
+}
+
+.FAQ_question{
+  font-weight: bold;
+  border-bottom: solid 1px #888888;
+  margin-bottom: 3px;
+}
+
+.FAQ_answer{
+  margin-left: 20px;
+}
+/* /FAQ */
+
+/************************* styles on the lab index page *************************/
+.labIndexNumber {
+  font-size: 30px;
+  font-style: italic;
+  text-align: right;
+  vertical-align: top;
+  color: #f9b857;
+  /*border: 1px solid #cccccc;*/
+  padding: 0px 0px 0px 0px;
+}
+
+.labIndexText {
+  font-size: 10pt;
+  text-align: justify;
+  vertical-align: top;
+  color: #89897c;
+  border: 1px solid #cccccc;
+  padding: 5px 5px 5px 5px;
+}

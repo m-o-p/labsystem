@@ -1,0 +1,75 @@
+/**
+ * This is the green scheme.
+ *
+ * You should only edit here, if you want to create a new skin.
+ * Your styles (used in the content area) should be defined in config["UserStyleSheet"].
+ * All identifiers start with the prefix "labsys_mop_" so one can use all names in the user's stylesheet.
+ *
+ * CSS validated by http://jigsaw.w3.org/css-validator/ on 2005/09/09
+ */
+
+ 
+ /* All font sizes are relative to the selected font (em tag). */
+ 
+ /* used Colors: ( to change you coul search and replace )
+      Background: #89897c;
+      MainElBack: #D5D5D5;
+      MenuOff:    #F0FFFF; azure
+      MnuOn:      #E9967A; darksalmon
+      MnuHover:   #ADD8E6; lightblue
+      MnuTitle:   #4682B4; steelblue
+  */
+  
+a {                   color:#990000; text-decoration:none; }
+a:hover {             color:#990000; text-decoration:underline; }
+
+  .labsys_mop_topHeader { /* for the custom logo etc. (taken from ../ini/config*.ini: TopHeader) */
+                      background-color: #33aa33;
+  }
+  
+  .labsys_mop_ableMenuhover {
+                      background-color: #aaddaa;
+  }
+    
+/******************************* menu (menu.inc) *******************************/
+    .labsys_mop_menu ul li.title {
+                                          background-color: #55aa55;
+                                  }
+
+  /* links */                                  
+    .labsys_mop_menu ul li  a:hover {  
+                                          background-color: #aaddaa;
+    }
+    
+  /* on */
+    .labsys_mop_menu ul li.on {
+                                          background-color: #88aa88;
+    }
+
+  /* off */    
+    .labsys_mop_menu ul li.off {    
+                                          background-color: #e0ffe0;
+    }    
+  /* the off rows shade to show the submenu additionally to the indention */
+    .labsys_mop_menu ul li ul li.off { /* 1st grade */
+                                          background-color: #E9FFE9;
+    }
+    .labsys_mop_menu ul li ul li ul li.off { /* 2nd grade */
+                                          background-color: #F0FFF0;
+    }
+    .labsys_mop_menu ul li ul li ul li ul li.off { /* 3rd grade */
+                                          background-color: #F9FFF9;
+    }
+    .labsys_mop_menu ul li ul li ul li ul li ul li.off { /* 4th grade */
+                                          background-color: #FFFFFF;
+    }
+     
+
+/******************************* form element styles *******************************/
+.labsys_mop_input,
+.labsys_mop_input_fullwidth,
+.labsys_mop_textarea,
+.labsys_mop_button,
+.labsys_mop_button_fullwidth{
+                  	border: solid 1px #00aa00;
+}

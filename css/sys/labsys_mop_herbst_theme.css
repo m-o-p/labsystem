@@ -1,0 +1,124 @@
+/**
+ * This is the green scheme.
+ *
+ * You should only edit here, if you want to create a new skin.
+ * Your styles (used in the content area) should be defined in config["UserStyleSheet"].
+ * All identifiers start with the prefix "labsys_mop_" so one can use all names in the user's stylesheet.
+ *
+ * CSS validated by http://jigsaw.w3.org/css-validator/ on 2005/09/09
+ */
+
+ 
+ /* All font sizes are relative to the selected font (em tag). */
+ 
+ /* used Colors: ( to change you coul search and replace )
+      Background: #89897c;
+      MainElBack: #D5D5D5;
+      MenuOff:    #F0FFFF; azure
+      MnuOn:      #E9967A; darksalmon
+      MnuHover:   #ADD8E6; lightblue
+      MnuTitle:   #4682B4; steelblue
+  */
+  
+/* Background */
+body {  
+                      background-color: #1F290A;
+}
+  .labsys_mop_topmostHeader { /* for stuff like url (taken from ../ini/config*.ini: TopmostHeader) */
+                      border-bottom: solid 1px #1F290A;
+  }
+  .labsys_mop_topHeader { /* for the custom logo etc. (taken from ../ini/config*.ini: TopHeader) */
+                      border-bottom: solid 1px #1F290A;
+  }
+  .labsys_mop_topSysinfo { /* for stuff like time and output of the system ("page saved" etc.) (filled in ../include/page_layout.inc) */
+                      border-bottom: solid 1px #1F290A;
+  }
+  .labsys_mop_ableMenu { /* the row you can show/ hide the menu */
+                      border-right: solid 1px #1F290A;
+  }
+  .labsys_mop_ableMenuhover {
+                      border-right: solid 1px #1F290A;
+  }
+  .labsys_mop_menu { /* the menu's backrow when visible */
+                      border-right: solid 1px #1F290A; 
+  }
+  .labsys_mop_bottomFooter { /* for stuff like copyright notices or impressum links (taken from ../ini/config*.ini: BottomFooter) */
+                      border-top: solid 1px #1F290A;
+  }
+/* /Background */
+  
+/* Midground */
+  .labsys_mop_maintable {
+                      background-color: #DEB887;
+  }
+  .labsys_mop_menu ul li ul {
+                      background-color: #DEB887; /* otherwhise the parent elements bg is used */
+  }
+/* Midground */
+
+/* Foreground */
+  .labsys_mop_content { /* the content area */
+                      background-color: #FFFFE0; /* if changed don't forget menu_hidden */
+  }
+  .labsys_mop_menu_hidden { /* the menu's backrow when hidden */
+                      background-color: #FFFFE0; /* should be the same as in content */
+  }
+/* /Foreground */
+  
+a {                   color:#990000; text-decoration:none; }
+a:hover {             color:#990000; text-decoration:underline; }
+
+  .labsys_mop_topHeader { /* for the custom logo etc. (taken from ../ini/config*.ini: TopHeader) */
+                      background-color: #759C26;
+  }
+  
+  .labsys_mop_ableMenuhover {
+                      background-color: #EEE8AA;
+  }
+    
+/******************************* menu (menu.inc) *******************************/
+    .labsys_mop_menu ul li.title {
+                                          background-color: #9ACD32;
+                                  }
+
+  /* links */                                  
+    .labsys_mop_menu ul li  a:hover {  
+                                          background-color: #EEE8AA;
+    }
+    
+  /* on */
+    .labsys_mop_menu ul li.on {
+                                          background-color: #FFFACD;
+    }
+    
+    .labsys_mop_menu ul li.on a {
+                                          color: #000000;
+    }
+
+  /* off */    
+    .labsys_mop_menu ul li.off {    
+                                          background-color: #D2B48C;
+    }    
+  /* the off rows shade to show the submenu additionally to the indention */
+    .labsys_mop_menu ul li ul li.off { /* 1st grade */
+                                          background-color: #C8A474;
+    }
+    .labsys_mop_menu ul li ul li ul li.off { /* 2nd grade */
+                                          background-color: #C0955E;
+    }
+    .labsys_mop_menu ul li ul li ul li ul li.off { /* 3rd grade */
+                                          background-color: #B08245;
+    }
+    .labsys_mop_menu ul li ul li ul li ul li ul li.off { /* 4th grade */
+                                          background-color: #9A713C;
+    }
+     
+
+/******************************* form element styles *******************************/
+.labsys_mop_input,
+.labsys_mop_input_fullwidth,
+.labsys_mop_textarea,
+.labsys_mop_button,
+.labsys_mop_button_fullwidth{
+                  	border: solid 1px #DEB887;
+}

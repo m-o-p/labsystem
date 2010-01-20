@@ -1,0 +1,425 @@
+;    labsystem.m-o-p.de - 
+;                    the web based eLearning tool for practical exercises
+;    Copyright (C) 2010  Marc-Oliver Pahl
+;
+;    This program is free software: you can redistribute it and/or modify
+;    it under the terms of the GNU General Public License as published by
+;    the Free Software Foundation, either version 3 of the License, or
+;    any later version.
+;
+;    This program is distributed in the hope that it will be useful,
+;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    GNU General Public License for more details.
+;
+;    You should have received a copy of the GNU General Public License
+;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; Contains the localized Strings that are used in the system.
+;;
+;; You can easily localize here:
+;;   - Name the file appropriately (e.g. de.lng) then and change the entry in the  config*.ini
+;;   - Just translate all the Strings you find below.
+
+Content-Language   = "en" ; take an international language identifier since it is used inside the html header!
+
+DateFormat         = "r" ; formatstring for all dates (-> php-function date() )
+
+
+;; strings that have to be present for each element ***************************************************
+pNumber             = "page number "
+mNumber             = "multiple choice number "
+iNumber             = "input number "
+cNumber             = "collection number "
+lNumber             = "lab number "
+sNumber             = "schedule number "
+
+;; manage.php
+pManageTitle        = "pages - administration"
+mManageTitle        = "multiple choices - administration"
+iManageTitle        = "inputs - administration"
+cManageTitle        = "collections - administration"
+lManageTitle        = "labs - administration"
+sManageTitle        = "schedules - administration"
+
+;; Which menu should be highlighted when the appropriate manage page is shown?
+pManageMnuEntry     = "elements"
+mManageMnuEntry     = "elements"
+iManageMnuEntry     = "elements"
+cManageMnuEntry     = "elements"
+lManageMnuEntry     = "elements"
+sManageMnuEntry     = "elements"
+
+;; These notes will appear on top of the manage pages
+pManageNote         = "" ;- empty note -
+mManageNote         = ""
+iManageNote         = ""
+cManageNote         = "" 
+lManageNote         = ""
+sManageNote         = ""
+
+
+;; prefixes that will be put in front of any (pre)lab paragraph ***************************************
+; e.g. element 1.3.5 will get lPrefixLab.1.3.5
+lPrefixPreLab       = ""                        ;; appears on the lab's TOC before the prelab's title
+lPrefixLab          = ""                        ;; appears on the lab's TOC before the lab's title
+
+
+;; explanation of the user roles **********************************************************************
+;; user role explanation (found in ../include/user_roles.inc)
+Explain_UR_1        = "is logged in"                                        ; IS_USER
+Explain_UR_2        = "is able to set the userrights"                       ; IS_USER_RIGHTS_EDITOR
+Explain_UR_4        = "is able to edit contents"                            ; IS_CONTENTS_EDITOR
+Explain_UR_8        = "is available as mail supporter from the email-menu"  ; IS_MAIL_SUPPORTER
+Explain_UR_16       = "is able to send to all users specified next"         ; IS_ALL_MAILER
+Explain_UR_32       = "available from the mail2 interface"                  ; IS_MAIL_RECEIVER
+Explain_UR_64       = "is able to make schedules"                           ; IS_SCHEDULER
+Explain_UR_128      = "is able to correct the closed labs"                  ; IS_CORRECTOR
+Explain_UR_256      = "is able to view the example solutions"               ; IS_EX_SOLUTION_VIEWER
+Explain_UR_512      = "is able to administrate users at the uai"            ; IS_DB_USER_ADMIN (only necessary if you use the uai)
+
+
+;; page titles ****************************************************************************************
+TitleLogInPage      = "Login page"
+TitleUserRightsPage = "User rights - administration"
+titleSchedules      = "All schedules"
+titleSendMail       = "Here you can send mails..."
+titleMyRightsPge    = "myRights"
+
+; uaMyData.php
+titleUaMyData       = "Change your data"
+titleUaMyPW         = "Change your password"
+titleUaUnPwRem      = "Get reminder eMail with username and password"
+titleUaManageUsr    = "Manage the users"
+titleUaCreateUsr    = "Create users"
+
+;; menu entries ***************************************************************************************
+; login.php
+MnuEntryLogIn       = "log in"
+MnuEntryLogOut      = "log out"
+
+; manageUser.php
+MnuEntryUserRights  = "user rights"   ;; must be the same as in the menu file for proper highlighting
+
+; myRights.php
+MnuEntryMyRights    = "myRights"
+
+;l
+mnuEntryPrelab2Fin  = "&raquo; all questions (checkable)" ; appears under the prelab section if the prelab is not finished
+mnuEntryPrelabFin   = "&raquo; all questions" ; same as above but prelab finished
+mnuEntryPreLabStats = "&raquo; prelab status"
+mnuEntryLab2Fin     = "&raquo; all questions (not closed!)"
+mnuEntryLabFin      = "&raquo; all questions"
+mnuEntryLabStatus   = "&raquo; lab status"
+
+; uaMyData.php
+MnuEntryUaMyData    = "myData"
+MnuEntryUaMyPW      = "myPassword"
+MnuEntryUaUnPwRem   = "getPassword"
+MnuEntryUaManageUsr = "manage users"
+MnuEntryUaCreateUsr = "create users"
+
+;; sysinfos ******************************************************************************************
+DataHasBeenSaved    = "The data has been saved."
+
+;l
+dataOf              = "Data of "                ;; In title row when a corrector views someones data (followed by user's name)
+showAllUADesc       = "all users"               ;; Follows to the previous if the user views all user's data.
+
+; sendMail.php
+MailHasBeenSent     = "The mail has been sent. Sender was: "
+
+;; sysalerts *****************************************************************************************
+; authenticate.php
+AlertWrongUsrPw     = "You could not be authenticated (username and/ or password might be wrong)!"
+
+; sendMail.php
+NoReceiver          = "Your mail has no receiver!"
+
+; saveFile.php
+errorOpeningFile    = "There was an error opening the file!" ;; ../php/saveFile.php
+errorWritingFile    = "There was an error writing the file!" ;; ../php/saveFile.php
+
+; delete.php
+deleted             = "was deleted..."
+
+; uaMyPWSave.php
+uaPwRetypeMismath   = "Password and retype don't match!"
+uaPwTooShort        = "Your password is too short!"
+uaUsrNameTooShort   = "Your username is too short!"
+uaMailInvalid       = "Your mailAddress is invalid!"
+uaSurNameEmpty      = "Please provide name and surname!"
+uaAsUsrNmeIsUsedBy  = "as username is already used by"
+uaNotBelong2Usr     = "was not found. It does not belong to any user here..."
+
+;i
+CantSaveLockAt      = "Could not save the answer because lock is at" ;; If the lock got placed on another answer this is not savable anymore.
+LockTakenFrom       = "The lock was taken from input" ;; " [idx of input]" gets added
+InputAlreadyClosed  = "The input is already closed!"
+
+; Alerts provided saving scripts
+NotAllNecValPosted  = "Not all necessary values were posted to the script!" ; This should only happen when someone tries to hack a script.
+NotAllowedToMkCall  = "You are not allowed to make this call!"              ; Happens for example if a saving script is called by someone having not enough rights.
+
+;; syswarnings ***************************************************************************************
+noAddressPosted     = "No address= posted!"
+elementNotExist     = "The element doesn't exist!"
+
+notAllNecPosted     = "Not all necessary values are posted!"
+
+notAllowed          = "You are not allowed to do this!"
+
+;; c element parser warnings *************************************************************************
+parseErrNotNum      = "<<<ERROR<<<: [id][num] [num] IS NOT NUMERICAL!"
+parseErrIdNotEx     = "<<<ERROR<<<: [id][num] [id] ID NOT EXISTING!"
+parseErrNumNotEx    = "<<<ERROR<<<: [id][num] [num] ELEMENT WITH NUM NOT EXISTING!"
+
+;; notes *********************************************************************************************
+; login.php
+TxtLogInPage        = "This is the login page. If you are a participant of the <i>__SYSTEMTITLE__</i>, you can log in here..."
+NoteLogInPage       = "<b>You forgot your password and/ or your username?</b><br />You want to change your data?<br /><br />&nbsp;No problem, just follow the <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>link</a>..."
+NoteNotLicensed     = "This copy of the labsystem is <b>unlicensed</b>. So there exists the following <b>superuser</b>:"
+NoteLicensed        = "This copy of the labsystem is licensed:"
+
+; manageUsers.php
+NoteUserRightsPage  = "<b>Other settings</b> might be done at the <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>user administration page</a>...<br />If you move your mouse cursor over the <b>black arrows</b> you get an <b>explanation</b> of the checkbox on its left.<br /><b>Changes to your account</b> will take effect if you activate them in &quot;my rights&quot; or if you log out and in again."
+
+;; myRights.php
+myRightsNote        = "On this page you can set your current rights (e.g. to disable editors menu elements <b>temporarily</b>).<br />You can come back to this page and reenable your rights later..."
+
+;l
+labStatusNote       = "" ;; appears on the lab status page
+NoteStatusALLLabs   = "Below you find the <b>statistics of all labs</b>."
+
+youCanClickOn       = "You can click on"
+toReOpenTheLab      = "to reOpen this lab..."
+toCloseTheLab       = "to close this lab... To become able to reOpen a lab you have to make a schedule first!"
+
+labCloseNote        = "If you click this button all your <b>answers will be closed</b>. You can not answer anymore but we can start to correct."
+prelabCheckNote     = "If you click this button all your <b>answers above will be corrected</b>. Only if all prelab questions are answered correctly (row turns green) by all teammates (or you had too much attempts) the lab will get accessable.<br />The total amount of answering attempts is: "
+prelabStatusNote    = "Below you find a list of all members that finished the prelab. The list is <b>ordered by</b> the <b>time</b> the user <b>finished</b> the prelab."
+
+; uaMyData.php
+uaMyDataNote        = "Here you can change your personal data.<br />Provide a <b>valid mailAddress</b> to be able to receive roundmails, new passwords etc."
+uaMyPwNote          = "Here you can change your password."
+uaUnPwRemNote       = "As member you can receive a mail with your login <b>username</b> and a <b>new password</b> from this page.<br />Just enter the mailaddress you provided to the system."
+uaManageUsrNote     = "You can edit the user's by clicking on them. (You have to be able to correct for that!).<br />You can change the subsciptions to the courses here."
+uaCreateUsrNote     = "You can create the users her by entering a <b>list of mailaddresses (ONE per line!)</b> in the field below.<br />The users will get the mailadress as username and a generated password. For the subscribed courses they will get its ini-file default rights assigned by the course-portal.<br />Since the data is not mailed to them and their dataset is incomplete they are supposed to <b>request username and password from the reminder page</b> and to change/ enter their data after that."
+
+;; names for the order by selector ********************************************************************
+orderBy             = "Order by "
+team                = "team"
+rights              = "rights"
+title               = "title"
+onlyInCollection    = "onlyInCollection?"
+index               = "index"
+
+;l
+orderPrelabFin      = "Order the users finished the prelab"
+
+;s
+start               = "start" ; used in the sorter (manage schedules)
+stop                = "stop"
+
+
+;; manage users
+foreName            = "foreName"
+surName             = "surName"
+
+
+;; field descriptors **********************************************************************************
+; login.php
+userName            = "userName"
+passWord            = "password"
+
+; sendMail.php
+roundmail           = "roundmail"
+labSupporter        = "supervisors"   ;; legend of the fieldset with the mailSupporters
+otherUser           = "users"         ;; legend of the rest of the mailReceiver users
+yourMail            = "your mail"
+subject             = "subject"
+message             = "message"
+noCopy2Me           = "Don't send me a copy of the mail."
+mailViaBcc          = "Send Mail via BCC."
+
+; uaMyData.php
+eMail               = "eMail"
+newPW               = "new password"
+newPWreType         = "retype new password"
+
+; uaManageUsers.php
+lastChange          = "last change"   ;; timestamp of last change of the dataset in the user.db
+
+; uaCreateUsers.php
+mailaddressesNewUsr = "Enter the mail addresses of the users you want to create. Put one mailaddress per line."
+
+;p
+inputTitle          = "<b>Title</b> (e.g. the title of your element is used for the browser's caption.)"
+inputMatchingMnu    = "<b>Matching menu</b> (Menu row with this text will be highlighted when page is shown [can be empty].<br />If you use menu shortcuts (e.g. !p1, !C2) this will get the menu entry.)"
+inputContents       = "<b>Contents</b>"
+inputContentsHtml   = "(if you want the <b>html elements</b> to be interpreted the first line must be <b>[html]</b>)"
+inputReplaceKeys    = "The following constants will be replaced by their current values when displaying the page:"
+
+;m
+question            = "Question"
+inputAnswers        = "Answers"
+inputAnswerExpl     = "Why is this answer correct? (remarks shown with the result)"
+isCorrect           = "is correct?"
+
+;i
+inputExSolutionExpl = "The <b>example solution</b>. Here you should note down what you expect as answer so the correctors know."
+Credits             = "credits"
+
+;l
+inputPreLab         = "PreLab"                  ;; l-edit field descriptor
+inputLab            = "Lab"                     ;; l-edit field descriptor
+inputIsCorrected    = "Is corrected:"           ;; Explanation to the corrector's checkbox.
+
+;s
+scheduleFor         = "schedule is for"   ;; legend on top of the selector
+year                = "year"
+month               = "month"
+day                 = "day"
+hour                = "hour"
+minute              = "minute"
+startDate           = "start date"        ;; legend on top of the start date set
+stopDate            = "stop date"         ;; legend on top of the stop date set
+currentValue        = "current value:"
+comment             = "comment"
+
+
+;many
+properties          = "properties"
+visibility          = "visibility"
+visOnlyInColl       = "will <b>only</b> be visible <b>inside</b> a <b>collection</b>"
+visAlways           = "will be visible"
+visibleFor          = "To <b>view</b> the page the user has to have set the following <b>rights</b>:"
+
+saveAsNew           = "<b>Save</b> this element <b>as new</b> element."
+
+schedule            = "schedule"  ;; schedule properties (visibleBefore1stSchedule, ...) fieldset legend title
+visibleBef1stSched  = "will be visible <b>before</b> the first schedule..."
+visibleDuringSched  = "will be visible <b>during</b> the schedule(s)..."
+visibleAftr1stSched = "will be visible <b>after</b> the first schedule..."
+
+
+;; buttons ********************************************************************************************
+save                = "save"          ;; Text of any save button
+
+; sendMail.php
+checkAll            = "check all"
+unCheckAll          = "uncheck all"
+
+; history.php
+back                = "back"
+
+;mailForm.php
+sendMail            = "send the mail..."
+
+;myRights.php
+apply               = "apply"
+
+;i
+giveAnswer          = "give answer..."
+correct             = "correct"                 ;; button for corector
+
+;l
+checkPrelab         = "check up if the prelab questions are answered correctly" ; label of the button...
+closeLab            = "close the lab"
+showAllUsersAnswers = "Answers of ALL USERS"
+stopSeeingData      = "Stop seeing someones data." ;; below the user statistic page if the corrector is viewing someones data
+updateStatus        = "update status"
+statusOfAllLabs     = "Click here to see the statistics of all labs."
+;; used on the all lab overview page:
+SwitchTo            = "Switch to"
+StandardView        = "standard view"
+CompactView         = "compact view"
+
+
+;; legend strings *************************************************************************************
+legend              = "Legend:"
+
+;l
+reMapIconExplain    = "By clicking on this icon the respective user will be mapped to his current teams answers.<br />So if one wants to change the team, change his team at the user rights page and click on the remap icon. (Don't forget to update the status after remapping!)"
+prelabAllnoFExplain = "The prelab is not finished by all teammembers."
+prelabAllFinExplain = "The prelab is finished by all teammembers. So they are allowed to perform the lab."
+labOpenExplain      = "The lab is still open. So the questions can be answered."
+labClosedExplain    = "The lab got closed. So it can be corrected now."
+labNoCorrExplain    = "The lab/ question is not corrected yet."
+labCorrExplain      = "The lab/ question correction is finished."
+
+
+;; The standard error *********************************************************************************
+;; you get if you want to access an element you do not have enough rights for:
+TxtNotEnoughRights  = "You do <b>not have enough rights</b> to view this page!<br />&nbsp;Maybe you have to <a href='../pages/login.php?redirectTo=__CURRENT_URL__&__LINKQUERY__'><b><u>login</u></b></a> first."
+elNotFoundVisible   = "The requested element is not available! (non existing or not visible)"
+doesNotExist        = "does not exist!"
+
+;; if you call useradmin pages without config=useradmin
+TxtNotConfigUA      = "This page can only be viewed if loaded with config=useradmin!"
+
+;; tooltips (appear on mouseover) *********************************************************************
+;; element menu's buttons (top tight)
+explainLink2        = "Link to the element with added __LINKQUERY__"
+explainView         = "User's view of the element..."
+explainEdit         = "Edit this element..."
+explainPrint        = "Print view (all on one page)..."
+explainCreateNew    = "Create a new element of this type..."
+explainManageElmnts = "Manage elements..."
+explainDeleteElemnt = "Delete this element..."
+explainViewStructure= "View the element's structure..."
+explainHistory      = "This element's history..."
+explainSaveElement  = "Save the current Element..."
+explainNext         = "next page&gt;&gt;"
+explainPrev         = "&lt;&lt;previous page"
+explainTOC          = "table of contents..."
+
+;l
+exAllowedToAnswer   = "Is the user allowed to answer?"
+exLabClosed         = "Did the user close the lab?"
+exLabCorrected      = "Is the lab corrected?"
+reMapUsrTo          = "remap user to" ;; " USR->CURRTEAM" gets appended
+corrected           = "corrected?"    ;; as legend hover on the "which question corrected" states (#q gets put before)
+
+;i
+LockSetButForce     = "By clicking on the lock you can obtain the lock from input"
+
+
+;; history messages (get into the history) ************************************************************
+; a history entry is "[timestamp]: [user's name]{: [the following texts}}"
+;l
+preLabAllTeamFin    = "- all teammates finished prelab -"
+preLabUserFinished  = "- user finished prelab -"
+labClosed           = "- lab closed -"
+labReOpened         = "- lab reopened -"
+statusUpdated       = "- status updated -"
+
+dataSetCreated      = "- created -"
+closesInput         = "- closes input -"
+reOpensInput        = "- reopens input -"
+userReMapped        = "- user reMapped -"
+
+
+;; additional texts ***********************************************************************************
+;; l
+inputs              = "inputs" ; AllLabInputs statistics on top "[17 inputs/ 60 credits]"
+
+;; usr
+unknown             = "unknown"
+
+;; history.php
+answerHistory       = "answer history" ;; put into headerrow of the answer history of m and i elements
+historyOf           = "History of"
+addHistory          = "Additional history"
+
+;; viewPage
+VisibleOnlyColl     = "The Element is only visible inside a collection."  ;; appears on top of an onlyVisInColl element for editors
+
+;; confirm page
+confirmDelete       = "Do you really want to delete this element?"  ;; Appears in the delete confirmation dialog.
+yesIconfirm         = "Yes, Iam sure, do it!"
+  
+;; uaUnPwRemind.php
+uaUnPwRemSubject    = "Username/ Password reminder from __SYSTEMTITLE__" ;; Subject of the reminding mail
+uaUnPwRemMailText   = "Hello,\r\nsomeone requested a reminding mail with a new password for you account at the __SYSTEMTITLE__.\r\n\r\nFrom now on you can only logon with this new password.\r\nYou can change the password as well as your username on the website..."
+uaNewUsrsSubscript  = "The new users will have these subscriptions."

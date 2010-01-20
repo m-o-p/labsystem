@@ -1,0 +1,231 @@
+This file contains the history of labsystem.m-o-p.de.
+
+
+
+Feature Requests:
+-------------------
+ - manage.php: Limit database select to wanted data!
+
+
+
+2010-01-12
+-------------------
+Sourceforge release.
+
+2008-11-05
+-------------------
+pages/uaManageUsers.php
+  Fixed mysql-timestamp formatting problem
+ 
+2008-11-04
+-------------------
+php/sendMail.php
+  German Umlauts to their respective characters since they were not handled properly.
+ 
+2008-10-08
+-------------------
+setup/setup.php
+  PASSWORD('admin') -> sha1('admin')
+
+include/php_session_management.inc
+  Since php 5.0.5 all objects are destroyed before the session save handler is called.
+  So now I write the session data to files eliminating any DB accesses.
+  Session-Data-Path is directly coded into the file since the cfg-object is also killed before call...
+
+2008-05-10
+-------------------
+php/uaUnPwRemind.php
+  integrated loop to handle password request via mailaddress for 
+  users with multiple accounts per mailaddress
+
+2008/01/18
+------------------------------------
+include/classes/DBConnection.inc
+ mkUpdIns
+  mysql_affected_rows()
+  Did suddenly not report correct Results for UPDATE on Gentoo anymore.
+  $rows_matched doesn't work on Debian...
+  So now: UPDATE -> SELECT if UPDATE performed -else-> INSERT
+
+2007/10/19
+------------------------------------
+pages/sorter.inc:
+  Make ready without javascript (submit button)
+pages/manageUsers.php, pages/uamanageUsers.php:
+  Keep sorting when jumping to another page
+
+php/uaCreateUsers.php:
+  Remove "\r" (problemswith mail otherwhise)
+php/uaManageUsersExecute.php:
+  Delete fixed for users without javascript
+
+2007/ 09/ 03
+------------------------------------
+setup.php:197
+  Only create admin user if he does not exist.
+ 
+------------------------------------
+2007/ 07/ 07
+ /include/page_layout.inc
+   "isset( $_GET" -> "$url->available()"
+
+ "hideAnswers" to temporary hide the answers when in seeing mode.
+ (This is helpfull, when you are suggested to edit something while
+  seeing the answers of all users because they get temporarily hid-
+  den and you can still edit them in a not paused window)
+ /include/init.inc
+   $url->preserve("hideAnswers");
+ /include/classes/Usr.inc
+   isSeeingSomeonesData(): Added pausing
+ /syspix/button_paused_9x9.gif
+   New.
+ /include/page_layout.inc
+   Added pause-button if $usr->isSeeingSomeonesData().
+   Added statud Msg if paused in this window. (To end close Window or remove Variable from URL).
+   
+------------------------------------
+2007/ 02/ 14
+  /css/sys/labsys_mop_print_theme.css: There is a problem with "page-break-befre: always;"
+    in Firefox, Konqueror, ... (in IE it works).
+    Font changed to Times, Serif
+    Size changed to 12pt
+  /css/sys/labsys_mop_basic_theme.css: .labsys_mop_content{ line-height: 1.25em; } added
+    for better readability.
+  /php/sendMail.php: In Mailtxt replaced "\r\n" by "\n" for having no empty lines between lines.
+  /pages/mailForm.php: Added Option to send via BCC (for Roundmails). The ini-File Value is the default here.
+ 
+------------------------------------
+2007/ 02/ 13
+  /php/getFirstLastFinal.inc: SQL-injection was possible through "address=" field 
+     in URL. Check via Ddbc::escapeString() implemented.
+  /include/page_layout.inc: Crossside-Scripting was easily possible via the syserror
+    and sysinfo-messages. htmlEntities() enabled.
+  /include/classes/DBInterfaceUser.inc: authenticate: $username gets escapeStringed now.
+ 
+------------------------------------
+2006/ 07/ 11
+  /include/helper.inc:
+    returnHTML(): Calls parseHTML now.
+    parseHTML(): Indents "   " now ("&nbsp;" inserted)
+ 
+------------------------------------
+2006/ 07/ 11
+  /include/classes/DBInterfaceUser.php:
+    Changed from SQL-"PASSWORD"-Encryption to md5 hash (Reason: insecure conn. 
+    to SQL-server possible).
+    Alaso affects /php/uaUnPwRemind.php.
+    
+  /include/classes/ElementButtons.inc
+    History shortened to $cfg->get( 'limitHistLns2' ) if available.
+    
+  /pages/history.php
+    Style of history was invisible (display: none;)
+    New ini-file entry! "limitHistLns2"
+    
+  /css/sys/labsys_mop_basic.css
+    Changes to
+     .labsys_mop_i_example_solution
+     .labsys_mop_i_example_solution pre (new)
+     .labsys_mop_i_teamnr
+     .labsys_mop_i_credits_green
+     .labsys_mop_i_credits_red
+
+
+------------------------------------
+2006/ 07/ 06
+  /include/classes/elements/LlElement.inc:
+    getMenu(): Moved allQuestions entry one level up (not only in unfolded menu)
+
+  /pages/mailForm.php:
+    DontSendMeMail by default on.
+    Iteration over User: If no dataset found (user has rights but is not associated
+                         with this course at the moment) "!$userData", don't list
+                         the user.
+
+
+------------------------------------
+2006/ 05/ 28
+  /include/classes/menu.inc:
+    SSL Login Link added (also affecting ini-Files)
+
+------------------------------------
+2006/ 05/ 12
+  /include/classes/elemnts/LlElement.inc:
+    reMapUidTeam( $uid, $team ): PreLabPoints did not get preserved (wrong named var).
+
+------------------------------------
+2006/ 05/ 05
+  /include/classes/elemnts/LmElement.inc:
+    Wrong counting: getGivenCredits(): $this->isCorrectlyAnswered
+
+  /php/uaManageUsersSave.php:
+  /pages/uaManageUsers.php:
+    Even though only a selecion was shown the save function tried to
+    save all datasets resulting in zero course-assignment...
+    -> uid_present-field inserted and processed.
+
+
+------------------------------------
+2006/ 05/ 04
+  ua create users:
+    seperated by linebreak instead of space
+    /php/uaCreateUsers.php:55: explode( "\n"
+
+    UserDBField_name added so username (for history) also
+    gets mailaddress (if users don't complete their names...)
+
+  /pages/manageUsers.php:
+    If user does not exist in UserDB anymore don't show it.
+    (not exist = return false )
+ 
+  /pages/{uaM|m}anageUsers.php:
+    Multiple pages -> Sorting lost -> '&orderBy='.$orderByKey. added to URL
+
+  /pages/sorter.inc:
+    Changed to provide $orderByKey
+
+------------------------------------
+2006/ 04/ 25
+ lElement.inc: Display user's name only once at lab overview.
+ uaManageUsers.php: Implemented "multiple Page-Result" (s.b.) here.
+
+
+------------------------------------
+2006/ 03/ 25
+ pages/mailForm.php: Added JavaScript to check all MailReceivers (no loss of text!)
+ lElement.inc: Changed position of humen readible name and credits/ of
+
+------------------------------------
+2006/ 02/ 20
+ lElement.inc: Added human readible real names at lab overview.
+
+------------------------------------
+2006/ 02/ 19
+ pages/uamanageusers.php: Added multiple Page-Result (like in manage.php). Was missing.
+
+------------------------------------
+2006/ 01/ 08
+ Problem: \ gets cut each loading from db. Reason: stripslashes
+ addslashes is not correct for mysql! s.b.
+ DBConnection.inc: added escapeString, unEscapeString
+ All DBInterfaces changed:
+	addslashes -> $this->myDBC->escapeString
+	stripslashes -> $this->myDBC->unEscapeString
+
+------------------------------------
+2005/ 11/ 08
+ Added points for theory part.
+ New fields in workingDB.lab_uid_status
+  * prelab_given_credits int default 0
+  * prelab_possible_credits int default 0
+ New/ altered in .ini-files:
+    ;; For the percentage bar *********************************************************************
+    percentageFailedLab       = "0.75"  ; The percentage bar is colored ( red<=percentageFailed .. green = 100% )
+    percentageFailedPreLab    = "0.5"   ; The percentage bar is colored ( red<=percentageFailed .. green = 100% )
+
+ Changed LlElement.inc, LlDBInterfaceUidStatus.inc, LmElement.inc, LiElement.inc
+
+------------------------------------
+2005/ 10/ 21
+ Added navigation and division into pages with limited entries for the manage pages.
+ -> new ini-entry: DefElmntsPerManagePage

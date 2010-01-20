@@ -1,0 +1,19 @@
+/**
+ * Place all the styles you want to use inside your contents here.
+ *
+ * Put them inside the .labsys_mop_contentArea class.
+ */
+
+.labsys_mop_contentArea{  /* The systems puts this style around each element's content part */
+     padding-left: 10px;
+     padding-right: 10px;
+}
+
+/* You should define your styles as the following: */
+.labsys_mop_contentArea .myStyle{
+     font-family: monospace, courier;
+     font-size: 0.8em;
+     font-color: #ffff00;
+     background-color: #aaaaaa;
+     border: solid 1px red;
+}

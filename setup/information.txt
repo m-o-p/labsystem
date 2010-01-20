@@ -1,0 +1,9 @@
+You can put information for your users at this point as the
+following one in the file 'setup/information.txt'...
+
+You can start the setup as often as you want. It will not 
+overwrite your data.
+
+If you plan to use the new instance as default instance con-
+sider to put the configuration name in the 'index.php' file.
+

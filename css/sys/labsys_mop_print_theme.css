@@ -1,0 +1,101 @@
+/**
+ * This is the printing stylesheet.
+ *
+ * It controls how the page looks when printed out.
+ * 
+ * What it currently does?
+ *  - font gets smaller
+ *  - menu disappears
+ *  - control elements disappear
+ *  - borders are added to i and m elements
+ *  - top headers disappear
+ *  - page breaks are added after each collection
+ *
+ * CSS validated by http://jigsaw.w3.org/css-validator/ on 2005/09/09
+ */
+body{
+      font-family: Times, serif; 
+}
+
+body, div, tr{
+      font-size: 12pt;
+}
+
+pre{
+			font-size: 9pt;
+}
+
+a, a:visited{
+                      text-decoration: underline;
+}
+
+
+.labsys_mop_topmostHeader{
+                      display: none;
+}
+
+.labsys_mop_topHeader{
+                      display: none;
+}
+
+.labsys_mop_maintable{
+                      width: 100%;
+}
+
+.labsys_mop_ableMenu{
+                      width: 1px;
+                      background-color: #ffffff; /* should be the same as in content */
+                      overflow: hidden;
+                      border: none;
+}
+
+.labsys_mop_menu{
+                      width: 1px;
+                      background-color: #ffffff; /* should be the same as in content */
+                      border: none;
+}
+.labsys_mop_ableMenuhover{
+                      border: none;
+}
+.labsys_mop_content { /* the content area */
+                    text-align: justify;
+                    line-height: 1em;
+}
+  
+.labsys_mop_menu ul{
+                      display: none;
+}
+
+.labsys_mop_elements_menu_c,
+.labsys_mop_elements_menu_i,
+.labsys_mop_elements_menu_l,
+.labsys_mop_elements_menu_m,
+.labsys_mop_elements_menu_p,
+.labsys_mop_elements_menu_s,
+.labsys_mop_elements_menu_c_edit_bottom,
+.labsys_mop_elements_menu_i_edit_bottom,
+.labsys_mop_elements_menu_l_edit_bottom,
+.labsys_mop_elements_menu_m_edit_bottom,
+.labsys_mop_elements_menu_p_edit_bottom,
+.labsys_mop_elements_menu_s_edit_bottom{
+                      display: none;
+}
+
+.labsys_mop_elements_m_around{
+                      border: 1px solid green;
+}
+
+.labsys_mop_elements_i_around{
+                      border: 1px solid red;
+}
+
+.labsys_mop_c_inner_coll_entity{ /* surrounds one entity inside a collection on the c view. */
+                      /*page-break-before: always;*/
+                      border: none;
+}
+.labsys_mop_elements_m_around{ /* put around the m element */
+                      page-break-inside: avoid;
+}
+.labsys_mop_elements_i_around{ /* put around the i element */
+                      page-break-inside: avoid;
+}

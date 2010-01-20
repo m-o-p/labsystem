@@ -1,0 +1,208 @@
+<!--
+    labsystem.m-o-p.de - 
+                    the web based eLearning tool for practical exercises
+    Copyright (C) 2010  Marc-Oliver Pahl
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+--------------------------------------------------------------------------
+            How to I N S T A L L the labsystem.m-o-p.de
+--------------------------------------------------------------------------
+
+1) Download the archive.
+
+2) 'unzip labsystem.zip' in the webserver directory you want to have it
+   or copy the files from the archive on your webserver if you do not have
+   shell access. (unzip labsystem.zip -d webroot/)
+
+
+..........................................................................
+ Editing filerights
+..........................................................................
+   
+3) Make the files
+      ini/en_menu_demo.ini
+      ini/en_menu_useradmin.ini
+      css/labsys_user_style.css
+      css/labsys_mop_ua_user_style.css
+    writable by php.
+    
+    Even though it is not necessary for running the system it allows you to
+    edit these files from inside the interface in a comfortable way.
+    (Determine apache user: cat /etc/passwd | grep www)
+    (chown wwwrun.www ini/en_menu_demo.ini)
+    
+4) Protect the following directories from web access
+   (if your webserver allows the override of access permissions via .htaccess
+    files [apache configuration statement: AllowOverride Limit] you can 
+    SKIP THIS step)
+   ini/
+   sessiondata/
+   include/
+   
+5) Set the directory for the sessiondata appropriately in by editing the fol-
+   lowing line in 'includes/php_session_management.inc'
+   $sess_save_path = "/tmp";
+   
+   Set '/tmp' to '[your web dir]/sessiondata'.
+   It might also work with /tmp but this is not recommended.
+   (e.g. $sess_save_path = "/webdir/webroot/sessiondata";)
+
+
+..........................................................................
+ Preparing the DataBase
+..........................................................................
+
+6) If you are the only one using the machine, you may leave the users
+   as they are, so 'root' without a password if you did not set a password
+   for your mysql's root user.
+   Then you can skip this step.
+   
+   If you want to create users for the databases continue reading this step.
+   
+   The system uses three databases:
+   1) UserDatabase - contains the users that will be able to logon your system.
+                     See 'include/classes/DBInterfaceUser.inc' if you want to
+                     administer your users not within the database but use your
+                     LDAP+Kerberos for instance.
+                     
+   2) DataDatabase - contains the data that is supposed to be persistent for a 
+                     longer time, like the instructions.
+                     
+   3) WorkingDatabase - contains the data that changes for each course like the
+                     user answers, credits etc.
+                     
+   You can set up a different user for each database. This might be useful if you
+   want to control the read/ write permissions. You can do this by setting your
+   users access rights in mysql.
+   
+   To enable the labsystem to use the tables and to create the necessary table 
+   structure, make sure, the users have the appropriate rights.
+   
+   Set the account credentials (for the THREE dbs)in the config files:
+     ini/config_demo.ini
+     ini/config_useradmin.ini
+
+
+..........................................................................
+ Runing the install routines
+..........................................................................
+
+If you open the URL before setting the databases up, you get:
+"[Fatal error] SELECT * FROM pages WHERE idx='3' --> No database selected"
+     
+7) Open the install routines on your webserver by issuing the following URLs
+   in your browser:
+   [your system url and path]/setup?config=useradmin
+   
+   Scroll down and have a short look if everything went o.k.
+   At the bottom you find a link to
+   
+   [your system url and path]/setup?config=demo
+   
+   Run the second setup.
+    
+..........................................................................
+ Done
+..........................................................................
+
+
+
+--------------------------------------------------------------------------
+        How to G E T  S T A R T E D with the labsystem.m-o-p.de
+--------------------------------------------------------------------------
+
+Go to your labsystem.m-o-p.de's instance now by following the link at the
+bottom of the installation or typing your URL into the browser.
+
+The start page tells you the installation runs.
+
+8) Click on "log in". The first thing we do is changing the admin password.
+   Follow the link under the login to the useradmin configuration (red page).
+   
+   Log in at the user administration page. If you did a fresh installation
+   the login is "admin". The password is the same.
+   
+   Here You can change your contact details. The mailaddress provided here
+   will be used by the system to send you mails. Your students can do that
+   via the interface for instance.
+   
+   Provide your details. If you change the userName update the
+   
+     ini/config_demo.ini
+     ini/config_useradmin.ini
+     
+   to your new username by changing the following line in BOTH files:
+   
+     RightsAdminUsername   = "admin" ; admin -> yourNewLogin
+   
+     
+   The RightsAdmin user can automatically set the other user's rights.
+   As you get default access rights as set in the ini files
+   
+     DefaultAuthUserRights     = "33"
+     
+   noone else can set rights at the beginning.
+   
+   Now as we changed our account we can log on the blue page again.
+   
+9) Log on the blue page with your new credentials.
+   If you do not see "user properties" in the menu now, you did not change
+   the "RightsAdminUsername" correctly.
+   
+   If you see "user properties" n the menu you can continue with the in-
+   structions on the after login page...
+   
+   By clicking on the "First steps" menu you can always get back to this
+   instruction.
+   
+   Enjoy!
+
+
+   
+--------------------------------------------------------------------------
+            How to A D D  U S E R S to labsystem.m-o-p.de
+--------------------------------------------------------------------------
+
+To add users log on the red page with your "RightsAdminUsername".
+
+Go to "user properties" and give yourself the right "is able to administrate 
+users at the uai" by clicking at the checkbox and saving.
+
+Go to "myRights" in the menu then and apply all rights.
+
+Then the menu "create users" appears. There you can add users by putting
+a list of mailaddresses in the field (one per row!).
+
+Check the course IDs the users should be able to log on BEFORE clicking on
+"Create users" (otherwise you have to add the courses at the "manage users"
+page.
+
+They must be able to log on "_ua" if they should be able to change their cre-
+dentials and details (recommended!).
+
+Now the new users have the permission to log on the courses you enabled 
+them. They will automatically get the rights and team specified in the ini-
+file for the course:
+
+  ; The following field specifies which rights logged in users have that are not specified otherwise.
+    DefaultAuthUserRights     = "33" ; IS_USER+IS_ROUNDMAIL_RECEIVER
+                                     ; See ../include/user_roles.inc for possible values (sum up all those you want).
+    DefaultAuthUserTeam       = "999" ; New users are in that team.
+    
+When your course starts you should make a proper team assignment as the
+assignment affects the behaviour of the system (only if ALL teammembers
+finished the prelab they see the lab, so as all are in the same team at
+the beginning... also the team answers will be valid for all like this.)

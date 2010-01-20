@@ -1,0 +1,898 @@
+/**
+ * This file contains all the styles used by the system.
+ *
+ * You should only edit here, if you want to make profound changes to the skin.
+ * Skinning happens with the theme files normally (overridings of some values).
+ * Your styles (used in the content area) should be defined in config["UserStyleSheet"].
+ * All identifiers start with the prefix "labsys_mop_" so one can use all names in the user's stylesheet.
+ *
+ * CSS validated by http://jigsaw.w3.org/css-validator/ on 2005/09/09
+ */
+
+ 
+ /* All font sizes are relative to the selected font (em tag). */
+ 
+ /* used Colors: ( to change you could search and replace )
+      Background: #89897c;
+      MainElBack: #D5D5D5;
+      MenuOff:    #F0FFFF; azure
+      MnuOn:      #E9967A; darksalmon
+      MnuHover:   #ADD8E6; lightblue
+      MnuTitle:   #4682B4; steelblue
+  */
+body {  
+                      margin: 1em; 
+                      background-color: #89897c;
+                    
+                      color: #000000; 
+                      font-size: 1em;
+                      font-family: verdana, sans-serif; 
+                      text-align:justify; 
+}
+
+a {                   text-decoration:none; color: #4682B4;}
+a:hover {             text-decoration:underline; color: #4682B4;}
+
+.labsys_mop_contentArea{  /*  This style is to be overwritten in the user's stylesheet. 
+                              The systems puts this style around each element's content part. */
+                      font-size: 0.9em; 
+}
+/* The main layout is set in the ../include/page_layout.inc.
+   The following styles are used there */
+
+/* main table (../include/page_layout.inc) */
+  .labsys_mop_maintable {
+                      width: 95%;
+                      table-layout: fixed; /* causes the sizes to be fixed (not content related) */
+                      border: none;
+                      padding: 0px;
+                      border-spacing: 0px;
+                      background-color: #D5D5D5;
+  }
+  
+  .labsys_mop_topmostHeader { /* for stuff like url (taken from ../ini/config*.ini: TopmostHeader) */
+                      color: #222222; 
+                      font-size: 0.7em; 
+                      text-align: left; 
+                      padding: 2px;
+                      padding-left: 7px;
+                      padding-right:7px;
+                      border-bottom: solid 1px #89897c;
+  }
+  
+  .labsys_mop_topHeader { /* for the custom logo etc. (taken from ../ini/config*.ini: TopHeader) */
+                      text-align: right; 
+                      background-color: #4682B4;
+                      border-bottom: solid 1px #89897c;
+  }
+  
+  .labsys_mop_topSysinfo { /* for stuff like time and output of the system ("page saved" etc.) (filled in ../include/page_layout.inc) */
+                      color: #222222; 
+                      font-size: 0.7em; 
+                      text-align: right; 
+                      padding: 2px;
+                      padding-left: 7px;
+                      padding-right:7px;    
+                      border-bottom: solid 1px #89897c;
+  }
+
+  .labsys_mop_ableMenu { /* the row you can show/ hide the menu */
+                      width: 18px;
+                      padding: 0px;
+                      vertical-align: middle;
+                      text-align: center;
+                      font-size: 0.75em;
+                      border-right: solid 1px #89897c;
+  }
+  .labsys_mop_ableMenuhover {
+                      width: 18px;
+                      padding: 0px;
+                      vertical-align: middle;
+                      text-align: center;
+                      font-size: 0.75em;
+                      border-right: solid 1px #89897c;
+                      background-color: #ADD8E6;
+  }
+    
+  .labsys_mop_menu { /* the menu's backrow when visible */
+                      width: 180px;
+                      vertical-align: top;
+                      border-right: solid 1px #89897c;  
+  }
+  .labsys_mop_menu_hidden { /* the menu's backrow when hidden */
+                      width: 1px;
+                      background-color: #ffffff; /* should be the same as in content */
+  }
+  
+  .labsys_mop_content { /* the content area */
+                      vertical-align: top;
+                      text-align: justify;
+                      padding: 10px 15px 10px 15px; /* top left bottom right */
+                      background-color: #ffffff; /* if changed don't forget menu_hidden */
+                      line-height: 1.25em;
+  }
+  
+  .labsys_mop_bottomFooter { /* for stuff like copyright notices or impressum links (taken from ../ini/config*.ini: BottomFooter) */
+                      color: #222222; 
+                      font-size: 0.7em; 
+                      text-align: right; 
+                      padding: 2px;
+                      padding-left: 7px;
+                      padding-right:7px;
+                      border-top: solid 1px #89897c;
+  }
+
+
+/******************************* menu (menu.inc) *******************************/
+  .labsys_mop_menu{ /* containing the menu entries */
+                      left: 0px;
+                      font-size: 0.9em;
+                      text-align: left;
+                      color: #000000;
+  }
+  
+  .labsys_mop_menu ul {
+                      margin: 0px;
+                      padding: 0px;
+                      list-style-type: none;
+  }
+  
+  /* menu entries */
+    .labsys_mop_menu ul li {
+                                          margin-bottom: 1px;
+    }
+    
+    .labsys_mop_menu ul li.title {
+                                          text-align: center;
+                                          color: #ffffff;
+                                          background-color: #4682B4;
+    }
+    
+    .labsys_mop_menu ul li.spacer { 
+                                          background-color: transparent;
+    }
+
+   /* links */
+    .labsys_mop_menu ul li a {
+                                          padding: 1px; 
+                                          padding-left: 7px;
+                                          padding-right: 7px;
+                                          text-decoration: none;
+                                          display: block; /* full width clickable FireFox! */
+                                          width: 100%;
+    }
+    .labsys_mop_menu ul li a.on {
+                                          color: #ffffff;
+    }
+    .labsys_mop_menu ul li a.off {
+                                          color: #000000;
+    }
+    .labsys_mop_menu ul li a:hover {
+                                          text-decoration: none;
+                                          background-color: #ADD8E6;
+    }
+
+  /* on */
+    .labsys_mop_menu ul li.on {
+                                          background-color: #E9967A;
+    }
+
+  /* off */    
+    .labsys_mop_menu ul li.off {    
+                                          background-color: #E0FFFF;
+    }    
+  /* the off rows shade to show the submenu additionally to the indention */
+    .labsys_mop_menu ul li ul li.off { /* 1st grade */
+                                          background-color: #E9FFFF;
+    }
+    .labsys_mop_menu ul li ul li ul li.off { /* 2nd grade */
+                                          background-color: #F0FFFF;
+    }
+    .labsys_mop_menu ul li ul li ul li ul li.off { /* 3rd grade */
+                                          background-color: #F9FFFF;
+    }
+    .labsys_mop_menu ul li ul li ul li ul li ul li.off { /* 4th grade */
+                                          background-color: #FFFFFF;
+    }
+  /* submenus */
+    .labsys_mop_menu ul li ul {
+                                          background-color: #D5D5D5; /* otherwhise the parent elements bg is used */
+                                          padding-top: 1px; /* the margin of te <li> gets to the bottom! -> this = Replacement */
+    }    
+
+      
+/******************************* ../pages/login.php *******************************/
+.labsys_mop_loginTable {
+                    width: 300px;
+                    table-layout: fixed; /* causes the sizes to be fixed (not content related) */
+                    padding: 5px;
+                    border-spacing: 10px;
+}
+.labsys_mop_keyCell { /* cell containing the description(name) of an input field */
+                    text-align: right;
+}
+.labsys_mop_inputFieldCell { /* cell containing an input field */
+                    text-align: left;
+}
+.labsys_mop_buttonCell{
+                    text-align: right;
+}
+
+/******************************* ../pages/mailForm.php *******************************/
+  .labsys_mop_mailform_table{
+                    width: 100%;
+                    table-layout: fixed; /* causes the sizes to be fixed (not content related) */
+                    padding: 5px;
+                    border-spacing: 10px;
+  }
+  .labsys_mop_mailform_table_mail2{
+                    width: 250px;
+                    vertical-align: top;
+  } 
+  .labsys_mop_mailform_table_the_mail{
+                    vertical-align: top;
+  }
+
+/******************************* form element styles *******************************/
+.labsys_mop_input{
+                    margin: 1px;
+                  	border: solid 1px #4682B4;
+                    text-align: center;
+                    padding: 1px;
+                    padding-left: 5px;
+                    background-color: #f0f0f0;
+}
+
+.labsys_mop_input_fullwidth{
+                    width: 100%;
+                    margin: 1px;
+                  	border: solid 1px #4682B4;
+                    padding: 1px;
+                    padding-left: 5px;
+                    background-color: #f0f0f0;
+}
+
+.labsys_mop_textarea{
+                    width: 100%;
+                  /*  height: 100%; */
+                    margin: 1px 1px 1px 1px;
+                  	border: solid 1px #4682B4;
+                    padding: 5px;
+                    background-color: #f0f0f0;
+                    font-family: monospace;
+}
+
+.labsys_mop_button{
+                    margin: 5px 0px 5px 0px;
+                    font-size: 0.8em;
+                  	text-align: center;
+                  	border: solid 1px #4682B4;
+}
+
+.labsys_mop_button_fullwidth{
+                    width: 100%;
+                    margin: 5px 0px 5px 0px;
+                  	font-size: 0.8em;
+                  	text-align: center;
+                  	border: solid 1px #4682B4;
+                    background-color: transparent;
+                    padding: 2px;
+}
+
+fieldset{
+                  font-size: 0.8em;
+}
+
+/******************************* span (inline el.) styles *******************************/
+  /* system info header */
+  .labsys_mop_seeingSomeone {  background-color: #FDFD50; color: #000000; padding-left: 15px; padding-right: 15px; }
+  .labsys_mop_systeminfo {  background-color: #77ff77; color: #000000; padding-left: 15px; padding-right: 15px; }
+  .labsys_mop_systemalert { background-color: #ff7777; color: #000000; padding-left: 15px; padding-right: 15px; }
+  .labsys_mop_grayed {  color: silver; }
+  .labsys_mop_red {     color: red; }
+
+
+/******************************* paragraph styles *******************************/
+  .labsys_mop_h2 { 
+                    margin: 10px 0px 10px 0px; 
+                    font-size: 1.2em; 
+                    padding-bottom: 5px; 
+                    border-bottom: solid 1px gray;
+                 }
+  .labsys_mop_h3 { 
+                    margin: 10px 0px 5px 0px; 
+                    font-size: 1.1em; 
+                    padding-bottom: 5px; 
+                    border-bottom: solid 1px gray;
+                 }
+
+  .labsys_mop_note{
+                    margin: 5px 10px 15px 10px;
+                    padding: 5px 5px 5px 5px;
+                    font-size: 0.8em;
+                    color: #000000;
+                    border: solid 1px #D5D5D5;
+  }
+  
+  .labsys_mop_std_form { /* the standard form element used in the edits */
+    margin: 0 0 0 0px;
+  }
+
+  .labsys_mop_in_fieldset{ /* a new group inside a fieldset */
+                    margin-left: 15px;
+                    margin-right: 15px;
+                    margin-bottom: 0.5em;
+  }
+
+  .labsys_mop_sort_form{ /* the sorter row used on each element's manage page */
+                    margin-top: 15px;
+                    text-align: right;
+  }
+  
+/******************************* styles for the elements *******************************/
+  /* u element */
+  .labsys_mop_elements_menu_u{ /* The element's menu above/ below the its display area. */
+                    border-right: solid 1em #FFA07A; padding-right: 5px; margin-right: -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_u_row{ /* One data row on the userrights page. */
+                    margin: 10px 0px 10px 0px;
+                    padding: 5px 5px 5px 5px;
+                    font-size: 0.8em;
+                    background-color: #FFA07A; /* lightsalomon */
+  }
+  
+  /* p element */
+  .labsys_mop_elements_menu_p{ /* The element's menu above/ below the its display area. */
+                    border-right: solid 1em #87CEFA; padding-right: 5px; margin-right: -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_elements_menu_p_edit_bottom{ /* The element's menu below the its edit area. */
+                    border-left:  solid 1em #87CEFA; padding-left:  5px; margin-left:  -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_p_row{ /* One data row on the element's manage and the collection structure site. */
+                    margin: 10px 0px 10px 0px;
+                    padding: 5px 5px 5px 5px;
+                    font-size: 0.8em;
+                    background-color: #87CEFA; /* lightskyblue */
+  }
+
+  /* c/ C element */
+  .labsys_mop_elements_menu_c{ /* The element's menu above/ below the its display area. */
+                    border-right: solid 1em #FFE4B5; padding-right: 5px; margin-right: -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_elements_menu_c_edit_bottom{ /* The element's menu below the its edit area. */
+                    border-left: solid 1em #FFE4B5; padding-left: 5px; margin-left: -15px;
+                    border-right: solid 1em #FFE4B5; padding-right: 5px; margin-right: -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_c_row{ /* One data row on the element's manage and the collection structure site. */
+                    margin: 10px 0px 10px 0px;
+                    padding: 5px 5px 5px 5px;
+                    font-size: 0.8em;
+                    background-color: #FFE4B5; /* moccasin */
+  } 
+  
+  /* m element */
+  .labsys_mop_elements_menu_m{ /* The element's menu above/ below the its display area. */
+                    border-right: solid 1em #3CB371; padding-right: 5px; margin-right: -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_elements_menu_m_edit_bottom{ /* The element's menu below the its edit area. */
+                    border-left:  solid 1em #3CB371; padding-left:  5px; margin-left:  -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_elements_menu_m_answer_history{ /* The answer history gets into this row. */
+                    border-right: solid 1em #6B8E23; padding-right: 5px; margin-right: -15px;
+                    text-align: right;
+                    font-size: 1em;
+  }
+  .labsys_mop_m_row{ /* One data row on the element's manage and the collection structure site. */
+                    margin: 10px 0px 10px 0px;
+                    padding: 5px 5px 5px 5px;
+                    font-size: 0.8em;
+                    background-color: #3CB371; /* mediumseagreen */
+  }
+  
+  /* i element */
+  .labsys_mop_elements_menu_i{ /* The element's menu above/ below the its display area. */
+                    border-right: solid 1em #FA8072; padding-right: 5px;
+                    margin-right: -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_elements_menu_i_edit_bottom{ /* The element's menu below the its edit area. */
+                    border-left:  solid 1em #FA8072; padding-left:  5px; margin-left:  -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_elements_menu_i_answer_history{ /* The answer history gets into this row. */
+                    border-right: solid 1em #DC143C; padding-right: 5px; margin-right: -15px;
+                    text-align: right;
+                    font-size: 1em;
+  }
+  .labsys_mop_i_row{ /* One data row on the element's manage and the collection structure site. */
+                    margin: 10px 0px 10px 0px;
+                    padding: 5px 5px 5px 5px;
+                    font-size: 0.8em;
+                    color: #000000;
+                    background-color: #FA8072; /* salomon */
+  }
+  
+  /* s element */
+  .labsys_mop_elements_menu_s{ /* The element's menu above/ below the its display area. */
+                    border-right: solid 1em #FFA07A/* lightsalmon */; padding-right: 5px;
+                    margin-right: -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_elements_menu_s_edit_bottom{ /* The element's menu below the its edit area. */
+                    border-left:  solid 1em #FFA07A/* lightsalmon */; padding-left:  5px; margin-left:  -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_s_row{ /* One data row on the element's manage and the collection structure site. */
+                    margin: 10px 0px 10px 0px;
+                    padding: 5px 5px 5px 5px;
+                    font-size: 0.8em;
+                    background-color: #FFA07A;
+  }
+  
+  /* l element */
+  .labsys_mop_elements_menu_l{ /* The element's menu above/ below the its display area. */
+                    border-right: solid 1em #ADD8E6; padding-right: 5px;
+                    margin-right: -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_elements_menu_l_edit_bottom{ /* The element's menu below the its edit area. */
+                    border-left:  solid 1em #ADD8E6; padding-left:  5px; margin-left:  -15px;
+                    text-align: right;
+                    font-size: 0.8em;
+  }
+  .labsys_mop_l_row{ /* One data row on the element's manage and the collection structure site. */
+                    margin: 10px 0px 10px 0px;
+                    padding: 5px 5px 5px 5px;
+                    font-size: 0.8em;
+                    background-color: #ADD8E6; /* burlywood */
+  }
+  
+/* ------ additional styles for managing the elements ------ */
+  .labsys_mop_not_found_row{ /* Not found row for the collection overview page */
+                    margin: 10px 0px 10px 0px;
+                    padding: 5px 5px 5px 5px;
+                    font-size: 0.8em;
+                    color: #ffffff;
+                    background-color: #FF0000; /* lightsalmon */
+  }
+  
+  .labsys_mop_element_note_in_header{ /* p.e. "only visible in collection" */
+                    color: #999999;
+                    color: #ff0000;
+                    font-size: 0.7em;
+  }
+  .labsys_mop_element_description_in_header{ /* The elements address p.e. "C13.p23" */
+                    color: #999999;
+                    font-size: 0.7em;
+  }
+  
+  .labsys_mop_element_navigation{ /* The navigator row at the manage elements page (<< 0 1 2 >>) */
+                    padding-right: 0.5em; 
+                    text-align: right; 
+                    font-size: 0.8em;
+                    border: 1px solid #eeeeee;
+  }
+
+  .labsys_mop_element_navigation a,
+  .labsys_mop_element_navigation a:hover{
+                    color: #999999;
+  }
+  
+/* ------ styles for editing the elements ------ */
+  .labsys_mop_input_field_label{
+                    margin-top: 10px;
+                    font-size: 0.9em;
+                    text-align: left;
+  }
+  .labsys_mop_input_field_label_top{
+                    margin-top: 10px;
+                    font-size: 0.9em;
+                    text-align: left;
+                    display: block;
+  }
+  .labsys_mop_input_field_label_left{
+                    margin-top: 10px;
+                    font-size: 0.9em;
+                    text-align: right;
+                    display: inline;
+                    float: left;
+  }
+  .labsys_mop_input_field_note{
+                    margin-top: 5px;
+                    margin-bottom: 5px;
+                    margin-left: 10px;
+                    font-size: 0.8em;
+                    text-align: left;
+  }
+
+/* ------ additional styles for the u element ------ */  
+  .labsys_mop_input_team{
+                    width: 35px;
+                    margin: 1px 1px 1px 1px;
+                    font-size: 0.8em;
+                  	text-align: center;
+                  	border: solid 1px #4682B4;
+                    background-color: transparent;
+  }  
+
+/* ------ additional styles for the p element ------ */  
+  .labsys_mop_p_field_constants{ /* The constants getting replaced on display are shown in that style. */
+                    font-size: 0.8em;
+                    text-align: center;
+                    margin-top: 5px;
+                    margin-bottom: 5px;
+  }
+  
+/* ------ additional styles for the c element ------ */  
+  .labsys_mop_c_group{ /* Surrounds a group of elements "("...")" in LcElement::showStructure(). */
+                    margin-top: -10px;
+                    padding: 5px;
+                    padding-left: 1em;
+                    margin-bottom: 3em;
+                    border: dotted 1px silver;
+                    border-top: none;
+  }
+  .labsys_mop_c_inner_coll_entity{ /* surrounds one entity inside a collection on the c view. */
+                    border-top: solid 2px #eeeeee;
+                    border-bottom: solid 2px #eeeeee;
+                    margin-bottom: 2em;
+  }
+  .labsys_mop_c_structure{ /* surrounds the structure on top of the structure page. */
+                    font-size: 0.8em;
+                    line-height: 2em;
+                    padding: 5px;
+  }
+  .labsys_mop_c_structure_substructure{ /* Around a substructur in the structure on top of the structure page (...) */
+                    border-bottom: 1px solid red;
+                    padding-bottom: 1px;
+                    background-color: #eeeeee;
+  }
+  .labsys_mop_c_structure_address{ /* The address on top of a collection structure row. */
+                    font-size: 0.6em;
+                    display:block;
+  }
+  
+/* ------ additional styles for the C element ------ */  
+  .labsys_mop_C_TOC_group{ /* Used on the C collections overview page around a set of entrys. */
+                    margin-left: 3em;
+                    margin-bottom: 1em;
+  }
+  .labsys_mop_C_TOC_entry { /* One title in collections TOC */
+                    margin-bottom: 0.3em;
+  }
+
+/* ------ additional styles for the l element ------ */  
+  .labsys_mop_l_comment{ /* Comment appears below the title. */
+                      margin-top: -10px;   /* appears below labsy_mop_h2 -> move spacing below me */
+                      margin-bottom: 10px;
+                      margin-left: 1em;
+                      margin-right: 1em;
+                      text-align: right;
+                      font-size: 0.6em;
+                      color: #cccccc;
+  }
+  .labsys_mop_l_status_userhead{ /* Used for the line containing the user name in top of all lab's status */
+                      font-size: 0.8em;
+  }
+  .labsys_mop_l_status_table{ /* Used on the lab status page. */
+                      width: 100%;
+                      table-layout: fixed; /* causes the sizes to be fixed (not content related) */
+                      border: none 0px red;
+                      padding: 5px;
+                      border-spacing: 5px;
+  }
+  .labsys_mop_l_status_table_cell_labName{ /* Lab's real name for human reader */
+                      text-align: right;
+                      padding-left: 5px;
+                      padding-right: 5px;
+                      font-size: 0.7em;
+  }
+  .labsys_mop_l_status_table_cell_number{
+                      width: 30px;
+                      text-align: right;
+                      padding-left: 5px;
+                      padding-right: 5px;
+                      background-color: #eeeeee;
+  }
+  .labsys_mop_l_status_table_cell_team{
+                      width: 70px;
+                      text-align: right;
+                      padding-left: 5px;
+                      padding-right: 5px;
+  }
+  .labsys_mop_l_status_table_cell_name{
+                      text-align: left;
+                      padding-left: 5px;
+                      padding-right: 5px;
+  }
+  .labsys_mop_l_status_table_cell_prelab_fin{
+                      width: 20px;
+                      text-align: center;
+  }
+  .labsys_mop_l_status_table_cell_lab_closed{
+                      width: 20px;
+                      text-align: center;
+  }
+  .labsys_mop_l_status_table_cell_lab_corr{
+                      width: 20px;
+                      text-align: center;
+  }
+  .labsys_mop_l_status_table_cell_lab_prelab_credits,
+  .labsys_mop_l_status_table_cell_lab_credits{
+                      width: 90px;
+                      font-size: 0.8em;
+                      text-align: right;
+                      padding-left: 5px;
+                      padding-right: 5px;
+  }
+  .labsys_mop_l_status_table_row_light{
+                    background-color: #eeeeee;
+                    text-align: center;
+                    font-size: 0.8em;
+                    padding: 2px;
+  }
+  .labsys_mop_l_status_table_row_dark{
+                    background-color: #dddddd;
+                    text-align: center;
+                    font-size: 0.8em;
+                    padding: 2px;
+  }
+  .labsys_mop_l_status_table_row_summary{
+                    background-color: #eeeedd;
+                    text-align: center;
+                    font-size: 0.8em;
+                    padding: 2px;
+  }
+  .labsys_mop_l_status_whichCorrected{
+    text-align: right;
+  }
+  .labsys_mop_l_all_inputs_stats{ /* appears on top of allLabQuestions below the headline and contains [20 questions; 60 credits] */
+                    font-size: 0.7em;
+                    border: none;
+                    text-align: right;
+                    padding: 5px 5px 5px 5px;
+                    margin-top: -1em;
+                    margin-bottom: 1em;
+  }
+  .labsys_mop_l_status_percentBarDiv{ /* shown in the lab status table below the percent value */
+                    text-align: left;
+                    background-color: #eeeeee;
+                    border: solid 1px #aaaaaa;
+                    height: 4px;
+  }
+  .labsys_mop_l_status_percentBarDiv img{ /* the bar is an img with a transparent gif. */
+                    margin: 0px; 
+                    border: none;
+                    height: 100%;
+                    /* color is set in LlElement.inc */
+                    /* background-color is set in LlElement.inc */
+                    /* width is set in LlElement.inc */
+  }
+
+/* ------ additional styles for the m element ------ */  
+  .labsys_mop_elements_m_around{ /* put around the m element */
+                    /*background-color: #f9f9f9;*/
+                    margin-bottom: 1em;
+  }
+  .labsys_mop_m_question{
+                    border-bottom: 1px solid #eeeeee;
+                    padding: 5px 5px 5px 5px;
+  }
+  .labsys_mop_m_answer_explanation{
+                    font-size: 0.7em;
+                    border-top: solid 1px #eeeeee;
+                    padding: 5px 5px 5px 5px;
+  }
+  
+  .labsys_mop_m_answers_table { /* The multiple choice checkboxes and answers are inside this table. */
+                    table-layout: fixed; /* causes the sizes to be fixed (not content related) */
+                    padding: 5px;
+                    border-spacing: 10px;
+  }  
+  .labsys_mop_m_answers_table_row {
+  }
+  .labsys_mop_m_answers_table_checkbox_cell {
+                    vertical-align: top;
+                    width: 25px;
+                    text-align: center;
+  }
+  .labsys_mop_m_answers_table_checkbox_cell_wrong {
+                    vertical-align: top;
+                    text-align: center;
+                    background-color: #ffeeee;
+                    border: 1px solid #FA8072; /* salomon */
+  }
+  .labsys_mop_m_answers_table_checkbox_cell_right {
+                    vertical-align: top;
+                    text-align: center;
+                    background-color: #eeffee;
+                    border: 1px solid #32CD32; /* limegreen */
+  }
+  .labsys_mop_m_answers_table_answer_cell {
+                    vertical-align: top;
+                    font-size: 0.9em;
+                    text-align: justify;
+                    padding-bottom: 0.5em;
+  }
+  
+  .labsys_mop_m_save_button{
+                    margin: 5px 0px 5px 0px;
+                  	font-size: 0.8em;
+                  	color:#000000;
+                  	text-align: center;
+                  	border: solid 1px #000000;
+                    width: 100%;
+                    background-color: transparent;
+  }
+  .labsys_mop_m_name{ /* Correctors see that style containing the unsername if they are "correcting all" */
+                    margin-top: 5px;
+                    margin-left: -20px;
+                    padding: 5px 5px 5px 25px;
+                    font-size: 0.7em;
+                    text-align: right;
+                    border: none;
+                    background-color: #eeeeee;
+  }
+  
+/* ------ additional styles for the i element ------ */ 
+  .labsys_mop_elements_i_around{ /* put around the i element */
+                    background-color: #dddddd; /*#f9f5f5;*/
+                    margin-bottom: 1em;
+  }
+  .labsys_mop_i_question{
+                    padding: 5px 5px 5px 5px;
+  }
+  .labsys_mop_i_credits{
+                    font-size: 0.7em;
+                    border: none;
+                    text-align: right;
+                    padding: 5px 5px 5px 5px;
+  }
+  .labsys_mop_i_credits_green{ /* Correctors see that style if "corrected" is checked. */
+                    font-size: 0.7em;
+                    border: none;
+                    background-color: #ccffcc;
+                    text-align: right;
+                    padding: 5px 5px 5px 5px;
+  }
+  .labsys_mop_i_credits_red{ /* Correctors see that style if "corrected" is not checked. */
+                    font-size: 0.7em;
+                    border: none;
+                    background-color: #ffcccc;
+                    text-align: right;
+                    padding: 5px 5px 5px 5px;
+  }
+
+  .labsys_mop_i_comment{ /* The comment as shown when not in edit mode */
+                    width: 100%;
+                    margin: 1px 1px 1px 1px;
+                    color: #444444;
+                   	font-size: 0.8em;
+                  	border: solid 1px #aaaaaa;
+                    padding: 5px;
+                    background-color: #ffffaa;
+  } 
+  
+  .labsys_mop_i_example_solution{
+                  	font-size: 1em;
+                  	color:#333333;
+                  	text-align: left;
+                    padding: 5px 5px 5px 5px;
+                    font-family: times, serif;
+                    background-color: #ffffee;
+  } 
+  
+  /* Has to be limited as much as possible since the pastings have huge width sometimes */
+  .labsys_mop_i_example_solution pre {
+                  	font-size: 11px;
+  }
+  
+  .labsys_mop_i_save_button{
+                    margin: 5px 0px 5px 0px;
+                  	font-size: 0.8em;
+                  	color:#000000;
+                  	text-align: center;
+                  	border: solid 1px #000000;
+                    width: 100%;
+                    background-color: transparent;
+  }
+
+  .labsys_mop_i_teamnr{ /* Correctors see that style containing the team number if they are "correcting all" */
+                    margin-top: 5px;
+                    margin-left: -20px;
+                    padding: 5px 5px 5px 25px;
+                    font-size: 0.7em;
+                    text-align: left;
+                    border: none;
+                    background-color: #999999;
+                    color: #ffffff;
+  }
+/* ------ additional styles for the s element ------ */ 
+  .labsys_mop_s_table { /* The schedule rows are in here */
+                    width: 100%;
+                    table-layout: fixed; /* causes the sizes to be fixed (not content related) */
+                    padding: 2px;
+                    border-spacing: 2px;
+  } 
+  .labsys_mop_s_table_day {
+                    border: solid 1px #888888;
+                    background-color: #eeeeee;
+                    text-align: center;
+                    font-size: 0.6em;
+                    padding: 1px;
+  } 
+  .labsys_mop_s_table_today {
+                    border: solid 1px #888888;
+                    background-color: #ff0000;
+                    color: #ffffff;
+                    text-align: center;
+                    font-size: 0.6em;
+                    padding: 1px;
+  } 
+  .labsys_mop_s_table_day_name {
+                    text-align: center;
+                    font-size: 0.6em;
+  } 
+  .labsys_mop_s_table_name_month {
+                    border-bottom: solid 1px #000000;
+  } 
+  .labsys_mop_s_table_schedule_cell {
+                    text-align: center;
+                    font-size: 0.6em;
+                    padding-right: 5px;
+                    padding-left: 5px;
+                    background-color: #ffffaa;
+                    border: solid 1px #555555;
+  } 
+  .labsys_mop_s_table_no_schedule_cell{
+                    border: solid 1px #dddddd;
+                    text-align: center;
+                    font-size: 0.6em;
+                    padding: 1px;
+  }
+
+  .labsys_mop_s_legend { /* The explanation to the schedule shortcuts. */
+                    font-size: 0.6em;
+  }
+  
+/******************************* history *******************************/
+  .labsys_mop_additional_history { /* pages/history.php */
+                    font-size: 0.8em;
+                    padding: 15px;
+                    margin-left: 50px;
+  }
+  
+  /* history boxes inside the page */
+  div.labsys_mop_history {
+                    display: none;
+                    font-size: xx-small;
+                    width: 100%;
+                    padding: 0.5em;
+                    background-color:#ffffaa; 
+                    color: #000000;
+                    border: solid 1px gray;
+                    text-align: left;
+  }
+  
+  div.labsys_mop_history hr{
+                    height: 1px;
+  }

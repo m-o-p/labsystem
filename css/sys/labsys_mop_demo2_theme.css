@@ -1,0 +1,22 @@
+/**
+ * This is the style adaption for the demo-system.
+ *
+ * This is an example of how to use the "SysOverridingSheet" feature 
+ * of the ini-file to adapt the look to your needs.
+ *
+ */
+ 
+ /*
+  * Even though the style looks pretty different there are only
+  * little changes...
+  */
+body {  
+                      background-color: #ffffff;
+}
+  .labsys_mop_maintable {
+                      background-color: #eeeeee;
+                      border: solid 1px #89897c;
+  }
+  
+  .labsys_mop_topmostHeader { /* for stuff like url (taken from ../ini/config*.ini: TopmostHeader) */
+  }
