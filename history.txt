@@ -6,7 +6,11 @@ Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
 
-
+2010-01-25
+-------------------
+/include/classes/LiElement.inc
+  Locks: - Save even if not allowed
+         - Be not able to open loked questions
 
 2010-01-12
 -------------------

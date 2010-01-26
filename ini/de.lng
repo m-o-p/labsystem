@@ -153,9 +153,9 @@ uaAsUsrNmeIsUsedBy  = "als Benutzername wird schon verwendet von"
 uaNotBelong2Usr     = "wurde nicht gefunden. Die Adresse geh&ouml;rt zu keinem Benutzer..."
 
 ;i
-CantSaveLockAt      = "Konnte die Antwort nicht speichern. Es gibt bereits ein Lock auf" ;; If the lock got placed on another answer this is not savable anymore.
-LockTakenFrom       = "Das Lock wurde von folgendem Input genommen:" ;; " [idx of input]" gets added
-InputAlreadyClosed  = "Der Input ist bereits geschlossen!"
+NotAllowedSaveLockAt= "Keine Erlaubnis zum Speichern der Antwort! Es gibt bereits ein Lock auf" ;; If the lock got placed on another answer this is not savable anymore.
+LockTakenFrom       = "Das Lock wurde von folgendem Eingabefeld genommen:" ;; " [idx of input]" gets added
+InputAlreadyClosed  = "Das Eingabefeld ist bereits geschlossen!"
 
 ; Alerts provided saving scripts
 NotAllNecValPosted  = "Nicht alle notwendigen Werte wurden an das Script geschickt!" ; This should only happen when someone tries to hack a script.

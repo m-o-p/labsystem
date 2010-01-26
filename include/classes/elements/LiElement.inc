@@ -28,6 +28,35 @@
 * @copyright  Marc-Oliver Pahl 2005
 * @version    1.0
 */
+
+/*
+The inputs are arbitrated by a lock. 
+Each Team can only open one input at the same time.
+
+This serves two purposes:
+-	It prevents the team partners to work non cooperatively by answering the questions not together
+-	It helps significantly not to forget saving an answer (as there is no Ajax this is not done automatically!)
+
+
+How does the lock work now?
+Suppose we have computer A and B. 
+Both load the same question sheet so both see the "give answer…" buttons.
+
+Suppose A opens a question.
+The lock is set to that question now.
+As A and B are working independently, B wants to open another question.
+B clicks on "give answer…" of a question.
+The system notices that B clicked on the button that was only visible since the view of A and B was inconsistent and just reloads the page on B.
+B sees now red locks (as A) on all non open questions and the question A opened is open at B now too.
+Of course B only sees the last saved answer of the question A answered so there might be no answer visible even though A wrote already something (but did not save).
+
+If someone clicks on a red lock below a question, the system assumes, the person understands that it grabs the lock from another input by this and forces a lock take.
+(This might be useful if one does not know anymore, which question one opened.)
+
+Suppose now the case B grabbed the lock but A does not know that (they should cooperate so this should NEVER happen).
+A wants to save the answer but the lock is not set to the question anymore.
+Instead of discarding the answer what would be the normal case as the team did not coordinate itself, the system saves the answer now anyway but replaces all spaces by "NO_LOCK" to show the team that this behavior was not intended.
+ */
 require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 
 // The following DBI is used in loadUserData4() (connects UID and team for one answer).
@@ -58,6 +87,9 @@ class LiElement extends Element{
   var $lockIsSetTo;           /* A team can only answer the questions one by one.  Reason: Force them to work together. 
                                * The lock tells, which question is currently in answer mode (it contains its index or false).
                                */
+                               
+  var $forceReLock;           // This gets set if the user clicked on the red lock so when he is sure he wants to get the lock from 
+                              // another input which meant the other input could not be saved anymore (set to student friendly mod: save anyway)
                     
   var $utDBI;                 // new LiDBInterfaceUidTeam();
   var $uaDBI;                 // new LiDBInterfaceAnswers();
@@ -104,6 +136,8 @@ class LiElement extends Element{
       $this->utDBI = new LiDBInterfaceUidTeam();
       $this->uaDBI = new LiDBInterfaceAnswers();
       $this->lkDBI = new LiDBInterfaceLocks();
+      
+      $this->forceReLock = (( isset($_POST['forceReLock']) ) && ( $_POST['forceReLock'] == 1 ));
   
       $this->loadUserData4(); // Fills rest of the structures with neutral values.
     }
@@ -355,7 +389,9 @@ class LiElement extends Element{
                                                           "value=\"".$lng->get("giveAnswer")."\">\n";
                                            else // lock is set and is not set to this
                                            $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"image\" ".
-                                                          "src=\"../syspix/button_lock_closed_red_7x10.gif\" width=\"7\" height=\"10\" alt=\"".$lng->get("LockSetButForce").' '.$this->lockIsSetTo."\">\n";
+                                                          "src=\"../syspix/button_lock_closed_red_7x10.gif\" width=\"7\" height=\"10\" alt=\"".$lng->get("LockSetButForce").' '.$this->lockIsSetTo."\">\r\n".
+                                                // here the users gets indicated that another question is locked, so clicking on the red lock forces acquiring from another question.
+                                                          '<input type="hidden" name="forceReLock" value="1">'."\r\n";
               
             
       $ret .= "</FORM>\n".
@@ -418,6 +454,7 @@ class LiElement extends Element{
     return "<div class=\"labsys_mop_elements_i_around\">".
            EM::viewTopInput( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
+            retIfTrue( $this->forceReLock, 'yes', 'no' ).
              "<div class=\"labsys_mop_i_question\">".
                retIfTrue( ($paragraph!=""), $paragraph.". " ).$this->question.
              "</div>\n".
@@ -612,7 +649,12 @@ class LiElement extends Element{
     } else // You are only allowed to answer one question at the same time. 
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
-            $url->put( "sysalert=".urlencode( $lng->get("CantSaveLockAt")." ".$this->lockIsSetTo ) );
+            $url->put( "sysalert=".urlencode( $lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo ) );
+            
+           // As this case should never happen, we save here anyway not to lose data:
+           // To abondon parallel answering we replace all spaces by NO_LOCK so the user has to remove this later again.
+            $_POST['ANSWER'] = preg_replace( '/\s/', 'NO_LOCK', $_POST['ANSWER'] );
+            $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
@@ -669,9 +711,12 @@ class LiElement extends Element{
     if ($this->isClosed)
       $url->put( "sysalert=".urlencode( $lng->get("InputAlreadyClosed") ) );
     else{
-      if ( $this->lockIsSetTo ) // lock is set yet -> place a note but set it
+      $reForceLock = ( $this->lockIsSetTo && $this->forceReLock ); // lock is set yet and user clicked on lock -> place a note but set it
+      if ( $reForceLock )
         $url->put( "sysalert=".urlencode( $lng->get("LockTakenFrom")." ".$this->lockIsSetTo ) );
-      $this->acquireLock4( $_POST['FULLADDRESS'] );
+
+      if (!$this->lockIsSetTo || $reForceLock)
+        $this->acquireLock4( $_POST['FULLADDRESS'] );
     }
          
     // One could also display the page here but that way it is left to the normal mechanism...
