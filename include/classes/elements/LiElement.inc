@@ -646,7 +646,7 @@ class LiElement extends Element{
       $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
   
       $this->removeLock();
-    } else // You are only allowed to answer one question at the same time. 
+    } else{ // You are only allowed to answer one question at the same time. 
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
             $url->put( "sysalert=".urlencode( $lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo ) );
@@ -655,7 +655,7 @@ class LiElement extends Element{
            // To abondon parallel answering we replace all spaces by NO_LOCK so the user has to remove this later again.
             $_POST['ANSWER'] = preg_replace( '/\s/', 'NO_LOCK', $_POST['ANSWER'] );
             $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
-
+    }
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
