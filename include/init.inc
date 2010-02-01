@@ -38,6 +38,15 @@ define( "INCLUDE_DIR", "../include" );
 
 require( INCLUDE_DIR."/customErrHandle.inc" );  // The custom Error handler.
 require( INCLUDE_DIR."/helper.inc" );           // Some helper functions that are used.
+
+/* An interesting feature is to use name based hosts 
+ * to select the proper configuration files.
+ *
+ * In the following script the $_GET['config'] gets
+ * rewritten according to the hostname.
+ */
+#require( INCLUDE_DIR."/hostname2config.inc" );
+
 require( INCLUDE_DIR."/configuration.inc" );    // Include the global configuration. => Object $cfg.
 require( $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles") );  // Include the user role constants.
 require( INCLUDE_DIR."/language.inc" );         // Include the localized Strings. => Object $lng.
