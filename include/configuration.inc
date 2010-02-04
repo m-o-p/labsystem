@@ -32,10 +32,12 @@
 */
 if ( isset($cfg) ) return;
 
+if ( !isset($configPrefix) ) $configPrefix='';
+
 require_once( INCLUDE_DIR."/classes/Rom.inc" );
 
 if ( isset($_GET["config"]) )
-  $configFile = "../ini/config_".$_GET["config"].".ini";
+  $configFile = "../ini/config_".$configPrefix.$_GET["config"].".ini";
 else
   $configFile = "../ini/config_demo.ini";
   

@@ -25,9 +25,9 @@
  * rewritten according to the hostname.
  */
 // ILAB2 -> ilab2_ in config
-if (strtoupper(substr($_SERVER['SERVER_NAME'], 0, 5)) == 'ILAB2') $_GET['config']='ilab2_'.$_GET['config'];
+if (strtoupper(substr($_SERVER['SERVER_NAME'], 0, 5)) == 'ILAB2') $configPrefix='ilab2_';
 
 // to always add the infix of the hostname the following code may help:
-// $_GET['config']=strtolower(substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.'))).'_'.$_GET['config'];
+// $configPrefix=strtolower(substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.'))).'_';
 
 ?>

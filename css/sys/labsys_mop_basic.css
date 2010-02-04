@@ -30,8 +30,8 @@ body {
                       text-align:justify; 
 }
 
-a {                   text-decoration:none; color: #4682B4;}
-a:hover {             text-decoration:underline; color: #4682B4;}
+a {                   text-decoration:none; color: #0065BD;}
+a:hover {             text-decoration:underline; color: #0065BD;}
 
 .labsys_mop_contentArea{  /*  This style is to be overwritten in the user's stylesheet. 
                               The systems puts this style around each element's content part. */
@@ -599,6 +599,7 @@ fieldset{
                       border: none 0px red;
                       padding: 5px;
                       border-spacing: 5px;
+
   }
   .labsys_mop_l_status_table_cell_labName{ /* Lab's real name for human reader */
                       text-align: right;
