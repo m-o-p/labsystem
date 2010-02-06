@@ -6,6 +6,11 @@ Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
 
+2010-02-06
+-------------------
+  Renaming of the menu files in ini/
+  Changing hostname2config.inc
+  
 2010-02-01
 -------------------
 /includes/init.inc
