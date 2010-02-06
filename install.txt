@@ -59,6 +59,7 @@
    Set '/tmp' to '[your web dir]/sessiondata'.
    It might also work with /tmp but this is not recommended.
    (e.g. $sess_save_path = "/webdir/webroot/sessiondata";)
+   MAKE SURE THIS PATH IS WRITABLE BY PHP!
 
 
 ..........................................................................
@@ -206,3 +207,52 @@ When your course starts you should make a proper team assignment as the
 assignment affects the behaviour of the system (only if ALL teammembers
 finished the prelab they see the lab, so as all are in the same team at
 the beginning... also the team answers will be valid for all like this.)
+
+Next you should send an email to all users via your course interface and
+ask your participants to request a password on the user administration 
+page, to log on there and change their credentials and AFTER that logging
+on at the course page.
+
+--------------------------------------------------------------------------
+  How to CREATE NEW CONFIG on BASE OF an OLD one with labsystem.m-o-p.de
+--------------------------------------------------------------------------
+
+We assume your current config is
+  ini/config_2009ws.ini
+with the menu
+  ini/menu_en_2009ws.ini
+and the databases
+  ilab_2009ws_work
+  ilab_2009ws_data
+.
+You want to create a new instance for the upcoming semester 2010ss:
+
+1) copy ini/config_2009ws.ini ini/config_2010ss.ini
+2) copy ini/menu_en_2009ws.ini ini/menu_en_2010ss.ini
+   change owner of ini/menu_en_2010ss.ini to [www-user].[www-user-group] (to make it editable via frontend)
+
+3) edit ini/config_2010ss.ini
+    changes:
+    SystemTitle             = "ilab ws0910"         -> "ilab ss10"
+    SystemMenuFile          = "menu_en_2009ws.ini"  -> "menu_en_2010ss.ini"
+    (OPTIONAL) UserStyleSheet          = "../css/labsys_user_style_ss06.css"
+    WorkingDatabaseName       = "ilab_2009ws_work"  -> "ilab_2010ss_work"
+    DataDatabaseName          = "ilab_2009ws_data"  -> "ilab_2010ss_data"
+    User_courseID           = "_ilab_2009ws"        -> "_ilab_2010ss"
+    (OPTIONAL) RightsAdminUsername   = "mop"        -> "newFirstAdmin"
+
+4) (OPTIONAL) Change /index.php to get routed to the new course per default:
+   [line6] else $config = '2009ws';                 -> '2010ss'    
+
+5) If you want to replicate the data database (to do versioning):
+   (in mysql) copy "ilab_2009ws_data" -> "ilab_2010ss_data"
+   
+6) [your system url and path]/setup?config=2010ss
+
+7) Done.
+
+You can log on the new instance now and edit the pages (e.g. start page).
+Do not forget to give you the edit rights on the "user properties" page
+first to make you an editor.
+
+You can ADD USERS (see above) to the new course now.
