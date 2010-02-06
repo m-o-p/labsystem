@@ -58,7 +58,7 @@ else{ // save new PW
                                 $cfg->get('UserDatabasePassWord'), 
                                 $cfg->get('UserDatabaseName'));
                                 
-    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."=PASSWORD( '".$_POST['NEWPW']."' )", 
+    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".sha1( $_POST['NEWPW'] )."'", 
                         $cfg->get('UserDatabaseTable'), 
                         $cfg->get('UserDBField_uid')."='".retIfTrue( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData(),$usr->theSeeingUid() ,$usr->uid )."'"
                        );

@@ -56,7 +56,7 @@ if ( !file_exists( 'information.txt' ) ) trigger_error( "/setup/information.txt 
   <p style="color: #ff0000; font-size: 0.8em;">
     Click the following button first to ensure your config file is not readable by everyone.<br>
     <br>
-    <a href="../ini/config_'.$_GET['config'].'.ini" target="_blank"><button style="width: 100%">Is my installation file protected?</button></a><br><br>
+    <a href="../ini/config_'.$_GET['config'].'.ini" target="_blank"><button style="width: 100%">Is my ini file protected?</button></a><br><br>
     A new page will open. If you do not get an access denied warning but see the config file with your passwords, everyone can access it. <br>
     You have to make the ini directory read protected for the webserver then! (see install instructions and your webserver\'s manual for details.)
   </p>

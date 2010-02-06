@@ -10,6 +10,7 @@ Feature Requests:
 -------------------
   Renaming of the menu files in ini/
   Changing hostname2config.inc
+  Fixed password change bug in php/uaMyPWSave.php (sha1 instead of PASSWORD)
   
 2010-02-01
 -------------------

@@ -33,8 +33,8 @@
 ..........................................................................
    
 3) Make the files
-      ini/en_menu_demo.ini
-      ini/en_menu_useradmin.ini
+      ini/menu_en_demo.ini
+      ini/menu_en_useradmin.ini
       css/labsys_user_style.css
       css/labsys_mop_ua_user_style.css
     writable by php.
