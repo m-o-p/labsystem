@@ -454,7 +454,6 @@ class LiElement extends Element{
     return "<div class=\"labsys_mop_elements_i_around\">".
            EM::viewTopInput( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
-            retIfTrue( $this->forceReLock, 'yes', 'no' ).
              "<div class=\"labsys_mop_i_question\">".
                retIfTrue( ($paragraph!=""), $paragraph.". " ).$this->question.
              "</div>\n".
