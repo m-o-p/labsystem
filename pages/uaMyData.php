@@ -33,7 +33,7 @@ $pge->title        = $lng->get("titleUaMyData");
 $pge->matchingMenu = $lng->get("MnuEntryUaMyData");
 $pge->visibleFor   = IS_USER;
 
-  if ( substr( $url->get('config'), 0, 9 ) != 'useradmin' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotConfigUA")."\n</div>" );
+  if ( substr( $url->get('config'), -9 ) != 'useradmin' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotConfigUA")."\n</div>" );
   else{ // showing myData
      // title
      $pge->put( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );

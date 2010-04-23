@@ -78,7 +78,7 @@ class Usr extends ElementUser{
   */
   function seesDataOf( $uid ){
     global $lng;
-    if ( !$this->isOfKind( IS_CORRECTOR ) ) return false; // only correctors can do that
+    if ( !($this->isOfKind( IS_CORRECTOR ) || ((IS_DB_USER_ADMIN != 0) && $this->isOfKind( IS_DB_USER_ADMIN ))) ) return false; // only correctors can do that
     
     if ( $uid == "" ){ /* Turn off. */
       if ( isset( $_SESSION['seeingUID'] ) ){

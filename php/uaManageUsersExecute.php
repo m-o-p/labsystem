@@ -40,7 +40,7 @@ if ( !isset( $_GET['function'] ) ||
      !isset( $_GET['redirectTo'] )
    ) trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
 
-if (  (substr( $url->get('config'), 0, 9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
+if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
       !$usr->isOfKind( IS_DB_USER_ADMIN )
    ) trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
 

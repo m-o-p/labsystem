@@ -33,7 +33,7 @@ $pge->title        = $lng->get("titleUaUnPwRem");
 $pge->matchingMenu = $lng->get("MnuEntryUaUnPwRem");
 $pge->visibleFor   = IS_GUEST;
 
-  if ( substr( $url->get('config'), 0, 9 ) != 'useradmin' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotConfigUA")."\n</div>" );
+  if ( substr( $url->get('config'), -9 ) != 'useradmin' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotConfigUA")."\n</div>" );
   else{ // showing password fields
      // title
      $pge->put( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );

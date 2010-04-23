@@ -82,12 +82,12 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
 // With more than 360 elements more than 8M are used and it gets slow!
 // -> only show result partially!
 // In mysql exists [LIMIT offset, rows] as argument, one could use that. BUT how many totally?
-  if ( isset( $_GET['startFrom'] ) &&
+  if ( $url->available('startFrom') &&
        is_numeric ( $_GET['startFrom'] ) &&
        ($_GET['startFrom'] > 0)
       ) $startFrom = $_GET['startFrom']; else $startFrom = 1;
 
-  if ( isset( $_GET['frameSize'] ) &&
+  if ( $url->available('frameSize') &&
        is_numeric ( $_GET['frameSize'] ) &&
        ($_GET['frameSize'] > 0)
       ) $frameSize = $_GET['frameSize']; else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );

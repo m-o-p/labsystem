@@ -5,6 +5,20 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+ 
+2010-03-28
+-------------------
+  Fix variable manage
+  Add search manage
+
+2010-03-27
+-------------------
+  User configuration allows several user edit options.
+  Changed, so that not 'useradmin' as configuration is the criterion to allow options but en ending of ...'useradmin' is.
+  This became necessary with the change of the 2010-02-01.
+  
+/include/classes/Usr.inc
+  Fixed "seesDataOf" so it works correct for "IS_DB_USER_ADMIN" now.
 
 2010-02-06
 -------------------

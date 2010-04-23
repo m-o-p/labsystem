@@ -36,7 +36,7 @@ $pge->title        = $lng->get("titleUaManageUsr");
 $pge->matchingMenu = $lng->get("MnuEntryUaManageUsr");
 $pge->visibleFor   = IS_DB_USER_ADMIN;
 
-  if ( substr( $url->get('config'), 0, 9 ) != 'useradmin' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotConfigUA")."\n</div>" );
+  if ( substr( $url->get('config'), -9 ) != 'useradmin' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotConfigUA")."\n</div>" );
   else{ // showing
   // head (create new)
      $pge->put(  "<div class=\"labsys_mop_elements_menu_u\">\n".

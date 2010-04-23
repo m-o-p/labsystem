@@ -65,7 +65,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
        ($url->get('startFrom') > 0)
       ) $startFrom = $url->get('startFrom'); else $startFrom = 1;
 
-  if ( $url->available($_GET['frameSize']) &&
+  if ( $url->available('frameSize') &&
        is_numeric ( $url->get('frameSize') ) &&
        ($url->get('frameSize') > 0)
       ) $frameSize = $url->get('frameSize'); else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );

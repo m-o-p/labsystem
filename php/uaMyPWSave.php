@@ -39,7 +39,7 @@ if ( !isset( $_POST['REDIRECTTO'] ) ||
      !isset( $_POST['NEWPWRETYPE'] )
    ) trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
 
-if (  (substr( $url->get('config'), 0, 9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
+if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
      !( isset($_POST['SESSION_ID']) && 
       ($_POST['SESSION_ID'] != "") && 
       ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */   

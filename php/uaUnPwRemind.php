@@ -38,7 +38,7 @@ if ( !isset( $_POST['REDIRECTTO'] ) ||
      !isset( $_POST['EMAIL'] )
    ) trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
 
-if (  (substr( $url->get('config'), 0, 9 ) != 'useradmin') // only in this configuration you are allowed to make that call!
+if (  (substr( $url->get('config'), -9 ) != 'useradmin') // only in this configuration you are allowed to make that call!
    ) trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
 
 // new Interface to the userDB

@@ -356,7 +356,7 @@ if(!$dataDB->table_exists("pages")){
   echo("button pictogramm explanation created<br>\n");  
   echo("suggestion/ complaints page created<br>\n");  
   
-   if (substr( $_GET['config'], 0, 9 ) == 'useradmin'){
+   if (substr( $_GET['config'], -9 ) == 'useradmin'){
      $query = "INSERT INTO `pages` VALUES (3, 'UserAdministration interface', '[HTML]\r\n<!-- click on the icon with the eye (second one) on the upper right to see how this page looks like! -->\r\n\r\n<h3>__ELEMENTTITLE__</h3>\r\n\r\n<p style=\"text-align: left;\">\r\n This is the user administration interface.\r\n</p>\r\n\r\n<div style=\"text-align: center;\">\r\n <img src=\"../pix/useradmin_400_60.jpg\"  width=\"400\" height=\"60\" style=\"border: 0;\" alt=\"Das Fest, Karlsruhe Germany; &copy; Marc-Oliver Pahl Summer 2005\" />\r\n <div style=\"padding-left: 0.5em; padding-right: 0.5em; text-align: center; font-size: 0.7em;\">Das Fest, Karlsruhe Germany; &copy; Marc-Oliver Pahl Summer 2005</div>\r\n</div>\r\n\r\n<p style=\"text-align: right;\">\r\n As user of the <a href=\"http://labsystem.m-o-p.de\" target=\"_blank\">labsystem</a> you can log in here and change your personal data (e.g. your password)...<br />\r\n As user administrator you can log in here and administrate the user accounts...<br />\r\n As one having <b><a href=\"../pages/uaUnPwReminder.php?__LINKQUERY__\">forgotten password and/ or username</a></b> click <a href=\"../pages/uaUnPwReminder.php?__LINKQUERY__\">here</a>...<br />\r\n</p>', '', 0, 0, CONCAT( now(), ': Marc-Oliver Pahl' ) );";
      echo('useradmin ');
    }else{
@@ -500,7 +500,7 @@ echo('
   Do not forget to change your admin user\'s password if you got the notification above!!!!
 ');
 
-if ($_GET['config']=='useradmin') echo('<br><br>If you want to proceed with your initial setup you can <a href="'.$url1.'/setup?config=demo"><button>continue with the setup for \'demo\'...</button></a>');
+if (substr( $_GET['config'], -9 ) == 'useradmin') echo('<br><br>If you want to proceed with your initial setup you can <a href="'.$url1.'/setup?config=demo"><button>continue with the setup for \'demo\'...</button></a>');
 
 echo('<br /><br />*** HAVE FUN WITH THE SYSTEM! ***<br /><br />_');
 
