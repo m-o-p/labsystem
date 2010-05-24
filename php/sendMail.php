@@ -89,6 +89,8 @@ else{
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
 
+    makeLogEntry( 'system', 'mail sent' );
+    
     $url->put( "sysinfo=".urlencode( $lng->get("MailHasBeenSent")." ".htmlentities( $mailFrom ) ) );
 }
 

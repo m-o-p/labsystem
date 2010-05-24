@@ -283,6 +283,7 @@ class LmElement extends Element{
                                             $lng->get("giveAnswer")
                                            )."\">\n".                        
                "</FORM>\n";
+               if ($isGettingAnswered) makeLogEntry( 'm', 'opened', $this->idx );
      }
      if ( $this->isAnswered && ($this->answerExplanation != "") )
       // answer explanation
@@ -539,6 +540,7 @@ class LmElement extends Element{
     
     // some user information
     $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved")." ".$lng->get("mNumber")." ".$newMultipleChoice->idx ) );
+    makeLogEntry( 'm', 'saved', $newMultipleChoice->idx );
       
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
@@ -572,6 +574,8 @@ class LmElement extends Element{
 
     // store the new dataset
     $this->mcDBI->setData4( $usr->uid, $this->idx, $this->displayPermutation, $this->previousAnswersArray );
+
+    makeLogEntry( 'm', 'saved', $this->idx );
     
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );

@@ -71,6 +71,8 @@ if ( !( isset($_POST['SESSION_ID']) &&
     
 	fclose( $theFile );
 
+  makeLogEntry( 'system', 'saved file '.$_POST['FILENAME'] );
+
 // redirect
   header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );
 ?>

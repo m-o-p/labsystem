@@ -1259,6 +1259,8 @@ class LlElement extends Element{
                             "}".
                             "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
                             $parameter );
+                            
+      makeLogEntry( 'l', 'prelab checked '.retIfTrue( $parameter[ 'allPreLabAnswered' ], '(right)', '(wrong)' ), $this->idx );
 
       if( $parameter[ 'allPreLabAnswered' ] ){
 
@@ -1276,6 +1278,7 @@ class LlElement extends Element{
                                   0,                                // $possibleCredits
                                   $lng->get("preLabUserFinished")   // $history
                                  );
+         makeLogEntry( 'l', 'prelab finished', $this->idx );
 
          // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
           require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
@@ -1291,6 +1294,8 @@ class LlElement extends Element{
           if ( $preLabAllTeammatesFin ){ // all have finished so 
             // update their prelab status
             $this->usDBI->setPrelabFinished( $usr->currentTeam );
+            
+            makeLogEntry( 'l', 'prelab finished team '.$usr->currentTeam, $this->idx );
             
             if ( $this->noLab ) // If we have no lab it gets closed when all teammembers finished the prelab
               $this->usDBI->closeLab( $usr->currentTeam, $lng->get("labClosed") );
@@ -1382,6 +1387,8 @@ class LlElement extends Element{
   function closeAllLabInputs( $team ){
     global $url;
     $this->reallyCloseAllLabInputs( $team );
+
+    makeLogEntry( 'l', 'all inputs closed for team '.$team, $this->idx );
     
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
@@ -1421,6 +1428,8 @@ class LlElement extends Element{
                             
     $this->usDBI->reOpenLab( $team, $lng->get("labReOpened") );
     
+    makeLogEntry( 'l', 'all inputs reopened for team '.$team, $this->idx );
+    
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
   }
@@ -1444,6 +1453,8 @@ class LlElement extends Element{
     $labStatus = $this->usDBI->getData4( $uid );
     if ( $labStatus['labClosed'] ) // if the lab is closed the input has to be closed too.
       $this->reallyCloseAllLabInputs( $labStatus['currentTeam'] );
+      
+    makeLogEntry( 'l', 'all inputs remapped for team '.$team, $this->idx );
   }
   
   /**

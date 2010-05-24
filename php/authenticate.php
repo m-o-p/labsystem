@@ -80,11 +80,11 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
   $_SESSION["userRights"]  = $data['rights'];
   $_SESSION["currentTeam"] = $data['currentTeam'];
 
-
 // This special user gets additionally the IS_USER_RIGHTS_EDITOR
   if ( $_POST['USERNAME'] == $cfg->get("RightsAdminUsername") )
     $_SESSION["userRights"]  = (intval($_SESSION["userRights"]) | IS_USER_RIGHTS_EDITOR);
 
+  makeLogEntry( 'system', 'login' );
 // Link to the after login page from the config file or to 
   if ( isset( $_POST['REDIRECTTO'] ) ) header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );
                                   else header( "Location: ".$url->rawLink2( $cfg->get("AfterLogInPage") ) );

@@ -48,6 +48,7 @@ if ( !( isset($_POST['SESSION_ID']) &&
   if ( $usr->isOfKind( $newRights, $data['rights'] ) ) $_SESSION["userRights"] = $newRights;
   else $_SESSION["userRights"] = IS_USER; // user gave himself rights he doesn't have (SU)...
 
+  makeLogEntry( 'system', 'user rights changed' );
 // redirect
   header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
 ?>

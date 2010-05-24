@@ -33,6 +33,8 @@ require( "../include/init.inc" );
 $url->clearQueryString(); $url->put( $url->get("oldQueryString") ); /* we will link back and preserve everything */
 $url->rem( "inside=true" );
 
+makeLogEntry( 'system', 'logout' );
+
 if ( strip_tags(SID) != "" )
   $url->rem( strip_tags(SID) ); // remove SID from url
 else

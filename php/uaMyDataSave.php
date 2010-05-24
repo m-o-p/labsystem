@@ -113,6 +113,7 @@ else{
                          );
       // note
       $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );
+      makeLogEntry( 'useradmin', 'saved userdata of '.$_POST['USERNAME'] );
     }
 }
 

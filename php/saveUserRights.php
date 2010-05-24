@@ -70,6 +70,8 @@ if ( !( isset($_POST['SESSION_ID']) &&
 
 // note
   $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );
+  
+  makeLogEntry( 'system', 'user rights saved' );
 
 // redirect
   header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );

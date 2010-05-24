@@ -65,6 +65,8 @@ require( INCLUDE_DIR."/classes/Usr.inc" );      /* Creates a current user with d
 require( INCLUDE_DIR."/session.inc" );          /* Include session management (db based) and, if available,
                                                    set the information ($usr data) from the session.
                                                  */
+require( INCLUDE_DIR."/logger.inc" );          /* Include to enable logging. */
+$doLogging = false;
 
 require_once( INCLUDE_DIR."/classes/elements/LpDBInterface.inc" ); // page
 require_once( INCLUDE_DIR."/classes/elements/LmDBInterface.inc" ); // multiple choice

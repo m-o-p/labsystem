@@ -284,7 +284,7 @@ class LiElement extends Element{
   }
   
   /**
-  * Shows the user's answer. Includes some logic!
+  * Shows the user's answer. Includes some msic!
   *                       Since there might be many independent inputs on one page the
   *                       corrector is prevented from forgetting to save the same way
   *                       as the user is with the multiple choice questions.
@@ -333,8 +333,10 @@ class LiElement extends Element{
                               isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) &&
                               $_POST['TEAM'] == $this->getDataOfTeam
                              );
-
+      if ($isInCorrection) makeLogEntry( 'i', 'getting corrected for team '.$this->getDataOfTeam, $this->idx );
+                             
       $isGettingAnswered  = ( $this->lockIsSetTo && ( $this->lockIsSetTo == $this->idx ) );
+      if ($isGettingAnswered) makeLogEntry( 'i', 'getting answered', $this->idx );
 
       $ret =   "<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
                "<FORM class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
@@ -597,6 +599,7 @@ class LiElement extends Element{
     
     // some user information
     $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved")." ".$lng->get("iNumber")." ".$newInput->idx ) );
+    makeLogEntry( 'edit', 'saved', 'i'.$newInput->idx );
       
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
@@ -643,7 +646,7 @@ class LiElement extends Element{
     
     if ( $this->lockIsSetTo == $this->idx ){
       $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
-  
+      makeLogEntry( 'i', 'saved', $this->idx );
       $this->removeLock();
     } else{ // You are only allowed to answer one question at the same time. 
            // Since you can move the lock this ensures the desired behavior.
@@ -685,6 +688,7 @@ class LiElement extends Element{
 
     $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], retIfTrue( isset($_POST['COMMENT']), $_POST['COMMENT'], $this->answerComment), true, isset($_POST['IS_CORRECTED']) );
 
+    makeLogEntry( 'i', 'correction saved', $this->idx );
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
@@ -714,8 +718,10 @@ class LiElement extends Element{
       if ( $reForceLock )
         $url->put( "sysalert=".urlencode( $lng->get("LockTakenFrom")." ".$this->lockIsSetTo ) );
 
-      if (!$this->lockIsSetTo || $reForceLock)
+      if (!$this->lockIsSetTo || $reForceLock){
         $this->acquireLock4( $_POST['FULLADDRESS'] );
+        makeLogEntry( 'i', 'open', $this->idx );
+      }
     }
          
     // One could also display the page here but that way it is left to the normal mechanism...

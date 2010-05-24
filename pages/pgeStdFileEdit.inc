@@ -55,4 +55,6 @@ $pge->put('</textarea>'."\n".
           '  if (document.fileEdit) document.fileEdit.fc.focus();'."\n".
           '//-->'."\n".
           '</script>');
+
+makeLogEntry( 'system', 'edit open', $file2edit );
 ?>

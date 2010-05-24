@@ -10,6 +10,29 @@ Feature Requests:
 -------------------
   Fix variable manage
   Add search manage
+  
+2010-04-25
+-------------------
+  Added logging functionality:
+  include/logger.inc
+  
+  Events logged:
+  php/authenticate.php      system, login
+  php/logout.php            system, logout
+  php/sendMail.php          system, mail sent
+  php/saveFile.php          system, saved file $_POST['FILENAME']
+  php/saveUserRights.php    system, saved user rights
+  php/changeMyRights.php    system, rights changed (new value in log field)
+  php/delete.php            edit, deleted, id
+  php/uaCreateUsers.php     useradmin, new users created
+  php/uaMyDataSave.php      useradmin, saved userdata of $_POST['USERNAME']
+  php/uaMyPWSave.php        useradmin, saved password of $_POST['USERNAME']
+  pages/edit.php            edit, open, fullId
+  pages/pgeStdFileEdit.php  system, edit open, filename
+  pages/view.php            view, show, fullId
+  include/classes/elements/L{i,m,l}Element.php
+  
+  
 
 2010-03-27
 -------------------

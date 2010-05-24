@@ -41,6 +41,7 @@ $pge->visibleFor   = IS_CONTENT_EDITOR;
 if ( $id == "s" ) $pge->visibleFor   = IS_SCHEDULER;
 
 $pge->put( $element->showEdit( $url->get("address") ) );
+makeLogEntry( 'edit', 'open', $url->get("address") );
   
 require( $cfg->get("SystemPageLayoutFile") );
 ?>

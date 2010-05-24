@@ -44,7 +44,10 @@ else{
       }
       require( "../php/getDBIbyID.inc" ); // -> $DBI
       if ( !$DBI->deleteData( $num ) ) $text = $DBI->reportErrors();
-      else $text = $lastFinal.": ".$lng->get( "deleted" );
+      else{
+        $text = $lastFinal.": ".$lng->get( "deleted" );
+        makeLogEntry( 'edit', 'deleted', $lastFinal );
+      }
 }
 
 header("Location: ".$url->rawLink2( "../pages/manage.php?address=".$id."&sysalert=".urlencode( $text ) ) );

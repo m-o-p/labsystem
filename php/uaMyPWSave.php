@@ -64,6 +64,7 @@ else{ // save new PW
                        );
     // note
     $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );
+    makeLogEntry( 'useradmin', 'saved password of '.$_POST['USERNAME'] );
 }
 
 // redirect
