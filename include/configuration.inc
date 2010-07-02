@@ -41,6 +41,9 @@ if ( isset($_GET["config"]) )
 else
   $configFile = "../ini/config_demo.ini";
   
-if ( !file_exists( $configFile ) ) trigger_error( $configFile.' missing! (config-file)' , E_USER_ERROR );
+if ( !file_exists( $configFile ) ){
+                                    trigger_error( $configFile.' missing! (config-file)' , E_USER_ERROR );
+                                    exit;
+                                   }
 $cfg = new Rom( parse_ini_file( $configFile ) );
 ?>

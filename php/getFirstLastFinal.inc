@@ -32,10 +32,16 @@
 * @return $lastFinal
 */
 
-if ( !isset($_GET['address']) ) trigger_error( $lng->get( "noAddressPosted" ), E_USER_ERROR );
+if ( !isset($_GET['address']) ){
+                                  trigger_error( $lng->get( "noAddressPosted" ), E_USER_ERROR );
+                                  exit;
+                                }
 
 // there might be possible SQL injections...
-if ( $_GET['address']!=Ddbc::escapeString($_GET['address']) ) trigger_error( $lng->get( "elementNotExist" ), E_USER_ERROR );
+if ( $_GET['address']!=Ddbc::escapeString($_GET['address']) ){
+                                                                trigger_error( $lng->get( "elementNotExist" ), E_USER_ERROR );
+                                                                exit;
+                                                              }
 
 $firstFinal = array_shift ( explode ( ".", $url->get('address') ) );
 $lastFinal  = array_pop   ( explode ( ".", $url->get('address') ) );

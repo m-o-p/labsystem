@@ -10,6 +10,58 @@ Feature Requests:
 -------------------
   Fix variable manage
   Add search manage
+ 
+ 
+ 
+ 
+ 
+2010-06-17
+-------------------
+  /include/classes/elements/LlElement.inc:
+  checkPreLab() If checker finished prelab only check the others. (teams encountered problems that their state was not set appropriately.)
+  
+  trigger_error + exit as it does not abort otherwise:
+    /include/classes/elements/LcDBInterface.inc:  newCollection( &$eC )
+    /include/classes/elements/LcElement.inc:      save()
+    /include/classes/elements/LiElement.inc:      save(), saveUserAnswer(), saveCorrectorStuff(), setUserAnswerLock()
+    /include/classes/elements/LlDBInterface.inc:  newLab( &$eL )
+    /include/classes/elements/LlElement.inc:      save(), checkPreLab(), closeLabInputs(), closeLabInputs(), updateStatus2()
+    /include/classes/elements/LmDBInterface.inc:  newMultipleChoice( &$eM )
+    /include/classes/elements/LmElement.inc:      save(), saveUserAnswer()
+    /include/classes/elements/LpDBInterface.inc:  newPage( &$eP )
+    /include/classes/elements/LpElement.inc:      save()
+    /include/classes/elements/LmDBInterface.inc:  newSchedule( &$eS )
+    /include/classes/elements/LsElement.inc:      save()
+    /include/classes/Ram.inc
+    /include/configuration.inc
+    /include/language.inc
+    /pages/confirm.php
+    /pages/edit.php
+    /pages/history.php
+    /pages/view.php
+    /php/authenticate.php
+    /php/authenticate4Demo.php
+    /php/changeMyRights.php
+    /php/emptyDB.php
+    /php/executeCommandOnElement.php
+    /php/executeOnLab.php
+    /php/getDBIbyID.inc
+    /php/getFirstLastFinal.inc
+    /php/saveFile.php
+    /php/saveUserRights.php
+    /php/sendMail.php
+    /php/uaCreateUsers.php
+    /php/uaManageUsersExecute.php
+    /php/uaManageUsersSave.php
+    /php/uaMyDataSave.php
+    /php/uaMyPWSave.php
+    /php/uaPwRemind.php
+    /setup/index.php
+    
+  
+  
+  
+  
   
 2010-04-25
 -------------------

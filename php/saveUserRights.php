@@ -34,12 +34,18 @@
 require( "../include/init.inc" );
 
 if ( !isset($_POST['REDIRECTTO'])     
-   ) trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
+   ){
+      trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
+      exit;
+     }
 
 if ( !( isset($_POST['SESSION_ID']) && 
       ($_POST['SESSION_ID'] != "") && 
       ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */   
-   ) trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
+   ){
+      trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
+      exit;
+     }
 
 // check for all user ids if data are there and save the changes if there are changes.
   require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );

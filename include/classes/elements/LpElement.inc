@@ -182,12 +182,18 @@ class LpElement extends Element{
          !isset($_POST['TITLE']) || 
          !isset($_POST['CONTENTS']) || 
          !isset($_POST['MATCHINGMENU'])     
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
        
     // Validity (session ID) is checked by the calling script yet.
     
     // only content editors are allowed to save
-    if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+    if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
+                                                  trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+                                                  exit;
+                                                }
     
     // compute user rights:
     $userRights=0;

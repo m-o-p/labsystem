@@ -535,12 +535,18 @@ class LsElement extends Element{
          !isset($_POST['START_YEAR']) || !isset($_POST['START_MONTH']) || !isset($_POST['START_DAY']) || !isset($_POST['START_HOUR']) || !isset($_POST['START_MINUTE']) || 
          !isset($_POST['STOP_YEAR']) || !isset($_POST['STOP_MONTH']) || !isset($_POST['STOP_DAY']) || !isset($_POST['STOP_HOUR']) || !isset($_POST['STOP_MINUTE']) ||
          !isset($_POST['COMMENT'])
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
        
     // Validity (session ID) is checked by the calling script yet.
     
     // only sdchedulers are allowed to make schedules
-    if ( !$usr->isOfKind( IS_SCHEDULER ) ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+    if ( !$usr->isOfKind( IS_SCHEDULER ) ){
+                                            trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+                                            exit;
+                                           }
 
     // create a new schedule element with the given values
     $newSchedule = new LsElement( $_POST['IDX'],

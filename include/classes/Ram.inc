@@ -45,7 +45,10 @@ class Ram extends Rom{
   function set( $stringID, $value ){
     if ( isset($this->theDataArray[ $stringID ]) )
       $this->theDataArray[ $stringID ] = $value;
-    else trigger_error( $stringID." has no value in memory", E_USER_WARNING );
+    else{
+          trigger_error( $stringID." has no value in memory", E_USER_WARNING );
+          exit;
+         }
   }
 }
 ?>

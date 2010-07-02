@@ -53,10 +53,15 @@ if ( !( isset($_GET['param']) &&
         array_key_exists( $_GET['function'], $allowedFunctions ) && 
         $usr->isOfKind( $allowedFunctions[$_GET['function']] ) // retriction fulfilled?
        ) /* valid call? */   
-    ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+    ){
+        trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+        exit;
+      }
        
-if ( !$element = $DBI->getData2idx( $num ) )
-      trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
+if ( !$element = $DBI->getData2idx( $num ) ){
+                                              trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
+                                              exit;
+                                             }
 
 eval( '$element->'.$_GET['function']."( ".stripslashes( $_GET['param'] )." );" );
 ?>

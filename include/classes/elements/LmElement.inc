@@ -493,12 +493,18 @@ class LmElement extends Element{
          !isset($_POST['QUESTION']) || 
          !isset($_POST['ANSWER0']) || 
          !isset($_POST['ANSWER_EXPLANATION'])     
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
        
     // Validity (session ID) is checked by the calling script yet.
     
     // only content editors are allowed to save
-    if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+    if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
+                                                  trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+                                                  exit;
+                                                }
     
     // create answerArray + compute correctMask
     $toDoArray = "\$answerArray = Array(";
@@ -559,7 +565,10 @@ class LmElement extends Element{
     if ( !isset($_POST['IDX']) || 
          !isset($_POST['REDIRECTTO']) || 
          !isset($_POST['FULLADDRESS'])     
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
 
     // Validity (session ID) is checked by the calling script yet.
     

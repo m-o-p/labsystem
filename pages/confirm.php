@@ -32,7 +32,10 @@
 */
 require( "../include/init.inc" );
 
-if ( !isset($_GET['text']) || !isset($_GET['redirectTo']) ) trigger_error( "Not all necessary values posted!", E_USER_ERROR );
+if ( !isset($_GET['text']) || !isset($_GET['redirectTo']) ){
+                                                              trigger_error( "Not all necessary values posted!", E_USER_ERROR );
+                                                              exit;
+                                                            }
 
 $pge->title   = $_GET['text'];
 $pge->put( stripslashes( $url->get('text') )."<br /><br />" );

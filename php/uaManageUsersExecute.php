@@ -38,11 +38,17 @@ require( "../include/init.inc" );
 if ( !isset( $_GET['function'] ) ||
      !isset( $_GET['param'] ) ||
      !isset( $_GET['redirectTo'] )
-   ) trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
+   ){
+      trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
+      exit;
+     }
 
 if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
       !$usr->isOfKind( IS_DB_USER_ADMIN )
-   ) trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
+   ){
+      trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
+      exit;
+     }
 
 // enable seeing mode
 if ( $url->get( 'function' ) == 'see' )

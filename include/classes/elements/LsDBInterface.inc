@@ -203,7 +203,10 @@ class LsDBInterface {
 
     // reload dataset to get the given idx
     $result = $this->myDBC->mkSelect( "idx", $this->myTable, "history='".$identifier."'" );
-    if ( !($data = mysql_fetch_array( $result )) ) trigger_error( mysql_error(). "Input with history=".$identifier." not found!", E_USER_ERROR );
+    if ( !($data = mysql_fetch_array( $result )) ){
+                                                    trigger_error( mysql_error(). "Input with history=".$identifier." not found!", E_USER_ERROR );
+                                                    exit;
+                                                   }
     else $idx = $data['idx'];
 
     // update history

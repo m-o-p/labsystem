@@ -36,10 +36,16 @@ require( "../include/init.inc" );
 
 if ( !isset( $_POST['REDIRECTTO'] ) ||
      !isset( $_POST['EMAIL'] )
-   ) trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
+   ){
+      trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
+      exit;
+     }
 
 if (  (substr( $url->get('config'), -9 ) != 'useradmin') // only in this configuration you are allowed to make that call!
-   ) trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
+   ){
+      trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
+      exit;
+     }
 
 // new Interface to the userDB
 $userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 

@@ -567,12 +567,18 @@ class LiElement extends Element{
          !isset($_POST['QUESTION']) || 
          !isset($_POST['EXAMPLE_SOLUTION']) || 
          !isset($_POST['POSSIBLE_CREDITS'])
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
        
     // Validity (session ID) is checked by the calling script yet.
     
     // only content editors are allowed to save
-    if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+    if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
+                                                  trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+                                                  exit;
+                                                }
 
     // compute user rights:
     $userRights=0;
@@ -638,7 +644,10 @@ class LiElement extends Element{
          !isset($_POST['ANSWER']) ||
          !isset($_POST['FULLADDRESS']) ||
          !isset($_POST['TEAM'])
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
        
     // Validity (session ID) is checked by the calling script yet.
        
@@ -677,12 +686,18 @@ class LiElement extends Element{
          !isset($_POST['CREDITS']) ||
          !isset($_POST['FULLADDRESS']) ||
          !isset($_POST['TEAM'])
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
     
     // Validity (session ID) is checked by the calling script yet.
        
     // only correctors are allowed to save
-    if ( !$usr->isOfKind( IS_CORRECTOR ) ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+    if ( !$usr->isOfKind( IS_CORRECTOR ) ){
+                                             trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+                                             exit;
+                                           }
        
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
 
@@ -705,7 +720,10 @@ class LiElement extends Element{
          !isset($_POST['REDIRECTTO']) || 
          !isset($_POST['FULLADDRESS']) ||
          !isset($_POST['TEAM'])   
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
 
     // Validity (session ID) is checked by the calling script yet.
      

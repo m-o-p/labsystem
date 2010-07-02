@@ -45,6 +45,8 @@ class LcElement extends Element{
   var $visibleAfter1stSched;  // Will the element be visible after the first schedule?
  
   var $isInLab;               // Am I inside a lab? (important for view visibility)
+  
+  var $allowedElementIDs;     // save() check from this array for valid ID letters
 
   /**
   * The constructor.
@@ -88,6 +90,8 @@ class LcElement extends Element{
     $this->structure                = false; // To build the structure causes many (slow) sql queries, so it is only done if needed.
     $this->mainStructure            = false;
     $this->paragraphArray           = false; // Filled when structure gets filled.
+    
+    $this->allowedElementIDs        = array('C', 'c', 'm', 'i', 'p', 's');
   }
   
     
@@ -390,7 +394,6 @@ class LcElement extends Element{
   */  
   /*static*/ function save(){
     global $cDBI, $url, $lng;
-
     if ( !isset($_POST['IDX']) || 
          !isset($_POST['REDIRECTTO']) || 
          !isset($_POST['FULLADDRESS']) || 
@@ -398,7 +401,10 @@ class LcElement extends Element{
          !isset($_POST['CONTENTS']) || 
          !isset($_POST['MATCHINGMENU']) ||
          !isset($_POST['VISIBLE_ONLY_IN_COLLECTION'])
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
 
     // Validity (session ID) is checked by the calling script yet.
 
@@ -406,8 +412,14 @@ class LcElement extends Element{
     $contents = Array();
     $lines = explode ("\r\n", $_POST['CONTENTS']);
     foreach( $lines as $value ){
-      $next = array_shift( explode ("\t", $value) ); // remove all beginning from the tab
-      if ( $next != "" ) array_push( $contents, $next );
+      $i = 0;
+      $elType = $value[$i++];
+      if (!(in_array($elType, $this->allowedElementIDs))) continue; // invalid type -> ignore
+      $elNum = '';
+      while( isNum( $value[$i] ) ) $elNum .= $value[$i++];
+      if ( $elNum == '' ) continue; // no number -> continue
+      if ( ( strtoupper($elType) == 'C') && ( $elNum == $this->idx ) ) $elNum = '1'; // no loops/ self-recursiveness -> put the placeholder in
+      array_push( $contents, $elType.$elNum );
     }
 
     $contents = implode( $contents, " " );

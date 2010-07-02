@@ -38,8 +38,14 @@ $allowed = Array( 'demo1',
                   'demo4',
                   'demo5'
                  );
-if ( !in_array( $_GET['config'], $allowed ) ) trigger_error( 'login not allowed with this config! '.$_GET['config'], E_USER_ERROR );
-if ( !isset($_GET['userrole']) ) trigger_error( 'userrole not provided', E_USER_ERROR );
+if ( !in_array( $_GET['config'], $allowed ) ){
+                                                trigger_error( 'login not allowed with this config! '.$_GET['config'], E_USER_ERROR );
+                                                exit;
+                                              }
+if ( !isset($_GET['userrole']) ){
+                                  trigger_error( 'userrole not provided', E_USER_ERROR );
+                                  exit;
+                                 }
 
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 

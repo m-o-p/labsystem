@@ -38,8 +38,10 @@
 */
 require( "../include/init.inc" );
 
-if ( !isset($_POST['USERNAME']) || !isset($_POST['PASSWORD']) )
-  trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
+if ( !isset($_POST['USERNAME']) || !isset($_POST['PASSWORD']) ){
+                                                                 trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
+                                                                 exit;
+                                                                }
 
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 

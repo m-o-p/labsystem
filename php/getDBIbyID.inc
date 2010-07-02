@@ -32,8 +32,10 @@
 */
   $prefix = retIfTrue( $id == strtoupper( $id ), "B", "L" ).$id; /* little */
   
-  if ( !file_exists ( INCLUDE_DIR."/classes/elements/".$prefix."DBInterface.inc" ) ) 
-                                    trigger_error( $id.": ".$lng->get( "elementNotExist" ), E_USER_ERROR );
+  if ( !file_exists ( INCLUDE_DIR."/classes/elements/".$prefix."DBInterface.inc" ) ){ 
+                                                                                      trigger_error( $id.": ".$lng->get( "elementNotExist" ), E_USER_ERROR );
+                                                                                      exit;
+                                                                                     }
 
   if ( !class_exists( $prefix.'DBInterface' ) ) require_once( INCLUDE_DIR."/classes/elements/".$prefix."DBInterface.inc" );
   $DBI = $GLOBALS[ $id.'DBI' ];

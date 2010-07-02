@@ -1103,12 +1103,18 @@ class LlElement extends Element{
          !isset($_POST['COMMENT']) || 
          !isset($_POST['PRELAB']) || 
          !isset($_POST['LAB'])     
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
        
     // Validity (session ID) is checked by the calling script yet.
     
     // only content editors are allowed to save
-    if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+    if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
+                                                  trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+                                                  exit;
+                                                }
 
     // compute user rights:
     $userRights=0;
@@ -1240,7 +1246,10 @@ class LlElement extends Element{
   function checkPreLab(){ // called to check the answers here
     global $url, $lng, $usr;
     if ( !isset($_POST['REDIRECTTO'])
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
        
     // Validity (session ID) is checked by the calling script yet.
     
@@ -1283,7 +1292,8 @@ class LlElement extends Element{
          // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
           require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
           $urDBI = new DBInterfaceUserRights();
-          $urDBI->getAllData( "", true, "currentTeam='".$usr->currentTeam."'" );
+          
+          $urDBI->getAllData( "", true, "`currentTeam` = '".$usr->currentTeam."' && `uid` != '".$usr->uid."'" ); // Only check others.
           $preLabAllTeammatesFin = true;
           while ( ($dataArray = $urDBI->getNextData()) ){
             $uid          = $dataArray['uid'];
@@ -1400,11 +1410,17 @@ class LlElement extends Element{
   function closeLabInputs(){
     global $url, $lng, $usr;
     if ( !isset($_POST['REDIRECTTO'])
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+        }
 
     // Validity (session ID) is checked by the calling script yet.
     
-    if ( !$this->labIsVisible2Me ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+    if ( !$this->labIsVisible2Me ){
+                                    trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+                                    exit;
+                                   }
 
     $this->closeAllLabInputs( $usr->currentTeam );
 
@@ -1527,7 +1543,10 @@ class LlElement extends Element{
     global $url, $lng, $usr;
     if ( !isset($_POST['IDX']) || 
          !isset($_POST['REDIRECTTO'])     
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
       
     // Validity (session ID) is checked by the calling script yet.
    
@@ -1610,7 +1629,10 @@ class LlElement extends Element{
     global $url, $lng, $usr;
     if ( !isset($_POST['IDX']) || 
          !isset($_POST['REDIRECTTO'])     
-       ) trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
+          exit;
+         }
       
     // Validity (session ID) is checked by the calling script yet.
    

@@ -33,8 +33,10 @@ require( "../include/init.inc" );
 require( "../php/getFirstLastFinal.inc" ); $id = $lastFinal{0}; $num = substr( $lastFinal, 1);
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
-if ( !$element = $DBI->getData2idx( $num ) )
-      trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
+if ( !$element = $DBI->getData2idx( $num ) ){
+                                              trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
+                                              exit;
+                                             }
 
 $pge->title        = $lng->get("historyOf")." ".$id.$num.": ".$element->title;
 $pge->matchingMenu = $element->getMatchingMenu();

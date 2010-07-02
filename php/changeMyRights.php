@@ -33,7 +33,10 @@ require( "../include/init.inc" );
 if ( !( isset($_POST['SESSION_ID']) && 
         ($_POST['SESSION_ID'] != "") && 
         ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */   
-       ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+          exit;
+         }
 
 // compute desired rights:
   $newRights=IS_USER;

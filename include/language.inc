@@ -42,6 +42,9 @@ if ( isset($_GET["lng"]) )
 else
   $languageFile = $cfg->get("SystemResourcePath").$cfg->get("SystemDefaultLanguage");
   
-if ( !file_exists( $languageFile ) ) trigger_error( $languageFile.' missing! (language-file)' , E_USER_ERROR );
+if ( !file_exists( $languageFile ) ){
+                                      trigger_error( $languageFile.' missing! (language-file)' , E_USER_ERROR );
+                                      exit;
+                                     }
 $lng = new Rom( parse_ini_file( $languageFile ) );
 ?>

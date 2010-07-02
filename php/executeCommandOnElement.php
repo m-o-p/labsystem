@@ -51,13 +51,18 @@ if ( !( isset($_POST['SESSION_ID']) &&
           ($_POST['SESSION_ID'] == session_id()) &&
           isset($_POST['FUNCTIONNAME']) &&
           in_array ($_POST['FUNCTIONNAME'], $allowedFunctions) ) /* valid call? */   
-       ) trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+       ){
+          trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+          exit;
+         }
        
 $num = $_POST['IDX'];
 
 // element not present?
-  if ( !$element = $DBI->getData2idx( $num ) )
-        trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
+  if ( !$element = $DBI->getData2idx( $num ) ){
+                                                trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
+                                                exit;
+                                               }
 
 // call the function
   eval("\$element->".$_POST['FUNCTIONNAME'].";");
