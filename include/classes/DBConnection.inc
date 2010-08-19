@@ -189,7 +189,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
   */
   function reportErrors( $theQuery="" ){
     if ( mysql_error() != '' ){
-      trigger_error( $theQuery." --&gt; ".mysql_error(), E_USER_ERROR );
+      trigger_error( /*$theQuery.*/"DB Connector --&gt; ".mysql_error(), E_USER_ERROR );
       return true;
     }else
       return false;

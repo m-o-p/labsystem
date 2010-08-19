@@ -44,7 +44,7 @@ $theLogFile = '/srv/www/log/'.$configPrefix.$url->get('config').'_'.date("Y-m-d"
 function makeLogEntry( $group, $operation, $resource='' ){ 
 global $theLogFile, $doLogging;
 
-  if (!isset($doLogging) || !$doLogging || !isset($_SESSION)) return; // only log for authenticated users
+  if (!isset($doLogging) || !$doLogging || !isset($_SESSION['uid'])) return; // only log for authenticated users
 
 	if ( !(
           $logFile = fopen( $theLogFile, 'a+' )     // w ^= write and create (if not exist)
@@ -53,12 +53,12 @@ global $theLogFile, $doLogging;
     $url->put( 'sysalert='.urlencode( $lng->get('errorOpeningFile').' ('.$theLogFile.')' ) );
 
   $logEntry = date("Y-m-d\tH:i:s")."\t".
-              $_SESSION["uid"]."\t".
-              $_SESSION["surName"]."\t".
-              $_SESSION["foreName"]."\t".
-              $_SESSION["userName"]."\t".
-              $_SESSION["currentTeam"]."\t".
-              $_SESSION["userRights"]."\t".
+              $_SESSION['uid']."\t".
+              $_SESSION['surName']."\t".
+              $_SESSION['foreName']."\t".
+              $_SESSION['userName']."\t".
+              $_SESSION['currentTeam']."\t".
+              $_SESSION['userRights']."\t".
               $group."\t". /* system, prelab, lab */
               $operation."\t". /* login, save, open */
               $resource."\r\n";

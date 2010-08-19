@@ -12,7 +12,9 @@ Feature Requests:
   Add search manage
  
  
- 
+2010-08-19
+-------------------
+  /include/logger.inc: fixed session detection
  
  
 2010-06-17

@@ -64,7 +64,8 @@ class LcDBInterface {
       trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
-    }else
+    }else{
+      if ( $data['contents'] == '' ) $data['contents'] = 'p1 m1 i1'; // if empty fill with standard filler
       return new LcElement( $data['idx'],                                 // $idx
                             $this->myDBC->unEscapeString($data['title']),                 // $title
                             $this->myDBC->unEscapeString($data['contents']),              // $contents
@@ -77,6 +78,7 @@ class LcDBInterface {
                             $isInColl,                                    // $isInColl
                             $isInLab                                      // $isInLab
                           );
+    }
   }
   
   /**

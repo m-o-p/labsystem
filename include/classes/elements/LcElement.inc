@@ -249,7 +249,7 @@ class LcElement extends Element{
     global $lng, $usr;
     
     if ( !$this->isVisible() ){ return $this->notFoundVisibleNote( $fullAddress ); exit; }
-
+  
    // Address splitting.
     $parentAddr = $fullAddress;
     $this->splitAddress( $parentAddr, $myAddrArray );
@@ -298,6 +298,12 @@ class LcElement extends Element{
   */  
   function showEdit( $fullAddress ){
     global $lng, $usr, $url, $cfg, $pge, $cDBI;
+    
+    if ( $url->available('insertI') ){ $url->rem('insertI'); $this->insertI(); }
+    if ( $url->available('insertM') ){ $url->rem('insertM'); $this->insertM(); }
+    if ( $url->available('insertP') ){ $url->rem('insertP'); $this->insertP(); }
+    if ( $url->available('insertC') ){ $url->rem('insertC'); $this->insertC(); }
+    
     $myRetVal =  "<FORM class=\"labsys_mop_std_form\" NAME=\"collectionEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=c")."\">\n".
                  "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
                  "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
@@ -329,7 +335,12 @@ class LcElement extends Element{
     $myRetVal .= "</textarea>\n".
 
              // save
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\">\n".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save").'">&nbsp;  '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insertP">&nbsp; *p &nbsp;</a>&nbsp; '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insertM">&nbsp; *m &nbsp;</a>&nbsp;  '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insertI">&nbsp; *i &nbsp;</a>&nbsp;  '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insertC">&nbsp; *c &nbsp;</a>'.
+              "\n". 
 
              // properties
               "<fieldset><legend>".$lng->get("properties")."</legend>\n".
@@ -372,7 +383,8 @@ class LcElement extends Element{
               "</fieldset>\n".
 
              // save
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\">\n".            
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save").'">'.
+              "\n".            
   
               "</FORM>\n".
               '<script language="JavaScript" type="text/javascript">
@@ -416,7 +428,7 @@ class LcElement extends Element{
       $elType = $value[$i++];
       if (!(in_array($elType, $this->allowedElementIDs))) continue; // invalid type -> ignore
       $elNum = '';
-      while( isNum( $value[$i] ) ) $elNum .= $value[$i++];
+      while( is_numeric( $value[$i] ) ) $elNum .= $value[$i++];
       if ( $elNum == '' ) continue; // no number -> continue
       if ( ( strtoupper($elType) == 'C') && ( $elNum == $this->idx ) ) $elNum = '1'; // no loops/ self-recursiveness -> put the placeholder in
       array_push( $contents, $elType.$elNum );
@@ -567,6 +579,7 @@ class LcElement extends Element{
       $num = substr( $value, 1 );
       
       $element = $GLOBALS[ strtolower($id)."DBI" ]->getMenuData2idx( $num, true, $this->isInLab );
+      
      // elemetnt invisible?
       if ( !$this->isVisible() || !$element || !$element->isVisible( true ) ) $structure.="*";
      // add element ID 
@@ -718,5 +731,69 @@ class LcElement extends Element{
       eval( $functionCode );
     }
   }
+  
+  function insertI(){
+    global $iDBI, $cDBI, $url, $lng;
+    $newInput = new LiElement(  '0',
+                                'i in c'.$this->idx.' by '.$_SESSION['foreName'].' '.$_SESSION['surName'], 
+                                '',
+                                '',
+                                0, 
+                                true,
+                                ""
+                               );
+    $newIdx = $iDBI->newInput( $newInput );
+    $this->contents = $this->contents.' i'.$newIdx;
+    $cDBI->setData( $this );
+  }
+  
+  function insertM(){
+    global $mDBI, $cDBI, $url, $lng;
+    $newMultipleChoice = new LmElement( 0,
+                                        'm in c'.$this->idx.' by '.$_SESSION['foreName'].' '.$_SESSION['surName'], 
+                                        array( 'answer' ),
+                                        '',
+                                        0, 
+                                        0, 
+                                        true,
+                                        ''
+                                       );
+    $newIdx = $mDBI->newMultipleChoice( $newMultipleChoice );
+    $this->contents = $this->contents.' m'.$newIdx;
+    $cDBI->setData( $this );
+  }
+  
+  function insertP(){
+    global $pDBI, $cDBI, $url, $lng;
+    $newPage = new LpElement(   '0',
+                                'p in c'.$this->idx.' by '.$_SESSION['foreName'].' '.$_SESSION['surName'], 
+                                '- empty -', 
+                                '', 
+                                0, 
+                                true,
+                                ''
+                               );
+    $newIdx = $pDBI->newPage( $newPage );
+    $this->contents = $this->contents.' p'.$newIdx;
+    $cDBI->setData( $this );
+  }
+  
+  function insertC(){
+    global $cDBI, $url, $lng;
+    $newCollection = new LcElement( 0,
+                                    'C in c'.$this->idx.' by '.$_SESSION['foreName'].' '.$_SESSION['surName'],  
+                                    'p1',
+                                    '', 
+                                    false, 
+                                    false,
+                                    false,
+                                    true,
+                                    ''
+                                   );
+    $newIdx = $cDBI->newCollection( $newCollection );
+    $this->contents = $this->contents.' C'.$newIdx;
+    $cDBI->setData( $this );
+  }
+
 }
 ?>

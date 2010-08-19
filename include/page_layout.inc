@@ -19,7 +19,9 @@
  */
 
 // For utf-8 support:
-//  header('Content-type: text/html; charset=utf-8');
+//header('Content-type: text/html; charset=utf-8');
+//header('Content-type: text/html; charset=iso-8859-1');
+
 /**
 * This is the systems page layout.
 * By editing this file you change the entire look.
@@ -63,6 +65,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
   <HEAD>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Content-Language" content="<?php $lng->say("Content-Language"); ?>">
     <meta name="generator" content="labsystem.m-o-p.de">
     <link rel="stylesheet" type="text/css" href="<?php $cfg->say("SystemStyleSheet"); ?>">
@@ -206,7 +209,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
             *   Please keep the link to the project page here to enable other people to find and use the system...
             *   Thank you!
             */
-          echo(' &copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem" /></a> <a href="http://www.pahl.de?site=__contact&subject=labsystem@'.
+          echo(' &copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem" /></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
                $_SERVER['SERVER_NAME'].'" target="_blank">mop</a> 2005-2010'); // Please do not remove this acknowledgement to me thanks!
         ?>
       </td></tr>
