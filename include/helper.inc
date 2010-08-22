@@ -157,4 +157,20 @@ function returnHTML( $object ){
 function returnEditable( $text ){ /* removes anything with special purpose for editing */
   return str_replace( "_", "&#x005F;", htmlspecialchars( $text ) );
 }
+
+/**
+* Creates a new element of type $elementID using the [ID]1 element as template.
+*
+* @param $elementID     ID of the element to be created (e{p,m,i,c}).
+* @return $newIdx;
+*/
+function createNew( $elementID ){
+  $elementIDsmall = strtolower( $elementID ); // for C we want to give a capital letter but the interfaces always hav small ones
+  if ( !in_array ($elementIDsmall, array('c', 'p', 'm', 'i')) ) return; // only those can be inserted in a collection...
+  $newElement = $GLOBALS[ $elementIDsmall.'DBI' ]->getData2idx( 1 ); // load default prototype
+  $newElement->history .= ': '.$elementID.' auto created';
+
+  $newIdx = $GLOBALS[ $elementIDsmall.'DBI' ]->newElement( $newElement ); // insert the new element in the DB and get the new idx back
+  return $newIdx;
+}
 ?>

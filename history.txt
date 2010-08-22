@@ -5,16 +5,22 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+
  
 2010-03-28
 -------------------
   Fix variable manage
   Add search manage
  
- 
+2010-08-22
+-------------------
+  /include/classes/elements/LlElement.php: Added the new *creat feature for faster creating of content also to the lab selection
+  moved createNew( $elementID ) from /include/classes/elements/LcElement.php to /include/helper.inc as it is global.
+  
 2010-08-19
 -------------------
   /include/logger.inc: fixed session detection
+  /include/classes/elements/LcElement.php: Added the new *creatte [insertNew( $elementID )] feature for faster creating of content
  
  
 2010-06-17

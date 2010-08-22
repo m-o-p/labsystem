@@ -299,10 +299,7 @@ class LcElement extends Element{
   function showEdit( $fullAddress ){
     global $lng, $usr, $url, $cfg, $pge, $cDBI;
     
-    if ( $url->available('insertI') ){ $url->rem('insertI'); $this->insertI(); }
-    if ( $url->available('insertM') ){ $url->rem('insertM'); $this->insertM(); }
-    if ( $url->available('insertP') ){ $url->rem('insertP'); $this->insertP(); }
-    if ( $url->available('insertC') ){ $url->rem('insertC'); $this->insertC(); }
+    if ( $url->available('insert') ){ $url->rem('insert'); $this->insertNew( $_GET['insert'] ); } // inserts an element of the given type at the end of the collection
     
     $myRetVal =  "<FORM class=\"labsys_mop_std_form\" NAME=\"collectionEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=c")."\">\n".
                  "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
@@ -336,10 +333,10 @@ class LcElement extends Element{
 
              // save
               "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save").'">&nbsp;  '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insertP">&nbsp; *p &nbsp;</a>&nbsp; '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insertM">&nbsp; *m &nbsp;</a>&nbsp;  '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insertI">&nbsp; *i &nbsp;</a>&nbsp;  '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insertC">&nbsp; *c &nbsp;</a>'.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=p">&nbsp; *p &nbsp;</a>&nbsp; '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=m">&nbsp; *m &nbsp;</a>&nbsp;  '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=i">&nbsp; *i &nbsp;</a>&nbsp;  '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=C">&nbsp; *C &nbsp;</a>'.
               "\n". 
 
              // properties
@@ -732,66 +729,15 @@ class LcElement extends Element{
     }
   }
   
-  function insertI(){
-    global $iDBI, $cDBI, $url, $lng;
-    $newInput = new LiElement(  '0',
-                                'i in c'.$this->idx.' by '.$_SESSION['foreName'].' '.$_SESSION['surName'], 
-                                '',
-                                '',
-                                0, 
-                                true,
-                                ""
-                               );
-    $newIdx = $iDBI->newInput( $newInput );
-    $this->contents = $this->contents.' i'.$newIdx;
-    $cDBI->setData( $this );
-  }
-  
-  function insertM(){
-    global $mDBI, $cDBI, $url, $lng;
-    $newMultipleChoice = new LmElement( 0,
-                                        'm in c'.$this->idx.' by '.$_SESSION['foreName'].' '.$_SESSION['surName'], 
-                                        array( 'answer' ),
-                                        '',
-                                        0, 
-                                        0, 
-                                        true,
-                                        ''
-                                       );
-    $newIdx = $mDBI->newMultipleChoice( $newMultipleChoice );
-    $this->contents = $this->contents.' m'.$newIdx;
-    $cDBI->setData( $this );
-  }
-  
-  function insertP(){
-    global $pDBI, $cDBI, $url, $lng;
-    $newPage = new LpElement(   '0',
-                                'p in c'.$this->idx.' by '.$_SESSION['foreName'].' '.$_SESSION['surName'], 
-                                '- empty -', 
-                                '', 
-                                0, 
-                                true,
-                                ''
-                               );
-    $newIdx = $pDBI->newPage( $newPage );
-    $this->contents = $this->contents.' p'.$newIdx;
-    $cDBI->setData( $this );
-  }
-  
-  function insertC(){
-    global $cDBI, $url, $lng;
-    $newCollection = new LcElement( 0,
-                                    'C in c'.$this->idx.' by '.$_SESSION['foreName'].' '.$_SESSION['surName'],  
-                                    'p1',
-                                    '', 
-                                    false, 
-                                    false,
-                                    false,
-                                    true,
-                                    ''
-                                   );
-    $newIdx = $cDBI->newCollection( $newCollection );
-    $this->contents = $this->contents.' C'.$newIdx;
+  /**
+  * Inserts a new element of type $elementID using the [ID]1 element as template.
+  *
+  * @param $elementID     ID of the element to be created (e{p,m,i,c}).
+  */
+  function insertNew( $elementID ){
+    global $cDBI;
+    $newIdx = createNew( $elementID );
+    $this->contents = $this->contents.' '.$elementID.$newIdx;
     $cDBI->setData( $this );
   }
 

@@ -989,8 +989,8 @@ class LlElement extends Element{
     global $lng, $url, $pge, $cfg;
     
     // dropdown list for collections:
-    $dropDownOptionsPreLab = '';
-    $dropDownOptionsLab    = '';
+    $dropDownOptionsPreLab = '<option value="0">0: '.$lng->get( 'explainCreateNew' ).'</option>';
+    $dropDownOptionsLab    = '<option value="0">0: '.$lng->get( 'explainCreateNew' ).'</option>';
 
     $id = "C";
     require( "../php/getDBIbyID.inc" ); // -> $DBI
@@ -1120,6 +1120,9 @@ class LlElement extends Element{
     $userRights=0;
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1) if ( isset( $_POST[ "UR_".$i] ) ) $userRights += $_POST["UR_".$i];
 
+    if ( $_POST['PRELAB'] == 0 ) $_POST['PRELAB'] = createNew( 'C' ); // create a new collection
+    if ( $_POST['LAB'] == 0 ) $_POST['LAB'] = createNew( 'C' ); // create a new collection
+    
     $newLab = new LlElement(  $_POST['IDX'],
                               $_POST['TITLE'], 
                               $_POST['COMMENT'], 

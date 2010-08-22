@@ -125,6 +125,17 @@ class LpDBInterface {
     
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eP->idx );
   }
+  
+  /**
+  * For uniformity of the creation interface this wrapper is needed.
+  * It got necessary for the *newElement in LcElement.
+  *
+  * @param &$element  The LiElement to store.
+  * @return &$element The new element.
+  */
+  function newElement( $element ){
+    return $this->newPage( $element );
+  }
 
   /**
   * Creates a new dataset and returns its index in the database.

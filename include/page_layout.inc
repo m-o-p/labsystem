@@ -68,19 +68,19 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Content-Language" content="<?php $lng->say("Content-Language"); ?>">
     <meta name="generator" content="labsystem.m-o-p.de">
-    <link rel="stylesheet" type="text/css" href="<?php $cfg->say("SystemStyleSheet"); ?>">
+    <link rel="stylesheet" type="text/css; charset=iso-8859-1" href="<?php $cfg->say("SystemStyleSheet"); ?>">
     <?PHP if ( $cfg->doesExist('SysOverridingSheet') ) 
             /* with this sheet you can easily make adoptions without rewriting the whole 
                stylesheet and without putting it into the user's stylesheet... */
-            echo('<link rel="stylesheet" type="text/css" href="'.$cfg->get('SysOverridingSheet').'">'."\n"); 
+            if ( $cfg->get('SysOverridingSheet') != '' ) echo('<link rel="stylesheet" type="text/css; charset=iso-8859-1" href="'.$cfg->get('SysOverridingSheet').'">'."\n"); 
             /* For browsers with the ability to switch between stylesheets you could use:
-               <LINK type="text/css" title="green" rel="alternate stylesheet" href="../css/sys/labsys_mop_green_theme.css">
+               <LINK type="text/css; charset=iso-8859-1" title="green" rel="alternate stylesheet" href="../css/sys/labsys_mop_green_theme.css">
              */
      ?>
      
-    <link rel="stylesheet" type="text/css" href="<?php $cfg->say("UserStyleSheet"); ?>">
+    <link rel="stylesheet" type="text/css; charset=iso-8859-1" href="<?php $cfg->say("UserStyleSheet"); ?>">
 
-    <link rel="stylesheet" type="text/css" href="<?php $cfg->say("PrintStyleSheet"); ?>" media="print">
+    <link rel="stylesheet" type="text/css; charset=iso-8859-1" href="<?php $cfg->say("PrintStyleSheet"); ?>" media="print">
 
     <link rel="shortcut icon" href="<?php $cfg->say("Favicon"); ?>">
     
@@ -209,7 +209,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
             *   Please keep the link to the project page here to enable other people to find and use the system...
             *   Thank you!
             */
-          echo(' &copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem" /></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
+          echo(' &copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem"></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
                $_SERVER['SERVER_NAME'].'" target="_blank">mop</a> 2005-2010'); // Please do not remove this acknowledgement to me thanks!
         ?>
       </td></tr>

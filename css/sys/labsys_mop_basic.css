@@ -804,7 +804,7 @@ fieldset{
   
   /* Has to be limited as much as possible since the pastings have huge width sometimes */
   .labsys_mop_i_example_solution pre {
-                  	font-size: 11px;
+                    font-size: 11px;
   }
   
   .labsys_mop_i_save_button{

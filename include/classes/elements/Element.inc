@@ -184,7 +184,7 @@ class Element{
       for ( $j=1; $j<$i; $j++ ) $retVal .=  "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend4_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\" disabled=\"disabled\">".
                                             infoArrow( "legend_".$key, true );
       $retVal .=  "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend_".$key."\" checked=\"checked\">".
-                  infoArrow( "legend_".$key, false )." ".$key."<br />\n";
+                  infoArrow( "legend_".$key, false )." ".$key."<br>\n";
     }
 
     return "<div class=\"labsys_mop_".$this->elementId."_row\">\n".

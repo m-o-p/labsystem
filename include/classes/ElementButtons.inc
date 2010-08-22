@@ -215,7 +215,7 @@ class EB{ /* ElementButtons */
     if ( $maxLines && (count( $historyLines ) == $maxLines+1) )
          $isLimited = 1; else $isLimited = 0;
     for ( $i=0; $i < count( $historyLines ) - $isLimited; $i++ ) 
-      $historyText .= $historyLines[$i].'<br />'."\n";
+      $historyText .= $historyLines[$i].'<br>'."\n";
 
     if ( $isLimited ) 
       $historyText .= '<a href="'.urlencode($_SERVER['REQUEST_URI']).'&amp;fullHistory='.$address.'">[...]</a>'."\n";
