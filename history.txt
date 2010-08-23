@@ -6,12 +6,16 @@ Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
 
- 
+
 2010-03-28
 -------------------
   Fix variable manage
   Add search manage
- 
+
+2010-08-23
+-------------------
+  /include/classes/ElementButtons.inc: Repaired the link2 with a confirm() JS box (was not working properly via relative links before)
+  /include/classes/elements/LiElement.inc: Added <a name="$address"></a> for relative linking with #$address
 2010-08-22
 -------------------
   /include/classes/elements/LlElement.php: Added the new *creat feature for faster creating of content also to the lab selection

@@ -453,7 +453,8 @@ class LiElement extends Element{
     parseHTML( $this->question ); // Process [HTML].
     parseHTML( $this->exampleSolution );
     
-    return "<div class=\"labsys_mop_elements_i_around\">".
+    return "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
+           "<div class=\"labsys_mop_elements_i_around\">".
            EM::viewTopInput( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
              "<div class=\"labsys_mop_i_question\">".

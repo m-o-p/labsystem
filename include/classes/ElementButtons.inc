@@ -69,7 +69,7 @@ class EB{ /* ElementButtons */
   */
   function link2Element( $address ){
     global $lng;
-    $link = "../pages/view.php?address=".$address."&amp;&#x005F;_LINKQUERY__";
+    $link = '#onlyJS" onClick="javascript: confirm(\'&lt;a href=&quot;../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__&quot;&gt;Text&lt;/a&gt;\'); return false;"';
     return EB::mkLink( $link, "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2").": ".$link."\">" );
   }
   
@@ -228,10 +228,11 @@ class EB{ /* ElementButtons */
            "<img src=\"../syspix/button_history_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"".$lng->get("explainHistory")."\">".
 //           "<div>\n".nl2br($history)."\n</div>".
            "</a>".
-           "<div id=\"history_".$pge->nextTab."\" class=\"labsys_mop_history\"
-                                 onClick=\"this.style.display = 'none';\"".retIfTrue( $url->available( 'fullHistory' ) && ($url->get( 'fullHistory' ) == $address), ' style="display: block;"').">\n".
-           '<div style="display: inline; float: right; text-align: center; padding-right: 2px; width: 1em;">'.
-           '<a href="javascript: this.style.display = none;">X</a>'.
+           "<div id=\"history_".$pge->nextTab."\" class=\"labsys_mop_history\"".retIfTrue( $url->available( 'fullHistory' ) && ($url->get( 'fullHistory' ) == $address), ' style="display: block;"').">\n".
+// could be added to clode on click on the whole element:        onClick=\"this.style.display = 'none';\"
+           '<div style="display: inline; float: right; text-align: center; padding-right: 2px; color: #555555;">'.
+           '&lt;a href="../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__"&gt;Text&lt;/a&gt;'.
+           '<a href="#" onClick="document.getElementById(\'history_'.$pge->nextTab.'\').style.display = \'none\'">X</a>'.
            '</div>'.
             $historyText.
            "\n</div>"
