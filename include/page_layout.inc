@@ -68,7 +68,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Content-Language" content="<?php $lng->say("Content-Language"); ?>">
     <meta name="generator" content="labsystem.m-o-p.de">
-    <link rel="stylesheet" type="text/css; charset=iso-8859-1" href="<?php $cfg->say("SystemStyleSheet"); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php $cfg->say("SystemStyleSheet"); ?>">
     <?PHP if ( $cfg->doesExist('SysOverridingSheet') ) 
             /* with this sheet you can easily make adoptions without rewriting the whole 
                stylesheet and without putting it into the user's stylesheet... */
@@ -78,9 +78,9 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
              */
      ?>
      
-    <link rel="stylesheet" type="text/css; charset=iso-8859-1" href="<?php $cfg->say("UserStyleSheet"); ?>">
+    <link rel="stylesheet" type="text/css" href="<?php $cfg->say("UserStyleSheet"); ?>">
 
-    <link rel="stylesheet" type="text/css; charset=iso-8859-1" href="<?php $cfg->say("PrintStyleSheet"); ?>" media="print">
+    <link rel="stylesheet" type="text/css" href="<?php $cfg->say("PrintStyleSheet"); ?>" media="print">
 
     <link rel="shortcut icon" href="<?php $cfg->say("Favicon"); ?>">
     

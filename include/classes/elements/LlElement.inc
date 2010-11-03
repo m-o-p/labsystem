@@ -1239,6 +1239,26 @@ class LlElement extends Element{
               $this->title;
   }
   
+  /**
+  * This function is called to display the elements export data on the import_export-page /pages/import_export_labs.php.
+  * @param $prefix    If given this is put before the element's title (p.e. 1.2.3 title).
+  * @param $isExport  Show export or import row?
+  * @param $disabled  Should the checkboxes, radio buttons etc. be disabled?
+  * @return string    The html-code of the elements properties horizontally arranged.
+  */
+  function getExportImportRow( $prefix, $isExport=true, $disabled=false ){
+    global $pge, $lng;
+    
+    if ( $isExport )
+      return    "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".retIfTrue( !$disabled, "name=\"".$this->idx."\" " )."value=\"EXPORT\"".retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export"> '.
+                $this->title;
+    else
+      return  '<img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="next" title="export"> '.
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".retIfTrue( !$disabled, "name=\"".$this->idx."\" " )."value=\"IMPORT\"".retIfTrue( $disabled, " disabled=\"disabled\"")."> ".
+              $this->title;
+  }
+  
 // The next functions are adfditional functions of the element. *********************************************
   /**
   * Called by USER (so $this->labIsClosed etc. are set correctly) to check if his prelab answers are correct.

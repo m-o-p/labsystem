@@ -224,6 +224,22 @@ class Element{
             "</div>\n";
   }
   
+  /**
+  * Displays the element's properties for the manage page.
+  * Just integrates the getPropertyRow() into a labsys_mop_".$this->elementId."_row style division.
+  * @param $prefix    If given this is put before the element's title (p.e. 1.2.3 title). ( -> getPropertyRow() ).
+  * @param $isExport  Show export or import row?
+  * @param $disabled  Should the checkboxes, radio buttons etc. be disabled? ( -> getPropertyRow() ).
+  * @return string    The html-code of the elements property row.
+  */
+  function showExportImportRow( $prefix, $isExport=true, $disabled=false ){
+    global $lng;
+    return  "<div class=\"labsys_mop_".$this->elementId."_row\">\n".
+            $this->getExportImportRow( $prefix, $disabled, $isExport )." ".
+            EB::history( $lng->get($this->elementId."Number").$this->idx.":<hr>".$this->history, $this->elementId.$this->idx ).
+            "</div>\n";
+  }
+  
 // If this element gets aggregated inside a collection the following rows are taken *************************
 
   /**

@@ -258,27 +258,28 @@ class LcElement extends Element{
     if ( count( $myAddrArray ) > 1 ) $last      = $myAddrArray[ count( $myAddrArray )-1 ]; else $last = "";
     if ( count( $myAddrArray ) > 1 ) $scndLast  = $myAddrArray[ count( $myAddrArray )-2 ]; else $scndLast = "";
 
-    $myRetVal = "";
+    $myRetVal = '';
 
    // structure
         if ( ($last == 'structure') && ($scndLast == $me) && $usr->isOfKind( IS_CONTENT_EDITOR ) ) 
-                $myRetVal = "<div class=\"labsys_mop_contentArea\">".
+                $myRetVal .= "<div class=\"labsys_mop_contentArea\">".
                             $this->getFormattedStructureString().
                             $this->showStructure( $parentAddr.$me, $extParagraph ).
                             "</div>";
 
    // all of Type $last
     elseif ($scndLast == 'allType' ) 
-                $myRetVal = $this->showAllElementsOfType( $last, $parentAddr.$me, $extParagraph );
+                $myRetVal .= $this->showAllElementsOfType( $last, $parentAddr.$me, $extParagraph );
 
    // all on one ( Collection c catches all behind in the address C12.c13 = C12.c13.m23 ).
        else{ 
                 if ( $fullAddress != $parentAddr.$me ) $_GET['address'] = $parentAddr.$me; // Also reset the given address -> correct menu is "on".
-                $myRetVal = $this->showAllOnOne( $parentAddr.$me, $extParagraph, ($me == "C".$this->idx) );
+                $myRetVal .= $this->showAllOnOne( $parentAddr.$me, $extParagraph, ($me == "C".$this->idx) );
             }
 
 
     return  EM::viewTopCollection( $this, $parentAddr.$me ).
+            "<a name=\"".$fullAddress."\"></a>\n".
             "<div class=\"labsys_mop_contentArea\">\n".
             "<div class=\"labsys_mop_h2\">".retIfTrue( $extParagraph != "", $extParagraph.". " ).$this->title."</div>\n".
             "</div>\n".
@@ -336,6 +337,7 @@ class LcElement extends Element{
               ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=p">&nbsp; *p &nbsp;</a>&nbsp; '.
               ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=m">&nbsp; *m &nbsp;</a>&nbsp;  '.
               ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=i">&nbsp; *i &nbsp;</a>&nbsp;  '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=c">&nbsp; *c &nbsp;</a>'.
               ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=C">&nbsp; *C &nbsp;</a>'.
               "\n". 
 

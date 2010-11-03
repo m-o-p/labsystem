@@ -6,6 +6,16 @@ Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
 
+2010-10-24
+-------------------
+ /include/page_layout.inc
+ Stylesheets were not loaded in IE cause they contained character encoding information in the link. -> removed.
+ 
+2010-10-17
+-------------------
+  /pages/export_import_labs.php: new landing page for export/ import activities
+  /include/classes/Element.inc: 
+  /ini/*.lng: Added "lExportImportNote" to appear on top of this page
 
 2010-03-28
 -------------------
@@ -14,8 +24,14 @@ Feature Requests:
 
 2010-08-23
 -------------------
+  /include/classes/ElementButtons.inc: history link fixed.
+  /include/classes/elements/LiElement.inc: Added Button for *c (now *p, *m, *i, *c, *C)
+  
+2010-08-23
+-------------------
   /include/classes/ElementButtons.inc: Repaired the link2 with a confirm() JS box (was not working properly via relative links before)
   /include/classes/elements/LiElement.inc: Added <a name="$address"></a> for relative linking with #$address
+
 2010-08-22
 -------------------
   /include/classes/elements/LlElement.php: Added the new *creat feature for faster creating of content also to the lab selection
