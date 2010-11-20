@@ -130,7 +130,7 @@ class BCElement extends LcElement{
   * @return string          The html code of the element's view view.
   */ 
   function show( $fullAddress, $extParagraph="", $hideNavigation=false ){
-    global $lng, $cDBI, $usr;
+    global $lng, $cDBI, $usr, $url;
 
     if ( !$this->isVisible() ){ return $this->notFoundVisibleNote( $fullAddress ); exit; }
     
@@ -175,7 +175,7 @@ class BCElement extends LcElement{
     $prevEl = $nextEl = $topEl = false;
     if ( !$hideNavigation ){ 
                              $relAddr = implode( ".", array_slice ( $myAddrArray, 1 ) );
-                             $this->getLinks( substr( stristr( $_GET['address'], $me ), strlen( $me )+1 ), // trim the address to be correct even if the adress was rewritten (e.g.: l7.C84.C184.c188.p195 -> l7.C84.C184.c188)
+                             $this->getLinks( substr( stristr( $url->get('address'), $me ), strlen( $me )+1 ), // trim the address to be correct even if the adress was rewritten (e.g.: l7.C84.C184.c188.p195 -> l7.C84.C184.c188)
                                               $prevEl, 
                                               $nextEl 
                                              );

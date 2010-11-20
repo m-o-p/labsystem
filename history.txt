@@ -5,7 +5,11 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
-
+2010-11-3
+-------------------
+ /include/classes/elements/BCElement.inc:
+ line 178 $GET['address'] -> $url->get('address')
+ 
 2010-10-24
 -------------------
  /include/page_layout.inc

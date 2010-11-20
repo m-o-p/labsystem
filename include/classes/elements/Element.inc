@@ -235,7 +235,7 @@ class Element{
   function showExportImportRow( $prefix, $isExport=true, $disabled=false ){
     global $lng;
     return  "<div class=\"labsys_mop_".$this->elementId."_row\">\n".
-            $this->getExportImportRow( $prefix, $disabled, $isExport )." ".
+            $this->getExportImportRow( $prefix, $isExport, $disabled )." ".
             EB::history( $lng->get($this->elementId."Number").$this->idx.":<hr>".$this->history, $this->elementId.$this->idx ).
             "</div>\n";
   }

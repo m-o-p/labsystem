@@ -1,0 +1,429 @@
+;    labsystem.m-o-p.de - 
+;                    the web based eLearning tool for practical exercises
+;    Copyright (C) 2010  Marc-Oliver Pahl
+;
+;    This program is free software: you can redistribute it and/or modify
+;    it under the terms of the GNU General Public License as published by
+;    the Free Software Foundation, either version 3 of the License, or
+;    any later version.
+;
+;    This program is distributed in the hope that it will be useful,
+;    but WITHOUT ANY WARRANTY; without even the implied warranty of
+;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;    GNU General Public License for more details.
+;
+;    You should have received a copy of the GNU General Public License
+;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; Contains the localized Strings that are used in the system.
+;;
+;; You can easily localize here:
+;;   - Name the file appropriately (e.g. de.lng) then and change the entry in the  config*.ini
+;;   - Just translate all the Strings you find below.
+
+Content-Language   = "ru" ; take an international language identifier since it is used inside the html header!
+
+DateFormat         = "r" ; formatstring for all dates (-> php-function date() )
+
+
+;; strings that have to be present for each element ***************************************************
+pNumber             = "номер страницы "
+mNumber             = "номер множественного выбора "
+iNumber             = "номер ввода данных "
+cNumber             = "номер коллекции "
+lNumber             = "номер лабораторной работы "
+sNumber             = "номер расписания "
+
+;; manage.php
+pManageTitle        = "администрирование страниц"
+mManageTitle        = "администрирование множественного выбора"
+iManageTitle        = "администрирование ввода данных"
+cManageTitle        = "администрирование коллекций"
+lManageTitle        = "администрирование лабораторных работ"
+sManageTitle        = "администрирование расписаний"
+
+;; Which menu should be highlighted when the appropriate manage page is shown?
+pManageMnuEntry     = "элементы"
+mManageMnuEntry     = "элементы"
+iManageMnuEntry     = "элементы"
+cManageMnuEntry     = "элементы"
+lManageMnuEntry     = "элементы"
+sManageMnuEntry     = "элементы"
+
+;; These notes will appear on top of the manage pages
+pManageNote         = "" ;- empty note -
+mManageNote         = ""
+iManageNote         = ""
+cManageNote         = "" 
+lManageNote         = ""
+sManageNote         = ""
+
+;; These note will appear on top of the export_import_lab page
+lExportImportNote   = "" ;- empty note -
+
+
+
+;; prefixes that will be put in front of any (pre)lab paragraph ***************************************
+; e.g. element 1.3.5 will get lPrefixLab.1.3.5
+lPrefixPreLab       = ""                        ;; appears on the lab's TOC before the prelab's title
+lPrefixLab          = ""                        ;; appears on the lab's TOC before the lab's title
+
+
+;; explanation of the user roles **********************************************************************
+;; user role explanation (found in ../include/user_roles.inc)
+Explain_UR_1        = "зарегистрированный пользователь"        ; IS_USER
+Explain_UR_2        = "редактирование прав пользователей"      ; IS_USER_RIGHTS_EDITOR
+Explain_UR_4        = "редактирование содержимого"             ; IS_CONTENTS_EDITOR
+Explain_UR_8        = "администратор почты"                    ; IS_MAIL_SUPPORTER
+Explain_UR_16       = "отправка сообщений пользователям"       ; IS_ALL_MAILER
+Explain_UR_32       = "получение почты"                        ; IS_MAIL_RECEIVER
+Explain_UR_64       = "составление расписаний"                 ; IS_SCHEDULER
+Explain_UR_128      = "исправление закрытых лабораторных"      ; IS_CORRECTOR
+Explain_UR_256      = "просмотр примеров решений"              ; IS_EX_SOLUTION_VIEWER
+Explain_UR_512      = "администрирование пользователей в БД"   ; IS_DB_USER_ADMIN (only necessary if you use the uai)
+
+
+;; page titles ****************************************************************************************
+TitleLogInPage      = "Регистрация"
+TitleUserRightsPage = "Администрирование прав пользователей"
+titleSchedules      = "Расписания"
+titleSendMail       = "Отправка почты..."
+titleMyRightsPge    = "Мои права"
+
+; uaMyData.php
+titleUaMyData       = "Изменение своих данных"
+titleUaMyPW         = "Изменение своего пароля"
+titleUaUnPwRem      = "Получение имени и пароля по почте"
+titleUaManageUsr    = "Управление пользователями"
+titleUaCreateUsr    = "Создание пользователей"
+
+;; menu entries ***************************************************************************************
+; login.php
+MnuEntryLogIn       = "вход"
+MnuEntryLogOut      = "выход"
+
+; manageUser.php
+MnuEntryUserRights  = "права пользователей"   ;; must be the same as in the menu file for proper highlighting
+
+; myRights.php
+MnuEntryMyRights    = "мои права"
+
+;l
+mnuEntryPrelab2Fin  = "&raquo; все вопросы (на проверке)" ; appears under the prelab section if the prelab is not finished
+mnuEntryPrelabFin   = "&raquo; все вопросы" ; same as above but prelab finished
+mnuEntryPreLabStats = "&raquo; статус подготовительной работы"
+mnuEntryLab2Fin     = "&raquo; все вопросы (открытой лаб.работы!)"
+mnuEntryLabFin      = "&raquo; все вопросы"
+mnuEntryLabStatus   = "&raquo; статус лабораторной работы"
+
+; uaMyData.php
+MnuEntryUaMyData    = "мои данные"
+MnuEntryUaMyPW      = "мой пароль"
+MnuEntryUaUnPwRem   = "получить пароль"
+MnuEntryUaManageUsr = "управление пользователями"
+MnuEntryUaCreateUsr = "создать пользователя"
+
+;; sysinfos ******************************************************************************************
+DataHasBeenSaved    = "Данные успешно сохранены."
+
+;l
+dataOf              = "Данные пользователя "             ;; In title row when a corrector views someones data (followed by user's name)
+showAllUADesc       = "всех пользователей"               ;; Follows to the previous if the user views all user's data.
+
+; sendMail.php
+MailHasBeenSent     = "Письмо успешно отправлено. Отправлено пользователем: "
+
+;; sysalerts *****************************************************************************************
+; authenticate.php
+AlertWrongUsrPw     = "Вход не произведен (Неверно указан логин или пароль)!"
+
+; sendMail.php
+NoReceiver          = "В письме не указан адрес назначения!"
+
+; saveFile.php
+errorOpeningFile    = "Ошибка открытия файла!" ;; ../php/saveFile.php
+errorWritingFile    = "Ошибка записи в файл!"  ;; ../php/saveFile.php
+
+; delete.php
+deleted             = "удалено..."
+
+; uaMyPWSave.php
+uaPwRetypeMismath   = "Повтор пароля неверен!"
+uaPwTooShort        = "Пароль слишком короткий!"
+uaUsrNameTooShort   = "Имя пользователя слишком короткое!"
+uaMailInvalid       = "Неверный почтовый адрес!"
+uaSurNameEmpty      = "Укажите свое имя и фамилию!"
+uaAsUsrNmeIsUsedBy  = "имя пользователя уже используется"
+uaNotBelong2Usr     = "Не найдено. Не принадлежит ни одному пользователю..."
+
+;i
+NotAllowedSaveLockAt= "Нельзя сохранить ответ, т.к. заблокирован ответ " ;; If the lock got placed on another answer this is not savable anymore.
+LockTakenFrom       = "Блокировка получена из введенных данных" ;; " [idx of input]" gets added
+InputAlreadyClosed  = "Ввод данных уже закрыт!"
+
+; Alerts provided saving scripts
+NotAllNecValPosted  = "Скрипт содержит не все нужные значения!" ; This should only happen when someone tries to hack a script.
+NotAllowedToMkCall  = "Вызов запрещен!"              ; Happens for example if a saving script is called by someone having not enough rights.
+
+;; syswarnings ***************************************************************************************
+noAddressPosted     = "Отстутствует адрес= отправлено!"
+elementNotExist     = "Элемент не существует!"
+
+notAllNecPosted     = "Переданы не все необходимые значения!"
+
+notAllowed          = "Это делать запрещено!"
+
+;; c element parser warnings *************************************************************************
+parseErrNotNum      = "<<<ERROR<<<: [id][num] [num] НЕ ЦИФРОВОЕ!"
+parseErrIdNotEx     = "<<<ERROR<<<: [id][num] [id] ИД НЕ СУЩЕСТВУЕТ"
+parseErrNumNotEx    = "<<<ERROR<<<: [id][num] [num] ЭЛЕМЕНТ С ТАКИМ НОМЕРОМ НЕ СУЩЕСТВУЕТ!"
+
+;; notes *********************************************************************************************
+; login.php
+TxtLogInPage        = "Это страница входа. Если Вы участник <i>__SYSTEMTITLE__</i>, вы можете войти здесь..."
+NoteLogInPage       = "<b>Забыли пароль и/или имя?</b><br />Хотите изменить свои данные?<br /><br />&nbsp;Идите по <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>ссылке</a>..."
+NoteNotLicensed     = "Данная копия программного обеспечения <b>нелицензирована</b>. Поэтому существует следующий <b>суперпользователь</b>:"
+NoteLicensed        = "Данная копия программного обеспечения принадлежит:"
+
+; manageUsers.php
+NoteUserRightsPage  = "<b>Другие настройки</b> могут быть сделаны на <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>странице администрирования пользователей</a>...<br />Если навести курсор на <b>черную стрелку</b>, появится <b>объяснение</b> слева от флажка.<br /><b>Изменения в учетной записи</b> появятся после активации в разделе &quot;мои права&quot;, либо после выхода и повторного входа в систему."
+
+;; myRights.php
+myRightsNote        = "На данной странице можно установить свои текущие права (например, <b>временно</b> запретить элементы меню для редактирования).<br />Здесь же можно восстановит свои права..."
+
+;l
+labStatusNote       = "" ;; appears on the lab status page
+NoteStatusALLLabs   = "Здесь можно просмотреть <b>статистику по всем лабораторным</b>."
+
+youCanClickOn       = "Можете кликнуть на"
+toReOpenTheLab      = "заново открыть лабораторную работу..."
+toCloseTheLab       = "закрыть лабораторную работу... Чтобы заново открыть лабораторную работу, сначала необходимо внести изменения в расписание!"
+
+labCloseNote        = "После нажатия этой кнопки <b>все ответы закроются</b>. Отвечать станет невозможно, но можно исправить ответы."
+prelabCheckNote     = "После нажатия этой кнопки <b>можно будет исправить ответы выше</b>. Если все ответы подготовительной работы всеми участниками группы даны правильно (выделены зеленым цветом) или совершено максимально разрешенное число попыток, лабораторная становится доступной к выполнению.<br />Общее число попыток: "
+prelabStatusNote    = "Ниже приведен список пользователей, выполнивших подготовительную работу. Список <b>отсортирован</b> по <b>времени окончания</b> подготовительной работы."
+
+; uaMyData.php
+uaMyDataNote        = "Здесь можно изменить личные данные.<br />Укажите <b>правильный адрес электронный почты</b> для получения писем, новых паролей и т.д."
+uaMyPwNote          = "Здесь можно изменить пароль."
+uaUnPwRemNote       = "Данная страница позволяет зарегистрированному пользователю получить почту с учетными данными <b>имя пользователя</b> и <b>новый пароль</b>.<br />Необходимо ввести адрес электронной почты, который был указан при регистрации."
+uaManageUsrNote     = "Кликнув на имени пользователя можно редактировать его свойства (Для этого необходимо иметь соответствующие права!).<br />Здесь можно изменить описания курсов."
+uaCreateUsrNote     = "Здесь можно создать новых пользователей, введя <b>список адресов (ОДИН в строке!)</b> в данном поле.<br />Будут созданы учетные записи с адресом почты в качестве имени пользователя и сгенерированный системой пароль. Для курсов, на которые записаны пользователи, системой будет создан свой инициализационный файл с правами по-умолчанию.<br />Т.к. набор данных пользователя неполон и сведения о создании учетной записи не отправляются ее владельцу по почте, в дальнейшем пользователю необходимо <b>запросить имя и пароль</b>, чтобы получить доступ к системе."
+
+;; names for the order by selector ********************************************************************
+orderBy             = "Сортировать по "
+team                = "группа"
+rights              = "права"
+title               = "заголовок"
+onlyInCollection    = "только в коллекции?"
+index               = "индекс"
+
+;l
+orderPrelabFin      = "Указание пользователям, завершившим подготовительную работу"
+
+;s
+start               = "старт" ; used in the sorter (manage schedules)
+stop                = "стоп"
+
+
+;; manage users
+foreName            = "Имя"
+surName             = "Фамилия"
+
+
+;; field descriptors **********************************************************************************
+; login.php
+userName            = "имя пользователя"
+passWord            = "пароль"
+
+; sendMail.php
+roundmail           = "письмо"
+labSupporter        = "супервизоры"   ;; legend of the fieldset with the mailSupporters
+otherUser           = "пользователи"  ;; legend of the rest of the mailReceiver users
+yourMail            = "ваша почта"
+subject             = "тема"
+message             = "сообщение"
+noCopy2Me           = "Не отправляйте мне копию письма."
+mailViaBcc          = "Отправить почту с помощью BCC."
+
+; uaMyData.php
+eMail               = "электронная почта"
+newPW               = "новый пароль"
+newPWreType         = "введите еще раз новый пароль"
+
+; uaManageUsers.php
+lastChange          = "последнее изменение"   ;; timestamp of last change of the dataset in the user.db
+
+; uaCreateUsers.php
+mailaddressesNewUsr = "Введите адрес почты создаваемого пользователя. Расположите один адрес на одной строке."
+
+;p
+inputTitle          = "<b>Заголовок</b> (например, заголовок элемента, используемого для титров в браузере)"
+inputMatchingMnu    = "<b>Меню соответствия</b> (Строка меню с текстом, который будет выделен, когда страница показана на экране [может быть пустым].<br />При использовании ярлыков меню, например, !p1, !C2, они станут пунктами меню.)"
+inputContents       = "<b>Содержание</b>"
+inputContentsHtml   = "(для того, чтобы содержимое интерпретировалось, как <b>html</b>, первая строка должна начинаться с <b>[html]</b>)"
+inputReplaceKeys    = "При отображении страницы следующие константы будут заменены их текущими значениями:"
+
+;m
+question            = "Вопрос"
+inputAnswers        = "Ответы"
+inputAnswerExpl     = "Почему этот ответ верен? (примечания показаны вместе с результатом)"
+isCorrect           = "верно?"
+
+;i
+inputExSolutionExpl = "<b>Пример решения</b>. Здесь необходимо сделать заметки о том, что корректор ожидает увидеть в качестве ответа."
+Credits             = "кредитов"
+
+;l
+inputPreLab         = "Подготовительная работа"                 ;; l-edit field descriptor
+inputLab            = "Лабораторная работа"                     ;; l-edit field descriptor
+inputIsCorrected    = "Исправлено:"                             ;; Explanation to the corrector's checkbox.
+
+;s
+scheduleFor         = "расписание для"   ;; legend on top of the selector
+year                = "год"
+month               = "месяц"
+day                 = "день"
+hour                = "час"
+minute              = "минута"
+startDate           = "дата начала"        ;; legend on top of the start date set
+stopDate            = "дата завершения"         ;; legend on top of the stop date set
+currentValue        = "текущее значение:"
+comment             = "комментарий"
+
+
+;many
+properties          = "свойства"
+visibility          = "видимость"
+visOnlyInColl       = "будет видимым <b>только внутри коллекции</b>"
+visAlways           = "будет видимым"
+visibleFor          = "Чтобы <b>увидеть</b> страницу, пользователь должен задать следующие <b>права</b>:"
+
+saveAsNew           = "<b>Сохранить</b> элемент <b>как новый</b>."
+
+schedule            = "расписание"  ;; schedule properties (visibleBefore1stSchedule, ...) fieldset legend title
+visibleBef1stSched  = "будет видимым <b>до</b> первого расписания..."
+visibleDuringSched  = "будет видимым <b>во время</b> расписания(ий)..."
+visibleAftr1stSched = "будет видимым <b>after</b> первого расписания..."
+
+
+;; buttons ********************************************************************************************
+save                = "сохранить"          ;; Text of any save button
+
+; sendMail.php
+checkAll            = "отметить все"
+unCheckAll          = "убрать все отметки"
+
+; history.php
+back                = "назад"
+
+;mailForm.php
+sendMail            = "отправить почту..."
+
+;myRights.php
+apply               = "принять"
+
+;i
+giveAnswer          = "дать ответ..."
+correct             = "исправить"                 ;; button for corector
+
+;l
+checkPrelab         = "отметить, если при выполнении подготовительной работы на все вопросы даны верные ответы" ; label of the button...
+closeLab            = "закрыть лабораторную работу"
+showAllUsersAnswers = "Ответы ВСЕХ ПОЛЬЗОВАТЕЛЕЙ"
+stopSeeingData      = "Запретить просмотр любых данных." ;; below the user statistic page if the corrector is viewing someones data
+updateStatus        = "изменить статус"
+statusOfAllLabs     = "Нажмите здесь для просмотра статистики всех лабораторных."
+;; used on the all lab overview page:
+SwitchTo            = "Переключиться на"
+StandardView        = "стандартный просмотр"
+CompactView         = "компактный просмотр"
+
+
+;; legend strings *************************************************************************************
+legend              = "Легенда:"
+
+;l
+reMapIconExplain    = "Нажмите на эту иконку, чтобы привязать соответствующего пользователя к ответам текущей группы.<br />Таким образом, если кто-либо захочет поменять группу, на странице изменения пользовательских прав необходимо его поместить в другую группу и нажать иконку изменить привязку. (Не забудьте обновить статус после изменения привязки!)"
+prelabAllnoFExplain = "Подготовительная работа не завершена всеми участниками группы."
+prelabAllFinExplain = "Подготовительная работа завершена всеми участниками группы. Теперь они могут приступить к выполнению лабораторных работ."
+labOpenExplain      = "Лабораторная работа все еще открыта. Разрешено отвечать на вопросы."
+labClosedExplain    = "Лабораторная работа уже закрыта. Разрешено корректировать ответы на вопросы."
+labNoCorrExplain    = "Ответы не исправлены."
+labCorrExplain      = "Завершено исправление ответов."
+
+
+;; The standard error *********************************************************************************
+;; you get if you want to access an element you do not have enough rights for:
+TxtNotEnoughRights  = "<b>Недостаточно прав</b> для просмотра данной страницы!<br />&nbsp;Сначала <a href='../pages/login.php?redirectTo=__CURRENT_URL__&__LINKQUERY__'><b><u>войдите</u></b></a> в систему."
+elNotFoundVisible   = "Запрашиваемый элемент не доступен! (не существует или невидим)"
+doesNotExist        = "не существует!"
+
+;; if you call useradmin pages without config=useradmin
+TxtNotConfigUA      = "Просмотр данной страницы разрешен только с ключом config=useradmin!"
+
+;; tooltips (appear on mouseover) *********************************************************************
+;; element menu's buttons (top tight)
+explainLink2        = "Ссылка на элемент added __LINKQUERY__"
+explainView         = "Пользовательское представление элемента..."
+explainEdit         = "Редактировать элемент..."
+explainPrint        = "Предварительный просмотр перед печатью (размещено на одно странице)..."
+explainCreateNew    = "Создать новый элемент данного типа..."
+explainManageElmnts = "Управление элементами..."
+explainDeleteElemnt = "Удалить данный элемент..."
+explainViewStructure= "Просмотр структуры элемента..."
+explainHistory      = "История элемента..."
+explainSaveElement  = "Сохранить текущий элемент..."
+explainNext         = "следующая страница&gt;&gt;"
+explainPrev         = "&lt;&lt;предыдущая страница"
+explainTOC          = "содержание..."
+
+;l
+exAllowedToAnswer   = "Пользователю разрешено отвечать на вопрос?"
+exLabClosed         = "Пользователь закрыл лабораторную работу?"
+exLabCorrected      = "Лабораторная работа исправлена?"
+reMapUsrTo          = "привязать пользователя к " ;; " USR->CURRTEAM" gets appended
+corrected           = "исправлено?"    ;; as legend hover on the "which question corrected" states (#q gets put before)
+
+;i
+LockSetButForce     = "Нажатие на блокировку приведет к блокировке ввода"
+
+
+;; history messages (get into the history) ************************************************************
+; a history entry is "[timestamp]: [user's name]{: [the following texts}}"
+;l
+preLabAllTeamFin    = "- все участники группы завершили подготовительную работу -"
+preLabUserFinished  = "- пользователь завершил подготовительную работу -"
+labClosed           = "- лабораторная закрыта -"
+labReOpened         = "- лабораторная открыта заново -"
+statusUpdated       = "- статус обновлен -"
+
+dataSetCreated      = "- создано -"
+closesInput         = "- ввод закрыт -"
+reOpensInput        = "- ввод открыт заново -"
+userReMapped        = "- пользователь привязан заново -"
+
+
+;; additional texts ***********************************************************************************
+;; l
+inputs              = "ввод данных" ; AllLabInputs statistics on top "[17 inputs/ 60 credits]"
+
+;; usr
+unknown             = "неизвестный"
+
+;; history.php
+answerHistory       = "история ответов" ;; put into headerrow of the answer history of m and i elements
+historyOf           = "История"
+addHistory          = "Дополнительная история"
+
+;; viewPage
+VisibleOnlyColl     = "Элемент видим только внутри коллекции."  ;; appears on top of an onlyVisInColl element for editors
+
+;; confirm page
+confirmDelete       = "Вы действительно хотите удалить данный элемент?"  ;; Appears in the delete confirmation dialog.
+yesIconfirm         = "Да, я уверен, надо удалить!"
+  
+;; uaUnPwRemind.php
+uaUnPwRemSubject    = "Восстановление имени и пароля пользователя __SYSTEMTITLE__" ;; Subject of the reminding mail
+uaUnPwRemMailText   = "Здравствуйте, Hello,\r\nбыл запрошен новый пароль для Вашей учетной записи __SYSTEMTITLE__.\r\n\r\nВ настоящее время возможен вход только с новым паролем.\r\nВы можете изменить пароль, а также, имя пользователя на странице системы..."
+uaNewUsrsSubscript  = "Новые пользователи будут иметь данные описания."
