@@ -92,9 +92,10 @@ class LcElement extends Element{
     $this->paragraphArray           = false; // Filled when structure gets filled.
     
     $this->allowedElementIDs        = array('C', 'c', 'm', 'i', 'p', 's');
+    
+    $this->serializationArray       = array(  'idx', 'title', 'contents', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'history' ); // see Element.inc for details
   }
   
-    
 // The next functions are used for the element's view page. *************************************************
 
 // helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - - 

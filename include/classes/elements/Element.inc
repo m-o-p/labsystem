@@ -86,6 +86,8 @@ class Element{
   
   var $IamVisible;              // Am I visible? At initializantion this variable should be set according to the user's rights etc.
   
+  var $serializationArray;      // This array is used for serialization and unserialization. It contains all variable names to be (un-)serialized as value.
+  
   /**
   * Is the element visible?
   * @return BOOL  Is the element visible?
@@ -94,6 +96,62 @@ class Element{
     global $usr;
     return  $this->IamVisible 
             || $usr->isOfKind( IS_CONTENT_EDITOR ); /* contents editors are able to view any page */
+  }
+
+  /**
+  /**
+  * Serialises the element. Uses $this->serializationArray
+  *
+  * @return String serializedVersionOfElement
+  */
+  function getSerialized(){
+    $output = '';
+    foreach ( $this->serializationArray as $value ){
+      $output .= '<'.$value.'>'.
+                 retIfTrue( is_array($this->$value), '!ARRAY'.serialize($this->$value), $this->$value ).
+                 '</'.$value.'>'."\r\n";
+    }
+    return $output;
+  }
+  
+  /**
+  * UnSerializes the element.
+  *
+  * @param string $serializedData The serialized version of the element producerd by the getSerialized()-function.
+  *
+  * @return - Sets the element's parameters.
+  */
+  
+  // MULTILINE DOES NOT WORK CORRECTLY UP TO NOW!
+  
+  function initFromSerialized( &$serializedData ){
+    $inputLines = explode( "\r\n", $serializedData );
+    foreach ( $this->serializationArray as $value ){
+      $openTag = '<'.$value.'>';
+      $closeTag = '</'.$value.'>';
+      $this->$value = ''; // start with empty as we restore!
+      if ( // start searching for $openTag
+           (substr_compare( current( $inputLines ), $openTag, 0, strlen($openTag) ) == 0) &&
+           // remove start tag
+           ($inputLines[ key( $inputLines ) ] = substr( current( $inputLines ), strlen($openTag) )) ){
+           while( // not yet end tag there?
+                  ((strlen( current( $inputLines ) ) < strlen($closeTag)) || // if smaller substr_compare returns true?!?
+                   (substr_compare( current( $inputLines ), $closeTag, -1*strlen($closeTag), strlen($closeTag) ) != 0)
+                   ) &&
+                  // then add it
+                  ( $this->$value .= current( $inputLines )."\r\n" ) &&
+                  // get next line if one is there
+                  next( $inputLines )
+                 ) ;
+            // end tag present
+            $this->$value .= substr( current( $inputLines ), 0, strlen(current( $inputLines ))-strlen($closeTag) ); // unserialize only occurs on one line values
+            if ( substr($this->$value, 1,6) == '!ARRAY' ) $this->$value = unserialize( substr($this->$value, 7) ); // post process arrays
+            // get next line and continue if one is there
+            if (!next( $inputLines )) break;
+      }
+    // catch error
+    if ( !current( $inputLines ) ) trigger_error( $closeTag.' missing when unserializing', E_USER_ERROR );
+    }
   }
   
   /**

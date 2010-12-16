@@ -154,6 +154,7 @@ class LlElement extends Element{
                                       ( $this->preLabIsVisible2Me || $this->labIsVisible2Me ) && // is anything visible?
                                       ( !$this->userIsViewing || $visiblePerSchedule ) &&  // is it visible by a schedule?
                                       ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) ); // in collection restriction fulfilled?
+    $this->serializationArray       = array( 'idx', 'title', 'comment', 'prelabCollectionIdx', 'labCollectionIdx', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'visibleOnlyInCollection', 'history' );  // see Element.inc for details
   }
   
 // The next functions are used for the element's view page. *************************************************

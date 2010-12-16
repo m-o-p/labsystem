@@ -85,6 +85,8 @@ class LmElement extends Element{
       $this->mcDBI                    = new LmDBInterfaceAnswers();
       $this->loadUserData4(""); // Fills rest of the structures with neutral values.
     }
+    
+    $this->serializationArray       = array( 'idx', 'question', 'answerArray', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
   }
   
   /**

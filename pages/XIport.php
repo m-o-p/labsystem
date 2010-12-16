@@ -59,6 +59,22 @@ function fileWrite( $fileNameWithPath, $content ) {
   fclose($fh);
 }
 
+/**
+* Persists the element given.
+*
+* @param $element             The element.
+* @return                     Status information
+*/
+function persistElement( &$element ){
+  $fileName = $element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
+  fileWrite( '/tmp/export/'.$fileName, $element->getSerialized() );
+  $element->initFromSerialized( $element->getSerialized() ); // identity!
+  return $element->elementId.$element->idx.
+         ' ('.htmlentities($element->title).')<br>'."\r\n".
+         ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> '.
+         $fileName.
+         ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export">';
+}
 
 // /H E L P E R functions
 
@@ -107,6 +123,7 @@ function fileWrite( $fileNameWithPath, $content ) {
   </div>
   Save the result to the file preview.html
  *******************************************************/
+    // Meyyar: missing function here.
         $usr->userRights = $oldUsrRights;
   
     // get all elements in lab as an array
@@ -129,13 +146,22 @@ function fileWrite( $fileNameWithPath, $content ) {
           $labElementArray[ $key ] = $lastSeenElement.$elementCounter++;
         }
 
+    // export the lab element itself first:        
+      // replace the elements according to the renaming:
+        $labToExport->preLab = $labElementArray[ 'C'.$labToExport->preLab->idx ];
+        $labToExport->lab = $labElementArray[ 'C'.$labToExport->lab->idx ];
+      // set the index of the exported lab to 1
+        $labToExport->idx = 1;
+      // persist the lab
+        $pge->put( persistElement( $labToExport ) );
+
     // Iterate through the elements
-/*******************************************************
-  ToDo: Do not forget to save the l-Element as it is not in the array
- *******************************************************/
         foreach ($labElementArray as $value){
           $nextElement = $GLOBALS[ substr($value, 0, 1)."DBI" ]->getData2idx( substr($value, 1) );
           $exportContent = '';
+          $pge->put( '<div class="labsys_mop_elements_menu_'.strtolower( substr($value, 0, 1) ).'">'."\r\n".
+                     $value.' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export">'."</div>\r\n" );
+
           switch ( substr($value, 0, 1) ){
 /*******************************************************
   ToDo: the elements are loaded now. The data is in the respective fields.
@@ -143,15 +169,14 @@ function fileWrite( $fileNameWithPath, $content ) {
   Fill $exportContent and write it at the bottom once!
  *******************************************************/
             case 'C':
-              $exportContent .= '<idx>'.$nextElement->idx.'<idx>';
-              break;
             case 'c':
+              //ReplaceCollections 
               break;
             case 'p':
-              break;
             case 'm':
-              break;
             case 'i':
+              // ReplaceElements returns file array (img+others)
+              // (img+others)
               break;
             default:
               $pge->put( 'ELEMENT NOT EXPORTED! '.$value );
@@ -161,7 +186,8 @@ function fileWrite( $fileNameWithPath, $content ) {
   ToDo: write the file
   fwrite $exportContent
  *******************************************************/
-          $pge->put( 'Exported '.$value.': '.$nextElement->title.'<br>' );
+          //$nextElement->getSerialized()
+          $pge->put( persistElement( $nextElement ) );
         }
       } // /doExport
     }
@@ -182,7 +208,7 @@ function fileWrite( $fileNameWithPath, $content ) {
   // iterate over all elements ordered by $orderBy, $asc
     $DBI->getAllData( $orderBy, $asc ); 
    
-    $pge->put('<FORM NAME="export_import" METHOD="POST" ACTION="'.$_SERVER['REQUEST_URI'].'">');
+    $pge->put('<FORM NAME="export_import" METHOD="POST" ACTION="#">');
     while ( $element = $DBI->getNextData() ){ 
      // show the property row
       $pge->put( $element->showExportImportRow( $element->idx, false ) );

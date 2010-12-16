@@ -5,6 +5,15 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+2010-12-16
+-------------------
+ /include/classes/elements/L?Element.inc:
+  added $this->serializationArray for serialisation via:
+ /include/classes/elements/Element.inc:
+  added functions getSerialized(), initFromSerialized( &$serializedData )
+ /include/classes/DBConnection.inc:
+  added mkInsertReturnIDX
+ 
 2010-11-3
 -------------------
  /include/classes/elements/BCElement.inc:

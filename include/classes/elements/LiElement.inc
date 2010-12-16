@@ -141,7 +141,17 @@ class LiElement extends Element{
   
       $this->loadUserData4(); // Fills rest of the structures with neutral values.
     }
+    
+    $this->serializationArray       = array( 'idx', 'question', 'exampleSolution', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
   }
+  
+  /**
+  * Serialize the element for export.
+  */
+  
+  /**
+  * DeSerialize the element for import.
+  */
   
   /**
   * Loads the answer data to the given $uid into this instance's field.
@@ -464,7 +474,9 @@ class LiElement extends Element{
            // example solution
              retIfTrue( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !isset( $_GET['noExSol'] ), 
                                    "<div class=\"labsys_mop_i_example_solution\">".
+                                   '<!-- example solution -->'."\r\n".
                                    $this->exampleSolution.
+                                   '<!-- /example solution -->'."\r\n".
                                    "</div>\n"
                        ).
                         

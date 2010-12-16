@@ -61,6 +61,8 @@ class LpElement extends Element{
     
     $this->IamVisible               = ( ($this->visibleFor == "0") || $usr->isOfKind( $this->visibleFor ) )
                                       && ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) );
+                                      
+    $this->serializationArray       = array( 'idx', 'title', 'contents', 'matchingMenu', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
   }
 
 

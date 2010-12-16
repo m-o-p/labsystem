@@ -66,6 +66,8 @@ class LsElement extends Element{
     $this->history                  = $history;
     
     $this->IamVisible               = true; // schedules are always visible
+    
+    $this->serializationArray       = array( 'idx', 'id', 'num', 'start', 'stop', 'comment', 'history' ); // see Element.inc for details
   }
 
   /**

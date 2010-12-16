@@ -127,6 +127,21 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
   }
   
   /**
+  * Performs an insert on the database and returns the value of the autoincremented field used.
+  * @param  $what   Fields and values to insert.
+  * @param  $into   Name of the database to insert in.
+  * @return BOOL    The return value of the query.
+  */
+  function mkInsertReturnIDX( $what, $into ){
+                   $theQuery  = "INSERT INTO ".$into." SET ".$what;
+    $this->query("LOCK TABLES ".$into." WRITE");
+    $this->query(  $theQuery );
+    $idx = $this->query("SELECT LAST_INSERT_ID()");
+    $this->query("UNLOCK TABLES");
+    return $idx;
+  }
+  
+  /**
   * Performs a delete on the database.
   * @param  $from   Name of the database to select from.
   * @param  $where  Clause defining where to delete (p.e. idx=42).
@@ -253,6 +268,6 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
    */
   function unEscapeString( $val ){
     return $val;
-  }
+  } 
 }
 ?>
