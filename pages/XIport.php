@@ -30,8 +30,7 @@ require( "../include/init.inc");
 $id = 'l';
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
-// load the config values
-$cfgXIport = new Rom( parse_ini_file( $cfg->get('SystemResourcePath').'XIport.ini' ) );
+require( '../include/XIlib.inc' ); // H E L P E R functions
 
 $pge->title       = $lng->get( strtolower($id)."ManageTitle" );
 $pge->matchingMenu= $lng->get( strtolower($id)."ManageMnuEntry" );
@@ -40,13 +39,10 @@ $pge->visibleFor  = IS_CONTENT_EDITOR;
 $pge->put( EM::manageTop( $id ) );
 $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
-// H E L P E R functions
-require( '../include/XIlib.inc' );
-
 // do the import/ export
   if (isset($_POST) && count($_POST) > 0){
     foreach ($_POST as $key => $value){
-      $pge->put( $key.' --- '.$value.'<br>' );
+      //$pge->put( $key.' --- '.$value.'<br>' );
      
       if ( $value == 'IMPORT' ){ // doImport
 /*******************************************************
@@ -70,6 +66,7 @@ require( '../include/XIlib.inc' );
         $filesToBeExported = array(); // this array collects all additional files like images to be exported
     // get the lab      
         $labToExport = $lDBI->getData2idx( $key );
+        $pge->put( '<h3>'.$labToExport->title.' ('.$labToExport->uniqueID.' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export">)</h3>'."\r\n" );
     // add export information to history
         $labToExport->history = $value.' by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r')."\r\n".$labToExport->history; 
         
@@ -143,7 +140,7 @@ require( '../include/XIlib.inc' );
           $nextElement->idx = substr( $newID, 1);
           $pge->put( persistElement( $nextElement, $labToExport->uniqueID ) );
         } // /foreach
-      handleAdditionalFiles( $filesToBeExported );
+      handleAdditionalFiles( $filesToBeExported, $labToExport->uniqueID );
       } // /doExport
     }
   } // end of do the import
@@ -166,7 +163,7 @@ require( '../include/XIlib.inc' );
     $pge->put('<FORM NAME="export_import" METHOD="POST" ACTION="#">');
     while ( $element = $DBI->getNextData() ){ 
      // show the property row
-      $pge->put( $element->showExportImportRow( $element->idx, false ) );
+      //$pge->put( $element->showExportImportRow( $element->idx, false ) );
 /*******************************************************
   ToDo: Use the logic to read the l-Elements from the file in (that you built at the import above probably).
   Create them as with the import (only fill title and idx and what is really needed).

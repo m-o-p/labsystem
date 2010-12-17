@@ -27,6 +27,9 @@
 * @version    1.0
 */
 
+$IMAGE_PATH = 'images/'; // Relative path to copy images to.
+$OTHER_PATH = 'otherMaterial/'; // Path to copy linked objects like PDF files to.
+
 ////////////////////////////// called externally /////////////////////////////////////////
 /**
 * Gets the array of the current elements and returns the mapping array key->
@@ -55,6 +58,7 @@ function createIdMapping( &$labElementArray ){
 * Persists the element given.
 *
 * @param object &$element     The element.
+* @param string $labUID       The unique identifier of this lab (UID for export).
 * @return string              Status information
 */
 function persistElement( &$element, $labUID ){
@@ -74,6 +78,7 @@ function persistElement( &$element, $labUID ){
 *
 * @param $fileNameWithPath    Path and Name of the file to be created.
 * @param $content             Content to be written in the file.
+* @param string $labUID       The unique identifier of this lab (UID for export).
 * @return
 */
 function fileWrite( $fileName, $content, $labUID ) {
@@ -102,6 +107,8 @@ function removeExampleSolutions(&$HTMLcode, &$IDmappingArray, &$filesToBeExporte
 //  = remove content between:
 //  <div class="labsys_mop_i_example_solution">
 //  </div>
+
+// MEYYAR: Please put necessary code here.
 }
 
 /**
@@ -124,8 +131,10 @@ function processContent( &$content, &$IDmappingArray, &$filesToBeExported ){
 // relocates images to $IMAGE_PATH
 // adds images to $filesToBeExported
 
-// relocated linked objects like PDF files
+// relocated linked objects like PDF files to $OTHER_PATH
 // adds linked objects to $filesToBeExported
+
+// MEYYAR: Please put necessary code here.
 }
 
 /**
@@ -149,9 +158,14 @@ function reindexCollectionElements( &$content, &$IDmappingArray ){
 * Does the necessary processing with the files collected over the processingabove.
 *
 * @param array &$filesToBeExported  Collects all additional files like images to be exported.
+* @param string $labUID       The unique identifier of this lab (UID for export).
 * @return
 */
-function handleAdditionalFiles( &$filesToBeExported ){
+function handleAdditionalFiles( &$filesToBeExported, $labUID ){
+// MEYYAR: Please put necessary code here.
+// the destination directory could be obtained as follows:
+// global $cfg;
+// $destinationDirectory = $cfg->get('exportImportDir').$labUID.'/'.$IMAGE_PATH;
 }
 
 ////////////////////////////// called only internally /////////////////////////////////////////
