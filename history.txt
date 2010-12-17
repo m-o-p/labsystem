@@ -27,6 +27,9 @@ Feature Requests:
    
  /setup/sql_new_ddb_lab_tbl.sql:
    Added new fields.
+   
+ /ini/config_?.ini:
+   Added value: exportImportDir giving the directory for export/ import
  
 2010-12-16
 -------------------
