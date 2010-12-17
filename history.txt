@@ -30,6 +30,9 @@ Feature Requests:
    
  /ini/config_?.ini:
    Added value: exportImportDir giving the directory for export/ import
+   
+ /ini/menu_?.ini:
+   Added link to export/ import
  
 2010-12-16
 -------------------
