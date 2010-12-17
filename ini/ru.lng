@@ -25,6 +25,7 @@ Content-Language   = "ru" ; take an international language identifier since it i
 
 DateFormat         = "r" ; formatstring for all dates (-> php-function date() )
 
+include	     = "en" ; include all strings from the en.lng first. (maybe some items are not translated yet...)
 
 ;; strings that have to be present for each element ***************************************************
 pNumber             = "номер страницы "

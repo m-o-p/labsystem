@@ -25,7 +25,7 @@
 * @module     ../include/elements/LlDBInterface.inc
 * @author     Marc-Oliver Pahl
 * @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
+* @version    1.5
 */
 if ( isset( $GLOBALS["lDBI"] ) ) return; // require_once doesn't work well
 
@@ -64,7 +64,14 @@ class LlDBInterface {
       exit;
     }else
       return new LlElement( $data['idx'],                                   // $idx
+                            retIfTrue( !isset($data['uniqueID']) || (($data['uniqueID'] == '') && $data['idx'] != 1),
+                                       urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() )),
+                                       $this->myDBC->unEscapeString($data['uniqueID'])
+                                      ),                   // $uniqueID
                             $this->myDBC->unEscapeString($data['title']),                   // $title
+                            retIfTrue( isset( $data['authors'] ), // helpful for compatibility issues as the field is new
+                                       $this->myDBC->unEscapeString($data['authors']), 
+                                       '' ),     // $authors
                             $this->myDBC->unEscapeString($data['comment']),                 // $comment
                             $data['prelab_collection_idx'],                 // $prelabCollectionIdx
                             $data['lab_collection_idx'],                    // $labCollectionIdx
@@ -95,15 +102,17 @@ class LlDBInterface {
   */
   function getMenuData2idx( $idx, $isInColl=false ){
     global $cfg;
-    $result = $this->myDBC->mkSelect( "idx, title, comment, prelab_collection_idx, lab_collection_idx, matching_menu, visible_before_first_sched, visible_during_sched, visible_after_first_sched, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
+    $result = $this->myDBC->mkSelect( "idx, title, prelab_collection_idx, lab_collection_idx, matching_menu, visible_before_first_sched, visible_during_sched, visible_after_first_sched, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){ 
       //trigger_error( mysql_error(). "lab with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else
       return new LlElement( $data['idx'],                                   // $idx
+                            '',//$uniqueID
                             $this->myDBC->unEscapeString($data['title']),                   // $title
-                            $this->myDBC->unEscapeString($data['comment']),                 // $comment
+                            '', // $authors
+                            '',                 // $comment
                             $data['prelab_collection_idx'],                 // $prelabCollectionIdx
                             $data['lab_collection_idx'],                    // $labCollectionIdx
                             $this->myDBC->unEscapeString($data['matching_menu']),           // $matchingMenu
@@ -123,7 +132,9 @@ class LlDBInterface {
   */
   function setData( &$eL ){
     global $usr, $cfg;
-    $toSet =  "title='".$this->myDBC->escapeString($eL->title)."', ".
+    $toSet =  "uniqueID='".$this->myDBC->escapeString($eL->uniqueID)."', ".
+              "title='".$this->myDBC->escapeString($eL->title)."', ".
+              "authors='".$this->myDBC->escapeString($eL->authors)."', ".
               "comment='".$this->myDBC->escapeString($eL->comment)."', ".
               "prelab_collection_idx='".$this->myDBC->escapeString($eL->prelabCollectionIdx)."', ".
               "lab_collection_idx='".$this->myDBC->escapeString($eL->labCollectionIdx)."', ".
@@ -158,7 +169,9 @@ class LlDBInterface {
     global $usr, $lng;
     
     $identifier=md5( time() ); // used to retieve the ne entry
-    $toSet =  "title='".$this->myDBC->escapeString($eL->title)."', ".
+    $toSet =  "uniqueID='".$this->myDBC->escapeString($eL->uniqueID)."', ".
+              "title='".$this->myDBC->escapeString($eL->title)."', ".
+              "authors='".$this->myDBC->escapeString($eL->authors)."', ".
               "comment='".$this->myDBC->escapeString($eL->comment)."', ".
               "prelab_collection_idx='".$this->myDBC->escapeString($eL->prelabCollectionIdx)."', ".
               "lab_collection_idx='".$this->myDBC->escapeString($eL->labCollectionIdx)."', ".
@@ -166,23 +179,13 @@ class LlDBInterface {
               "visible_only_in_collection=".retIfTrue( $eL->visibleOnlyInCollection, "1", "0" ).
               ", visible_before_first_sched=".retIfTrue( $eL->visibleBefore1stSched, "1", "0" ).
               ", visible_during_sched=".retIfTrue( $eL->visibleDuringSched, "1", "0" ).
-              ", visible_after_first_sched=".retIfTrue( $eL->visibleAfter1stSched, "1", "0" ).
-              ", history='".$identifier."'";
-    $this->myDBC->mkInsert( $toSet, $this->myTable );
+              ", visible_after_first_sched=".retIfTrue( $eL->visibleAfter1stSched, "1", "0" );
+    if ( $eL->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eL->history)."'";
+    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
+    
+    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
 
-    // reload dataset to get the given idx
-    $result = $this->myDBC->mkSelect( "idx", $this->myTable, "history='".$identifier."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-                                                    trigger_error( mysql_error(). "Collection with history=".$identifier." not found!", E_USER_ERROR );
-                                                    exit;
-                                                   }
-    else $idx = $data['idx'];
-
-    // update history
-    $toSet = "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx='".$idx."'" );
-
-    return $idx;
+    return mysql_result($result, 0);
   }
 
   /**
@@ -215,9 +218,17 @@ class LlDBInterface {
   * @return FALSE     If no more datasets are available.
   */
   function getNextData(){
+    global $cfg;
     if ($data = mysql_fetch_array($this->queryResult))
       return new LlElement( $data['idx'],                                   // $idx
+                            retIfTrue( !isset($data['uniqueID']) || ($data['uniqueID'] == ''),
+                                       urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() )),
+                                       $this->myDBC->unEscapeString($data['uniqueID'])
+                                      ),                   // $uniqueID
                             $this->myDBC->unEscapeString($data['title']),                   // $title
+                            retIfTrue( isset( $data['authors'] ), // helpful for compatibility issues as the field is new
+                                       $this->myDBC->unEscapeString($data['authors']), 
+                                       '' ),                   // $authors
                             $this->myDBC->unEscapeString($data['comment']),                 // $comment
                             $data['prelab_collection_idx'],                 // $prelabCollectionIdx
                             $data['lab_collection_idx'],                    // $labCollectionIdx

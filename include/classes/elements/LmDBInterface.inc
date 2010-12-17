@@ -157,26 +157,13 @@ class LmDBInterface {
               "answer_explanation='".$this->myDBC->escapeString($eM->answerExplanation)."', ".
               "correct_mask='".$eM->correctMask."', ".
               "visible_for=".$eM->visibleFor.", ".
-              "history='".$identifier."', ".
-              "visible_only_in_collection=";
-    if ( $eM->visibleOnlyInCollection ) $toSet .= "1"; else $toSet .= "0";
+              "visible_only_in_collection=".retIfTrue( $eM->visibleOnlyInCollection, 1, 0);
+    if ( $eM->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eM->history)."'";
+    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
+    
+    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
 
-    $this->myDBC->mkInsert( $toSet, $this->myTable );
-
-    // reload dataset to get the given idx
-    $result = $this->myDBC->mkSelect( "idx", $this->myTable, "history='".$identifier."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-                                                     trigger_error( mysql_error(). "MultiChoice with history=".$identifier." not found!", E_USER_ERROR );
-                                                     exit;
-                                                   }
-    else $idx = $data['idx'];
-
-    // update history
-    if ( $eM->history != "" ) $toSet = "history='".$this->myDBC->escapeString($eM->history)."'";
-    else $toSet = "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx='".$idx."'" );
-
-    return $idx;
+    return mysql_result($result, 0);
   }
   
   /**

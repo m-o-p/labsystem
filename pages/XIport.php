@@ -41,43 +41,7 @@ $pge->put( EM::manageTop( $id ) );
 $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
 // H E L P E R functions
-
-/**
-* Write the contents into file with the fileName  into the given filePath
-*
-* @param $fileNameWithPath    Path and Name of the file to be created.
-* @param $content             Content to be written in the file.
-* @return
-*/
-function fileWrite( $fileNameWithPath, $content ) {
-  if ( !file_exists(dirname($fileNameWithPath)))
-    mkdir(dirname($fileNameWithPath),0755 , true) 
-      or trigger_error("Error creating folder ".dirname($fileNameWithPath).", thrown from write_file function", E_USER_ERROR);
-  $fh = fopen($fileNameWithPath, 'w') 
-    or trigger_error("Can't open file ".$fileNameWithPath.", thrown from write_file function", E_USER_ERROR);
-  fwrite($fh, $content);
-  fclose($fh);
-}
-
-/**
-* Persists the element given.
-*
-* @param $element             The element.
-* @return                     Status information
-*/
-function persistElement( &$element ){
-  $fileName = $element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
-  fileWrite( '/tmp/export/'.$fileName, $element->getSerialized() );
-  $element->initFromSerialized( $element->getSerialized() ); // identity!
-  return $element->elementId.$element->idx.
-         ' ('.htmlentities($element->title).')<br>'."\r\n".
-         ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> '.
-         $fileName.
-         ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export">';
-}
-
-// /H E L P E R functions
-
+require( '../include/XIlib.inc' );
 
 // do the import/ export
   if (isset($_POST) && count($_POST) > 0){
@@ -101,31 +65,14 @@ function persistElement( &$element ){
   $newIdx = $iDBI->newInput( $newInput ){
  *******************************************************/     
 // doImport
-      }else{ // doExport
+      }else{
 // doExport
+        $filesToBeExported = array(); // this array collects all additional files like images to be exported
     // get the lab      
         $labToExport = $lDBI->getData2idx( $key );
-  
     // add export information to history
-        $labToExport->history = $value.' by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r')."\r\n".$labToExport->history;
-  
-    // get the html preview
-        // Remove user rights 
-        $oldUsrRights = $usr->userRights;
-        $usr->userRights -= IS_CONTENT_EDITOR;
+        $labToExport->history = $value.' by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r')."\r\n".$labToExport->history; 
         
-        $htmlLabIncludingSolutions = $labToExport->show( 'l'.$key.'.all' );
-//Debug  $pge->put( $htmlLabIncludingSolutions );
-/*******************************************************
-  ToDo: parse example solution for inputs out.
-  = remove content between:
-  <div class="labsys_mop_i_example_solution">
-  </div>
-  Save the result to the file preview.html
- *******************************************************/
-    // Meyyar: missing function here.
-        $usr->userRights = $oldUsrRights;
-  
     // get all elements in lab as an array
         $labElementArray = explode( ' ',
                                 str_replace( array('( ', ' )'), array('', ''),  // remove "( ", " )"
@@ -134,17 +81,18 @@ function persistElement( &$element ){
                                 )
                               );
     // build the array that contains the renaming: [oldID] => exportedID
-        natsort( $labElementArray ); // sort values lexicographically
-        $labElementArray = array_flip( $labElementArray ); // exchange keys and values (+ remove duplicate elements...)
-        $lastSeenElement = '';
-        $elementCounter = 99;
-        foreach ($labElementArray as $key => $value){
-          if ( $lastSeenElement != $key[0] ){ // new element ID
-            $lastSeenElement = $key[0];
-            $elementCounter = 1;
-          }
-          $labElementArray[ $key ] = $lastSeenElement.$elementCounter++;
-        }
+        createIdMapping( $labElementArray );
+    // get the html preview
+        // Remove user rights 
+        $oldUsrRights = $usr->userRights;
+        $usr->userRights -= IS_CONTENT_EDITOR;
+        $htmlPreviewLab = $labToExport->show( 'l'.$key.'.all' );
+        $usr->userRights = $oldUsrRights;
+      // remove the example solutions and relocate the embedded objects
+        removeExampleSolutions($htmlPreviewLab, $labElementArray, $filesToBeExported);
+      // relocate linked objects like images, linked files, etc.
+        processContent($htmlPreviewLab, $labElementArray, $filesToBeExported);
+        fileWrite( 'preview.html', $htmlPreviewLab, $labToExport->uniqueID );
 
     // export the lab element itself first:        
       // replace the elements according to the renaming:
@@ -152,16 +100,17 @@ function persistElement( &$element ){
         $labToExport->lab = $labElementArray[ 'C'.$labToExport->lab->idx ];
       // set the index of the exported lab to 1
         $labToExport->idx = 1;
+        processContent( $labToExport->title, $labElementArray, $filesToBeExported );
+        processContent( $labToExport->authors, $labElementArray, $filesToBeExported );
+        processContent( $labToExport->comment, $labElementArray, $filesToBeExported );
       // persist the lab
-        $pge->put( persistElement( $labToExport ) );
+        $pge->put( persistElement( $labToExport, $labToExport->uniqueID ) );
 
     // Iterate through the elements
-        foreach ($labElementArray as $value){
+        foreach ($labElementArray as $value=>$newID){
           $nextElement = $GLOBALS[ substr($value, 0, 1)."DBI" ]->getData2idx( substr($value, 1) );
           $exportContent = '';
-          $pge->put( '<div class="labsys_mop_elements_menu_'.strtolower( substr($value, 0, 1) ).'">'."\r\n".
-                     $value.' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export">'."</div>\r\n" );
-
+          
           switch ( substr($value, 0, 1) ){
 /*******************************************************
   ToDo: the elements are loaded now. The data is in the respective fields.
@@ -170,25 +119,31 @@ function persistElement( &$element ){
  *******************************************************/
             case 'C':
             case 'c':
-              //ReplaceCollections 
+              reindexCollectionElements( $nextElement->contents, $labElementArray );
               break;
             case 'p':
+              processContent( $nextElement->title, $labElementArray, $filesToBeExported );
+              processContent( $nextElement->contents, $labElementArray, $filesToBeExported );
+              break;
             case 'm':
+              processContent( $nextElement->question, $labElementArray, $filesToBeExported );
+              processContent( $nextElement->answerExplanation, $labElementArray, $filesToBeExported );
+              for ($i=0; $i < $nextElement->answerCount; $i++)
+                processContent( $nextElement->answerArray[$i], $labElementArray, $filesToBeExported );
+              break;
             case 'i':
-              // ReplaceElements returns file array (img+others)
-              // (img+others)
+              processContent( $nextElement->question, $labElementArray, $filesToBeExported );
+              processContent( $nextElement->exampleSolution, $labElementArray, $filesToBeExported );
               break;
             default:
               $pge->put( 'ELEMENT NOT EXPORTED! '.$value );
               break;
           }
-/*******************************************************
-  ToDo: write the file
-  fwrite $exportContent
- *******************************************************/
-          //$nextElement->getSerialized()
-          $pge->put( persistElement( $nextElement ) );
-        }
+        // renumber element
+          $nextElement->idx = substr( $newID, 1);
+          $pge->put( persistElement( $nextElement, $labToExport->uniqueID ) );
+        } // /foreach
+      handleAdditionalFiles( $filesToBeExported );
       } // /doExport
     }
   } // end of do the import

@@ -5,6 +5,29 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+
+2010-12-17
+-------------------
+ /include/configuration.inc:
+   Added functionality to include a configuration file given with the "include ="
+   statement.
+   The file that includes the other overwrites the values of the included file.
+   This allows having a default config and only changing changed data.
+ /include/language.inc:
+   Same for the language file.
+   This allows to have a default language file making a translation of new things not mandatory at the beginning.
+   
+ /css/sys/labsys_mop_basic.css:
+   Added/ changed labsys_mop_l_authors, labsys_mop_l_comment used in L-element
+   
+ /include/classes/elements/LlElement.inc:
+ /include/classes/elements/LlDBInterface.inc:
+   Added fields uniqueID, authors for export/ import.
+   Added comment view in showTOC()
+   
+ /setup/sql_new_ddb_lab_tbl.sql:
+   Added new fields.
+ 
 2010-12-16
 -------------------
  /include/classes/elements/L?Element.inc:
@@ -13,6 +36,8 @@ Feature Requests:
   added functions getSerialized(), initFromSerialized( &$serializedData )
  /include/classes/DBConnection.inc:
   added mkInsertReturnIDX
+ /include/classes/elements/L?Element.inc:
+  changed new? to use mkInsertReturnIDX saving 2 operations each time now
  
 2010-11-3
 -------------------

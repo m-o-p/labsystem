@@ -157,32 +157,19 @@ class LcDBInterface {
   function newCollection( &$eC ){
     global $usr, $lng;
     
-    $identifier=md5( time() ); // used to retieve the ne entry
     $toSet =  "title='".$this->myDBC->escapeString($eC->title)."', ".
               "contents='".$this->myDBC->escapeString($eC->contents)."', ".
               "matching_menu='".$this->myDBC->escapeString($eC->matchingMenu)."', ".
               "visible_only_in_collection=".retIfTrue( $eC->visibleOnlyInCollection, "1", "0" ).
               ", visible_before_first_sched=".retIfTrue( $eC->visibleBefore1stSched, "1", "0" ).
               ", visible_during_sched=".retIfTrue( $eC->visibleDuringSched, "1", "0" ).
-              ", visible_after_first_sched=".retIfTrue( $eC->visibleAfter1stSched, "1", "0" ).
-              ", history='".$identifier."'";
+              ", visible_after_first_sched=".retIfTrue( $eC->visibleAfter1stSched, "1", "0" );
+    if ( $eC->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eC->history)."'";
+    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
+    
+    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
 
-    $this->myDBC->mkInsert( $toSet, $this->myTable );
-
-    // reload dataset to get the given idx
-    $result = $this->myDBC->mkSelect( "idx", $this->myTable, "history='".$identifier."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-                                                    trigger_error( mysql_error(). "Collection with history=".$identifier." not found!", E_USER_ERROR );
-                                                    exit;
-                                                   }
-    else $idx = $data['idx'];
-
-    // update history
-    if ( $eC->history != "" ) $toSet = "history='".$this->myDBC->escapeString($eC->history)."'";
-    else $toSet = "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx='".$idx."'" );
-
-    return $idx;
+    return mysql_result($result, 0);
   }
 
   /**

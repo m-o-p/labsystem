@@ -34,7 +34,9 @@ require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 require( INCLUDE_DIR."/classes/elements/LlDBInterfaceUidStatus.inc" );
 
 class LlElement extends Element{
-  var $comment;               // Comment to the lab (e.g. authors, etc.)
+  var $uniqueID;              // Unique ID for export
+  var $authors;               // The authors of the course
+  var $comment;               // Comment to the lab (e.g. abstract of the course module)
 
   var $prelabCollectionIdx;   // Index of the prelab collection.
   var $labCollectionIdx;      // Index of the lab collection.
@@ -67,6 +69,9 @@ class LlElement extends Element{
   * The constructor.
   *
   * @param $idx                       This instance's index.
+  * @param $uniqueID;                 Unique ID for remote synchronisation.
+  * @param $authors;                  The authors of the course.
+  * @param $comment;                  Comment to the lab (e.g. abstract of the course module).
   * @param $title                     The lab's title.
   * @param $prelabCollectionIdx       Index of the prelab collection.
   * @param $labCollectionIdx          Index of the lab collection.
@@ -78,12 +83,14 @@ class LlElement extends Element{
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */ 
-  function LlElement( $idx, $title, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
+  function LlElement( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
     global $CDBI, $usr, $sDBI;
     $this->elementId                = "l";
     
     $this->idx                      = $idx;
+    $this->uniqueID                 = $uniqueID;
     $this->title                    = $title;
+    $this->authors                  = $authors;
     $this->comment                  = $comment;
     $this->prelabCollectionIdx      = $prelabCollectionIdx;
     $this->labCollectionIdx         = $labCollectionIdx;
@@ -154,7 +161,7 @@ class LlElement extends Element{
                                       ( $this->preLabIsVisible2Me || $this->labIsVisible2Me ) && // is anything visible?
                                       ( !$this->userIsViewing || $visiblePerSchedule ) &&  // is it visible by a schedule?
                                       ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) ); // in collection restriction fulfilled?
-    $this->serializationArray       = array( 'idx', 'title', 'comment', 'prelabCollectionIdx', 'labCollectionIdx', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'visibleOnlyInCollection', 'history' );  // see Element.inc for details
+    $this->serializationArray       = array( 'idx', 'uniqueID', 'title', 'authors', 'comment', 'prelabCollectionIdx', 'labCollectionIdx', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'visibleOnlyInCollection', 'history' );  // see Element.inc for details
   }
   
 // The next functions are used for the element's view page. *************************************************
@@ -173,7 +180,9 @@ class LlElement extends Element{
   function showTOC( $fullAddress, $extParagraph ){
     global $lng;
 
-    $myRet = '';
+    $myRet = '<div class="labsys_mop_l_comment">'."\n".
+             returnHTML( $this->comment ).
+             "</div>\n";
     if ( $this->preLabIsVisible2Me ) $myRet .= $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx, retIfTrue( $lng->get("lPrefixPreLab") != "", $extParagraph.".".$lng->get("lPrefixPreLab") , $extParagraph ) );
     if ( $this->labIsVisible2Me ) $myRet .= $this->lab->show( $fullAddress.".C".$this->labCollectionIdx, retIfTrue( $lng->get("lPrefixLab") != "", $extParagraph.".".$lng->get("lPrefixLab") , $extParagraph ) );
     return $myRet;
@@ -878,7 +887,7 @@ class LlElement extends Element{
         
     return EM::viewTopLab( $this, $parentAddr.$me ).
            "<div class=\"labsys_mop_h2\">".retIfTrue( $extParagraph != "", $extParagraph.". " ).$this->title."</div>\n".
-           retIfTrue( ($this->comment != ''), '<div class="labsys_mop_l_comment">'.$this->comment.'</div>' ).
+           retIfTrue( ($this->authors != ''), '<div class="labsys_mop_l_authors">'.returnHTML($this->authors).'</div>' ).
            $myRetVal.
            EM::viewBottomLab( $this, $parentAddr.$me );
   }
@@ -1017,13 +1026,6 @@ class LlElement extends Element{
             "<label for=\"title\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputTitle")."</label>".
             "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"title\" name=\"TITLE\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->title."\">\n".
 
-           // comment
-            "<fieldset><legend>".$lng->get("comment")."</legend>\n".
-              "<textarea tabindex=\"".$pge->nextTab++."\" id=\"comment\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultLCommentRows")."\">".
-              returnEditable( $this->comment ).    // Process [HTML]. (../include/helper.inc).
-              "</textarea>\n".
-            "</fieldset>\n".
-                       
            // prelab selector
             "<fieldset><legend>".$lng->get("inputPreLab")."</legend>\n".
               "<select tabindex=\"".$pge->nextTab++."\" name=\"PRELAB\" size=\"1\" class=\"labsys_mop_input\">\n".
@@ -1037,7 +1039,20 @@ class LlElement extends Element{
               $dropDownOptionsLab.
               "</select>".
             "</fieldset>\n".
-           
+            
+           // meta data
+            "<fieldset><legend>".$lng->get("metaData")."</legend>\n".            
+              // authors
+              "<label for=\"authors\" class=\"labsys_mop_input_field_label_top\">".$lng->get('authors')."</label>".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"authors\" name=\"AUTHORS\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->authors."\">\n".
+                            
+              // abstract
+              "<label for=\"comment\" class=\"labsys_mop_input_field_label_top\">".$lng->get('abstract')."<br>\n".$lng->get('abstractNote')."</label>".
+              "<textarea tabindex=\"".$pge->nextTab++."\" id=\"comment\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultLCommentRows")."\">".
+              returnEditable( $this->comment ).    // Process [HTML]. (../include/helper.inc).
+              "</textarea>\n".             
+            "</fieldset>\n".
+                                             
            // save
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\">\n".
            
@@ -1077,6 +1092,18 @@ class LlElement extends Element{
             "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".retIfTrue( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ),  " checked=\"checked\"" ).">".
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
+            
+           // export/ import
+            "<fieldset><legend>".$lng->get("exportImport")."</legend>\n".
+              // unique ID
+              "<label for=\"uniqueID\" class=\"labsys_mop_input_field_label_top\">".$lng->get('uniqueID')."<br>\r\n".$lng->get('uniqueIDnote')."</label>".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"uniqueID\" name=\"UNIQUEID\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".
+              retIfTrue( ($this->idx==1), 
+                         $this->uniqueID.'-'.urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() )), // none or initialized from prototype...
+                         $this->uniqueID
+                        ).
+              "\">\n".
+            "</fieldset>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\">\n".            
 
@@ -1100,7 +1127,9 @@ class LlElement extends Element{
     if ( !isset($_POST['IDX']) || 
          !isset($_POST['REDIRECTTO']) || 
          !isset($_POST['FULLADDRESS']) || 
+         !isset($_POST['UNIQUEID']) || 
          !isset($_POST['TITLE']) || 
+         !isset($_POST['AUTHORS']) || 
          !isset($_POST['COMMENT']) || 
          !isset($_POST['PRELAB']) || 
          !isset($_POST['LAB'])     
@@ -1125,7 +1154,9 @@ class LlElement extends Element{
     if ( $_POST['LAB'] == 0 ) $_POST['LAB'] = createNew( 'C' ); // create a new collection
     
     $newLab = new LlElement(  $_POST['IDX'],
+                              $_POST['UNIQUEID'],
                               $_POST['TITLE'], 
+                              $_POST['AUTHORS'],
                               $_POST['COMMENT'], 
                               $_POST['PRELAB'],
                               $_POST['LAB'],

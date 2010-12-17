@@ -107,9 +107,11 @@ class Element{
   function getSerialized(){
     $output = '';
     foreach ( $this->serializationArray as $value ){
-      $output .= '<'.$value.'>'.
-                 retIfTrue( is_array($this->$value), '!ARRAY'.serialize($this->$value), $this->$value ).
-                 '</'.$value.'>'."\r\n";
+      $output .= '<'.$value.'>';
+      if( is_array($this->$value) )
+        $output .=  "<arrayElement>".implode("</arrayElement>\n<arrayElement>", $this->$value)."</arrayElement>"; // transform the array elements to XML
+        else $output .= $this->$value;
+      $output .= '</'.$value.'>'."\n";
     }
     return $output;
   }
@@ -131,6 +133,7 @@ class Element{
       $closeTag = '</'.$value.'>';
       $this->$value = ''; // start with empty as we restore!
       if ( // start searching for $openTag
+           (strlen( current( $inputLines ) ) >= strlen($openTag)) && // compare needs at least this length... otherwise error
            (substr_compare( current( $inputLines ), $openTag, 0, strlen($openTag) ) == 0) &&
            // remove start tag
            ($inputLines[ key( $inputLines ) ] = substr( current( $inputLines ), strlen($openTag) )) ){
@@ -139,18 +142,23 @@ class Element{
                    (substr_compare( current( $inputLines ), $closeTag, -1*strlen($closeTag), strlen($closeTag) ) != 0)
                    ) &&
                   // then add it
-                  ( $this->$value .= current( $inputLines )."\r\n" ) &&
+                  ( $this->$value .= current( $inputLines )."\n" ) &&
                   // get next line if one is there
                   next( $inputLines )
                  ) ;
             // end tag present
             $this->$value .= substr( current( $inputLines ), 0, strlen(current( $inputLines ))-strlen($closeTag) ); // unserialize only occurs on one line values
-            if ( substr($this->$value, 1,6) == '!ARRAY' ) $this->$value = unserialize( substr($this->$value, 7) ); // post process arrays
+            if ( (strlen( $this->$value ) >= 7) &&
+                 (substr($this->$value, 1,13) == '<arrayElement>') &&
+                 ($this->$value = substr($this->$value, 14)) && //cut front
+                 ($this->$value = substr($this->$value, 1, strlen($this->$value)-14)) //cut rear
+                 ) 
+                 $this->$value = explode( "</arrayElement>\n<arrayElement>", $this->$value ); // post process arrays
             // get next line and continue if one is there
             if (!next( $inputLines )) break;
       }
     // catch error
-    if ( !current( $inputLines ) ) trigger_error( $closeTag.' missing when unserializing', E_USER_ERROR );
+    if ( !current( $inputLines ) ) trigger_error( htmlentities($closeTag).' missing when unserializing: '.htmlentities($serializedData), E_USER_ERROR );
     }
   }
   

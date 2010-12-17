@@ -151,26 +151,13 @@ class LpDBInterface {
               "contents='".$this->myDBC->escapeString($eP->contents)."', ".
               "matching_menu='".$this->myDBC->escapeString($eP->matchingMenu)."', ".
               "visible_for=".$eP->visibleFor.", ".
-              "history='".$identifier."', ".
-              "visible_only_in_collection=";
-    if ( $eP->visibleOnlyInCollection ) $toSet .= "1"; else $toSet .= "0";
+              "visible_only_in_collection=".retIfTrue( $eP->visibleOnlyInCollection, 1, 0 );
+    if ( $eP->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eP->history)."'";
+    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
+    
+    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
 
-    $this->myDBC->mkInsert( $toSet, $this->myTable );
-
-    // reload dataset to get the given idx
-    $result = $this->myDBC->mkSelect( "idx", $this->myTable, "history='".$identifier."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-                                                    trigger_error( mysql_error(). "Pge with history=".$identifier." not found!", E_USER_ERROR );
-                                                    exit;
-                                                   }
-    else $idx = $data['idx'];
-
-    // update history
-    if ( $eP->history != "" ) $toSet = "history='".$this->myDBC->escapeString($eP->history)."'";
-    else $toSet = "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx='".$idx."'" );
-
-    return $idx;
+    return mysql_result($result, 0);
   } 
   
   /**

@@ -581,7 +581,7 @@ fieldset{
   }
 
 /* ------ additional styles for the l element ------ */  
-  .labsys_mop_l_comment{ /* Comment appears below the title. */
+  .labsys_mop_l_authors{ /* Authors appear below the title. */
                       margin-top: -10px;   /* appears below labsy_mop_h2 -> move spacing below me */
                       margin-bottom: 10px;
                       margin-left: 1em;
@@ -590,6 +590,13 @@ fieldset{
                       font-size: 0.6em;
                       color: #cccccc;
   }
+  .labsys_mop_l_comment{ /* Comment appears on the TOC page and on the course module server. */
+                      padding-left: 8em;
+                      padding-right: 8em;
+                      font-style: italic;
+                      font-size: 0.9em;
+  }
+  
   .labsys_mop_l_status_userhead{ /* Used for the line containing the user name in top of all lab's status */
                       font-size: 0.8em;
   }

@@ -22,10 +22,14 @@
 * This module loads the configuration file (contains global variables like database, title, ...).
 * Multiple configurations are possible thru the parameter $_GET["config"].
 *
+* In the given config file you can include another config file by using the "include = " syntax.
+* This including can only happen once not recursively.
+* The included file must also be in the ini directory.
+*
 * @module     ../include/configuration.inc
 * @author     Marc-Oliver Pahl
 * @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
+* @version    1.1
 *
 * @param $_GET["config"]  If present "../ini/config_".$_GET["config"].".ini" is loaded.
 *                         If not present it is assumed that the config file is "../ini/config_demo.ini".
@@ -45,5 +49,19 @@ if ( !file_exists( $configFile ) ){
                                     trigger_error( $configFile.' missing! (config-file)' , E_USER_ERROR );
                                     exit;
                                    }
-$cfg = new Rom( parse_ini_file( $configFile ) );
+
+$configData = parse_ini_file( $configFile );
+
+if (isset( $configData['include'] )){ // we have an include for default values...
+  $configFile2 = '../ini/'.$configData['include'].'.ini';
+  if ( !file_exists( $configFile2 ) ){
+                                      trigger_error( $configData['include'].' included in '.$configFile.' missing! (config-file)' , E_USER_ERROR );
+                                      exit;
+                                     }
+  else{
+    $configData = array_merge( parse_ini_file( $configFile2 ), $configData ); // latter one overwrites non-numerical key/ value pairs of former one
+  }
+}
+
+$cfg = new Rom( $configData );
 ?>

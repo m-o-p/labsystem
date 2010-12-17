@@ -203,29 +203,17 @@ class LsDBInterface {
   function newSchedule( &$eS ){
     global $usr, $lng;
     
-    $identifier=md5( time() ); // used to retieve the ne entry
     $toSet =  "id='".$eS->id."', ".
               "num='".$eS->num."', ".
               "start='".date("YmdHis", $eS->start)."', ".
               "stop='".date("YmdHis", $eS->stop)."', ".
-              "comment='".$this->myDBC->escapeString($eS->comment)."', ".
-              "history='".$identifier."'";
+              "comment='".$this->myDBC->escapeString($eS->comment)."', ";
+    if ( $eS->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eS->history)."'";
+    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
+    
+    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
 
-    $this->myDBC->mkInsert( $toSet, $this->myTable );
-
-    // reload dataset to get the given idx
-    $result = $this->myDBC->mkSelect( "idx", $this->myTable, "history='".$identifier."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-                                                    trigger_error( mysql_error(). "Input with history=".$identifier." not found!", E_USER_ERROR );
-                                                    exit;
-                                                   }
-    else $idx = $data['idx'];
-
-    // update history
-    $toSet = "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx='".$idx."'" );
-
-    return $idx;
+    return mysql_result($result, 0);
   }
 
   /**

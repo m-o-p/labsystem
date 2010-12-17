@@ -25,7 +25,6 @@ Content-Language   = "en" ; take an international language identifier since it i
 
 DateFormat         = "r" ; formatstring for all dates (-> php-function date() )
 
-
 ;; strings that have to be present for each element ***************************************************
 pNumber             = "page number "
 mNumber             = "multiple choice number "
@@ -203,6 +202,9 @@ labCloseNote        = "If you click this button all your <b>answers will be clos
 prelabCheckNote     = "If you click this button all your <b>answers above will be corrected</b>. Only if all prelab questions are answered correctly (row turns green) by all teammates (or you had too much attempts) the lab will get accessable.<br />The total amount of answering attempts is: "
 prelabStatusNote    = "Below you find a list of all members that finished the prelab. The list is <b>ordered by</b> the <b>time</b> the user <b>finished</b> the prelab."
 
+uniqueIDnote        = "This Identifier is used when you export the lab. It must be unique for each lab as it is used to check the lab into the svn. It is a good idea to use a prefix for your institution followed by an ID for this ly like TUM-ILAB1-BASICS. Note: if you change this ID and export the module it will be exported under the new ID that has no relation to the old ID."
+abstractNote        = "This abstract is shown on the lab index page and inside the index on the labsystem course server. It should give a short abstract of the course module (lab)."
+
 ; uaMyData.php
 uaMyDataNote        = "Here you can change your personal data.<br />Provide a <b>valid mailAddress</b> to be able to receive roundmails, new passwords etc."
 uaMyPwNote          = "Here you can change your password."
@@ -278,6 +280,11 @@ Credits             = "credits"
 inputPreLab         = "PreLab"                  ;; l-edit field descriptor
 inputLab            = "Lab"                     ;; l-edit field descriptor
 inputIsCorrected    = "Is corrected:"           ;; Explanation to the corrector's checkbox.
+metaData            = "meta data"               ;; Explanation on the edit field around the following meta data
+authors             = "authors"
+abstract            = "abstract"
+exportImport        = "export/ import"          ;; Header for the fieldset about export/ import
+uniqueID            = "unique ID"
 
 ;s
 scheduleFor         = "schedule is for"   ;; legend on top of the selector

@@ -25,10 +25,15 @@
 *  - You parse for a tag like $_GET["lng"] and include the appropriate language file.
 *    ( see ../include/configuration.inc for such an example ).
 *
+*
+* In the given language file you can include another (default) language file by using the "include = " syntax.
+* This including can only happen once not recursively.
+* The included file must also be in the $cfg->get("SystemResourcePath") directory.
+*
 * @module     ../include/language.inc
 * @author     Marc-Oliver Pahl
 * @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
+* @version    1.1
 *
 * @param $_GET["lng"]    If present "../ini/".$_GET["lng"].".lng" is loaded.
 *                         If not present the language file given in the ini-file is loaded.
@@ -41,10 +46,24 @@ if ( isset($_GET["lng"]) )
   $languageFile = $cfg->get("SystemResourcePath").$_GET["lng"].'.lng';
 else
   $languageFile = $cfg->get("SystemResourcePath").$cfg->get("SystemDefaultLanguage");
-  
+
 if ( !file_exists( $languageFile ) ){
                                       trigger_error( $languageFile.' missing! (language-file)' , E_USER_ERROR );
                                       exit;
                                      }
-$lng = new Rom( parse_ini_file( $languageFile ) );
+                                     
+$languageData = parse_ini_file( $languageFile );
+
+if (isset( $languageData['include'] )){ // we have an include for default values...
+  $languageFile2 = $cfg->get("SystemResourcePath").$languageData['include'].'.lng';
+  if ( !file_exists( $languageFile2 ) ){
+                                      trigger_error( $languageData['include'].' included in '.$languageFile.' missing! (language-file)' , E_USER_ERROR );
+                                      exit;
+                                     }
+  else{
+    $languageData = array_merge( parse_ini_file( $languageFile2 ), $languageData ); // latter one overwrites non-numerical key/ value pairs of former one
+  }
+}
+
+$lng = new Rom( $languageData );
 ?>
