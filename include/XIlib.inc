@@ -133,6 +133,15 @@ function removeExampleSolutions(&$HTMLcode){
                                       ), 
                                    $HTMLcode
                                    );
+  // remove graying showing right solutions
+	$HTMLcode= preg_replace_callback( '#(<a href="/pages/XIport.php\?)(\S+)#',
+                                      create_function(
+                                          '$matches',
+                                          'return "...";'
+                                      ), 
+                                   $HTMLcode
+                                   );               
+
                                    
 
 }
