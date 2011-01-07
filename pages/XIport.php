@@ -23,7 +23,6 @@
 *
 * @module     ../pages/export_import_labs.php
 * @author     Marc-Oliver Pahl, Meyyar Palaniappan
-* @copyright  Marc-Oliver Pahl, Meyyar Palaniappan 2010
 * @version    1.0
 */
 require( "../include/init.inc");
@@ -63,7 +62,8 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 // doImport
       }else{
 // doExport
-        $filesToBeExported = array(); // this array collects all additional files like images to be exported
+        $imagesToBeExported = array(); // this array collects all additional files like images to be exported
+        $otherFilesToBeExported = array(); // this array collects all additional files like images to be exported
     // get the lab      
         $labToExport = $lDBI->getData2idx( $key );
         $pge->put( '<h3>'.$labToExport->title.' ('.$labToExport->uniqueID.' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export">)</h3>'."\r\n" );
@@ -75,10 +75,17 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                                 str_replace( array('( ', ' )'), array('', ''),  // remove "( ", " )"
                                   'C'.$labToExport->preLab->idx.' '.$labToExport->preLab->buildStructure(true, true).
                                   ' C'.$labToExport->lab->idx.' '.$labToExport->lab->buildStructure(true, true)
-                                )
+                                ).' l'.$key
                               );
     // build the array that contains the renaming: [oldID] => exportedID
         createIdMapping( $labElementArray );
+        
+      // Needed in some XIlib functions.
+        $GLOBALS['exportUID'] = $labToExport->uniqueID;
+        $GLOBALS['externallyLinkedElements'] = array();
+        fileWrite( 'images/readme.txt', 'In this directory the images are stored.', $GLOBALS['exportUID'] );
+        fileWrite( 'data/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
+        
     // get the html preview
         // Remove user rights 
         $oldUsrRights = $usr->userRights;
@@ -86,10 +93,33 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $htmlPreviewLab = $labToExport->show( 'l'.$key.'.all' );
         $usr->userRights = $oldUsrRights;
       // remove the example solutions and relocate the embedded objects
-        removeExampleSolutions($htmlPreviewLab, $labElementArray, $filesToBeExported);
+        removeExampleSolutions($htmlPreviewLab);
       // relocate linked objects like images, linked files, etc.
-        processContent($htmlPreviewLab, $labElementArray, $filesToBeExported);
-        fileWrite( 'preview.html', $htmlPreviewLab, $labToExport->uniqueID );
+        processContent($htmlPreviewLab, $key, $labElementArray, false);
+        $pge->put(  '<div class="labsys_mop_elements_menu_l">preview.html'.
+                    ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
+                    "</div>\r\n" );
+        fileWrite( 'preview.html', 
+                   '
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+  <HEAD>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Content-Language" content="en">
+    <meta name="generator" content="labsystem.m-o-p.de">
+    <link rel="stylesheet" type="text/css" href="../css/sys/labsys_mop_basic.css">         
+    <link rel="stylesheet" type="text/css" href="../css/labsys_user_style_ilab2_ss10.css">
+    <link rel="stylesheet" type="text/css" href="../css/sys/labsys_mop_print_theme.css" media="print">
+    <link rel="shortcut icon" href="../syspix/favicon.ico">
+    <script src="../pages/scripts.js" type="text/javascript" language="javascript"></script>
+    <TITLE>labs - administration [mop@ilab2 ws10]</TITLE>
+  </HEAD><BODY><div class="labsys_mop_content">
+                   '.
+                   $htmlPreviewLab.
+                   '
+                   </div></BODY></HTML>
+                   ', 
+                   $labToExport->uniqueID );
 
     // export the lab element itself first:        
       // replace the elements according to the renaming:
@@ -97,14 +127,16 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $labToExport->lab = $labElementArray[ 'C'.$labToExport->lab->idx ];
       // set the index of the exported lab to 1
         $labToExport->idx = 1;
-        processContent( $labToExport->title, $labElementArray, $filesToBeExported );
-        processContent( $labToExport->authors, $labElementArray, $filesToBeExported );
-        processContent( $labToExport->comment, $labElementArray, $filesToBeExported );
+        processContent( $labToExport->title,  $key, $labElementArray );
+        processContent( $labToExport->authors,$key, $labElementArray );
+        processContent( $labToExport->comment,$key, $labElementArray );
       // persist the lab
         $pge->put( persistElement( $labToExport, $labToExport->uniqueID ) );
 
     // Iterate through the elements
         foreach ($labElementArray as $value=>$newID){
+          if (substr($value, 0, 1) == 'l') continue; // this is exported explicitly so do nothing here.
+          
           $nextElement = $GLOBALS[ substr($value, 0, 1)."DBI" ]->getData2idx( substr($value, 1) );
           $exportContent = '';
           
@@ -119,18 +151,18 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
               reindexCollectionElements( $nextElement->contents, $labElementArray );
               break;
             case 'p':
-              processContent( $nextElement->title, $labElementArray, $filesToBeExported );
-              processContent( $nextElement->contents, $labElementArray, $filesToBeExported );
+              processContent( $nextElement->title,    $key, $labElementArray );
+              processContent( $nextElement->contents, $key, $labElementArray );
               break;
             case 'm':
-              processContent( $nextElement->question, $labElementArray, $filesToBeExported );
-              processContent( $nextElement->answerExplanation, $labElementArray, $filesToBeExported );
+              processContent( $nextElement->question, $key, $labElementArray );
+              processContent( $nextElement->answerExplanation, $key, $labElementArray );
               for ($i=0; $i < $nextElement->answerCount; $i++)
-                processContent( $nextElement->answerArray[$i], $labElementArray, $filesToBeExported );
+                processContent( $nextElement->answerArray[$i], $key, $labElementArray );
               break;
             case 'i':
-              processContent( $nextElement->question, $labElementArray, $filesToBeExported );
-              processContent( $nextElement->exampleSolution, $labElementArray, $filesToBeExported );
+              processContent( $nextElement->question,       $key, $labElementArray );
+              processContent( $nextElement->exampleSolution,$key, $labElementArray );
               break;
             default:
               $pge->put( 'ELEMENT NOT EXPORTED! '.$value );
@@ -140,7 +172,11 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           $nextElement->idx = substr( $newID, 1);
           $pge->put( persistElement( $nextElement, $labToExport->uniqueID ) );
         } // /foreach
-      handleAdditionalFiles( $filesToBeExported, $labToExport->uniqueID );
+      fileWrite(  'data/externallyLinked.txt', 
+                  'The following external ressources are linked in this lab:'."\n".
+                  implode( "\n", $GLOBALS['externallyLinkedElements'] ), 
+                  $GLOBALS['exportUID'] );
+      //handleAdditionalFiles($otherFilesToBeExported, $imagesToBeExported, $labToExport->uniqueID );
       } // /doExport
     }
   } // end of do the import

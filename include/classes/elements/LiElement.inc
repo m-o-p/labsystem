@@ -280,7 +280,7 @@ class LiElement extends Element{
                        // show input
                        "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".
                        // on first entering set the points to full points
-                       retIfTrue( $this->isCorrected, $this->givenCredits, $this->possibleCredits ).
+                       retIfTrue( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || $this->answerComment!='', $this->givenCredits, $this->possibleCredits ).
                        "\">"."/ ",
                        retIfTrue( !$possiblePtsOnly,
                                   retIfTrue( ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )), 

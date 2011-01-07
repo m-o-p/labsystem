@@ -6,6 +6,21 @@ Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
 
+2011-01-07
+-------------------
+ /include/XIlib.inc,
+ /pages/XIport.php
+  ~Finished export to local directory.
+  
+2010-12-17
+-------------------
+ /include/classes/elements/LcElement.inc:
+   show() fixed the a name= link to element (there were problems with the intelligent address cutting as c5.m128 ended in c5 but the # set was then wrong).
+   
+ /include/classes/ElementButtons:
+   view() added #fullAddress. When editing an element in a c now and clicking
+          on the eye one ends up at the element instead the top of the page.
+          
 2010-12-17
 -------------------
  /include/configuration.inc:

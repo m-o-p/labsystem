@@ -94,7 +94,7 @@ class EB{ /* ElementButtons */
   */
   function view( $address ){
     global $lng, $url;
-    $link = $url->link2( "../pages/view.php?address=".$address );
+    $link = $url->link2( "../pages/view.php?address=".$address.'#'.$address ); // #$address will jump directly to the element
     return EB::mkLink( $link, "<img src=\"../syspix/button_view_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view\" title=\"".$lng->get("explainView")."\">" );
   }
 

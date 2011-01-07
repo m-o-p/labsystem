@@ -280,7 +280,7 @@ class LcElement extends Element{
 
 
     return  EM::viewTopCollection( $this, $parentAddr.$me ).
-            "<a name=\"".$fullAddress."\"></a>\n".
+            "<a name=\"".$parentAddr.$me."\"></a>\n".
             "<div class=\"labsys_mop_contentArea\">\n".
             "<div class=\"labsys_mop_h2\">".retIfTrue( $extParagraph != "", $extParagraph.". " ).$this->title."</div>\n".
             "</div>\n".
