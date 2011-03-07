@@ -166,7 +166,7 @@ function returnEditable( $text ){ /* removes anything with special purpose for e
 */
 function createNew( $elementID ){
   $elementIDsmall = strtolower( $elementID ); // for C we want to give a capital letter but the interfaces always hav small ones
-  if ( !in_array ($elementIDsmall, array('c', 'p', 'm', 'i')) ) return; // only those can be inserted in a collection...
+  if ( !in_array ($elementIDsmall, array('c', 'p', 'm', 'i', 'l')) ) return;
   $newElement = $GLOBALS[ $elementIDsmall.'DBI' ]->getData2idx( 1 ); // load default prototype
   $newElement->history .= ': '.$elementID.' auto created';
 
