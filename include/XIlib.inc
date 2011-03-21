@@ -59,6 +59,7 @@ function createIdMapping( &$labElementArray ){
 function persistElement( &$element, $labUID ){
 	$fileName = $element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
 	fileWrite( $fileName, $element->getSerialized(), $labUID );
+
 	//$element->initFromSerialized( $element->getSerialized() ); // identity!
 	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
 	htmlentities($element->title).

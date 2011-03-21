@@ -111,7 +111,7 @@ class Element{
       if( is_array($this->$value) )
         $output .=  "<arrayElement>".implode("</arrayElement>\n<arrayElement>", $this->$value)."</arrayElement>"; // transform the array elements to XML
         else $output .= $this->$value;
-      $output .= '</'.$value.'>'."\n";
+      $output .= '</'.$value.'>'."\r\n";
     }
     return $output;
   }
@@ -137,15 +137,15 @@ class Element{
            (substr_compare( current( $inputLines ), $openTag, 0, strlen($openTag) ) == 0) &&
            // remove start tag
            ($inputLines[ key( $inputLines ) ] = substr( current( $inputLines ), strlen($openTag) )) ){
-           while( // not yet end tag there?
-                  ((strlen( current( $inputLines ) ) < strlen($closeTag)) || // if smaller substr_compare returns true?!?
-                   (substr_compare( current( $inputLines ), $closeTag, -1*strlen($closeTag), strlen($closeTag) ) != 0)
-                   ) &&
-                  // then add it
-                  ( $this->$value .= current( $inputLines )."\n" ) &&
-                  // get next line if one is there
-                  next( $inputLines )
-                 ) ;
+	           while( // not yet end tag there?
+	                  ((strlen( current( $inputLines ) ) < strlen($closeTag)) || // if smaller substr_compare returns true?!?
+	                   (substr_compare( current( $inputLines ), $closeTag, -1*strlen($closeTag), strlen($closeTag) ) != 0)
+	                   ) &&
+	                  // then add it
+	                  ( $this->$value .= current( $inputLines )."\n" ) &&
+	                  // get next line if one is there
+	                  next( $inputLines )
+	                 ) ;
             // end tag present
             $this->$value .= substr( current( $inputLines ), 0, strlen(current( $inputLines ))-strlen($closeTag) ); // unserialize only occurs on one line values
             if ( (strlen( $this->$value ) >= 7) &&

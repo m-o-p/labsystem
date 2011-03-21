@@ -1099,7 +1099,7 @@ class LlElement extends Element{
               "<label for=\"uniqueID\" class=\"labsys_mop_input_field_label_top\">".$lng->get('uniqueID')."<br>\r\n".$lng->get('uniqueIDnote')."</label>".
               "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"uniqueID\" name=\"UNIQUEID\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".
               retIfTrue( ($this->idx==1), 
-                         $this->uniqueID.'-'.urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() )), // none or initialized from prototype...
+                         $this->uniqueID.'-'.http_build_query($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() )), // none or initialized from prototype...
                          $this->uniqueID
                         ).
               "\">\n".

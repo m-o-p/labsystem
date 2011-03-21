@@ -5,6 +5,15 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+2011-03-21
+-------------------
+ /include/classes/elements/Element.inc:
+  fixed initFromSerialized( &$serializedData )
+
+2011-03-18
+-------------------
+ /include/classes/elements/LlElement.inc:
+  replaced urlencode by http_build_query for default UID of the Llelement
 
 2011-01-07
 -------------------
