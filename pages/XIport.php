@@ -123,8 +123,8 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
     // export the lab element itself first:        
       // replace the elements according to the renaming:
-        $labToExport->preLab = $labElementArray[ 'C'.$labToExport->preLab->idx ];
-        $labToExport->lab = $labElementArray[ 'C'.$labToExport->lab->idx ];
+        $labToExport->prelabCollectionIdx = substr( $labElementArray[ 'C'.$labToExport->preLab->idx ], 1 );
+        $labToExport->labCollectionIdx = substr( $labElementArray[ 'C'.$labToExport->lab->idx ], 1);
       // set the index of the exported lab to 1
         $labToExport->idx = 1;
         processContent( $labToExport->title,  $key, $labElementArray );

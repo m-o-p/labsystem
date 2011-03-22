@@ -5,7 +5,7 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
-2011-03-21
+2011-03-21+22
 -------------------
  /include/classes/elements/Element.inc:
   fixed initFromSerialized( &$serializedData )

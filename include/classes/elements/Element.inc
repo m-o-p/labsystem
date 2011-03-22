@@ -144,7 +144,7 @@ class Element{
 	                  // then add it
 	                  ( $this->$value .= current( $inputLines )."\n" ) &&
 	                  // get next line if one is there
-	                  next( $inputLines )
+	                  (next( $inputLines ) !== FALSE)
 	                 ) ;
             // end tag present
             $this->$value .= substr( current( $inputLines ), 0, strlen(current( $inputLines ))-strlen($closeTag) ); // unserialize only occurs on one line values
