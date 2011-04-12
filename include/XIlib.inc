@@ -191,7 +191,7 @@ function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true)
   /** end of functions */
 function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
   $GLOBALS['IDmappingArray'] = $IDmappingArray; // we need it in the call back (not clean implementation just work around).
-	$HTMLcode= preg_replace_callback(  '#(?<=address=|\#)'. // Assertion "must be preceded by" (link or anchor usage...
+	$HTMLcode= preg_replace_callback(  '#(?=address=|\#)'. // Assertion "must be preceded by" (link or anchor usage...
                                      '(l'.$labNumber.')'.              // Just replace things for the current lab
                                      '((?:\.[m, i, p, c, C]\pN)*)'.
                                      '#', // '{address=l, #l}(?P<data>(\.\p{LN})+)'
@@ -266,7 +266,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     if ($doCopy){
       // Here the move to server should happen...
       copy( $localFileWithPath, $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName )
-      or trigger_error("Can't copy file ".$localFileWithPath, E_USER_ERROR);
+      or trigger_error("Can't copy file ".$localFileWithPath, E_USER_WARNING);
       $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                   $localFileWithPath.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
@@ -283,7 +283,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
  * @return                           Directly alters $HTMLcode.
  */
 function processLocalPix( &$HTMLcode, $doCopy=true ){
-	$HTMLcode = preg_replace_callback(   '#(?<=<img )(.* src=[\',"])(?!../syspix/|/syspix/)(\S+)([\',"])#',
+	$HTMLcode = preg_replace_callback(   '#(?=<img )(.*? src=[\',"])(?!../syspix/|/syspix/)(\S+)([\',"])#',
                                        create_function(
                                         '$matches',
                                         'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];'
@@ -300,7 +300,7 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
  * @return                           Directly alters $HTMLcode.
  */
 function processLocalFiles( &$HTMLcode, $doCopy=true ){
-	$HTMLcode = preg_replace_callback(   '#(?<=<a href=)([\',"])(?!../pages/|/pages/|\#)(\S+)([\',"])#',
+	$HTMLcode = preg_replace_callback(   '#(?=<a href=)([\',"])(?!../pages/|/pages/|\#)(\S+)([\',"])#',
                                        create_function(
                                         '$matches',
                                         'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];'
@@ -333,6 +333,37 @@ function reindexCollectionElements( &$content, &$IDmappingArray ){
  */
 function notStared( $value ){
 	return $value[0] != '*';
+}
+
+/**
+ * getLabsFromDirectory( $cfg->get('exportImportDir') );
+ *
+ * 1) Reads all l0000001.txt files in all subdirectories of $directory.
+ * 2) Transforms them into an l-Element.
+ * 3) Puts them into an array
+ * 4) Returns the Array
+ *
+ * ! sets the base64_encode( directory ) as ID for importable directories !
+ *
+ * @param sting $directory  The directory to be searched.
+ * @return array            The array containing the l-Elements as values.
+ */
+function getLabsFromDirectory( $directory ){
+  $retArray = array();
+  if (!is_dir( $directory )) return $retArray;
+	$subDirs = scandir( $directory );
+  for( $i=0; $i<sizeof( $subDirs ); $i++){
+    if ( $subDirs[$i] == '.' || $subDirs[$i] == '..' ) continue; // skip those
+    $file_name = $directory.$subDirs[$i].'/l0000001.txt';
+    if( file_exists($file_name) ){
+      $myLelement = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
+      $myLelement->initFromSerialized( file_get_contents( $file_name ) );
+      $myLelement->idx = base64_encode( $subDirs[$i] ); // set the base64_encode( directory ) as ID for importable directories
+      // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(
+      array_push( $retArray, $myLelement );
+    }
+  }
+  return $retArray;
 }
 
 ?>

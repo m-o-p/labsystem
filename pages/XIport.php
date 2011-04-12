@@ -58,7 +58,12 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
   make it persistent:
     * @return int The idx of the newly created element.
   $newIdx = $iDBI->newInput( $newInput ){
- *******************************************************/     
+ *******************************************************/
+        $subDir = base64_decode( $key ); // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(
+        
+        $labToImport = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
+        $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/l0000001.txt') );
+        $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import">)</h3>'."\r\n" );
 // doImport
       }else{
 // doExport
@@ -198,15 +203,13 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
    
     $pge->put('<FORM NAME="export_import" METHOD="POST" ACTION="#">');
     while ( $element = $DBI->getNextData() ){ 
-     // show the property row
-      //$pge->put( $element->showExportImportRow( $element->idx, false ) );
-/*******************************************************
-  ToDo: Use the logic to read the l-Elements from the file in (that you built at the import above probably).
-  Create them as with the import (only fill title and idx and what is really needed).
-  Call for those the function below then...
- *******************************************************/
-      $pge->put( $element->showExportImportRow( $element->idx, true ) );
+      $pge->put( $element->showExportImportRow( $element->idx, true ) ); // show the property row
     }
+    
+    // Importable labs
+    $importableLabs = getLabsFromDirectory( $cfg->get('exportImportDir') );
+    foreach( $importableLabs as $key=>$value )
+     $pge->put( $value->showExportImportRow( '', false ) ); // show the property row
      
   // saving
     $pge->put("<input TABINDEX=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("yesIconfirm")."\" accesskey=\"s\">" );

@@ -5,6 +5,13 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+ 
+2011-04-12
+-------------------
+ /include/XIlib.inc,
+  getLabsFromDirectory( $directory )
+  fixed image replacement issue: replaced some ?<= in preg with ?=  
+  
 2011-03-21+22
 -------------------
  /include/classes/elements/Element.inc:
