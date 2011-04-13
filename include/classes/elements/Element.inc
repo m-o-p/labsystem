@@ -123,9 +123,6 @@ class Element{
   *
   * @return - Sets the element's parameters.
   */
-  
-  // MULTILINE DOES NOT WORK CORRECTLY UP TO NOW!
-  
   function initFromSerialized( &$serializedData ){
     $inputLines = explode( "\r\n", $serializedData );
     foreach ( $this->serializationArray as $value ){
@@ -148,12 +145,12 @@ class Element{
 	                 ) ;
             // end tag present
             $this->$value .= substr( current( $inputLines ), 0, strlen(current( $inputLines ))-strlen($closeTag) ); // unserialize only occurs on one line values
-            if ( (strlen( $this->$value ) >= 7) &&
-                 (substr($this->$value, 1,13) == '<arrayElement>') &&
-                 ($this->$value = substr($this->$value, 14)) && //cut front
-                 ($this->$value = substr($this->$value, 1, strlen($this->$value)-14)) //cut rear
-                 ) 
+            if ( (strlen( $this->$value ) >= 14) &&
+                 (substr($this->$value, 0,14) == '<arrayElement>') ){
+                 $this->$value = substr($this->$value, 14); //cut front
+                 $this->$value = substr($this->$value, 0, strlen($this->$value)-15); //cut rear
                  $this->$value = explode( "</arrayElement>\n<arrayElement>", $this->$value ); // post process arrays
+                 }
             // get next line and continue if one is there
             if (!next( $inputLines )) break;
       }

@@ -8,6 +8,15 @@ Feature Requests:
  
 2011-04-12
 -------------------
+ /include/classes/elements/Element.inc:
+  fixed initFromSerialized( &$serializedData )
+  - array handling
+ /include/XIlib.inc:
+  processLocalFiles
+  - fixed regex
+  
+2011-04-12
+-------------------
  /include/XIlib.inc,
   getLabsFromDirectory( $directory )
   fixed image replacement issue: replaced some ?<= in preg with ?=  

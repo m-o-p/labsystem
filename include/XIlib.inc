@@ -60,7 +60,7 @@ function persistElement( &$element, $labUID ){
 	$fileName = $element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
 	fileWrite( $fileName, $element->getSerialized(), $labUID );
 
-	//$element->initFromSerialized( $element->getSerialized() ); // identity!
+	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
 	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
 	htmlentities($element->title).
          ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> '.
@@ -225,7 +225,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
    * @return bool
    */
   function isLocal( $fileWithPath ){
-    return (substr( $fileWithPath, 0, 3 ) == '../');
+    return (substr( $fileWithPath, 0, 4 ) != 'http');
   }
   
   /**
@@ -252,6 +252,10 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
                                                                 'return "..";'
                                                                ),
                                                  $localFileWithPath );
+
+    // Files linked "/" should be "../"
+    if ( $localFileWithPath[0] == '/' ) $localFileWithPath = '..'.$localFileWithPath;
+    
     // not local: do nothing
     if ( !isLocal( $localFileWithPath ) ){
       if ($doCopy){
@@ -300,7 +304,7 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
  * @return                           Directly alters $HTMLcode.
  */
 function processLocalFiles( &$HTMLcode, $doCopy=true ){
-	$HTMLcode = preg_replace_callback(   '#(?=<a href=)([\',"])(?!../pages/|/pages/|\#)(\S+)([\',"])#',
+	$HTMLcode = preg_replace_callback(   '#(?=<a )(.*? href=[\',"])(?!../pages/|/pages/|\#)(\S+)([\',"])#',
                                        create_function(
                                         '$matches',
                                         'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];'
