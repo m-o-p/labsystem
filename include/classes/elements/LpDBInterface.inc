@@ -121,7 +121,7 @@ class LpDBInterface {
               "visible_for=".$eP->visibleFor.", ".
               "visible_only_in_collection=";
     if ( $eP->visibleOnlyInCollection ) $toSet .= "1"; else $toSet .= "0";
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )";
+    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eP->history)."' )";
     
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eP->idx );
   }

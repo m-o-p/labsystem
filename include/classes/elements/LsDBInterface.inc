@@ -177,7 +177,7 @@ class LsDBInterface {
               "start='".date("YmdHis", $eS->start)."', ".
               "stop='".date("YmdHis", $eS->stop )."', ".
               "comment='".$this->myDBC->escapeString($eS->comment)."'";
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )";
+    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eS->history)."' )";
 
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eS->idx );
   }

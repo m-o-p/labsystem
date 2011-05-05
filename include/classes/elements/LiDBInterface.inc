@@ -122,7 +122,7 @@ class LiDBInterface {
               "visible_for=".$eI->visibleFor.", ".
               "visible_only_in_collection=";
     if ( $eI->visibleOnlyInCollection ) $toSet .= "1"; else $toSet .= "0";
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )";
+    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eI->history)."' )";
 
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eI->idx );
   }
@@ -147,7 +147,6 @@ class LiDBInterface {
   function newInput( &$eI ){
     global $usr, $lng;
     
-    $identifier=md5( time() ); // used to retieve the ne entry
     $toSet =  "question='".$this->myDBC->escapeString($eI->question)."', ".
               "example_solution='".$this->myDBC->escapeString( $eI->exampleSolution )."', ".
               "possible_credits='".$this->myDBC->escapeString($eI->possibleCredits * 100)."', ".

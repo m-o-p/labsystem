@@ -144,7 +144,7 @@ class LlDBInterface {
               ", visible_before_first_sched=".retIfTrue( $eL->visibleBefore1stSched, "1", "0" ).
               ", visible_during_sched=".retIfTrue( $eL->visibleDuringSched, "1", "0" ).
               ", visible_after_first_sched=".retIfTrue( $eL->visibleAfter1stSched, "1", "0" );
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )";
+    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eL->history)."' )";
               
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eL->idx );
   }
@@ -169,7 +169,6 @@ class LlDBInterface {
   function newLab( &$eL ){
     global $usr, $lng;
     
-    $identifier=md5( time() ); // used to retieve the ne entry
     $toSet =  "uniqueID='".$this->myDBC->escapeString($eL->uniqueID)."', ".
               "title='".$this->myDBC->escapeString($eL->title)."', ".
               "authors='".$this->myDBC->escapeString($eL->authors)."', ".

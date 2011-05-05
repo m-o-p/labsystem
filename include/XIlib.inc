@@ -34,6 +34,7 @@
  * @return                        Acts directly on the given array.
  */
 function createIdMapping( &$labElementArray ){
+  $labElementArray = array_map( create_function( '$element', 'return strtolower( $element );' ), $labElementArray ); // uncapitalise all IDS
 	natsort( $labElementArray ); // sort values lexicographically
 	//remove stared values as they describe not existing elements:
 	$labElementArray = array_filter( $labElementArray, 'notStared' );
@@ -94,9 +95,8 @@ function persistElement( &$element, $labUID, $isImport=false ){
     $GLOBALS[ $element->elementId."DBI" ]->setData( $element );
   	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
   	htmlentities($element->title).
-           ' <img src="../syspix/button_prev_13x12.gif" width="13" height="12" border="0" alt="&lt;-" title="&lt;-"> '.
+           ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
   	$element->elementId.$element->idx.
-           ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import">'.
            "</div>\r\n";
   }
 }
@@ -113,7 +113,7 @@ function fileWrite( $fileName, $content, $labUID ) {
 	global $cfg;
 	$fileNameWithPath = $cfg->get('exportImportDir').$labUID.'/'.$fileName;
 	if ( !file_exists(dirname($fileNameWithPath))) 
-    mkdir(dirname($fileNameWithPath),0755 , true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
+    mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
 	$fh = fopen($fileNameWithPath, 'w') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
 	fwrite($fh, $content);
 	fclose($fh);
@@ -220,12 +220,13 @@ function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true,
    * @param string $oldID  Element ID to be mapped.
    * @return string        The nes ID of the given element.
    */
-  function mapIt( $oldID ){
-    return array_key_exists( $oldID, $GLOBALS['IDmappingArray'] ) ? $GLOBALS['IDmappingArray'][$oldID] : $oldID;
+  function mapIt( $oldID, &$IDmappingArray ){
+    $ID = strtolower( $oldID[0] ); // make ID small letter (big and small c's...
+    $IDX = substr( $oldID, 1 );
+    return array_key_exists( $ID.$IDX, $IDmappingArray ) ? $oldID[0].substr( $IDmappingArray[$ID.$IDX], 1 ) /*keep first letter big... */ : $oldID[0].'1' /* default element */;
   }
   /** end of functions */
 function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
-  $GLOBALS['IDmappingArray'] = $IDmappingArray; // we need it in the call back (not clean implementation just work around).
 	$HTMLcode= preg_replace_callback(  '#(?=address=|\#)'. // Assertion "must be preceded by" (link or anchor usage...
                                      '(l'.$labNumber.')'.              // Just replace things for the current lab
                                      '((?:\.[m, i, p, c, C]\pN)*)'.
@@ -242,7 +243,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
                                       '
                                         $parts = explode( ".", $matches[0] );
                                         foreach ( $parts as $key=>$value )
-                                          $parts[ $key ] = mapIt( $value );
+                                          $parts[ $key ] = mapIt( $value, $IDmappingArray );
                                         return implode ( ".", $parts );
                                       '
                                      ),
@@ -304,14 +305,14 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     $fileName = end(explode('/', $localFileWithPath));
     if ($doCopy){
       // Here the move to server should happen...
-      copy( $localFileWithPath, $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName )
+      $itWorked = copy( $localFileWithPath, $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName )
       or trigger_error("Can't copy file ".$localFileWithPath, E_USER_WARNING);
       $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                   $localFileWithPath.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                  "</div>\r\n" );
     }
-    return $destDir.$fileName;
+    return (!isset( $itWorked ) || $itWorked) ? $destDir.$fileName : $localFileWithPath;
   }
   
   /** For Import
@@ -329,10 +330,11 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     global $cfg, $pge;
     
     $destDir .= $GLOBALS['exportUID'].'/'; // add subdirectory
+    $file2importWithPath = $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$file2importWithPath; // complete full path
     $fileName = end(explode('/', $file2importWithPath));
-    if ( !file_exists($destDir)) mkdir($destDir, 0755, true);
+    if ( !file_exists($destDir)){ mkdir($destDir, 0755, true) or trigger_error("Can't create directory ".$destDir, E_USER_ERROR); }
     
-    copy( $file2importWithPath, $destDir.'/'.$fileName ) or trigger_error("Can't copy file ".$file2importWithPath, E_USER_ERROR);
+    copy( $file2importWithPath, $destDir.'/'.$fileName ) or trigger_error("Can't copy file ".$file2importWithPath, E_USER_WARNING);
     $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                 ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
                 $fileName.
@@ -364,10 +366,11 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
  * @return                           Directly alters $HTMLcode.
  */
 function importPix( &$HTMLcode ){
+  global $cfg;
 	$HTMLcode = preg_replace_callback(   '#(?=<img )(.*? src=[\',"])(images/\S+)([\',"])#',
                                        create_function(
                                         '$matches',
-                                        'return $matches[1].importFile( $matches[2], $cfg->get("importPictureDir") ).$matches[3];'
+                                        'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];'
                                        ),
                                        $HTMLcode
                                        );
@@ -400,7 +403,7 @@ function importFiles( &$HTMLcode ){
 	$HTMLcode = preg_replace_callback(   '#(?=<a )(.*? href=[\',"])(data/\S+)([\',"])#',
                                        create_function(
                                         '$matches',
-                                        'return $matches[1].importFile( $matches[2], $cfg->get("importFilesDir") ).$matches[3];'
+                                        'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];'
                                        ),
                                        $HTMLcode
                                        );
@@ -417,8 +420,7 @@ function reindexCollectionElements( &$content, &$IDmappingArray ){
 	$contents = explode(' ', $content);
 	$content = '';
 	foreach ( $contents as $element )
-	  if (isset($IDmappingArray[$element])) // as there might have been non existing elements not for all values a mapping must exist!
-	    $content .= ' '.$IDmappingArray[$element];
+	  $content .= ' '.mapIt( $element, $IDmappingArray );
 	$content = substr( $content, 1); // cut first space
 }
 
@@ -451,34 +453,34 @@ Fill $exportContent and write it at the bottom once!
 *******************************************************/
     case 'l':
       // replace the elements according to the renaming:
-        $nextElement->prelabCollectionIdx = substr( $mappingArray[ 'C'.$nextElement->preLab->idx ], 1 );
-        $nextElement->labCollectionIdx    = substr( $mappingArray[ 'C'.$nextElement->lab->idx ], 1);
+        $element->prelabCollectionIdx = substr( mapIt( 'c'.$element->prelabCollectionIdx, $mappingArray ), 1 );
+        $element->labCollectionIdx    = substr( mapIt( 'c'.$element->labCollectionIdx,    $mappingArray ), 1 );
     // add export information to history
-        $nextElement->history = retIfTrue( $isImport, 'Imported ', 'Exported ' ).' by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r')."\r\n".$nextElement->history;
-        processContent( $labToImport->title,  $labNumber, $mappingArray, true, $isImport );
-        processContent( $labToImport->authors,$labNumber, $mappingArray, true, $isImport );
-        processContent( $labToImport->comment,$labNumber, $mappingArray, true, $isImport );
+        $element->history = retIfTrue( $isImport, 'Imported ', 'Exported ' ).' by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r')."\r\n".$element->history;
+        processContent( $element->title,  $labNumber, $mappingArray, true, $isImport );
+        processContent( $element->authors,$labNumber, $mappingArray, true, $isImport );
+        processContent( $element->comment,$labNumber, $mappingArray, true, $isImport );
       break;
     case 'C':
     case 'c':
-      reindexCollectionElements( $nextElement->contents, $mappingArray );
+      reindexCollectionElements( $element->contents, $mappingArray );
       break;
     case 'p':
-      processContent( $nextElement->title,    $labNumber, $mappingArray, true, $isImport );
-      processContent( $nextElement->contents, $labNumber, $mappingArray, true, $isImport );
+      processContent( $element->title,    $labNumber, $mappingArray, true, $isImport );
+      processContent( $element->contents, $labNumber, $mappingArray, true, $isImport );
       break;
     case 'm':
-      processContent( $nextElement->question, $labNumber, $mappingArray, true, $isImport );
-      processContent( $nextElement->answerExplanation, $labNumber, $mappingArray, true, $isImport );
-      for ($i=0; $i < $nextElement->answerCount; $i++)
-        processContent( $nextElement->answerArray[$i], $labNumber, $mappingArray, true, $isImport );
+      processContent( $element->question, $labNumber, $mappingArray, true, $isImport );
+      processContent( $element->answerExplanation, $labNumber, $mappingArray, true, $isImport );
+      for ($i=0; $i < $element->answerCount; $i++)
+        processContent( $element->answerArray[$i], $labNumber, $mappingArray, true, $isImport );
       break;
     case 'i':
-      processContent( $nextElement->question,       $labNumber, $mappingArray, true, $isImport );
-      processContent( $nextElement->exampleSolution,$labNumber, $mappingArray, true, $isImport );
+      processContent( $element->question,       $labNumber, $mappingArray, true, $isImport );
+      processContent( $element->exampleSolution,$labNumber, $mappingArray, true, $isImport );
       break;
     default:
-      $pge->put( 'ELEMENT NOT EXPORTED! '.$value );
+      $pge->put( 'ELEMENT NOT EXPORTED! '.$element->elementId.$element->idx );
       break;
   }
 }

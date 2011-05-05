@@ -126,7 +126,7 @@ class LmDBInterface {
               "visible_for=".$eM->visibleFor.", ".
               "visible_only_in_collection=";
     if ( $eM->visibleOnlyInCollection ) $toSet .= "1"; else $toSet .= "0";
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )";
+    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eM->history)."' )";
 
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eM->idx );
   }

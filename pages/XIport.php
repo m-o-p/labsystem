@@ -50,8 +50,10 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       // load information about the lab
         $labToImport = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
         $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/l0000001.txt') );
+
       // create the mapping from the directory and create the "empty" DB objects for the elements
         $labElementArray = createIdImportMappingInitDB( $labToImport->uniqueID );
+        
         $newLabId = $labElementArray['l1'];
         
         $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.$newLabId.')</h3>'."\r\n" );
@@ -59,7 +61,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       // import elements
         foreach ($labElementArray as $value=>$newID){
           $nextElement = $GLOBALS[ $newID[0]."DBI" ]->getData2idx( substr($newID, 1) ); // load existing empty DB object
-          $nextElement->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/'.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt' );
+          $nextElement->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/'.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt') );
           
           processElement( $nextElement, $labElementArray, 1, true );
           
@@ -68,9 +70,11 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           
           $pge->put( persistElement( $nextElement, '', true ) );
         } // /foreach
+
         $externallyLinked = $cfg->get('exportImportDir').$subDir.'/data/externallyLinked.txt';
-        if ( file_exists( $externallyLinked )
+        if ( file_exists( $externallyLinked ) )
           $pge->put( '<pre>'.$externallyLinked.':'."\r\n".file_get_contents( $externallyLinked ).'</pre>' );
+
 // doImport
       }else{
 // doExport
@@ -80,13 +84,13 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
     // get all elements in lab as an array
         $labElementArray = explode( ' ',
                                 str_replace( array('( ', ' )'), array('', ''),  // remove "( ", " )"
-                                  'C'.$labToExport->preLab->idx.' '.$labToExport->preLab->buildStructure(true, true).
-                                  ' C'.$labToExport->lab->idx.' '.$labToExport->lab->buildStructure(true, true)
+                                  'c'.$labToExport->preLab->idx.' '.$labToExport->preLab->buildStructure(true, true).
+                                  ' c'.$labToExport->lab->idx.' '.$labToExport->lab->buildStructure(true, true)
                                 ).' l'.$key
                               );
     // build the array that contains the renaming: [oldID] => exportedID
         createIdMapping( $labElementArray );
-        
+
       // Needed in some XIlib functions.
         $GLOBALS['exportUID'] = $labToExport->uniqueID;
         $GLOBALS['externallyLinkedElements'] = array();
