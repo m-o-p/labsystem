@@ -64,6 +64,7 @@ class LlDBInterface {
       exit;
     }else
       return new LlElement( $data['idx'],                                   // $idx
+                            // create a new ID if there is none (makes sure it is always shown and saved later...)
                             retIfTrue( !isset($data['uniqueID']) || (($data['uniqueID'] == '') && $data['idx'] != 1),
                                        urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() )),
                                        $this->myDBC->unEscapeString($data['uniqueID'])

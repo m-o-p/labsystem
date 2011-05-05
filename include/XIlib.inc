@@ -50,23 +50,55 @@ function createIdMapping( &$labElementArray ){
 }
 
 /**
+ * creates the new empty elements for the imported lab elements and populates the reverse index mapping array
+ *
+ * @param  string $labFolder     	        Lab folder name on the disk inside the $cfg->get('exportImportDir')
+ * @return array						              array with the reverse mapping index
+ */
+function createIdImportMappingInitDB( $labFolder ){
+  global $cfg;
+  $IdMapping = array();
+  $labElementsOnDisk = scandir( $cfg->get('exportImportDir').$labFolder );
+  foreach ( $labElementsOnDisk as $value ){
+    if ( (strlen( $value ) < 4) || (substr($value, -4) != '.txt') ) continue; // skip all uninteresting files
+        
+    $elementType = $value[0]; // get type (first letter)
+    $elementID = intval( substr($value, 1, 7) ); // get number (rest)
+
+    $newIdx = createNew( $elementType ); // creates element in DB
+    $IdMapping[$elementType.$elementID] = $elementType.$newIdx;
+  }
+  return $IdMapping;
+}
+
+/**
  * Persists the element given.
  *
  * @param object &$element     The element.
  * @param string $labUID       The unique identifier of this lab (UID for export).
  * @return string              Status information
  */
-function persistElement( &$element, $labUID ){
-	$fileName = $element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
-	fileWrite( $fileName, $element->getSerialized(), $labUID );
-
-	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
-	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
-	htmlentities($element->title).
-         ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> '.
-	$fileName.
-         ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
-         "</div>\r\n";
+function persistElement( &$element, $labUID, $isImport=false ){
+  if (!$isImport) { // EXPORT
+  	$fileName = $element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
+  	fileWrite( $fileName, $element->getSerialized(), $labUID );
+  
+  	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
+  	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
+  	htmlentities($element->title).
+           ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> '.
+  	$fileName.
+           ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
+           "</div>\r\n";
+  } else { // IMPORT
+    $GLOBALS[ $element->elementId."DBI" ]->setData( $element );
+  	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
+  	htmlentities($element->title).
+           ' <img src="../syspix/button_prev_13x12.gif" width="13" height="12" border="0" alt="&lt;-" title="&lt;-"> '.
+  	$element->elementId.$element->idx.
+           ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import">'.
+           "</div>\r\n";
+  }
 }
 
 /**
@@ -80,11 +112,9 @@ function persistElement( &$element, $labUID ){
 function fileWrite( $fileName, $content, $labUID ) {
 	global $cfg;
 	$fileNameWithPath = $cfg->get('exportImportDir').$labUID.'/'.$fileName;
-	if ( !file_exists(dirname($fileNameWithPath)))
-	mkdir(dirname($fileNameWithPath),0755 , true)
-	or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
-	$fh = fopen($fileNameWithPath, 'w')
-	or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
+	if ( !file_exists(dirname($fileNameWithPath))) 
+    mkdir(dirname($fileNameWithPath),0755 , true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
+	$fh = fopen($fileNameWithPath, 'w') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
 	fwrite($fh, $content);
 	fclose($fh);
 }
@@ -162,10 +192,15 @@ function removeExampleSolutions(&$HTMLcode){
  * @param array   &$OtherfilesToBeExported  Collects all additional files  to be exported.
  * @return
  */
-function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true){
+function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true, $isImport=false ){
 	reMapIDs($HTMLcode, $labNumber, $IDmappingArray); // Replace the linked internal elements in $HTMLcode identified by address= or #
-  processLocalPix($HTMLcode, $doCopy);
-  processLocalFiles($HTMLcode, $doCopy);
+  if ( !$isImport ){ // Export
+    processLocalPix($HTMLcode, $doCopy);
+    processLocalFiles($HTMLcode, $doCopy);
+  } else { // Import
+    importPix($HTMLcode);
+    importFiles($HTMLcode);
+  }
 }
 
 ////////////////////////////// called only internally /////////////////////////////////////////
@@ -228,7 +263,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     return (substr( $fileWithPath, 0, 4 ) != 'http');
   }
   
-  /**
+  /** For Export:
    * If the file passed by $localFileWithPath is recognized as local and 
    * $doCopy is set (not the case for the HTML preview), then the file
    * is copied to $destDir.
@@ -259,7 +294,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     // not local: do nothing
     if ( !isLocal( $localFileWithPath ) ){
       if ($doCopy){
-        $pge->put( 'non-local: |'.$localFileWithPath.'|<br>' );
+        $pge->put( 'non-local: |'.$localFileWithPath.'|<br>'."\r\n" );
         array_push( $externallyLinkedElements, $localFileWithPath );
       }
       return $localFileWithPath;
@@ -278,8 +313,35 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     }
     return $destDir.$fileName;
   }
+  
+  /** For Import
+   * The file passed by $file2importWithPath
+   * is copied to $destDir
+   *
+   * The new valid link to the file is returned.
+   * (So if nothing is done the original link is returned.)
+   *
+   * @param string $file2importWithPath   File to be imported inclusive full path to the backupped file
+   * @param string $destDir               The directory where the file should be relocated relative to the script without UID subdir.
+   * @return string                       New url of file.
+   */
+  function importFile( $file2importWithPath, $destDir ){
+    global $cfg, $pge;
+    
+    $destDir .= $GLOBALS['exportUID'].'/'; // add subdirectory
+    $fileName = end(explode('/', $file2importWithPath));
+    if ( !file_exists($destDir)) mkdir($destDir, 0755, true);
+    
+    copy( $file2importWithPath, $destDir.'/'.$fileName ) or trigger_error("Can't copy file ".$file2importWithPath, E_USER_ERROR);
+    $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
+                ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
+                $fileName.
+                "</div>\r\n" );
+  
+    return $destDir.$fileName;
+  }
   /** end of functions */
-/**
+/** EXPORT
  * Searches $HTMLcode for local images and if $doCopy is set copies them to the server/ directory.
  *
  * @param string &$HTMLcode          The html code to be altered.
@@ -295,8 +357,23 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
                                        $HTMLcode
                                        );
 }
+/** IMPORT
+ * Searches $HTMLcode for images and if copies them to the $cfg->get("importPictureDir") directory.
+ *
+ * @param string &$HTMLcode          The html code to be altered.
+ * @return                           Directly alters $HTMLcode.
+ */
+function importPix( &$HTMLcode ){
+	$HTMLcode = preg_replace_callback(   '#(?=<img )(.*? src=[\',"])(images/\S+)([\',"])#',
+                                       create_function(
+                                        '$matches',
+                                        'return $matches[1].importFile( $matches[2], $cfg->get("importPictureDir") ).$matches[3];'
+                                       ),
+                                       $HTMLcode
+                                       );
+}
 
-/**
+/** EXPORT
  * Searches $HTMLcode for locally referenced files and if $doCopy is set copies them to the server/ directory.
  *
  * @param string &$HTMLcode          The html code to be altered.
@@ -308,6 +385,22 @@ function processLocalFiles( &$HTMLcode, $doCopy=true ){
                                        create_function(
                                         '$matches',
                                         'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];'
+                                       ),
+                                       $HTMLcode
+                                       );
+}
+/** IMPORT
+ * Searches $HTMLcode for referenced files and copies them to the $cfg->get("importFilesDir") directory.
+ *
+ * @param string &$HTMLcode          The html code to be altered.
+ * @return                           Directly alters $HTMLcode.
+ */
+function importFiles( &$HTMLcode ){
+  global $cfg;
+	$HTMLcode = preg_replace_callback(   '#(?=<a )(.*? href=[\',"])(data/\S+)([\',"])#',
+                                       create_function(
+                                        '$matches',
+                                        'return $matches[1].importFile( $matches[2], $cfg->get("importFilesDir") ).$matches[3];'
                                        ),
                                        $HTMLcode
                                        );
@@ -337,6 +430,57 @@ function reindexCollectionElements( &$content, &$IDmappingArray ){
  */
 function notStared( $value ){
 	return $value[0] != '*';
+}
+
+/**
+ * Called in XIport's import and export to do the processing on the elements using the $mappingArray
+ *
+ * @param object $element       The element to be handled
+ * @param object $mappingArray  The mapping array containing the replacement mapping for the element indices
+ * @param int $labnumber        The number of the lab currently to be processed (for search and replace this is used as start marker for internal links)
+ * @param bool $isImport=false  If set the import functions are called (for copying)
+ * @return -
+ */
+function processElement( &$element, &$mappingArray, $labNumber, $isImport=false ){
+  global $usr;
+  switch ( $element->elementId ){
+/*******************************************************
+ToDo: the elements are loaded now. The data is in the respective fields.
+Do all necessary parsings and store the files (txt+pictures+local_material)!
+Fill $exportContent and write it at the bottom once!
+*******************************************************/
+    case 'l':
+      // replace the elements according to the renaming:
+        $nextElement->prelabCollectionIdx = substr( $mappingArray[ 'C'.$nextElement->preLab->idx ], 1 );
+        $nextElement->labCollectionIdx    = substr( $mappingArray[ 'C'.$nextElement->lab->idx ], 1);
+    // add export information to history
+        $nextElement->history = retIfTrue( $isImport, 'Imported ', 'Exported ' ).' by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r')."\r\n".$nextElement->history;
+        processContent( $labToImport->title,  $labNumber, $mappingArray, true, $isImport );
+        processContent( $labToImport->authors,$labNumber, $mappingArray, true, $isImport );
+        processContent( $labToImport->comment,$labNumber, $mappingArray, true, $isImport );
+      break;
+    case 'C':
+    case 'c':
+      reindexCollectionElements( $nextElement->contents, $mappingArray );
+      break;
+    case 'p':
+      processContent( $nextElement->title,    $labNumber, $mappingArray, true, $isImport );
+      processContent( $nextElement->contents, $labNumber, $mappingArray, true, $isImport );
+      break;
+    case 'm':
+      processContent( $nextElement->question, $labNumber, $mappingArray, true, $isImport );
+      processContent( $nextElement->answerExplanation, $labNumber, $mappingArray, true, $isImport );
+      for ($i=0; $i < $nextElement->answerCount; $i++)
+        processContent( $nextElement->answerArray[$i], $labNumber, $mappingArray, true, $isImport );
+      break;
+    case 'i':
+      processContent( $nextElement->question,       $labNumber, $mappingArray, true, $isImport );
+      processContent( $nextElement->exampleSolution,$labNumber, $mappingArray, true, $isImport );
+      break;
+    default:
+      $pge->put( 'ELEMENT NOT EXPORTED! '.$value );
+      break;
+  }
 }
 
 /**
