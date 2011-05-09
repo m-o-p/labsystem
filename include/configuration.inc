@@ -20,16 +20,20 @@
 
 /**
 * This module loads the configuration file (contains global variables like database, title, ...).
-* Multiple configurations are possible thru the parameter $_GET["config"].
+* The active configuration is selected the parameter $_GET["config"].
 *
-* In the given config file you can include another config file by using the "include = " syntax.
-* This including can only happen once not recursively.
-* The included file must also be in the ini directory.
+* In the given config file you can include other config files by using the 
+* include = "../ini/configA.ini, ../ini/configB.ini, "
+* field.
+* As you can see many files can be included.
+* Inclusion can happen recursively, so confA.ini can include confB.ini which can include confC.ini, etc.
+*
+* This can be useful to share parts of configurations like databases between configurations.
 *
 * @module     ../include/configuration.inc
 * @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.1
+* @copyright  Marc-Oliver Pahl 2011
+* @version    1.3
 *
 * @param $_GET["config"]  If present "../ini/config_".$_GET["config"].".ini" is loaded.
 *                         If not present it is assumed that the config file is "../ini/config_demo.ini".
@@ -44,22 +48,19 @@ if ( isset($_GET["config"]) )
   $configFile = "../ini/config_".$configPrefix.$_GET["config"].".ini";
 else
   $configFile = "../ini/config_demo.ini";
+
+$configData = array('include' => $configFile);
+while ( $configData['include'] != '' ){
+  $nextConfigs2Include = explode(',', $configData['include']);
+  $configData['include'] = ''; // clear field, might be refilled in the parsing process
   
-if ( !file_exists( $configFile ) ){
-                                    trigger_error( $configFile.' missing! (config-file)' , E_USER_ERROR );
-                                    exit;
-                                   }
-
-$configData = parse_ini_file( $configFile );
-
-if (isset( $configData['include'] )){ // we have an include for default values...
-  $configFile2 = '../ini/'.$configData['include'].'.ini';
-  if ( !file_exists( $configFile2 ) ){
-                                      trigger_error( $configData['include'].' included in '.$configFile.' missing! (config-file)' , E_USER_ERROR );
-                                      exit;
-                                     }
-  else{
-    $configData = array_merge( parse_ini_file( $configFile2 ), $configData ); // latter one overwrites non-numerical key/ value pairs of former one
+  foreach ( $nextConfigs2Include as $configFile ){
+    $configFile = trim( $configFile ); // remove white spaces at borders
+    if ( !file_exists( $configFile ) ) // File there?
+      { trigger_error( $configFile.' missing! (config-file)' , E_USER_ERROR ); exit; }
+    $newConfigData = parse_ini_file( $configFile );
+    $configData = array_merge( $newConfigData, $configData ); // existing data overwrites included data (overwrites non-numerical key/ value pairs)
+    if ( isset($newConfigData['include']) ) $configData['include'] = $newConfigData['include']; // only the includes must be followed further...
   }
 }
 

@@ -26,6 +26,8 @@
  */
 // ILAB2 -> ilab2_ in config
 if (strtoupper(substr($_SERVER['SERVER_NAME'], 0, 5)) == 'ILAB2') $configPrefix='ilab2_';
+if (strtoupper(substr($_SERVER['SERVER_NAME'], 0, 4)) == 'ILAB') $configPrefix='ilab_';
+if (strtoupper(substr($_SERVER['SERVER_NAME'], 0, 4)) == 'YLAB') $configPrefix='ilab2_';
 
 // to always add the infix of the hostname the following code may help:
 // $configPrefix=strtolower(substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.'))).'_';

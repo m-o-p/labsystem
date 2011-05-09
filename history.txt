@@ -5,7 +5,14 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
- 
+
+2011-05-06
+-------------------
+ /include/XIlib.inc, /pages/XIport.php:
+   Import works now.
+ /include/config.inc:
+   Including other configs is possible now. 
+   
 2011-04-12
 -------------------
  /include/classes/elements/Element.inc:

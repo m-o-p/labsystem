@@ -65,14 +65,13 @@ class LlDBInterface {
     }else
       return new LlElement( $data['idx'],                                   // $idx
                             // create a new ID if there is none (makes sure it is always shown and saved later...)
-                            retIfTrue( !isset($data['uniqueID']) || (($data['uniqueID'] == '') && $data['idx'] != 1),
-                                       urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() )),
-                                       $this->myDBC->unEscapeString($data['uniqueID'])
-                                      ),                   // $uniqueID
+                            ( !isset($data['uniqueID']) || (($data['uniqueID'] == '') && $data['idx'] != 1) ) ?
+                              urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() ))
+                              : $this->myDBC->unEscapeString($data['uniqueID']),                  // $uniqueID
                             $this->myDBC->unEscapeString($data['title']),                   // $title
-                            retIfTrue( isset( $data['authors'] ), // helpful for compatibility issues as the field is new
-                                       $this->myDBC->unEscapeString($data['authors']), 
-                                       '' ),     // $authors
+                            ( isset( $data['authors'] ) ? // helpful for compatibility issues as the field is new
+                              $this->myDBC->unEscapeString($data['authors'])
+                              : '' ),     // $authors
                             $this->myDBC->unEscapeString($data['comment']),                 // $comment
                             $data['prelab_collection_idx'],                 // $prelabCollectionIdx
                             $data['lab_collection_idx'],                    // $labCollectionIdx
@@ -221,14 +220,13 @@ class LlDBInterface {
     global $cfg;
     if ($data = mysql_fetch_array($this->queryResult))
       return new LlElement( $data['idx'],                                   // $idx
-                            retIfTrue( !isset($data['uniqueID']) || ($data['uniqueID'] == ''),
-                                       urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() )),
-                                       $this->myDBC->unEscapeString($data['uniqueID'])
-                                      ),                   // $uniqueID
+                            ( !isset($data['uniqueID']) || ($data['uniqueID'] == '') ) ?
+                              urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() ))
+                              : $this->myDBC->unEscapeString($data['uniqueID']),                   // $uniqueID
                             $this->myDBC->unEscapeString($data['title']),                   // $title
-                            retIfTrue( isset( $data['authors'] ), // helpful for compatibility issues as the field is new
-                                       $this->myDBC->unEscapeString($data['authors']), 
-                                       '' ),                   // $authors
+                            ( isset( $data['authors'] ) ? // helpful for compatibility issues as the field is new
+                              $this->myDBC->unEscapeString($data['authors'])
+                              : '' ),                   // $authors
                             $this->myDBC->unEscapeString($data['comment']),                 // $comment
                             $data['prelab_collection_idx'],                 // $prelabCollectionIdx
                             $data['lab_collection_idx'],                    // $labCollectionIdx

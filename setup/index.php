@@ -35,12 +35,7 @@ if ( version_compare( "4.3.0", phpversion(), ">=" ) ){
                                                         trigger_error( "You need at least PHP 4.3 to run the labsystem!", E_USER_ERROR );
                                                         exit;
                                                       }
-
-if ( !isset($_GET['config']) || !file_exists( "../ini/config_".$_GET["config"].".ini" ) ){
-                                                                                            trigger_error( "You need to provide a config= file that exists!", E_USER_ERROR );
-                                                                                            exit;
-                                                                                          }
-
+                                                      
 /** IF NO OBVIOUS USER ERRORS -> Show Info Page */
 if ( !isset($_POST['continue']) ){
 if ( !file_exists( 'information.txt' ) ){
@@ -85,7 +80,7 @@ echo('
   return;
 }
 
-
+require( INCLUDE_DIR."/hostname2config.inc" );
 require_once( INCLUDE_DIR."/configuration.inc" );
 require_once( INCLUDE_DIR."/classes/DBConnection.inc" );
 

@@ -84,11 +84,13 @@ class LlElement extends Element{
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */ 
   function LlElement( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
-    global $CDBI, $usr, $sDBI;
+    global $CDBI, $usr, $sDBI, $cfg;
     $this->elementId                = "l";
     
     $this->idx                      = $idx;
     $this->uniqueID                 = $uniqueID;
+    if ($this->idx==1) $this->uniqueID .= '-'.urlencode ( $_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() ) ); // none or initialized from prototype...
+    
     $this->title                    = $title;
     $this->authors                  = $authors;
     $this->comment                  = $comment;
@@ -1098,10 +1100,7 @@ class LlElement extends Element{
               // unique ID
               "<label for=\"uniqueID\" class=\"labsys_mop_input_field_label_top\">".$lng->get('uniqueID')."<br>\r\n".$lng->get('uniqueIDnote')."</label>".
               "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"uniqueID\" name=\"UNIQUEID\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".
-              retIfTrue( ($this->idx==1), 
-                         $this->uniqueID.'-'.http_build_query($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() )), // none or initialized from prototype...
-                         $this->uniqueID
-                        ).
+              $this->uniqueID.
               "\">\n".
             "</fieldset>\n".
 
