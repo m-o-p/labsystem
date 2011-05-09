@@ -2,7 +2,7 @@
 /**
  *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
- *  Copyright (C) 2010  Marc-Oliver Pahl
+ *  Copyright (C) 2011  Marc-Oliver Pahl
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ function createIdMapping( &$labElementArray ){
 	foreach ($labElementArray as $key => $value){
 		if ( $lastSeenElement != $key[0] ){ // new element ID
 			$lastSeenElement = $key[0];
-			$elementCounter = 1;
+			$elementCounter = 2; // 1 = prototype... (used by lab to indicate empty...)
 		}
 		$labElementArray[ $key ] = $lastSeenElement.$elementCounter++;
 	}
@@ -261,7 +261,9 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
    * @return bool
    */
   function isLocal( $fileWithPath ){
-    return (substr( $fileWithPath, 0, 4 ) != 'http');
+    $ignorePaths = array( 'extern', 'pages', 'ini', 'include', 'css', 'php', 'sessiondata', 'syspix');
+    $parts = explode( '/', $fileWithPath );
+    return ((substr( $fileWithPath, 0, 4 ) != 'http') && !(is_array( $parts ) && in_array( $parts[1], $ignorePaths )) );
   }
   
   /** For Export:
@@ -351,7 +353,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
  * @return                           Directly alters $HTMLcode.
  */
 function processLocalPix( &$HTMLcode, $doCopy=true ){
-	$HTMLcode = preg_replace_callback(   '#(?=<img )(.*? src=[\',"])(?!../syspix/|/syspix/)(\S+)([\',"])#',
+	$HTMLcode = preg_replace_callback(   '#(?=<img )(.*? src=[\',"])(?!../syspix/|/syspix/)(\S+)([\',"].*>)#',
                                        create_function(
                                         '$matches',
                                         'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];'
@@ -367,7 +369,7 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
  */
 function importPix( &$HTMLcode ){
   global $cfg;
-	$HTMLcode = preg_replace_callback(   '#(?=<img )(.*? src=[\',"])(images/\S+)([\',"])#',
+	$HTMLcode = preg_replace_callback(   '#(?=<img )(.*? src=[\',"])(images/\S+)([\',"].*>)#',
                                        create_function(
                                         '$matches',
                                         'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];'
@@ -384,7 +386,7 @@ function importPix( &$HTMLcode ){
  * @return                           Directly alters $HTMLcode.
  */
 function processLocalFiles( &$HTMLcode, $doCopy=true ){
-	$HTMLcode = preg_replace_callback(   '#(?=<a )(.*? href=[\',"])(?!../pages/|/pages/|\#)(\S+)([\',"])#',
+	$HTMLcode = preg_replace_callback(   '#(?=<a )(.*? href=[\',"])(?!../pages/|/pages/|\#)(\S+)([\',"].*>)#',
                                        create_function(
                                         '$matches',
                                         'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];'
@@ -400,7 +402,7 @@ function processLocalFiles( &$HTMLcode, $doCopy=true ){
  */
 function importFiles( &$HTMLcode ){
   global $cfg;
-	$HTMLcode = preg_replace_callback(   '#(?=<a )(.*? href=[\',"])(data/\S+)([\',"])#',
+	$HTMLcode = preg_replace_callback(   '#(?=<a )(.*? href=[\',"])(data/\S+)([\',"].*>)#',
                                        create_function(
                                         '$matches',
                                         'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];'
@@ -504,7 +506,7 @@ function getLabsFromDirectory( $directory ){
 	$subDirs = scandir( $directory );
   for( $i=0; $i<sizeof( $subDirs ); $i++){
     if ( $subDirs[$i] == '.' || $subDirs[$i] == '..' ) continue; // skip those
-    $file_name = $directory.$subDirs[$i].'/l0000001.txt';
+    $file_name = $directory.$subDirs[$i].'/l0000002.txt';
     if( file_exists($file_name) ){
       $myLelement = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
       $myLelement->initFromSerialized( file_get_contents( $file_name ) );

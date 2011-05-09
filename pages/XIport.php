@@ -49,12 +49,12 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         
       // load information about the lab
         $labToImport = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
-        $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/l0000001.txt') );
+        $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/l0000002.txt') );
 
       // create the mapping from the directory and create the "empty" DB objects for the elements
         $labElementArray = createIdImportMappingInitDB( $labToImport->uniqueID );
         
-        $newLabId = $labElementArray['l1'];
+        $newLabId = $labElementArray['l2'];
         
         $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.$newLabId.')</h3>'."\r\n" );
 
@@ -83,11 +83,12 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $pge->put( '<h3>'.$labToExport->title.' ('.$labToExport->uniqueID.' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export">)</h3>'."\r\n" );       
     // get all elements in lab as an array
         $labElementArray = explode( ' ',
-                                str_replace( array('( ', ' )'), array('', ''),  // remove "( ", " )"
-                                  'c'.$labToExport->preLab->idx.' '.$labToExport->preLab->buildStructure(true, true).
-                                  ' c'.$labToExport->lab->idx.' '.$labToExport->lab->buildStructure(true, true)
-                                ).' l'.$key
+                                str_replace( array('( ', ' )'), '',  // remove "( ", " )"
+					     (($labToExport->preLab->idx != 1) ?'c'.$labToExport->preLab->idx.' '.$labToExport->preLab->buildStructure(true, true).' ':''). // 1 means empty
+					     (($labToExport->lab->idx != 1)?'c'.$labToExport->lab->idx.' '.$labToExport->lab->buildStructure(true, true).' ':'') // 1 means empty
+                                ).'l'.$key
                               );
+
     // build the array that contains the renaming: [oldID] => exportedID
         createIdMapping( $labElementArray );
 

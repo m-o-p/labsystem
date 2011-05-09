@@ -6,6 +6,18 @@ Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
 
+2011-05-08
+-------------------
+  /include/hostname2config.inc
+    Added ilab2. Need for more change
+  /include/classes/elements/LlDBInterface.inc
+  /include/classes/elements/LlElement.inc
+    Some fixings for compatibility with labsystems without authors and UID field
+  /include/configuration.inc
+    Enables recursive embedding of configurations now which allows partial configs
+  /setup/index.php
+    Added hostname2config support here as well
+
 2011-05-06
 -------------------
  /include/XIlib.inc, /pages/XIport.php:

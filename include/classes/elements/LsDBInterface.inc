@@ -208,8 +208,8 @@ class LsDBInterface {
               "start='".date("YmdHis", $eS->start)."', ".
               "stop='".date("YmdHis", $eS->stop)."', ".
               "comment='".$this->myDBC->escapeString($eS->comment)."', ";
-    if ( $eS->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eS->history)."'";
-    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
+    if ( $eS->history != "" ) $toSet .= "history='".$this->myDBC->escapeString($eS->history)."'";
+    else $toSet .= "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
     
     $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
 

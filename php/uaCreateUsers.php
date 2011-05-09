@@ -80,24 +80,34 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
   $newUsers = explode( "\n", $_POST['MAILADDRESSES'] );
   
   foreach( $newUsers as $value ){
-    // generate new Password:
+    // Each line is $name, $prename, $email, ...
+    $value = str_replace( "\r", '', $value ); // remove anyother newline signs!
+    if ( $value == '' ) continue; // jump over empty ones
+    
+    $entries = explode( ',', $value );
+    foreach($entries as $key=>$toDo){
+      $entries[$key] = trim($toDo); // remove spaces
+      $entries[$key] = preg_replace( array('/"/',"/'/"), '', $toDo ); // remove quotes
+    }
+    //echo( 'name: -'.$entries[0]."-<br>\r\n" );
+    //echo( 'prename: -'.$entries[1]."-<br>\r\n" );
+    //echo( 'mail: -'.$entries[2]."-<br><hr>\r\n" );
+
+// generate new Password:
     srand((double)microtime()*1000000);
     $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
     
-    $value = str_replace( "\r", '', $value ); // remove anyother newline signs!
-    if ( $value == '' ) continue; // jump over empty ones
-
-// Here you could make another explode( ' ', $value ) to seperate into "prename name mail" etc.
-
-    $userDBC->mkInsert( $cfg->get('UserDBField_username')."='".$value."', ".
-                        $cfg->get('UserDBField_name')."='".$value."', ".
+    $userDBC->mkInsert( $cfg->get('UserDBField_username')."='".$entries[2]."', ".
+                        $cfg->get('UserDBField_name')."='".$entries[0]."', ".
+                        $cfg->get('UserDBField_forename')."='".$entries[1]."', ".
                         $cfg->get('UserDBField_password')."='".sha1( $newPW )."', ".
-                        $cfg->get('UserDBField_email')."='".$value."', ".
+                        $cfg->get('UserDBField_email')."='".$entries[2]."', ".
                         $cfg->get('UserDBField_uid')."='".md5( uniqid( rand() ) )."'".
                         $updateString,
                         $cfg->get('UserDatabaseTable') );
-  }
 
+  }
+  
 // note
   $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );
   
