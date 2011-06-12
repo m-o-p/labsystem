@@ -126,12 +126,17 @@ class LlDBInterface {
   }
   
   /**
-  * Stores the data into the database. Position specified by $eI->idx.
+  * !$createNew: Stores the data into the database. Position specified by $eL->idx.
+  *  $createNew: Creates a new dataset and returns its index in the database.
   *
   * @param $eL  The LlElement to store.
+  * @param $createNew  Shall a new element be created in the DB?
+  * @return !$createNew: possible error 
+  *          $createNew: int The idx of the newly created element.
   */
-  function setData( &$eL ){
-    global $usr, $cfg;
+  function setData( &$eL, $createNew = false ){
+    global $usr, $cfg, $lng;
+    tidyHTML( $eL->comment );
     $toSet =  "uniqueID='".$this->myDBC->escapeString($eL->uniqueID)."', ".
               "title='".$this->myDBC->escapeString($eL->title)."', ".
               "authors='".$this->myDBC->escapeString($eL->authors)."', ".
@@ -142,49 +147,15 @@ class LlDBInterface {
               "visible_only_in_collection=".retIfTrue( $eL->visibleOnlyInCollection, "1", "0" ).
               ", visible_before_first_sched=".retIfTrue( $eL->visibleBefore1stSched, "1", "0" ).
               ", visible_during_sched=".retIfTrue( $eL->visibleDuringSched, "1", "0" ).
-              ", visible_after_first_sched=".retIfTrue( $eL->visibleAfter1stSched, "1", "0" );
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eL->history)."' )";
-              
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eL->idx );
-  }
+              ", visible_after_first_sched=".retIfTrue( $eL->visibleAfter1stSched, "1", "0" ).
+              ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
+    if ( $eL->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eL->history)."' )";
+                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
 
-  /**
-  * For uniformity of the creation interface this wrapper is needed.
-  * It got necessary for the *newElement in LcElement.
-  *
-  * @param &$element  The LiElement to store.
-  * @return &$element The new element.
-  */
-  function newElement( $element ){
-    return $this->newLab( $element );
-  }
-  
-  /**
-  * Creates a new dataset and returns its index in the database.
-  *
-  * @param $eL  The LlElement to store.
-  * @return int The idx of the newly created element.
-  */
-  function newLab( &$eL ){
-    global $usr, $lng;
-    
-    $toSet =  "uniqueID='".$this->myDBC->escapeString($eL->uniqueID)."', ".
-              "title='".$this->myDBC->escapeString($eL->title)."', ".
-              "authors='".$this->myDBC->escapeString($eL->authors)."', ".
-              "comment='".$this->myDBC->escapeString($eL->comment)."', ".
-              "prelab_collection_idx='".$this->myDBC->escapeString($eL->prelabCollectionIdx)."', ".
-              "lab_collection_idx='".$this->myDBC->escapeString($eL->labCollectionIdx)."', ".
-              "matching_menu='".$this->myDBC->escapeString($eL->matchingMenu)."', ".
-              "visible_only_in_collection=".retIfTrue( $eL->visibleOnlyInCollection, "1", "0" ).
-              ", visible_before_first_sched=".retIfTrue( $eL->visibleBefore1stSched, "1", "0" ).
-              ", visible_during_sched=".retIfTrue( $eL->visibleDuringSched, "1", "0" ).
-              ", visible_after_first_sched=".retIfTrue( $eL->visibleAfter1stSched, "1", "0" );
-    if ( $eL->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eL->history)."'";
-    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    
-    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
-
-    return mysql_result($result, 0);
+    if ( $createNew )
+      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+    else
+      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eL->idx );
   }
 
   /**

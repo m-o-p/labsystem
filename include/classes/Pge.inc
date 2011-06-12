@@ -53,6 +53,15 @@ class Pge extends LpElement{
                                  "__ELEMENTTITLE__",         
                                  "__CURRENT_URL__",       
                                  "__LINK2ADMIN_USER_INTERFACE__" );
+    $this->sanitizedKey   = Array( "awob6ope69", 
+                                "uhuk8afa95", 
+                                "uvur2awu94",         
+                                "onot5oka70", 
+                                "elid5upe10",    
+                                "anus9iri39", 
+                                "avod1ubo72",         
+                                "ugud9eka32",       
+                                "udan1obo94" );
     $this->replaceValue = Array( "!_LINKQUERY_!", 
                                  "!_PAGETITLE_!", 
                                  $cfg->get("SystemTitle"),  
@@ -86,6 +95,17 @@ class Pge extends LpElement{
   }
   
   /**
+  * In some markup languages the chosen constants $this->replaceKey have markup meaning.
+  * Replaces the  $this->replaceKey by  $this->sanitizedKey which should be save.
+  * Became necessary with the introduction of MarkUp as they use __ as mark for emphasis.
+  * @param $string  The content the replacements should be done inside.
+  * @return $string  The content with the replacements done.
+  */
+  function sanitizeKeys( $string ){
+    return str_replace( $this->replaceKey, $this->sanitizedKey, $string );
+  }
+  
+  /**
   * This function is called to display the contents. It gets called in ../include/page_layout.inc.
   * This function overrides the one from LpElement.
   */
@@ -102,7 +122,11 @@ class Pge extends LpElement{
       if ( $counter == 2 ) $this->replaceValue[$key] = $this->title;
       if ( $counter == 3 ) break;
     }
-    echo( str_replace( $this->replaceKey, $this->replaceValue, $this->contents ) );
+
+    echo( str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
+                       array_merge( $this->replaceValue, $this->replaceValue ), 
+                       $this->contents ) 
+                       );
   }
   
   /**

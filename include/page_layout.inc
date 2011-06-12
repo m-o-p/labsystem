@@ -89,12 +89,8 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 <?PHP /* TinyMCE (WYSIWYG-Editor) integration */
     if ($url->available('tinyMCE')) 
       echo('
-    <script language="javascript" type="text/javascript" src="../tiny_mce/tiny_mce.js"></script>
+    <script language="javascript" type="text/javascript" src="../plugins/tiny_mce/tiny_mce.js"></script>
     <script language="javascript" type="text/javascript">
-
-      function myCustomInitInstance(inst) {
-              alert("HTML-code will be bad if you save!");
-      }
 
       // Called when content is loaded from textarea
       // Remove beginning [HTML]-tag of labsystem fields
@@ -107,7 +103,9 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
      // Add beginning [HTML]-tag to labsystem fields
      function myCustomSave(id, content)
      {
-         return "[HTML]\n"+content;
+        // gets somehow called twice...
+        if ( content.substring(0, 6) != "[HTML]" ) content = "[HTML]\n"+content;
+        return content;
      }
 
 
@@ -117,11 +115,13 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
         elements : "CONTENTS, ANSWER",
         // Should the user be asked if TinyMCE should get started? (onClick)
         ask : false,
-        init_instance_callback : "myCustomInitInstance",
         setupcontent_callback : "myCustomSetupContent",
         save_callback : "myCustomSave",
         // Labsystems stylesheet to format the content correctly
-        content_css : "'.$cfg->get("UserStyleSheet").'"
+        content_css : "'.$cfg->get("UserStyleSheet").'",
+        theme : "advanced",
+        // hinders tinyMCE from putting <p> around [HTML]
+        forced_root_block : ""
       });
     </script>
     ');

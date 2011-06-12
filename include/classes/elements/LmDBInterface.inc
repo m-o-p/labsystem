@@ -113,59 +113,37 @@ class LmDBInterface {
   }
   
   /**
-  * Stores the data into the database. Position specified by $eI->idx.
+  * !$createNew: Stores the data into the database. Position specified by $eM->idx.
+  *  $createNew: Creates a new dataset and returns its index in the database.
   *
   * @param $eM  The LmElement to store.
+  * @param $createNew  Shall a new element be created in the DB?
+  * @return !$createNew: possible error 
+  *          $createNew: int The idx of the newly created element.
   */
-  function setData( &$eM ){
-    global $usr, $cfg;
+  function setData( &$eM, $createNew = false ){
+    global $usr, $cfg, $lng;
+    if ($cfg->get('tidyHTML') == 'TRUE'){
+      tidyHTML( $eM->question );
+      tidyHTML( $eM->answerExplanation );
+      foreach ( $eM->answerArray as &$value ) tidyHTML($value);   
+    }
     $toSet =  "question='".$this->myDBC->escapeString($eM->question)."', ".
               "answer_array='".$this->myDBC->escapeString( serialize($eM->answerArray) )."', ".
               "answer_explanation='".$this->myDBC->escapeString($eM->answerExplanation)."', ".
               "correct_mask='".$eM->correctMask."', ".
               "visible_for=".$eM->visibleFor.", ".
-              "visible_only_in_collection=";
-    if ( $eM->visibleOnlyInCollection ) $toSet .= "1"; else $toSet .= "0";
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eM->history)."' )";
+              "visible_only_in_collection=".retIfTrue( $eM->visibleOnlyInCollection, 1, 0).', '.
+              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
+    if ( $eM->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eM->history)."' )";
+                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
 
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eM->idx );
+    if ( $createNew )
+      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+    else
+      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eM->idx );
   }
-  
-  /**
-  * For uniformity of the creation interface this wrapper is needed.
-  * It got necessary for the *newElement in LcElement.
-  *
-  * @param &$element  The LiElement to store.
-  * @return &$element The new element.
-  */
-  function newElement( $element ){
-    return $this->newMultipleChoice( $element );
-  }
-
-  /**
-  * Creates a new dataset and returns its index in the database.
-  *
-  * @param $eM  The LmElement to store.
-  * @return int The idx of the newly created element.
-  */
-  function newMultipleChoice( &$eM ){
-    global $usr, $lng;
-    
-    $identifier=md5( time() ); // used to retieve the ne entry
-    $toSet =  "question='".$this->myDBC->escapeString($eM->question)."', ".
-              "answer_array='".$this->myDBC->escapeString( serialize($eM->answerArray) )."', ".
-              "answer_explanation='".$this->myDBC->escapeString($eM->answerExplanation)."', ".
-              "correct_mask='".$eM->correctMask."', ".
-              "visible_for=".$eM->visibleFor.", ".
-              "visible_only_in_collection=".retIfTrue( $eM->visibleOnlyInCollection, 1, 0);
-    if ( $eM->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eM->history)."'";
-    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    
-    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
-
-    return mysql_result($result, 0);
-  }
-  
+ 
   /**
   * Deletes the element with $idx from the database.
   *

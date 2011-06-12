@@ -126,14 +126,26 @@ function parseHTML( &$object ){
   $toReplace = array( '   ', '  ', "\b([^ ])" );
   $replaceWith = array ( '&nbsp; &nbsp;', '&nbsp; ', "&nbsp;\\1" );
   
-  if ( substr( $object, 0, 6 ) != "[HTML]" )
+  if ( (substr( $object, 0, 4 ) == '[MD]') && include_once( '../plugins/phpMarkDown/markdown.php' ) ){ //phpMarkDown http://michelf.com/projects/php-markdown/
+    $object = Markdown( $GLOBALS['pge']->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
+  }
+  else if ( substr( $object, 0, 6 ) == '[HTML]' ) // HTML
+    $object = substr( $object, 6 ); // just remove [HTML]
+  else // assume it is plain text
 //    $object = preg_replace('/ ([\w\s])/', '&nbsp;\\1', nl2br( htmlspecialchars( $object ) ) );
 //    $object = nl2br( htmlspecialchars( $object ) );
     $object = preg_replace('/  /', '&nbsp; ',
                            nl2br( htmlspecialchars( $object ) )
               );
-  else
-    $object = substr( $object, 6 ); // just remove [HTML]
+}
+
+function tidyHTML( &$string ){
+  if ( ($GLOBALS['cfg']->get('tidyHTML') == 'TRUE') && // tidying is configured on via config file option
+       ( substr( $string, 0, 6 ) == '[HTML]' ) &&  // this is and HTML element
+       class_exists( 'tidy' ) ){ // tidy exists on this system
+    if (!isset( $GLOBALS['tidy'] )) $GLOBALS['tidy'] = new tidy();
+    $string = "[HTML]\n".$GLOBALS['tidy']->repairString( substr( $string, 6 ), array('indent' => TRUE, 'show-body-only' => TRUE, 'vertical-space' => TRUE, 'wrap' => 2000) );
+  }
 }
 
 /**
@@ -170,7 +182,7 @@ function createNew( $elementID ){
   $newElement = $GLOBALS[ $elementIDsmall.'DBI' ]->getData2idx( 1 ); // load default prototype
   $newElement->history .= ': '.$elementID.' auto created';
 
-  $newIdx = $GLOBALS[ $elementIDsmall.'DBI' ]->newElement( $newElement ); // insert the new element in the DB and get the new idx back
+  $newIdx = $GLOBALS[ $elementIDsmall.'DBI' ]->setData( $newElement, true ); // insert the new element in the DB and get the new idx back
   return $newIdx;
 }
 ?>

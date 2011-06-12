@@ -48,7 +48,7 @@ class DBConnection{
   * @return           A mysql connection identifier or false
   */
   function DBConnection( $host, $user, $password, $dataBase ){
-    $this->link = mysql_pconnect( $host, $user, $password, 2 );
+    $this->link = mysql_pconnect( $host, $user, $password, 2/*CLIENT_FOUND_ROWS*/ );
     /*
 "Note: When using UPDATE, MySQL will not update columns where the 
 new value is the same as the old value. This creates the 
@@ -138,7 +138,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     $this->query(  $theQuery );
     $idx = $this->query("SELECT LAST_INSERT_ID()");
     $this->query("UNLOCK TABLES");
-    return $idx;
+    return mysql_result($idx, 0);
   }
   
   /**
@@ -258,7 +258,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
    *  p.e.: I've got to say "hello" -> I\'ve got to say \"hello\"
    */
   function escapeString( $val ){
-    return mysql_real_escape_string( stripslashes( $val ) );
+    return mysql_real_escape_string( $val );
     /* If magic_quotes is on you must remove the quotes first!
        Otherwise there will be backslashes in your html-code...
     */

@@ -6,6 +6,43 @@ Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
 
+2011-05-12
+-------------------
+  /include/classes/Pge.inc:
+    Added sanitizeKeys( $string ) to sanitize constants in helper.inc: parseHTML before applying MarkUp.
+  /include/helper.inc:
+    Uses $pge->sanitizeKeys now before applying markup... (=> constants work with markup now)
+    
+  /include/classes/DBConnection.inc:
+    Changed escapeString. Removed stripslashes ( $val ) as magic quotes is off by default in PHP now.
+    
+  /include/helper.inc
+    Added support for auto formatting/ repairing/ indenting of HTML code using php's tidy.
+    
+  Added config parameter to control tidy:
+    tidyHTML                = "TRUE"
+    
+  Affects setData functions in
+    /include/classes/elements/L{p, s, m, l, i}DBInterface.inc
+    
+  Updated new* (invoked by newElement in each DBI) so that it uses setData.
+  Updated setData in DBIs with a second parameter $createNew
+  Update L*DBInterface + helper.inc to use setData instead of newElement respective the newLab etc. functions that got removed.
+ 
+2011-06-08
+-------------------
+  /include/page_layout.inc
+    Updated tinyMCE configuration to run with versions 3.x
+    Moved /tiny_mce directory to /plugins/tiny_mce
+    
+  /plugins
+    Added support for MarkUp/ Textile as markup language.
+  
+2011-05-09
+-------------------
+  /php/uaCreateUsers.php
+    Added functionality to import user names as well
+
 2011-05-08
 -------------------
   /include/hostname2config.inc

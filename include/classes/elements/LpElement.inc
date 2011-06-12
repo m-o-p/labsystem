@@ -84,10 +84,10 @@ class LpElement extends Element{
 
     if ($this->contents == "") return "'()";  // is empty
     
-    parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
-    
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     $this->contents = str_replace( "__ELEMENTTITLE__", retIfTrue( $paragraph != "", $paragraph.". " ).$this->title, $this->contents );
+    
+    parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
     
     return EM::viewTopPage( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">".$this->contents."</div>".
@@ -213,7 +213,7 @@ class LpElement extends Element{
                                
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
-                                      $newPage->idx = $pDBI->newPage( $newPage );
+                                      $newPage->idx = $pDBI->setData( $newPage, true );
                                       $url->put( "address=p".$newPage->idx );         // the address of the new element
                                      }
     else{

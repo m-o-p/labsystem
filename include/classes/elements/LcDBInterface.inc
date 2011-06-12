@@ -119,57 +119,31 @@ class LcDBInterface {
   }
   
   /**
-  * Stores the data into the database. Position specified by $eC->idx.
+  * !$createNew: Stores the data into the database. Position specified by $eC->idx.
+  *  $createNew: Creates a new dataset and returns its index in the database.
   *
   * @param $eC  The LcElement to store.
+  * @param $createNew  Shall a new element be created in the DB?
+  * @return !$createNew: possible error 
+  *          $createNew: int The idx of the newly created element.
   */
-  function setData( &$eC ){
-    global $usr, $cfg;
+  function setData( &$eC, $createNew = false ){
+    global $usr, $cfg, $lng;
     $toSet =  "title='".$this->myDBC->escapeString($eC->title)."', ".
               "contents='".$this->myDBC->escapeString($eC->contents)."', ".
               "matching_menu='".$this->myDBC->escapeString($eC->matchingMenu)."', ".
               "visible_only_in_collection=".retIfTrue( $eC->visibleOnlyInCollection, "1", "0" ).
               ", visible_before_first_sched=".retIfTrue( $eC->visibleBefore1stSched, "1", "0" ).
               ", visible_during_sched=".retIfTrue( $eC->visibleDuringSched, "1", "0" ).
-              ", visible_after_first_sched=".retIfTrue( $eC->visibleAfter1stSched, "1", "0" );
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eC->history)."' )";
-    
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eC->idx );
-  }
-  
-  /**
-  * For uniformity of the creation interface this wrapper is needed.
-  * It got necessary for the *newElement in LcElement.
-  *
-  * @param &$element  The LiElement to store.
-  * @return &$element The new element.
-  */
-  function newElement( $element ){
-    return $this->newCollection( $element );
-  }
-  
-  /**
-  * Creates a new dataset and returns its index in the database.
-  *
-  * @param $eC  The LcElement to store.
-  * @return int The idx of the newly created element.
-  */
-  function newCollection( &$eC ){
-    global $usr, $lng;
-    
-    $toSet =  "title='".$this->myDBC->escapeString($eC->title)."', ".
-              "contents='".$this->myDBC->escapeString($eC->contents)."', ".
-              "matching_menu='".$this->myDBC->escapeString($eC->matchingMenu)."', ".
-              "visible_only_in_collection=".retIfTrue( $eC->visibleOnlyInCollection, "1", "0" ).
-              ", visible_before_first_sched=".retIfTrue( $eC->visibleBefore1stSched, "1", "0" ).
-              ", visible_during_sched=".retIfTrue( $eC->visibleDuringSched, "1", "0" ).
-              ", visible_after_first_sched=".retIfTrue( $eC->visibleAfter1stSched, "1", "0" );
-    if ( $eC->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eC->history)."'";
-    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    
-    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+              ", visible_after_first_sched=".retIfTrue( $eC->visibleAfter1stSched, "1", "0" ).
+              ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
+    if ( $eC->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eC->history)."' )";
+                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
 
-    return mysql_result($result, 0);
+    if ( $createNew )
+      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+    else
+      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eC->idx );
   }
 
   /**

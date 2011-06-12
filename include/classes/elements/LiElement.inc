@@ -608,7 +608,7 @@ class LiElement extends Element{
                                
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
-                                      $newInput->idx = $iDBI->newInput( $newInput );
+                                      $newInput->idx = $iDBI->setData( $newInput, true );
                                       $url->put( "address=i".$newInput->idx );        // the address of the new element
                                      }
     else{

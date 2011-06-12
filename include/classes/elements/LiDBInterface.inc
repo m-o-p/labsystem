@@ -59,7 +59,7 @@ class LiDBInterface {
     global $cfg;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
-      trigger_error( mysql_error(). "mc with idx not found: ".$idx, E_USER_WARNING );
+      trigger_error( mysql_error(). "i with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
@@ -94,7 +94,7 @@ class LiDBInterface {
     global $cfg;
     $result = $this->myDBC->mkSelect( "idx, question, visible_for, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
-      //trigger_error( mysql_error(). "mc with idx not found: ".$idx, E_USER_WARNING );
+      //trigger_error( mysql_error(). "i with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
@@ -110,54 +110,31 @@ class LiDBInterface {
   }
   
   /**
-  * Stores the data into the database. Position specified by $eI->idx.
+  * !$createNew: Stores the data into the database. Position specified by $eI->idx.
+  *  $createNew: Creates a new dataset and returns its index in the database.
   *
   * @param $eI  The LIElement to store.
+  * @param $createNew  Shall a new element be created in the DB?
+  * @return !$createNew: possible error 
+  *          $createNew: int The idx of the newly created element.
   */
-  function setData( &$eI ){
-    global $usr, $cfg;
+  function setData( &$eI, $createNew = false ){
+    global $usr, $cfg, $lng;
+    tidyHTML( $eI->question );
+    tidyHTML( $eI->exampleSolution );
     $toSet =  "question='".$this->myDBC->escapeString($eI->question)."', ".
               "example_solution='".$this->myDBC->escapeString( $eI->exampleSolution )."', ".
               "possible_credits='".$this->myDBC->escapeString($eI->possibleCredits * 100)."', ". // stored as int but float :2
               "visible_for=".$eI->visibleFor.", ".
-              "visible_only_in_collection=";
-    if ( $eI->visibleOnlyInCollection ) $toSet .= "1"; else $toSet .= "0";
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eI->history)."' )";
+              "visible_only_in_collection=".retIfTrue( $eI->visibleOnlyInCollection, 1, 0 ).", ".
+              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
+    if ( $eI->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eI->history)."' )";
+                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
 
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eI->idx );
-  }
-  
-  /**
-  * For uniformity of the creation interface this wrapper is needed.
-  * It got necessary for the *newElement in LcElement.
-  *
-  * @param &$element  The LiElement to store.
-  * @return &$element The new element.
-  */
-  function newElement( $element ){
-    return $this->newInput( $element );
-  }
-  
-  /**
-  * Creates a new dataset and returns its index in the database.
-  *
-  * @param $eI  The LiElement to store.
-  * @return int The idx of the newly created element.
-  */
-  function newInput( &$eI ){
-    global $usr, $lng;
-    
-    $toSet =  "question='".$this->myDBC->escapeString($eI->question)."', ".
-              "example_solution='".$this->myDBC->escapeString( $eI->exampleSolution )."', ".
-              "possible_credits='".$this->myDBC->escapeString($eI->possibleCredits * 100)."', ".
-              "visible_for=".$eI->visibleFor.", ".
-              "visible_only_in_collection=".retIfTrue( $eI->visibleOnlyInCollection, 1, 0 );
-    if ( $eI->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eI->history)."'";
-    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    
-    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
-
-    return mysql_result($result, 0);
+    if ( $createNew )
+      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+    else
+      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eI->idx );
   }
   
   /**

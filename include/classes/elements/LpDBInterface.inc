@@ -109,56 +109,31 @@ class LpDBInterface {
   }
   
   /**
-  * Stores the data into the database. Position specified by $eI->idx.
+  * !$createNew: Stores the data into the database. Position specified by $eP->idx.
+  *  $createNew: Creates a new dataset and returns its index in the database.
   *
   * @param $eP  The LpElement to store.
+  * @param $createNew  Shall a new element be created in the DB?
+  * @return !$createNew: possible error 
+  *          $createNew: int The idx of the newly created element.
   */
-  function setData( &$eP ){
-    global $usr, $cfg;
+  function setData( &$eP, $createNew = false ){
+    global $usr, $cfg, $lng;
+    tidyHTML( $eP->contents );
     $toSet =  "title='".$this->myDBC->escapeString($eP->title)."', ".
               "contents='".$this->myDBC->escapeString($eP->contents)."', ".
               "matching_menu='".$this->myDBC->escapeString($eP->matchingMenu)."', ".
               "visible_for=".$eP->visibleFor.", ".
-              "visible_only_in_collection=";
-    if ( $eP->visibleOnlyInCollection ) $toSet .= "1"; else $toSet .= "0";
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eP->history)."' )";
-    
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eP->idx );
-  }
-  
-  /**
-  * For uniformity of the creation interface this wrapper is needed.
-  * It got necessary for the *newElement in LcElement.
-  *
-  * @param &$element  The LiElement to store.
-  * @return &$element The new element.
-  */
-  function newElement( $element ){
-    return $this->newPage( $element );
-  }
+              "visible_only_in_collection=".retIfTrue( $eP->visibleOnlyInCollection, 1, 0 ).', '.
+              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
+    if ( $eP->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eP->history)."' )";
+                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
 
-  /**
-  * Creates a new dataset and returns its index in the database.
-  *
-  * @param $eP  The LpElement to store.
-  * @return int The idx of the newly created element.
-  */
-  function newPage( &$eP ){
-    global $usr, $lng;
-    
-    $identifier=md5( time() ); // used to retieve the ne entry
-    $toSet =  "title='".$this->myDBC->escapeString($eP->title)."', ".
-              "contents='".$this->myDBC->escapeString($eP->contents)."', ".
-              "matching_menu='".$this->myDBC->escapeString($eP->matchingMenu)."', ".
-              "visible_for=".$eP->visibleFor.", ".
-              "visible_only_in_collection=".retIfTrue( $eP->visibleOnlyInCollection, 1, 0 );
-    if ( $eP->history != "" ) $toSet .= ", history='".$this->myDBC->escapeString($eP->history)."'";
-    else $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    
-    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
-
-    return mysql_result($result, 0);
-  } 
+    if ( $createNew )
+      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+    else
+      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eP->idx );
+  }
   
   /**
   * Deletes the element with $idx from the database.

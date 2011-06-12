@@ -564,7 +564,7 @@ class LsElement extends Element{
                                  
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
-                                      $newSchedule->idx = $sDBI->newSchedule( $newSchedule );
+                                      $newSchedule->idx = $sDBI->setData( $newSchedule, true );
                                       $url->put( "address=s".$newSchedule->idx );     // the address of the new element
                                      }
     else{ // just save the element

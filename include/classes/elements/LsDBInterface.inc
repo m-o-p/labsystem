@@ -166,54 +166,30 @@ class LsDBInterface {
   }
   
   /**
-  * Stores the data into the database. Position specified by $eI->idx.
+  * !$createNew: Stores the data into the database. Position specified by $eS->idx.
+  *  $createNew: Creates a new dataset and returns its index in the database.
   *
-  * @param $eI  The LIElement to store.
+  * @param $eS  The LsElement to store.
+  * @param $createNew  Shall a new element be created in the DB?
+  * @return !$createNew: possible error 
+  *          $createNew: int The idx of the newly created element.
   */
-  function setData( &$eS ){
-    global $usr, $cfg;
+  function setData( &$eS, $createNew = false ){
+    global $usr, $cfg, $lng;
+    tidyHTML( $eS->comment );
     $toSet =  "id='".$eS->id."', ".
               "num='".$eS->num."', ".
               "start='".date("YmdHis", $eS->start)."', ".
               "stop='".date("YmdHis", $eS->stop )."', ".
-              "comment='".$this->myDBC->escapeString($eS->comment)."'";
-    $toSet .= ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', '".$this->myDBC->escapeString($eS->history)."' )";
+              "comment='".$this->myDBC->escapeString($eS->comment)."', ".
+              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
+    if ( $eS->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eS->history)."' )";
+                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
 
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eS->idx );
-  }
-
-    
-  /**
-  * For uniformity of the creation interface this wrapper is needed.
-  * It got necessary for the *newElement in LcElement.
-  *
-  * @param &$element  The LiElement to store.
-  * @return &$element The new element.
-  */
-  function newElement( $element ){
-    return $this->newSchedule( $element );
-  }
-  
-  /**
-  * Creates a new dataset and returns its index in the database.
-  *
-  * @param $eS  The LsElement to store.
-  * @return int The idx of the newly created element.
-  */
-  function newSchedule( &$eS ){
-    global $usr, $lng;
-    
-    $toSet =  "id='".$eS->id."', ".
-              "num='".$eS->num."', ".
-              "start='".date("YmdHis", $eS->start)."', ".
-              "stop='".date("YmdHis", $eS->stop)."', ".
-              "comment='".$this->myDBC->escapeString($eS->comment)."', ";
-    if ( $eS->history != "" ) $toSet .= "history='".$this->myDBC->escapeString($eS->history)."'";
-    else $toSet .= "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.": ".$lng->get("dataSetCreated")."' )";
-    
-    $result = $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
-
-    return mysql_result($result, 0);
+    if ( $createNew )
+      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+    else
+      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eS->idx );
   }
 
   /**

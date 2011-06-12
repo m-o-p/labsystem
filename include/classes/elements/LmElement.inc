@@ -538,7 +538,7 @@ class LmElement extends Element{
                                        
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
-                                      $newMultipleChoice->idx = $mDBI->newMultipleChoice( $newMultipleChoice );
+                                      $newMultipleChoice->idx = $mDBI->setData( $newMultipleChoice, true );
                                       $url->put( "address=m".$newMultipleChoice->idx ); // the address of the new element
                                      }
     else{
