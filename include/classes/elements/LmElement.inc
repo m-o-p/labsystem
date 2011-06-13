@@ -201,8 +201,8 @@ class LmElement extends Element{
     // If the element is not answered a FORM is needed.
     if ( $isAnswerable ){
       $ret .= "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit".$this->idx."\" METHOD=\"POST\" ".
-               "ACTION=\"".retIfTrue( $isGettingAnswered,
-                                      $url->link2("../php/executeCommandOnElement.php?address=m".$this->idx),         // save button functionality
+               "ACTION=\"".( $isGettingAnswered ?
+                                      $url->link2("../php/executeCommandOnElement.php?address=m".$this->idx) :         // save button functionality
                                       $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress) // give answer button functionality
                                      ).
               "\">\n".
@@ -232,12 +232,12 @@ class LmElement extends Element{
       for ( $j=0; $j < $this->triesUp2Now; $j++ ) { // Iteration over the previous answers
         $actualMask = $this->previousAnswersArray[$j]; // the answer given there
         
-        $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell_".retIfTrue( $actualMask == $this->correctMask, "right", "wrong" )."\">".
+        $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell_".( $actualMask == $this->correctMask ?  "right" :  "wrong"  )."\">".
                  "<input type=\"checkbox\" ".
                         "tabindex=\"".$pge->nextTab++."\" ".
                         "title='".$lng->get( 'isCorrect' )."'".
-                         retIfTrue( ($actualMask & LmElement::mask($actualAnswer)),  
-                                    "checked=\"checked\" " 
+                         ( ($actualMask & LmElement::mask($actualAnswer)) ?  
+                                    "checked=\"checked\" " : ''
                                    ).
                          "disabled=\"disabled\" ".
                   "></td>\n";
@@ -254,11 +254,11 @@ class LmElement extends Element{
                         "name=\"ANSWER".$actualAnswer."\" ".
                         "value=\"".LmElement::mask($actualAnswer)/*2^$actualAnswer*/."\" ".
                         "tabindex=\"".$pge->nextTab++."\" ".
-                         retIfTrue( ($actualMask & LmElement::mask($actualAnswer)),  
-                                    "checked=\"checked\" " 
+                         ( ($actualMask & LmElement::mask($actualAnswer)) ?  
+                                    "checked=\"checked\" " : ''
                                    ).
-                         retIfTrue( !$isGettingAnswered,
-                                    "disabled=\"disabled\" " 
+                         ( !$isGettingAnswered ?
+                                    "disabled=\"disabled\" " : '' 
                                    ).
                   "></td>\n";
        }
@@ -266,9 +266,9 @@ class LmElement extends Element{
        // The answers:
        $ret .=  "\t<td class=\"labsys_mop_m_answers_table_answer_cell\">".
                 "<label for=\"m".$this->idx."a".$actualAnswer."\">".
-                retIfTrue( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))), "<span class=\"labsys_mop_grayed\">" ).
+                ( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))) ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
                 returnHTML( $this->answerArray[$actualAnswer] ).
-                retIfTrue( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))), "</span>" ).
+                ( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))) ?  "</span>"  : '' ).
                 "</label>".
                 "</td>\n</tr>\n";
      } // iteration over the number of answers (end)
@@ -280,8 +280,8 @@ class LmElement extends Element{
        $ret .= "<input tabindex=\"".$pge->nextTab++."\" ".
                       "type=\"submit\" ".
                       "class=\"labsys_mop_m_save_button\" ".
-                      "value=\"".retIfTrue( $isGettingAnswered, 
-                                            $lng->get("save"), 
+                      "value=\"".( $isGettingAnswered ? 
+                                            $lng->get("save") : 
                                             $lng->get("giveAnswer")
                                            )."\">\n".                        
                "</FORM>\n";
@@ -353,7 +353,7 @@ class LmElement extends Element{
              "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
              "<div class=\"labsys_mop_m_question\">".
               "<label for=\"aTable".$this->idx."\">".
-               retIfTrue( $paragraph != "", $paragraph.". " ).$this->question.
+               ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->question.
               "</label>".
              "</div>\n".
                $answers.
@@ -387,7 +387,7 @@ class LmElement extends Element{
                                 "value=\"".$i."\" ".
                                 "tabindex=\"".$pge->nextTab++."\"".
                                 "title='".$lng->get( 'isCorrect' )."'".
-                                 retIfTrue( ( $correctMask & LmElement::mask($i) ),  " checked=\"checked\"" ).
+                                 ( ( $correctMask & LmElement::mask($i) ) ?   " checked=\"checked\""  : '' ).
                           "></td>\n".
                           "\t<td class=\"labsys_mop_m_answers_table_answer_cell\">".
                           "<textarea tabindex=\"".$pge->nextTab++."\" ".
@@ -448,11 +448,11 @@ class LmElement extends Element{
               "<table width=\"100%\"><tr><td valign=\"top\" width=\"40%\">\n".
                 "<fieldset><legend>".$lng->get("visibility")."</legend>\n".
                   "<div>".
-                    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".retIfTrue( !$this->visibleOnlyInCollection, " checked=\"checked\"").">".
+                    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
                     "<label for=\"visAlways\" class=\"labsys_mop_input_field_label\">".$lng->get("visAlways")."</label>".
                   "</div>\n".
                   "<div>".
-                    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".retIfTrue( $this->visibleOnlyInCollection, " checked=\"checked\"").">".
+                    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
                     "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInColl")."</label>".
                   "</div>\n".
                 "</fieldset>\n".
@@ -464,7 +464,7 @@ class LmElement extends Element{
                 "</div>\n".
                 "</fieldset>\n".
               "</td></tr></table>\n".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".retIfTrue( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ),  " checked=\"checked\"" ).">".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' ).">".
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
 
@@ -658,13 +658,13 @@ class LmElement extends Element{
   function getPropertyRow( $prefix, $disabled=false ){
     global $pge, $lng, $cfg;
 
-    return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".retIfTrue( !$disabled, "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" " )."value=\"0\"".retIfTrue( !$this->visibleOnlyInCollection, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+    return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visAlways"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".retIfTrue( !$disabled, "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" " )."value=\"1\"".retIfTrue( $this->visibleOnlyInCollection, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visOnlyInColl"), $disabled ).
-            retIfTrue( $disabled, "<span class=\"labsys_mop_grayed\">" ).
+            ( $disabled ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
             " | ".
-            retIfTrue( $disabled, "</span>" ).
+            ( $disabled ?  "</span>"  : '' ).
               showRightsHorizontal( $prefix, $this->visibleFor, $disabled ).
             " ".
               cutHTMLText( $this->idx.": ".returnEditable($this->question), $cfg->get("maxCharMngRowTitleShort") );

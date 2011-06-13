@@ -50,7 +50,7 @@ foreach ( $mainMenuIni as $key => $value ){ // Iteration over the menu entries.
                               if ( $usr->isLoggedIn() ) 
                                 $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogOut" ), "../php/logout.php" );
                               else
-                                $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), retIfTrue( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ), 'https://'.$_SERVER[ 'SERVER_NAME' ].'/pages/login.php', '../pages/login.php') );
+                                $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?  'https://'.$_SERVER[ 'SERVER_NAME' ].'/pages/login.php' :  '../pages/login.php' ) );
                              }
 
   // Parse the submenu:

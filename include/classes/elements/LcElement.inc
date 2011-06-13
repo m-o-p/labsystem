@@ -126,7 +126,7 @@ class LcElement extends Element{
 
     $structureArray = explode( " ", $this->getStructure() );
 
-    $myRetVal  = $this->showPropertyRowColl( $fullAddress, true, retIfTrue( $extParagraph != "", $extParagraph.". " ) ).
+    $myRetVal  = $this->showPropertyRowColl( $fullAddress, true, ( $extParagraph != "" ?  $extParagraph.". "  : '' ) ).
                  "<!-- start of group --><div class=\"labsys_mop_c_group\">\n";
 
     foreach( $structureArray as $value ){
@@ -136,9 +136,9 @@ class LcElement extends Element{
       
       $element = $GLOBALS[ $id."DBI" ]->getData2idx( $num, true, $this->isInLab );
       
-      if ( !$element ) eval( "\$myRetVal .= ".retIfTrue( strtoupper($id) == $id, "B").retIfTrue( strtolower($id) == $id, "L").$id."Element::showNoFoundRowColl( \$id.\$num );" );
-                 else if ( ($id == "c") || ($id == "C") ) $myRetVal .= $element->showStructure( $fullAddress.".".$value, retIfTrue( $extParagraph != "", $extParagraph."." ).$this->getParagraph( $value ) );
-                                   else $myRetVal .= $element->showPropertyRowColl( $fullAddress.".".$value, true, retIfTrue( $extParagraph != "", $extParagraph."." ).$this->getParagraph( $value ).". " );
+      if ( !$element ) eval( "\$myRetVal .= ".( strtoupper($id) == $id ?  'B' : 'L' ).$id."Element::showNoFoundRowColl( \$id.\$num );" );
+                 else if ( ($id == "c") || ($id == "C") ) $myRetVal .= $element->showStructure( $fullAddress.".".$value, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ) );
+                                   else $myRetVal .= $element->showPropertyRowColl( $fullAddress.".".$value, true, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ).". " );
     }
     
     return $myRetVal."<!-- stop of group --></div>\n";
@@ -180,7 +180,7 @@ class LcElement extends Element{
       // only enumerate if shown separately (otherwhise each m element etc. has a number...).
        if ( $allSeparate || 
             $id == "i" || $id == "m"// so the i and m elements get numbered
-                         ) $paragraph = retIfTrue( $extParagraph != "", $extParagraph."." ).$this->getParagraph( $value );
+                         ) $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
                       else $paragraph = "";
 
        require( "../php/getDBIbyID.inc" );
@@ -191,7 +191,7 @@ class LcElement extends Element{
        if ( $allSeparate && ($id != "C") /* otherwise double div */ )
         $myRetVal .= "<!-- start of collection entity --><div class=\"labsys_mop_c_inner_coll_entity\">\n";
 
-       $myRetVal .= $element->show( $fullAddress.".".$value.retIfTrue( $id == "C", ".all" ), 
+       $myRetVal .= $element->show( $fullAddress.".".$value.( $id == "C" ?  ".all"  : '' ), 
                                     $paragraph );
 
       // separator?
@@ -216,8 +216,8 @@ class LcElement extends Element{
                         'paragraph' => $extParagraph, 
                         'myRetVal' => '' );
     $functionCode = "
-    \$elementAddr = retIfTrue( \$parameter['addr'] != '', \$parameter['addr'].'.' ).\$value;
-    \$elParagraph = retIfTrue( \$parameter['paragraph'] != '', \$parameter['paragraph'].'.' ).\$this->getParagraph( \$value );
+    \$elementAddr = ( \$parameter['addr'] != '' ?  \$parameter['addr'].'.'  : '' ).\$value;
+    \$elParagraph = ( \$parameter['paragraph'] != '' ?  \$parameter['paragraph'].'.'  : '' ).\$this->getParagraph( \$value );
 
     if ( \$element->elementId == '".$typePrefix."') \$parameter['myRetVal'] .= \$element->show( \$elementAddr, \$elParagraph );
     elseif ( (\$element->elementId == 'c') || (\$element->elementId == 'C') ){
@@ -227,7 +227,7 @@ class LcElement extends Element{
       if ( \$newParam['myRetVal'] != '' ) 
         \$parameter['myRetVal'] .=  \"<div class=\\\"labsys_mop_contentArea\\\">\\n\".
                                     // header inclusive link to the enclosing element (this)
-                                    '<div class=\"labsys_mop_h2\">'.retIfTrue( \$elParagraph != '', \$elParagraph.'. ' ).\$element->title.' '.EB::link2( \$elementAddr ).\"</div>\\n\".
+                                    '<div class=\"labsys_mop_h2\">'.( \$elParagraph != '' ?  \$elParagraph.'. '  : '' ).\$element->title.' '.EB::link2( \$elementAddr ).\"</div>\\n\".
                                     \"</div>\\n\".
                                     \$newParam['myRetVal'];
     }";
@@ -282,7 +282,7 @@ class LcElement extends Element{
     return  EM::viewTopCollection( $this, $parentAddr.$me ).
             "<a name=\"".$parentAddr.$me."\"></a>\n".
             "<div class=\"labsys_mop_contentArea\">\n".
-            "<div class=\"labsys_mop_h2\">".retIfTrue( $extParagraph != "", $extParagraph.". " ).$this->title."</div>\n".
+            "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>\n".
             "</div>\n".
             $myRetVal.
             EM::viewBottomCollection( $this, $parentAddr.$me );
@@ -321,7 +321,7 @@ class LcElement extends Element{
                  $tokens = $this->getTokens();
                  foreach ( $tokens as $value ){
                    $id = $value{0}; $num = substr( $value, 1 );
-                   $prefix = retIfTrue( $id == strtoupper( $id ), "B", "L" ).$id;
+                   $prefix = ( $id == strtoupper( $id ) ?  "B" :  "L"  ).$id;
                        if ( !is_numeric($num) )  $myRetVal .= $value."\t;***".$id.$num."\t; ".$lng->get("parseErrNotNum")."\n";
                    elseif ( !file_exists ( INCLUDE_DIR."/classes/elements/".$prefix."DBInterface.inc" ) )
                                                  $myRetVal .= $value."\t;***".$id.$num."\t; ".$lng->get("parseErrIdNotEx")."\n";
@@ -352,11 +352,11 @@ class LcElement extends Element{
                 "<table width=\"100%\"><tr><td valign=\"top\" width=\"33%\">\n".
                   "<fieldset><legend>".$lng->get("visibility")."</legend>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".retIfTrue( !$this->visibleOnlyInCollection, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visAlways\" class=\"labsys_mop_input_field_label\">".$lng->get("visAlways")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".retIfTrue( $this->visibleOnlyInCollection, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInColl")."</label>".
                     "</div>\n".
                   "</fieldset>\n".
@@ -364,21 +364,21 @@ class LcElement extends Element{
                  // schedule
                   "<fieldset><legend>".$lng->get("schedule")."</legend>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visBef1stSched\" name=\"VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".retIfTrue( $this->visibleBefore1stSched, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visBef1stSched\" name=\"VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".( $this->visibleBefore1stSched ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visBef1stSched\" class=\"labsys_mop_input_field_label\">".$lng->get("visibleBef1stSched")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visDuringSched\" name=\"VISIBLE_DURING_SCHED\" value=\"1\"".retIfTrue( $this->visibleDuringSched, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visDuringSched\" name=\"VISIBLE_DURING_SCHED\" value=\"1\"".( $this->visibleDuringSched ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visDuringSched\" class=\"labsys_mop_input_field_label\">".$lng->get("visibleDuringSched")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visAft1stSched\" name=\"VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".retIfTrue( $this->visibleAfter1stSched, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visAft1stSched\" name=\"VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".( $this->visibleAfter1stSched ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visAft1stSched\" class=\"labsys_mop_input_field_label\">".$lng->get("visibleAftr1stSched")."</label>".
                     "</div>\n".
                   "</fieldset>\n".
                   
                 "</td></tr></table>\n".
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".retIfTrue( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ),  " checked=\"checked\"" ).">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' ).">".
               "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
               "</fieldset>\n".
 
@@ -530,18 +530,18 @@ class LcElement extends Element{
   */
   function getPropertyRow( $prefix, $disabled=false ){
     global $pge, $lng;
-    return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".retIfTrue( !$disabled, "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" " )."value=\"0\"".retIfTrue( !$this->visibleOnlyInCollection, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+    return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visAlways"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".retIfTrue( !$disabled, "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" " )."value=\"1\"".retIfTrue( $this->visibleOnlyInCollection, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visOnlyInColl"), $disabled ).
-            retIfTrue( $disabled, "<span class=\"labsys_mop_grayed\">" ).
+            ( $disabled ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
             " | ".
-            retIfTrue( $disabled, "</span>" ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".retIfTrue( $this->visibleBefore1stSched, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+            ( $disabled ?  "</span>"  : '' ).
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".( $this->visibleBefore1stSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visibleBef1stSched"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_DURING_SCHED\" value=\"1\"".retIfTrue( $this->visibleDuringSched, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_DURING_SCHED\" value=\"1\"".( $this->visibleDuringSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visibleDuringSched"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".retIfTrue( $this->visibleAfter1stSched, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".( $this->visibleAfter1stSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visibleAftr1stSched"), $disabled ).
             " ".
               $this->title;

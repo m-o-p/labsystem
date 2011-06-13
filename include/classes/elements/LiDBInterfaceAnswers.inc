@@ -89,9 +89,9 @@ class LiDBInterfaceAnswers {
     $toSet = "answer='".$this->myDBC->escapeString($answer)."', ".
              "comment='".$this->myDBC->escapeString($comment)."', ".
              "given_credits='".($givenCredits*100)."', ". // *100 to relize a float
-             "closed=".retIfTrue( $closed, "1", "0" ).", ".
-             "corrected=".retIfTrue( $corrected,  "1", "0" ).", ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.retIfTrue( ( $history != "" ), ": ".$history)."\\n', ".$this->myTable.".history )";
+             "closed=".( $closed ?  "1" :  "0"  ).", ".
+             "corrected=".( $corrected ?   "1" :  "0"  ).", ".
+             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "i_idx='".$iIdx."' && team='".$team."'" );
   }
   

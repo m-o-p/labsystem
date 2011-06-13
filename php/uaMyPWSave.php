@@ -66,7 +66,7 @@ else{ // save new PW
                                 
     $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".sha1( $_POST['NEWPW'] )."'", 
                         $cfg->get('UserDatabaseTable'), 
-                        $cfg->get('UserDBField_uid')."='".retIfTrue( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData(),$usr->theSeeingUid() ,$usr->uid )."'"
+                        $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
                        );
     // note
     $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );

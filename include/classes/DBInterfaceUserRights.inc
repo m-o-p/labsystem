@@ -74,9 +74,9 @@ class DBInterfaceUserRights {
   function setData4( $uid, $rights="", $currentTeam="", $history = "" ){
     global $usr, $cfg;
     $toSet = "";
-    $toSet = retIfTrue( $rights != "",      "rights='".$rights."', ").
-             retIfTrue( $currentTeam != "", "currentTeam='".$currentTeam."', " ).
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.retIfTrue( ( $history != "" ), ": ".$history)."\\n', ".$this->myTable.".history )";
+    $toSet = ( $rights != "" ?       "rights='".$rights."', " : '' ).
+             ( $currentTeam != "" ?  "currentTeam='".$currentTeam."', "  : '' ).
+             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' (rights: '.$rights.'; team: '.$currentTeam.') '.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
 
     $this->myDBC->mkUpdIns( $toSet, "user_rights", "uid='".$uid."'" );
   }

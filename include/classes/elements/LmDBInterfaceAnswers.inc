@@ -101,7 +101,7 @@ class LmDBInterfaceAnswers {
     global $usr;
     array_unshift( $answerArray, $permutationArray ); // add at front;
     $toSet = "answer_array='".$this->myDBC->escapeString( serialize($answerArray) )."', ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.retIfTrue( ( $history != "" ), ": ".$history)."\\n', ".$this->myTable.".history )";
+             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ? ": ".$history : '')."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "mc_idx='".$mIdx."' && uid='".$uid."'" );
   }
 

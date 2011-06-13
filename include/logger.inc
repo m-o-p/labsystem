@@ -31,7 +31,7 @@ $theLogFile = '/srv/www/log/'.$configPrefix.$url->get('config').'_'.date("Y-m-d"
 
 /**
 * Returns $consequent, if the test is true. Otherwise $alternative.
-* (p.e. return 'foo'.retIfTrue( ($foo>$bar), ' is bigger', ' is smaller or equal' );
+* (p.e. return 'foo'.( ($foo>$bar) ?  ' is bigger' :  ' is smaller or equal'  );
 *
 * The big disadvantage to if is that test and consequent are passed by value and therefore evaluated.
 * ONLY works for logged in people!

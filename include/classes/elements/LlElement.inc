@@ -185,8 +185,8 @@ class LlElement extends Element{
     $myRet = '<div class="labsys_mop_l_comment">'."\n".
              returnHTML( $this->comment ).
              "</div>\n";
-    if ( $this->preLabIsVisible2Me ) $myRet .= $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx, retIfTrue( $lng->get("lPrefixPreLab") != "", $extParagraph.".".$lng->get("lPrefixPreLab") , $extParagraph ) );
-    if ( $this->labIsVisible2Me ) $myRet .= $this->lab->show( $fullAddress.".C".$this->labCollectionIdx, retIfTrue( $lng->get("lPrefixLab") != "", $extParagraph.".".$lng->get("lPrefixLab") , $extParagraph ) );
+    if ( $this->preLabIsVisible2Me ) $myRet .= $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx, ( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
+    if ( $this->labIsVisible2Me ) $myRet .= $this->lab->show( $fullAddress.".C".$this->labCollectionIdx, ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
     return $myRet;
   }
   
@@ -210,7 +210,7 @@ class LlElement extends Element{
                     "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
                      "value=\"".$lng->get("checkPrelab")."\">\n".  
                     "</FORM>\n".
-                    retIfTrue( $lng->get("prelabCheckNote") != "", "<div class=\"labsys_mop_note\">\n".$lng->get("prelabCheckNote").$cfg->get("MCAnsweringAttempts")."</div>\n");
+                    ( $lng->get("prelabCheckNote") != "" ? "<div class=\"labsys_mop_note\">\n".$lng->get("prelabCheckNote").$cfg->get("MCAnsweringAttempts")."</div>\n" : '');
 
     return $myRetVal;
   }
@@ -244,7 +244,7 @@ class LlElement extends Element{
                     "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
                            "value=\"".$lng->get("closeLab")."\">\n".  
                     "</FORM>\n".
-                    retIfTrue( $lng->get("labCloseNote")!="", "<div class=\"labsys_mop_note\">\n".$lng->get("labCloseNote")."</div>\n");
+                    ( $lng->get("labCloseNote")!="" ? "<div class=\"labsys_mop_note\">\n".$lng->get("labCloseNote")."</div>\n" : '');
 
    // The following is a slightly modified ( add amount of questions and their possibleCredits) of LcElement::showAllElementsOfType();   
     $parameter = Array( 'addr' => $fullAddress.".C".$this->labCollectionIdx, 
@@ -255,8 +255,8 @@ class LlElement extends Element{
                         'alreadyInSum' => Array() ); // some inputs might be more than one time inside the collection...
                                                      // p.e. I use an input for data that are reshown on a later page for comparison
     $functionCode = "
-    \$elementAddr = retIfTrue( \$parameter['addr'] != '', \$parameter['addr'].'.' ).\$value;
-    \$elParagraph = retIfTrue( \$parameter['paragraph'] != '', \$parameter['paragraph'].'.' ).\$this->getParagraph( \$value );
+    \$elementAddr = ( \$parameter['addr'] != '' ?  \$parameter['addr'].'.'  : '' ).\$value;
+    \$elParagraph = ( \$parameter['paragraph'] != '' ?  \$parameter['paragraph'].'.'  : '' ).\$this->getParagraph( \$value );
 
     if ( \$element->elementId == 'i'){
       \$parameter['myRetVal'] .= \$element->show( \$elementAddr, \$elParagraph ); // If you pout this into the parantheses only the first appearance of an input is shown !
@@ -280,7 +280,7 @@ class LlElement extends Element{
       if ( \$newParam['myRetVal'] != '' ) 
         \$parameter['myRetVal'] .=  \"<div class=\\\"labsys_mop_contentArea\\\">\\n\".
                                     // header inclusive link to the enclosing element (this)
-                                    '<div class=\"labsys_mop_h2\">'.retIfTrue( \$elParagraph != '', \$elParagraph.'. ' ).\$element->title.' '.EB::link2( \$elementAddr ).\"</div>\\n\".
+                                    '<div class=\"labsys_mop_h2\">'.( \$elParagraph != '' ?  \$elParagraph.'. '  : '' ).\$element->title.' '.EB::link2( \$elementAddr ).\"</div>\\n\".
                                     \"</div>\\n\".
                                     \$newParam['myRetVal'];
     }";
@@ -464,7 +464,7 @@ class LlElement extends Element{
         
         $userData = $usr->getUserInformation( $labStatus['uid'] );
         
-        $myRetVal .= "<tr class=\"labsys_mop_l_status_table_row_".retIfTrue( ++$i%2 == 0, "light", "dark" )."\">".
+        $myRetVal .= "<tr class=\"labsys_mop_l_status_table_row_".( ++$i%2 == 0 ?  "light" :  "dark"  )."\">".
                      "<td class=\"labsys_mop_l_status_table_cell_number\">".
                         '<a href="'.$url->link2( '../pages/view.php?address=l'.$labStatus['lIdx'] ).'">'.$i.'</a>'.
                      "</td>".
@@ -485,9 +485,9 @@ class LlElement extends Element{
         $myRetVal .= "</td>".
                   // member's name
                      "<td class=\"labsys_mop_l_status_table_cell_name\">".
-                     retIfTrue( $usr->isOfKind( IS_CORRECTOR ), "<a href=\"".$url->link2("../php/executeOnLab.php?address=l".$this->idx."&function=setSeeingUID&param=".urlencode( '"'.$labStatus['uid'].'"' )."&redirectTo=".urlencode($_SERVER['REQUEST_URI']))."\">" ).
-                     retIfTrue( ($previousMembersname != $userData["name"].", ".$userData["foreName"]), $userData["name"].", ".$userData["foreName"]." " ).
-                     retIfTrue( $usr->isOfKind( IS_CORRECTOR ), "</a>" ).
+                     ( $usr->isOfKind( IS_CORRECTOR ) ? "<a href=\"".$url->link2("../php/executeOnLab.php?address=l".$this->idx."&function=setSeeingUID&param=".urlencode( '"'.$labStatus['uid'].'"' )."&redirectTo=".urlencode($_SERVER['REQUEST_URI']))."\">" : '').
+                     ( ($previousMembersname != $userData["name"].", ".$userData["foreName"]) ? $userData["name"].", ".$userData["foreName"]." " : '').
+                     ( $usr->isOfKind( IS_CORRECTOR ) ?  "</a>"  : '' ).
                      EB::history( $userData["name"].", ".$userData["foreName"]." (".$lng->get("team")." ".$labStatus['currentTeam'].")".":<br>\n".$labStatus['history'], "l".$this->idx, true ).
                      $labName."\n";
 
@@ -501,7 +501,7 @@ class LlElement extends Element{
           $correctedString = $labStatus['whichCorrected'];
           for( $qn=0; $qn < strlen( $correctedString ); $qn++){
             $myRetVal .= "<img src=\"../syspix/labCorrected_".
-                         retIfTrue( $correctedString[$qn] == "t", "yes", "no" ).
+                         ( $correctedString[$qn] == "t" ?  "yes" :  "no"  ).
                          "_12x12.gif\" border=\"0\" title=\"".($qn+1)." ".$lng->get("corrected")."\">";
           }
           $myRetVal .= "</div>\n";
@@ -524,36 +524,37 @@ class LlElement extends Element{
                   // all teammembers finished prelab?
                      "<td class=\"labsys_mop_l_status_table_cell_prelab_fin\">".
                      " <img src=\"../syspix/prelabFin_".
-                     retIfTrue( $labStatus['preLabAllTeammFinished'], "yes", "no" ).
+                     ( $labStatus['preLabAllTeammFinished'] ?  "yes" :  "no"  ).
                      "_15x12.gif\" border=\"0\" title=\"".$lng->get("exAllowedToAnswer")."\">".
                      "</td>".
                      
                      "<td class=\"labsys_mop_l_status_table_cell_lab_closed\">".
                   // reopen lab
-                     retIfTrue( $open = ($usr->isOfKind( IS_CORRECTOR ) && 
+                     ( $open = ($usr->isOfKind( IS_CORRECTOR ) && 
                                          ( $labStatus['lIdx'] == $this->idx ) && // functionality only available for the current lab
                                          $labStatus['labClosed'] && 
                                          $this->isInSched
-                                        ),
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reOpenAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">" ).
+                                        ) ?
+                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reOpenAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">" 
+                                        : '' ).
                   // close lab
-                     retIfTrue( !$open && ($open = ($usr->isOfKind( IS_CORRECTOR ) && 
+                     ( !$open && ($open = ($usr->isOfKind( IS_CORRECTOR ) && 
                                                     ( $labStatus['lIdx'] == $this->idx ) && // functionality only available for the current lab
                                                     !$labStatus['labClosed'] /* && 
                                                     !$this->isInSched always allow closing */)
-                                                   ),
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=closeAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">" ).
+                                                   ) ?
+                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=closeAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">" 
+                                                   : '' ).
                      " <img src=\"../syspix/button_lock_".
-                     retIfTrue( $labStatus['labClosed'], "closed", "open" ).
+                     ( $labStatus['labClosed'] ?  "closed" :  "open"  ).
                      "_13x12.gif\" border=\"0\" title=\"".$lng->get("exLabClosed")."\">".
-                     retIfTrue( $open,
-                                "</a>" ).
+                     ( $open ? "</a>" : '' ).
                      "</td>".
                      
                   // is corrected?
                      "<td class=\"labsys_mop_l_status_table_cell_lab_corr\">".
                      " <img src=\"../syspix/labCorrected_".
-                     retIfTrue( $labStatus['labCorrected'], "yes", "no" ).
+                     ( $labStatus['labCorrected'] ?  "yes" :  "no"  ).
                      "_12x12.gif\" border=\"0\" title=\"".$lng->get("exLabCorrected")."\">".
                      "</td>".
 
@@ -643,13 +644,13 @@ class LlElement extends Element{
     if( $usr->isOfKind( IS_CORRECTOR ) ){
       $myRetVal .= "<div class=\"labsys_mop_note\">\n".
                      "<img src=\"../syspix/button_lock_".
-                     retIfTrue( $this->isInSched, "closed", "open" ).
+                     ( $this->isInSched ?  "closed" :  "open"  ).
                      "_13x12.gif\" border=\"0\" title=\"".$lng->get("exLabClosed")."\">: ".
                      $lng->get("youCanClickOn").
                      " <img src=\"../syspix/button_lock_".
-                     retIfTrue( $this->isInSched, "closed", "open" ).
+                     ( $this->isInSched ?  "closed" :  "open"  ).
                      "_13x12.gif\" border=\"0\" title=\"".$lng->get("exLabClosed")."\"> ".
-                     retIfTrue( $this->isInSched, $lng->get("toReOpenTheLab"), $lng->get("toCloseTheLab") ).
+                     ( $this->isInSched ?  $lng->get("toReOpenTheLab") :  $lng->get("toCloseTheLab" ) ).
                    "</div>\n";
     }
     
@@ -750,8 +751,8 @@ class LlElement extends Element{
       
    // link to switch mode to compact (no detailed points of each labs).
     $myRetVal .= "<div class=\"labsys_mop_note\">\n".
-                 '<a href="'.$url->link2( '../pages/view.php?address=l'.$this->idx.'.ALLlabStatus'.retIfTrue( !$compact, 'Compact') ).'">'.
-                 $lng->get('SwitchTo').' '.retIfTrue( $compact, $lng->get('StandardView'), $lng->get('CompactView') ).
+                 '<a href="'.$url->link2( '../pages/view.php?address=l'.$this->idx.'.ALLlabStatus'.( !$compact ?  'Compact' : '' ) ).'">'.
+                 $lng->get('SwitchTo').' '.( $compact ?  $lng->get('StandardView') :  $lng->get('CompactView' ) ).
                  '</a>'.
                  "</div>\n";
       
@@ -870,26 +871,26 @@ class LlElement extends Element{
                                                            $this->showTOC( $parentAddr.$me, $extParagraph ).
                                                            "<!-- stop of collection entity --></div>\n";
                                             if ( $this->preLabIsVisible2Me )
-                                              $myRetVal .= $this->preLab->show( $parentAddr.$me.".C".$this->prelabCollectionIdx.".all", retIfTrue( $lng->get("lPrefixPreLab") != "", $extParagraph.".".$lng->get("lPrefixPreLab") , $extParagraph ) );
+                                              $myRetVal .= $this->preLab->show( $parentAddr.$me.".C".$this->prelabCollectionIdx.".all", ( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
                                             if ( $this->labIsVisible2Me )
-                                              $myRetVal .= $this->lab->show( $parentAddr.$me.".C".$this->labCollectionIdx.".all", retIfTrue( $lng->get("lPrefixLab") != "", $extParagraph.".".$lng->get("lPrefixLab") , $extParagraph ) );
+                                              $myRetVal .= $this->lab->show( $parentAddr.$me.".C".$this->labCollectionIdx.".all", ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
                                             $_GET['address'] = $parentAddr.$me;
                               }
                                               
    // preLab
     elseif ( $this->preLabIsVisible2Me && 
              ($first == "C".$this->prelabCollectionIdx) ) 
-                                              $myRetVal .= $this->preLab->show( $fullAddress, retIfTrue( $lng->get("lPrefixPreLab") != "", $extParagraph.".".$lng->get("lPrefixPreLab") , $extParagraph ) );
+                                              $myRetVal .= $this->preLab->show( $fullAddress, ( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
    // lab                                  
     elseif ( $this->labIsVisible2Me && 
              ($first == "C".$this->labCollectionIdx) ) 
-                                              $myRetVal .= $this->lab->show( $fullAddress, retIfTrue( $lng->get("lPrefixLab") != "", $extParagraph.".".$lng->get("lPrefixLab"), $extParagraph ) );
+                                              $myRetVal .= $this->lab->show( $fullAddress, ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab") :  $extParagraph  ) );
                                               
     else { return "l".$this->idx.": ".$lng->get("elNotFoundVisible")." (".$fullAddress.") "; exit; }
         
     return EM::viewTopLab( $this, $parentAddr.$me ).
-           "<div class=\"labsys_mop_h2\">".retIfTrue( $extParagraph != "", $extParagraph.". " ).$this->title."</div>\n".
-           retIfTrue( ($this->authors != ''), '<div class="labsys_mop_l_authors">'.returnHTML($this->authors).'</div>' ).
+           "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>\n".
+           ( ($this->authors != '') ? '<div class="labsys_mop_l_authors">'.returnHTML($this->authors).'</div>' : '' ).
            $myRetVal.
            EM::viewBottomLab( $this, $parentAddr.$me );
   }
@@ -940,8 +941,8 @@ class LlElement extends Element{
                                         $unfold ); // unfold if active
        // additional menus
        // close/ all questions
-        $ret .= $menu2Populate->entry( retIfTrue( $this->preLabIsFinished || !$this->userIsViewing,
-                                                  $lng->get("mnuEntryPrelabFin"), 
+        $ret .= $menu2Populate->entry( ( $this->preLabIsFinished || !$this->userIsViewing ?
+                                                  $lng->get("mnuEntryPrelabFin") :
                                                   $lng->get("mnuEntryPrelab2Fin")
                                        ),
                                        "../pages/view.php?address=".$linkFullAddress.".allPrelabQ", 
@@ -967,8 +968,8 @@ class LlElement extends Element{
                                      $unfold );
        // additional menus
        // close lab/ all lab questions
-        $ret .= $menu2Populate->entry( retIfTrue( $this->labIsClosed || !$this->userIsViewing,
-                                                  $lng->get("mnuEntryLabFin"), 
+        $ret .= $menu2Populate->entry( ( $this->labIsClosed || !$this->userIsViewing ?
+                                                  $lng->get("mnuEntryLabFin") : 
                                                   $lng->get("mnuEntryLab2Fin")
                                        ),
                                        "../pages/view.php?address=".$linkFullAddress.".allLabQ", 
@@ -1009,11 +1010,11 @@ class LlElement extends Element{
     $DBI->getAllData( "idx", true ); // sorted by idx ascending
     while ( $element = $DBI->getNextData() ){
       $dropDownOptionsPreLab .= "<option value=\"".$element->idx."\"".
-                                retIfTrue( ($element->idx == $this->prelabCollectionIdx), " selected=\"selected\"").
-                                ">".$element->idx.": ".retIfTrue( ($element->idx == 1), '-', $element->title)."</option>\n";
+                                ( ($element->idx == $this->prelabCollectionIdx) ?  " selected=\"selected\"" : '' ).
+                                ">".$element->idx.": ".( ($element->idx == 1) ?  '-' :  $element->title )."</option>\n";
       $dropDownOptionsLab    .= "<option value=\"".$element->idx."\"".
-                                retIfTrue( ($element->idx == $this->labCollectionIdx), " selected=\"selected\"").
-                                ">".$element->idx.": ".retIfTrue( ($element->idx == 1), '-', $element->title)."</option>\n";
+                                ( ($element->idx == $this->labCollectionIdx) ?  " selected=\"selected\"" : '' ).
+                                ">".$element->idx.": ".( ($element->idx == 1) ?  '-' :  $element->title )."</option>\n";
     }
     
      return EM::editTopLab( $this, $fullAddress ).
@@ -1066,11 +1067,11 @@ class LlElement extends Element{
               "<table width=\"100%\"><tr><td valign=\"top\" width=\"33%\">\n".
                   "<fieldset><legend>".$lng->get("visibility")."</legend>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".retIfTrue( !$this->visibleOnlyInCollection, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visAlways\" class=\"labsys_mop_input_field_label\">".$lng->get("visAlways")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".retIfTrue( $this->visibleOnlyInCollection, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInColl")."</label>".
                     "</div>\n".
                   "</fieldset>\n".
@@ -1078,20 +1079,20 @@ class LlElement extends Element{
                  // schedule
                   "<fieldset><legend>".$lng->get("schedule")."</legend>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visBef1stSched\" name=\"VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".retIfTrue( $this->visibleBefore1stSched, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visBef1stSched\" name=\"VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".( $this->visibleBefore1stSched ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visBef1stSched\" class=\"labsys_mop_input_field_label\">".$lng->get("visibleBef1stSched")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visDuringSched\" name=\"VISIBLE_DURING_SCHED\" value=\"1\"".retIfTrue( $this->visibleDuringSched, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visDuringSched\" name=\"VISIBLE_DURING_SCHED\" value=\"1\"".( $this->visibleDuringSched ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visDuringSched\" class=\"labsys_mop_input_field_label\">".$lng->get("visibleDuringSched")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visAft1stSched\" name=\"VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".retIfTrue( $this->visibleAfter1stSched, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visAft1stSched\" name=\"VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".( $this->visibleAfter1stSched ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visAft1stSched\" class=\"labsys_mop_input_field_label\">".$lng->get("visibleAftr1stSched")."</label>".
                     "</div>\n".
                   "</fieldset>\n".
               "</td></tr></table>\n".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".retIfTrue( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ),  " checked=\"checked\"" ).">".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' ).">".
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
             
@@ -1252,19 +1253,19 @@ class LlElement extends Element{
   function getPropertyRow( $prefix, $disabled=false ){
     global $pge, $lng;
     
-    return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".retIfTrue( !$disabled, "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" " )."value=\"0\"".retIfTrue( !$this->visibleOnlyInCollection, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+    return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visAlways"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".retIfTrue( !$disabled, "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" " )."value=\"1\"".retIfTrue( $this->visibleOnlyInCollection, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visOnlyInColl"), $disabled ).
-            retIfTrue( $disabled, "<span class=\"labsys_mop_grayed\">" ).
+            ( $disabled ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
             " | ".
            // schedule issues
-            retIfTrue( $disabled, "</span>" ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".retIfTrue( $this->visibleBefore1stSched, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+            ( $disabled ?  "</span>"  : '' ).
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".( $this->visibleBefore1stSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visibleBef1stSched"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_DURING_SCHED\" value=\"1\"".retIfTrue( $this->visibleDuringSched, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_DURING_SCHED\" value=\"1\"".( $this->visibleDuringSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visibleDuringSched"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".retIfTrue( $this->visibleAfter1stSched, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".( $this->visibleAfter1stSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visibleAftr1stSched"), $disabled ).
             " ".
               $this->title;
@@ -1281,12 +1282,12 @@ class LlElement extends Element{
     global $pge, $lng;
     
     if ( $isExport )
-      return    "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".retIfTrue( !$disabled, "name=\"".$this->idx."\" " )."value=\"EXPORT\"".retIfTrue( $disabled, " disabled=\"disabled\"").">".
+      return    "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"EXPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export"> '.
                 $this->title;
     else
       return  '<img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="next" title="export"> '.
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".retIfTrue( !$disabled, "name=\"".$this->idx."\" " )."value=\"IMPORT\"".retIfTrue( $disabled, " disabled=\"disabled\"")."> ".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"IMPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' )."> ".
               $this->title;
   }
   
@@ -1323,7 +1324,7 @@ class LlElement extends Element{
                             "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
                             $parameter );
                             
-      makeLogEntry( 'l', 'prelab checked '.retIfTrue( $parameter[ 'allPreLabAnswered' ], '(right)', '(wrong)' ), $this->idx );
+      makeLogEntry( 'l', 'prelab checked '.( $parameter[ 'allPreLabAnswered' ] ? '(right)' : '(wrong)' ), $this->idx );
 
       if( $parameter[ 'allPreLabAnswered' ] ){
 
@@ -1637,10 +1638,10 @@ class LlElement extends Element{
                               foreach( \$parameter as \$mKey => \$mValue ){
                                 if ( \$mKey == 'alreadyInSum' ) continue; // jump over
                                 \$element->loadUserData4( \$mKey );
-                                if ( !\$element->isClosed && ".retIfTrue( $is2bClosed, 'true', 'false' )." ) \$element->closeInput( \$mKey ); // if necessary close labinput
+                                if ( !\$element->isClosed && ".( $is2bClosed ?  'true' :  'false'  )." ) \$element->closeInput( \$mKey ); // if necessary close labinput
                                 \$parameter[\$mKey]['areAllClosed']       &= \$element->isClosed;
                                 \$parameter[\$mKey]['areAllCorrected']    &= \$element->isCorrected;
-                                \$parameter[\$mKey]['correctedString']    .= retIfTrue( \$element->isCorrected, 't', 'f' );
+                                \$parameter[\$mKey]['correctedString']    .= ( \$element->isCorrected ?  't' :  'f'  );
                                 if ( \$element->isCorrected ) // only add points of corrected
                                   \$parameter[\$mKey]['sumGivenCredits']  += \$element->getGivenCredits();
                                 \$parameter[\$mKey]['sumPossibleCredits'] += \$element->getPossibleCredits();
@@ -1669,7 +1670,7 @@ class LlElement extends Element{
                                       true, 
                                       $parameter[$labStatus['currentTeam']]['areAllClosed'], 
                                       $parameter[$labStatus['currentTeam']]['areAllCorrected'], 
-                                      retIfTrue( $labStatus['labCorrected'], '', $parameter[$labStatus['currentTeam']]['correctedString']),
+                                      ( $labStatus['labCorrected'] ? '' : $parameter[$labStatus['currentTeam']]['correctedString']),
                                       $parameter[$labStatus['currentTeam']]['sumGivenCredits'], 
                                       $parameter[$labStatus['currentTeam']]['sumPossibleCredits'],
                                       $lng->get("statusUpdated") ); // create my dataset

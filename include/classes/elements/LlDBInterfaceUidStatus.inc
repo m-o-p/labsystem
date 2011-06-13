@@ -120,16 +120,16 @@ class LlDBInterfaceUidStatus {
                      $history = "" ){
     global $usr;
     $toSet = "current_team='".$currentTeam."', ".
-             "prelab_finished='".retIfTrue( $prelabFinished, "1", "0")."', ".
+             "prelab_finished='".( $prelabFinished ?  "1" :  "0" )."', ".
              "prelab_given_credits='".($prelabGivenCredits * 100)."', ".
              "prelab_possible_credits='".($prelabPossibleCredits * 100)."', ".
-             "prelab_all_teammembers_finished='".retIfTrue( $prelabAllTeammembersFinished, "1", "0")."', ".
-             "lab_closed='".retIfTrue( $labClosed, "1", "0")."', ".
-             "lab_corrected='".retIfTrue( $labCorrected, "1", "0")."', ".
+             "prelab_all_teammembers_finished='".( $prelabAllTeammembersFinished ?  "1" :  "0" )."', ".
+             "lab_closed='".( $labClosed ?  "1" :  "0" )."', ".
+             "lab_corrected='".( $labCorrected ?  "1" :  "0" )."', ".
              "which_corrected='".$whichCorrected."', ".
              "lab_given_credits='".($givenCredits * 100)."', ".
              "lab_possible_credits='".($possibleCredits * 100)."', ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.retIfTrue( ( $history != "" ), ": ".$history)."\\n', ".$this->myTable.".history )";
+             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && uid='".$uid."'" );
   }
   
@@ -153,7 +153,7 @@ class LlDBInterfaceUidStatus {
                      $history = "" ){
     global $usr;
     $toSet = "lab_closed='1', ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.retIfTrue( ( $history != "" ), ": ".$history)."\\n', ".$this->myTable.".history )";
+             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && current_team='".$team."'" );
   }
   
@@ -168,7 +168,7 @@ class LlDBInterfaceUidStatus {
     $toSet = "lab_closed='0', ".
              "lab_corrected='0', ".
              "which_corrected='', ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.retIfTrue( ( $history != "" ), ": ".$history)."\\n', ".$this->myTable.".history )";
+             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && current_team='".$team."'" );
   }
   

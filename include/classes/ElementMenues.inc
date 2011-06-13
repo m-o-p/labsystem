@@ -44,7 +44,7 @@ class EM{ /* ElementMenues */
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
      return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
             "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
-            retIfTrue( $theEl->visibleOnlyInCollection, "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n" ).
+            ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span> \n".
             EB::link2Element( $fullAddress ).
             EB::edit( $fullAddress ).
@@ -126,7 +126,7 @@ class EM{ /* ElementMenues */
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
      return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
             "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
-            retIfTrue( $eL->visibleOnlyInCollection, "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n" ).
+            ( $eL->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span> \n".
             EB::link2Element( $fullAddress ).
             EB::edit( $fullAddress ).
@@ -157,11 +157,11 @@ class EM{ /* ElementMenues */
   */
   function viewTopCollection( &$eC, $fullAddress, $prevAddress=false, $nextAddress=false, $topAddress=false, $add2Style="" ){
     global $usr, $lng;
-     $menu = retIfTrue(   $prevAddress,                   EB::prev( $prevAddress ) ).
-             retIfTrue(   ($prevAddress || $nextAddress), EB::toc( $topAddress ) ).
-             retIfTrue(   $nextAddress,                   EB::next( $nextAddress ) );
+     $menu = (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
+             (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
+             (   $nextAddress ?                    EB::next( $nextAddress )  : '' );
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) ) 
-      $menu  = retIfTrue( $eC->visibleOnlyInCollection, "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n" ).
+      $menu  = ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
                "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
                $menu.
                EB::viewStructure( $fullAddress ).
@@ -195,9 +195,9 @@ class EM{ /* ElementMenues */
         return EM::viewTopCollection( $eC, $fullAddress, $prevAddress, $nextAddress, $topAddress, "_edit_bottom" ); // only if navigation is present show bottom menu
     else if ($prevAddress || $nextAddress)
         return "<div class=\"labsys_mop_elements_menu_c\">\n".
-               retIfTrue(   $prevAddress,                   EB::prev( $prevAddress ) ).
-               retIfTrue(   ($prevAddress || $nextAddress), EB::toc( $topAddress ) ).
-               retIfTrue(   $nextAddress,                   EB::next( $nextAddress ) ).
+               (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
+               (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
+               (   $nextAddress ?                    EB::next( $nextAddress )  : '' ).
                EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress ).
                "</div>\n".
                "\n\n\t<!-- *************************stop of c-element************************* -->\n\n";
@@ -241,7 +241,7 @@ class EM{ /* ElementMenues */
   function editTopStandard( &$theEl, $fullAddress, $elShortcut ){
     global $lng, $url;
     return  "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
-            retIfTrue( $theEl->visibleOnlyInCollection, "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n" ).
+            ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
             EB::link2Element(  $fullAddress ).
             EB::view(   $fullAddress ).
@@ -314,7 +314,7 @@ class EM{ /* ElementMenues */
   function editBottomCollection( &$eC, $fullAddress ){
     global $lng, $url;
     return  "<div class=\"labsys_mop_elements_menu_c\">\n".
-            retIfTrue( $eC->visibleOnlyInCollection, "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n" ).
+            ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
             EB::viewStructure( $fullAddress ).
             EB::link2Element(  $fullAddress ).

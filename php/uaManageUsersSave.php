@@ -76,10 +76,7 @@ while ( $data = mysql_fetch_assoc( $result ) ){
   $updateString = "";
   for( $i=0; $i<$noCourses; $i++ ){
     $key = $courseArray[ $i ];
-    $postedValue = retIfTrue( isset( $_POST[ $data[ $cfg->get('UserDBField_uid') ].$key ] ),
-                              1,
-                              0
-                             );
+    $postedValue = ( isset( $_POST[ $data[ $cfg->get('UserDBField_uid') ].$key ] ) ? 1: 0 );
     $updateString .= ', '.$key."='".$postedValue."'";
     $changes |= ( $postedValue != $data[ $key ] );
   }

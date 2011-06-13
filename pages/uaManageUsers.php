@@ -92,7 +92,7 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
     $result = $userDBC->mkSelect( '*', 
                                   $cfg->get('UserDatabaseTable'), 
                                   '',
-                                  $orderBy.retIfTrue( $asc, ' ASC', ' DESC' )
+                                  $orderBy.( $asc ?  ' ASC' :  ' DESC'  )
                                  );
                                  
 // Multipageresult-Filtering
@@ -121,7 +121,7 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
                                                                                      'startFrom='.($startFrom-$frameSize).
                                                                                      '&frameSize='.$frameSize.
                                                                                      '&orderBy='.$orderByKey.
-                                                                                     '&asc='.retIfTrue( $asc, 'asc', 'desc' ) ).'">&lt;&lt;</a> '."\n";
+                                                                                     '&asc='.( $asc ?  'asc' :  'desc'  ) ).'">&lt;&lt;</a> '."\n";
       
           $j = 1;
           for ( $i=1; $i<$existingElemnts; $i+=$frameSize ){
@@ -129,11 +129,11 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
                                                           'startFrom='.$i.
                                                           '&frameSize='.$frameSize.
                                                           '&orderBy='.$orderByKey.
-                                                          '&asc='.retIfTrue( $asc, 'asc', 'desc' ) ).
+                                                          '&asc='.( $asc ?  'asc' :  'desc'  ) ).
                                  '">'.
-                                 retIfTrue( ($startFrom == $i), '<b>' ).
+                                 ( ($startFrom == $i) ?  '<b>'  : '' ).
                                  $j++.
-                                 retIfTrue( ($startFrom == $i), '</b>' ).
+                                 ( ($startFrom == $i) ?  '</b>'  : '' ).
                                  '</a> '."\n";
           }
       
@@ -142,7 +142,7 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
                                                                                         'startFrom='.($startFrom+$frameSize).
                                                                                         '&frameSize='.$frameSize.
                                                                                         '&orderBy='.$orderByKey.
-                                                                                        '&asc='.retIfTrue( $asc, 'asc', 'desc' ) ).'">&gt;&gt;</a>'."\n";
+                                                                                        '&asc='.( $asc ?  'asc' :  'desc'  ) ).'">&gt;&gt;</a>'."\n";
     
       $manageNavigation .= '</div>'."\n";
       $manageNavigation .= '<!-- /navigation -->'."\n";
@@ -184,14 +184,14 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
       
       foreach ( $data as $key => $value )
         if( $key[0] == '_' )
-          $pge->put( '<input type="checkbox" id="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" name="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" value="'.$value.'" tabindex="'.$pge->nextTab++.'" '.retIfTrue( ($value == 1), 'checked="checked" ' ).'/>'.
+          $pge->put( '<input type="checkbox" id="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" name="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" value="'.$value.'" tabindex="'.$pge->nextTab++.'" '.( ($value == 1) ?  'checked="checked" '  : '' ).'/>'.
                      '<label for="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" class="labsys_mop_input_field_label">'.infoArrow( $key, false ).'</label>' );
 
-      $pge->put( ' '.retIfTrue( $usr->isOfKind( IS_DB_USER_ADMIN ), '<a href="'.$url->link2( '../php/uaManageUsersExecute.php?function=see&param='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ).'&redirectTo='.urlencode( '../pages/uaMyData.php' ) ).'">' ).
+      $pge->put( ' '.( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '<a href="'.$url->link2( '../php/uaManageUsersExecute.php?function=see&param='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ).'&redirectTo='.urlencode( '../pages/uaMyData.php' ) ).'">' : '').
                      $data[ $cfg->get('UserDBField_name') ].', '.
                      $data[ $cfg->get('UserDBField_forename') ].' ('.
                      $data[ $cfg->get('UserDBField_username') ].')'.
-                     retIfTrue( $usr->isOfKind( IS_DB_USER_ADMIN ), '</a>' )."\n".
+                     ( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '</a>' : '' )."\n".
 // delete button
                  ' <a tabindex="'.$pge->nextTab++.'" '.
                     'href="'.$url->link2( '../php/uaManageUsersExecute.php?function=del&param='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ).'&redirectTo='.urlencode( $_SERVER['REQUEST_URI'] ) )."\" ".

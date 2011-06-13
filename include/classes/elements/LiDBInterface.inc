@@ -126,7 +126,7 @@ class LiDBInterface {
               "example_solution='".$this->myDBC->escapeString( $eI->exampleSolution )."', ".
               "possible_credits='".$this->myDBC->escapeString($eI->possibleCredits * 100)."', ". // stored as int but float :2
               "visible_for=".$eI->visibleFor.", ".
-              "visible_only_in_collection=".retIfTrue( $eI->visibleOnlyInCollection, 1, 0 ).", ".
+              "visible_only_in_collection=".( $eI->visibleOnlyInCollection ?  1 :  0  ).", ".
               "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
     if ( $eI->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eI->history)."' )";
                          else $toSet .= ": ".$lng->get("dataSetCreated")."' )";

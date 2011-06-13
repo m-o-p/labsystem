@@ -458,7 +458,7 @@ Fill $exportContent and write it at the bottom once!
         $element->prelabCollectionIdx = substr( mapIt( 'c'.$element->prelabCollectionIdx, $mappingArray ), 1 );
         $element->labCollectionIdx    = substr( mapIt( 'c'.$element->labCollectionIdx,    $mappingArray ), 1 );
     // add export information to history
-        $element->history = retIfTrue( $isImport, 'Imported ', 'Exported ' ).' by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r')."\r\n".$element->history;
+        $element->history = ( $isImport ?  'Imported ' :  'Exported '  ).' by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r')."\r\n".$element->history;
         processContent( $element->title,  $labNumber, $mappingArray, true, $isImport );
         processContent( $element->authors,$labNumber, $mappingArray, true, $isImport );
         processContent( $element->comment,$labNumber, $mappingArray, true, $isImport );

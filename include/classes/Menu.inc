@@ -151,8 +151,8 @@ class Menu{
     return  "\t<li class=\"".$cssCellClassOff."\">".
     /* The Linktext is cut by ../include/helper.inc->cutHTMLText( , $this->maxCharsPerMenuEntry ).
     *  The title tag contains the whole title so on  mouseover the user gets it. */
-            "<a class=\"".$cssCellClassOff."\" href=\"".$link."\" ".retIfTrue( ( strpos( $link, "http://" ) !== false ), 'target="_blank" ' )."title=\"".$strText."\">".cutHTMLText( $this->subMenuIndenter.$strText, $this->maxCharsPerMenuEntry )."</a>".
-            retIfTrue( !$dontClose, '</li>' )."\n";
+            "<a class=\"".$cssCellClassOff."\" href=\"".$link."\" ".( ( strpos( $link, "http://" ) !== false ) ? 'target="_blank" ' : '' )."title=\"".$strText."\">".cutHTMLText( $this->subMenuIndenter.$strText, $this->maxCharsPerMenuEntry )."</a>".
+            ( !$dontClose ?  '</li>'  : '' )."\n";
   }
   
   /**

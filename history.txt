@@ -5,8 +5,51 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
-
-2011-05-12
+ 
+2011-06-13
+-------------------
+  Replaced retIfTrue( [condition], [consequence], [alternative] ); with ( ([condition]) ? [consequence] : [alternative] ) in
+  /include/classes/ElementMenues.inc
+  /include/classes/DBConnection.inc
+  /include/classes/DBInterfaceUserRights.inc
+  /include/classes/ElementButtons.inc
+  /include/classes/elements/BCElement.inc
+  /include/classes/elements/Element.inc
+  /include/classes/elements/LcDBInterface.inc
+  /include/classes/elements/LcElement.inc
+  /include/classes/elements/LiDBInterface.inc
+  /include/classes/elements/LiDBInterfaceAnswers.inc
+  /include/classes/elements/LiDBInterfaceUidTeam.inc
+  /include/classes/elements/LiDBInterfaceLocks.inc
+  /include/classes/elements/LiElement.inc
+  /include/classes/elements/LiDBInterface.inc
+  /include/classes/elements/LlDBInterfaceUidStatus.inc
+  /include/classes/elements/LlElement.inc
+  /include/classes/elements/LmDBInterface.inc
+  /include/classes/elements/LmDBInterfaceAnswers.inc
+  /include/classes/elements/LpDBInterface.inc
+  /include/classes/elements/LmElement.inc
+  /include/classes/elements/LpElement.inc
+  /include/classes/Menu.inc
+  /include/menu.inc
+  /include/page_layout.inc
+  /include/XIlib.inc.
+  /pages/manageUsers.php
+  /pages/uaManageUsers.php
+  /pages/uaMyData.php
+  /php/getDBIbyID.inc
+  /php/sendMail.php
+  /php/uaMyDataSave.php
+  /php/uaMyPWSave.php
+  /include/classes/elements/LsElement.inc
+  /pages/mailForm.php
+  /pages/manage.php
+  /pages/sorter.inc
+  /pages/uaCreateUsers.php
+  /php/uaManageUsersSave.php
+  /include/helper.inc
+  
+2011-06-12
 -------------------
   /include/classes/Pge.inc:
     Added sanitizeKeys( $string ) to sanitize constants in helper.inc: parseHTML before applying MarkUp.

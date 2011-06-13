@@ -81,7 +81,7 @@ else{
                                   $cfg->get('UserDBField_uid'), 
                                   $cfg->get('UserDatabaseTable'), 
                                   $cfg->get('UserDBField_username')."='".$_POST['USERNAME']."' && ".
-                                  $cfg->get('UserDBField_uid')."!='".retIfTrue( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData(),$usr->theSeeingUid() ,$usr->uid )."'"
+                                  $cfg->get('UserDBField_uid')."!='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
                                  );
     $data = mysql_fetch_assoc( $result );
     if ( mysql_num_rows( $result ) != 0){
@@ -115,7 +115,7 @@ else{
                           $cfg->get('UserDBField_forename')."='".$_POST['FORENAME']."', ".
                           $cfg->get('UserDBField_email')."='".$_POST['EMAIL']."'", 
                           $cfg->get('UserDatabaseTable'), 
-                          $cfg->get('UserDBField_uid')."='".retIfTrue( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData(), $usr->theSeeingUid() ,$usr->uid )."'"
+                          $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ?  $usr->theSeeingUid()  : $usr->uid  )."'"
                          );
       // note
       $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );

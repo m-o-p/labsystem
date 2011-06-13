@@ -144,10 +144,10 @@ class LlDBInterface {
               "prelab_collection_idx='".$this->myDBC->escapeString($eL->prelabCollectionIdx)."', ".
               "lab_collection_idx='".$this->myDBC->escapeString($eL->labCollectionIdx)."', ".
               "matching_menu='".$this->myDBC->escapeString($eL->matchingMenu)."', ".
-              "visible_only_in_collection=".retIfTrue( $eL->visibleOnlyInCollection, "1", "0" ).
-              ", visible_before_first_sched=".retIfTrue( $eL->visibleBefore1stSched, "1", "0" ).
-              ", visible_during_sched=".retIfTrue( $eL->visibleDuringSched, "1", "0" ).
-              ", visible_after_first_sched=".retIfTrue( $eL->visibleAfter1stSched, "1", "0" ).
+              "visible_only_in_collection=".( $eL->visibleOnlyInCollection ?  "1" :  "0"  ).
+              ", visible_before_first_sched=".( $eL->visibleBefore1stSched ?  "1" :  "0"  ).
+              ", visible_during_sched=".( $eL->visibleDuringSched ?  "1" :  "0"  ).
+              ", visible_after_first_sched=".( $eL->visibleAfter1stSched ?  "1" :  "0"  ).
               ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
     if ( $eL->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eL->history)."' )";
                          else $toSet .= ": ".$lng->get("dataSetCreated")."' )";

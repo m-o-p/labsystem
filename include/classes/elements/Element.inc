@@ -168,7 +168,7 @@ class Element{
   */
   function getMenu( $fullAddress, &$menu2Populate, $paragraph="", $isActive=false ){
     global $url;
-    if ( $this->isVisible() ) return $menu2Populate->entry( retIfTrue( $paragraph != "", $paragraph.". " ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, $isActive );
+    if ( $this->isVisible() ) return $menu2Populate->entry( ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, $isActive );
                          else return "";
   }
   
@@ -267,7 +267,7 @@ class Element{
     $disabled = true; // With this implementation saving wont be possible
     $retVal = "";
     foreach( get_class_vars( get_class( $this ) ) as $key=>$value )
-      $retVal .=  "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend_".$key."\" checked=\"checked\"".retIfTrue( $disabled, " disabled=\"disabled\"").">".
+      $retVal .=  "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend_".$key."\" checked=\"checked\"".( $disabled ?  " disabled=\"disabled\"" : '' ).">".
                   infoArrow( $prefix."_".$key, $disabled )." ";
 
     return $retVal."| ".$this->title;

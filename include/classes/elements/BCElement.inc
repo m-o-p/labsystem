@@ -61,7 +61,7 @@ class BCElement extends LcElement{
     $myRetVal = "<!-- start of group --><div class=\"labsys_mop_C_TOC_group\">\n"; 
 
     foreach( $structureArray as $value ){
-        $paragraph = retIfTrue( $extParagraph != "", $extParagraph."." ).$this->getParagraph( $value );
+        $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
 
        // show the element
         $id = $value{0}; $num = substr( $value, 1 );
@@ -69,7 +69,7 @@ class BCElement extends LcElement{
         
         if ( $element ){ $myRetVal .= "<div class=\"labsys_mop_C_TOC_entry\">".
                                       "<a href=\"".$url->link2( "../pages/view.php?address=".$fullAddress.".".$value )."\">".
-                                      retIfTrue( $paragraph != "", $paragraph.". " ).$element->title.
+                                      ( $paragraph != "" ?  $paragraph.". "  : '' ).$element->title.
                                       "</a></div>\n";
                         // call the C elements getTOC to get the submenu
                          if ( $id == "C" ) $myRetVal .= $element->getTOC( $fullAddress.".".$value, $paragraph );
@@ -107,7 +107,7 @@ class BCElement extends LcElement{
       if ( count($parentArray) > 0 ) $parent = $parentArray[ count($parentArray)-1 ];
                                 else $parent = "";
 
-      $nextEl = retIfTrue( $parent != "", $parent."." ).$value;
+      $nextEl = ( $parent != "" ?  $parent."."  : '' ).$value;
       
       if ( $found ) break;
       
@@ -145,7 +145,7 @@ class BCElement extends LcElement{
     $myRetVal = "";
    // show toc
         if ( $last == "" ) $myRetVal .= "<div class=\"labsys_mop_contentArea\">".
-                                        "<div class=\"labsys_mop_h2\">".retIfTrue( $extParagraph != "", $extParagraph.". " ).$this->title."</div>".
+                                        "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>".
                                         $this->getTOC( $fullAddress, $extParagraph ).
                                         "</div>";
 
@@ -166,7 +166,7 @@ class BCElement extends LcElement{
                                           $element = $DBI->getData2idx( $num, true, $this->isInLab );
                                           $GLOBALS["pge"]->title        = $element->title;
                                           $GLOBALS["pge"]->matchingMenu = $element->getMatchingMenu();
-                                          $myRetVal .= $element->show( $fullAddress, retIfTrue( $extParagraph != "", $extParagraph."." ).$this->getParagraph( $first ), true );
+                                          $myRetVal .= $element->show( $fullAddress, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $first ), true );
                                         }
    // we don't handle so maybe our parent does... ( p.e. .structure )
     else { return parent::show( $fullAddress, $extParagraph, $hideNavigation ); }
@@ -207,15 +207,15 @@ class BCElement extends LcElement{
     if ( isset( $GLOBALS["firstFinal"] ) && ($GLOBALS["firstFinal"] == "C".$this->idx) ) $unfold = true;
     
     if ( !$unfold )
-      $retVal = $menu2Populate->entry( retIfTrue( $extParagraph != "", $extParagraph.". " ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, ($url->get('address') == $fullAddress) );
+      $retVal = $menu2Populate->entry( ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, ($url->get('address') == $fullAddress) );
     else{
-      $retVal = $menu2Populate->startSubmenu( retIfTrue( $extParagraph != "", $extParagraph.". " ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, ($url->get('address') == $fullAddress) );
+      $retVal = $menu2Populate->startSubmenu( ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, ($url->get('address') == $fullAddress) );
     /** parse the submenu entries **/
       $structureArray = $this->getMyVisibleElements();
   
       foreach( $structureArray as $value ){
           $linkAddr = $fullAddress.".".$value;
-          $paragraph = retIfTrue( $extParagraph != "", $extParagraph."." ).$this->getParagraph( $value );
+          $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
           $isActive = ( $linkAddr == substr( $url->get('address'), 0, strlen( $linkAddr ) ) );
           
          // show the element's menu entry

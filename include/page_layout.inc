@@ -134,7 +134,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     <table class="labsys_mop_maintable" align="center" cellpadding="0" cellspacing="0">
       <?php /* table layout fixed: first row sets the width */
         echo("<tr><td class=\"labsys_mop_ableMenu\"></td>". // show/ hide menu
-             "<td class=\"labsys_mop_menu".retIfTrue( isset( $_GET['nomenu'] ), "_hidden" )."\"></td>". // the menu
+             "<td class=\"labsys_mop_menu".( isset( $_GET['nomenu'] ) ? "_hidden" : '' )."\"></td>". // the menu
              "<td></td></tr>\n"); // the content area
       ?>
 <!-- ************************* start of topmost header ************************* -->
@@ -186,7 +186,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
                     "onmouseout='javascript:this.className=\"labsys_mop_ableMenu\";' ".
                     "onClick='javascript:location.href=\"".$link."\";' >".
                "<a href=\"".$link."\">".
-               retIfTrue( $menuVisible, "&lt;<br>&lt;", "&gt;<br>&gt;" ).
+               ( $menuVisible ?  "&lt;<br>&lt;" :  "&gt;<br>&gt;"  ).
                "</a></td>");
         ?>
         <td class="labsys_mop_menu<?php if (!$menuVisible) echo("_hidden"); ?>">

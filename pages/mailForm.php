@@ -78,8 +78,8 @@ while( $userRightsData = $urDBI->getNextData() ){
     $allSupporter .= ", \"".$user->surName.", ".$user->foreName."\" => '\"".$user->foreName.' '.$user->surName.'"<'.$user->mailAddress.">'"; // format '"'  NAME  '"'  ' '  '<'  ADDRESS  '>'
   else
     $allOther .= ", \"".
-                 retIfTrue( ($user->surName != '') || ($user->foreName != ''),
-                            $user->surName.", ".$user->foreName,
+                 ( ($user->surName != '') || ($user->foreName != '') ?
+                            $user->surName.", ".$user->foreName :
                             $user->userName
                            ).
                  " (".$user->currentTeam.")\" => '\"".$user->foreName.' '.$user->surName.'" <'.$user->mailAddress.">'"; // format '"'  NAME  '"'  ' '  '<'  ADDRESS  '>'
@@ -97,11 +97,11 @@ $counter=0;
 $checkAll = isset( $_GET['checkAll'] );
 
 $allSupporterInputs = "";
-foreach( $allSupporter as $key => $value ) $allSupporterInputs .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".retIfTrue( $checkAll, " checked=\"checked\" " ).">".
+foreach( $allSupporter as $key => $value ) $allSupporterInputs .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".( $checkAll ?  " checked=\"checked\" "  : '' ).">".
                                                                   "<label for=\"MAIL2_".$counter."\" class=\"labsys_mop_input_field_label\">".$key."</label><br />\n";
 $allOtherInputs = "";
 if ( $usr->isOfKind( IS_ALL_MAILER ) )
-  foreach( $allOther as $key => $value ) $allOtherInputs         .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".retIfTrue( $checkAll, " checked=\"checked\" " ).">".
+  foreach( $allOther as $key => $value ) $allOtherInputs         .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".( $checkAll ?  " checked=\"checked\" "  : '' ).">".
                                                                     "<label for=\"MAIL2_".$counter."\" class=\"labsys_mop_input_field_label\">".$key."</label><br />\n";
 
 $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/sendMail.php")."\">\n".
@@ -114,21 +114,21 @@ $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST
            // the mail2 row 
             "<tr><td class=\"labsys_mop_mailform_table_mail2\">\n".
 
-            retIfTrue( $usr->isOfKind( IS_ALL_MAILER ),
+            ( $usr->isOfKind( IS_ALL_MAILER ) ?
                         "<fieldset><legend>".$lng->get("roundmail")."</legend>\n".
                         "<a href=\"".$url->link2("../pages/mailForm.php?checkAll")."\" onclick=\"setCheckboxes(true); return false;\">".$lng->get("checkAll")."</a>/ \n".
                         "<a href=\"".$url->link2("../pages/mailForm.php")."\" onclick=\"setCheckboxes(false); return false;\">".$lng->get("unCheckAll")."</a><br />\n".
-                        "</fieldset>\n"
+                        "</fieldset>\n" : ''
                       ).
             
             "<fieldset><legend>".$lng->get("labSupporter")."</legend>\n".
             $allSupporterInputs.
             "</fieldset>\n".
             
-            retIfTrue( $usr->isOfKind( IS_ALL_MAILER ),
+            ( $usr->isOfKind( IS_ALL_MAILER )?
                         "<fieldset><legend>".$lng->get("otherUser")."</legend>\n".
                         $allOtherInputs.
-                        "</fieldset>\n"
+                        "</fieldset>\n" : ''
                       ).
             
             "</td>".
@@ -149,7 +149,7 @@ $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST
             "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"noCopy2Me\" name=\"NO_COPY_2_ME\" value=\"1\" checked=\"checked\">".
             "<label for=\"noCopy2Me\" class=\"labsys_mop_input_field_label\">".$lng->get("noCopy2Me")."</label><br />\r\n".
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"mailViaBcc\" name=\"MAIL_VIA_BCC\" value=\"1\"".retIfTrue( $cfg->get("mailViaBcc") == '1', " checked=\"checked\"" ).">".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"mailViaBcc\" name=\"MAIL_VIA_BCC\" value=\"1\"".( $cfg->get("mailViaBcc") == '1' ?  " checked=\"checked\""  : '' ).">".
             "<label for=\"mailViaBcc\" class=\"labsys_mop_input_field_label\">".$lng->get("mailViaBcc")."</label>".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" value=\"".$lng->get("sendMail")."\" accesskey=\"s\">\n".            

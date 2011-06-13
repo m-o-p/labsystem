@@ -263,31 +263,31 @@ class LiElement extends Element{
     global $lng, $pge, $usr;
     return "<div class=\"labsys_mop_i_credits".
           // if we are viewing someone the color of the credits division tells whether the input is marked as corrected
-          retIfTrue( $usr->isOfKind( IS_CORRECTOR ) && !$possiblePtsOnly,
-                     retIfTrue( $this->isCorrected, "_green", "_red") ).
+          ( $usr->isOfKind( IS_CORRECTOR ) && !$possiblePtsOnly ?
+                     ( $this->isCorrected ?  "_green" :  "_red" ) : '' ).
           "\">".
             // the "is corrected" checkbox
-            retIfTrue( $isInCorrection, 
+            ( $isInCorrection ? 
                        "<label for=\"IS_CORRECTED\" class=\"labsys_mop_input_field_label_left\">".$lng->get("inputIsCorrected")."</label> ".
                        "<input type=\"checkbox\" name=\"IS_CORRECTED\" value=\"1\" ".
                         "tabindex=\"".$pge->nextTab++."\" ".
                         "checked=\"checked\"". // so it will be checked by default
-                       ">"
+                       ">" : ''
                       ).
             // the credits
             "[".
-            retIfTrue( $isInCorrection, 
+            ( $isInCorrection ? 
                        // show input
                        "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".
                        // on first entering set the points to full points
-                       retIfTrue( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || $this->answerComment!='', $this->givenCredits, $this->possibleCredits ).
-                       "\">"."/ ",
-                       retIfTrue( !$possiblePtsOnly,
-                                  retIfTrue( ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )), 
+                       ( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || $this->answerComment!='' ?  $this->givenCredits :  $this->possibleCredits  ).
+                       "\">"."/ " :
+                       ( !$possiblePtsOnly ?
+                                  ( ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )) ? 
                                               // show given credits
-                                              $this->givenCredits,
+                                              $this->givenCredits :
                                               '0')."/ "
-                                 )
+                                 : '' )
                       ).
             $this->possibleCredits." ".$lng->get("Credits")."]".
           "</div>\n";
@@ -350,22 +350,22 @@ class LiElement extends Element{
 
       $ret =   "<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
                "<FORM class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
-               "ACTION=\"".retIfTrue( ($usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && !$isInCorrection),
+               "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && !$isInCorrection) ?
                                       // link for the corrector to unlock... (-> see description above method)
-                                      $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam),
+                                      $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam) :
                                       // normal handling -> pass method to executeCommandOnElement.php
                                       $url->link2("../php/executeCommandOnElement.php?address=i")
                                      ).
                 "\">\n".
                 
-                retIfTrue(  $isInCorrection,
-                            retIfTrue( $isInCorrection,
+                (  $isInCorrection ?
+                            ( $isInCorrection ?
                                        // the corrector has opened this for correction
-                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveCorrectorStuff()\">\n"
-                                      ),
-                            retIfTrue( $isGettingAnswered,
+                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveCorrectorStuff()\">\n" : ''
+                                      ) :
+                            ( $isGettingAnswered ?
                                        // user set lock to this
-                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveUserAnswer()\">\n",
+                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveUserAnswer()\">\n" :
                                        // user may set a lock to this
                                        "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"setUserAnswerLock()\">\n"
                                       )
@@ -408,15 +408,15 @@ class LiElement extends Element{
             
       $ret .= "</FORM>\n".
     
-              retIfTrue(  ( $isGettingAnswered || $isInCorrection ),
+              (  ( $isGettingAnswered || $isInCorrection ) ?
                           '<script language="JavaScript" type="text/javascript">'."\n".
                           '<!--'."\n".
-                          'if (document.InputAnswer'.$this->idx.') document.InputAnswer'.$this->idx.'.'.retIfTrue( $isGettingAnswered, "ANSWER", "COMMENT" ).'.focus();'.
+                          'if (document.InputAnswer'.$this->idx.') document.InputAnswer'.$this->idx.'.'.( $isGettingAnswered ?  "ANSWER" :  "COMMENT"  ).'.focus();'.
                           '//-->'."\n".
-                          '</script>'."\n" ).
+                          '</script>'."\n" : '' ).
                           
                         // answer history
-              retIfTrue( ($this->answerHistory != ""), EM::viewInputAnswerHistory( $this ) );
+              ( $this->answerHistory != "" ? EM::viewInputAnswerHistory( $this ) : '' );
               
     return $ret;                          
   }
@@ -468,21 +468,21 @@ class LiElement extends Element{
            EM::viewTopInput( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
              "<div class=\"labsys_mop_i_question\">".
-               retIfTrue( ($paragraph!=""), $paragraph.". " ).$this->question.
+               ( ($paragraph!="") ?  $paragraph.". "  : '' ).$this->question.
              "</div>\n".
              
            // example solution
-             retIfTrue( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !isset( $_GET['noExSol'] ), 
+             ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !isset( $_GET['noExSol'] ) ? 
                                    "<div class=\"labsys_mop_i_example_solution\">".
                                    '<!-- example solution -->'."\r\n".
                                    $this->exampleSolution.
                                    '<!-- /example solution -->'."\r\n".
-                                   "</div>\n"
+                                   "</div>\n" : ''
                        ).
                         
            // answer + eventually comment + credits
              $answers.
-             retIfTrue( ($answers == ""), $this->showCredits( false, true ) ).
+             ( $answers == '' ? $this->showCredits( false, true ) : '' ).
            "</div>\n".
            EM::viewBottomInput( $this, $fullAddress ).
            "</div>";
@@ -533,11 +533,11 @@ class LiElement extends Element{
               "<table width=\"100%\"><tr><td valign=\"top\" width=\"40%\">\n".
                   "<fieldset><legend>".$lng->get("visibility")."</legend>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".retIfTrue( !$this->visibleOnlyInCollection, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visAlways\" class=\"labsys_mop_input_field_label\">".$lng->get("visAlways")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".retIfTrue( $this->visibleOnlyInCollection, " checked=\"checked\"").">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
                       "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInColl")."</label>".
                     "</div>\n".
                   "</fieldset>\n".
@@ -549,7 +549,7 @@ class LiElement extends Element{
                 "</div>\n".
                 "</fieldset>\n".
               "</td></tr></table>\n".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".retIfTrue( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ),  " checked=\"checked\"" ).">".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' ).">".
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
 
@@ -714,7 +714,7 @@ class LiElement extends Element{
        
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
 
-    $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], retIfTrue( isset($_POST['COMMENT']), $_POST['COMMENT'], $this->answerComment), true, isset($_POST['IS_CORRECTED']) );
+    $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ), true, isset($_POST['IS_CORRECTED']) );
 
     makeLogEntry( 'i', 'correction saved', $this->idx );
     // One could also display the page here but that way it is left to the normal mechanism...
@@ -846,13 +846,13 @@ class LiElement extends Element{
   function getPropertyRow( $prefix, $disabled=false ){
     global $pge, $lng, $cfg;
     return  
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".retIfTrue( !$disabled, "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" " )."value=\"0\"".retIfTrue( !$this->visibleOnlyInCollection, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visAlways"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".retIfTrue( !$disabled, "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" " )."value=\"1\"".retIfTrue( $this->visibleOnlyInCollection, " checked=\"checked\"").retIfTrue( $disabled, " disabled=\"disabled\"").">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
               infoArrow( $lng->get("visOnlyInColl"), $disabled ).
-            retIfTrue( $disabled, "<span class=\"labsys_mop_grayed\">" ).
+            ( $disabled ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
             " | ".
-            retIfTrue( $disabled, "</span>" ).
+            ( $disabled ?  "</span>"  : '' ).
               showRightsHorizontal( $prefix, $this->visibleFor, $disabled ).
             " ".
               cutHTMLText( $this->idx.": ".returnEditable($this->question), $cfg->get("maxCharMngRowTitleShort") );

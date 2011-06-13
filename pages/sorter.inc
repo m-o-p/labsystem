@@ -52,11 +52,11 @@ if ( isset( $_POST['asc'] ) ) $asc = !( $_POST['asc'] == "desc" );
 $sorter = "<FORM class=\"labsys_mop_sort_form\" NAME=\"sort_options\" METHOD=\"POST\" ACTION=\"".$GLOBALS['url']->link2( $_SERVER['REQUEST_URI'] )."\">\n".
           $lng->get("orderBy").
           '<select name="orderBy" size="1" onChange="document.sort_options.submit();" tabindex="'.$pge->nextTab++.'">';
-foreach ( $sortArray as $key => $value ) $sorter .= '<option '.retIfTrue( ( $orderByKey == $key ), " selected" ).'>'.$key.'</option>';
+foreach ( $sortArray as $key => $value ) $sorter .= '<option '.( ( $orderByKey == $key ) ?  " selected"  : '' ).'>'.$key.'</option>';
 $sorter .='</select> '.
           '<select name="asc" size="1" onChange="document.sort_options.submit();" tabindex="'.$pge->nextTab++.'">
-           <option '.retIfTrue(  $asc,  " selected" ).'>asc</option>
-           <option '.retIfTrue(  !$asc, " selected" ).'>desc</option>
+           <option '.(  $asc ?   " selected"  : '' ).'>asc</option>
+           <option '.(  !$asc ?  " selected"  : '' ).'>desc</option>
            </select><input type="submit" value="&gt;&gt;">'.
            "</FORM>\n";
 // /sorting select

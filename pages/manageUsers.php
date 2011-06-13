@@ -101,7 +101,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
                                                                                  'startFrom='.($startFrom-$frameSize).
                                                                                  '&frameSize='.$frameSize.
                                                                                  '&orderBy='.$orderByKey.
-                                                                                 '&asc='.retIfTrue( $asc, 'asc', 'desc' ) ).'">&lt;&lt;</a> '."\n";
+                                                                                 '&asc='.( $asc ?  'asc' :  'desc'  ) ).'">&lt;&lt;</a> '."\n";
   
       $j = 1;
       for ( $i=1; $i<=$existingElemnts; $i+=$frameSize ){
@@ -109,11 +109,11 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
                                                       'startFrom='.$i.
                                                       '&frameSize='.$frameSize.
                                                       '&orderBy='.$orderByKey.
-                                                      '&asc='.retIfTrue( $asc, 'asc', 'desc' ) ).
+                                                      '&asc='.( $asc ?  'asc' :  'desc'  ) ).
                              '">'.
-                             retIfTrue( ($startFrom == $i), '<b>' ).
+                             ( ($startFrom == $i) ?  '<b>'  : '' ).
                              $j++.
-                             retIfTrue( ($startFrom == $i), '</b>' ).
+                             ( ($startFrom == $i) ?  '</b>'  : '' ).
                              '</a> '."\n";
       }
   
@@ -122,7 +122,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
                                                                                     'startFrom='.($startFrom+$frameSize).
                                                                                     '&frameSize='.$frameSize.
                                                                                     '&orderBy='.$orderByKey.
-                                                                                    '&asc='.retIfTrue( $asc, 'asc', 'desc' ) ).'">&gt;&gt;</a>'."\n";
+                                                                                    '&asc='.( $asc ?  'asc' :  'desc'  ) ).'">&gt;&gt;</a>'."\n";
 
   $manageNavigation .= '</div>'."\n";
   $manageNavigation .= '<!-- /navigation -->'."\n";

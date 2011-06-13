@@ -132,10 +132,10 @@ class LcDBInterface {
     $toSet =  "title='".$this->myDBC->escapeString($eC->title)."', ".
               "contents='".$this->myDBC->escapeString($eC->contents)."', ".
               "matching_menu='".$this->myDBC->escapeString($eC->matchingMenu)."', ".
-              "visible_only_in_collection=".retIfTrue( $eC->visibleOnlyInCollection, "1", "0" ).
-              ", visible_before_first_sched=".retIfTrue( $eC->visibleBefore1stSched, "1", "0" ).
-              ", visible_during_sched=".retIfTrue( $eC->visibleDuringSched, "1", "0" ).
-              ", visible_after_first_sched=".retIfTrue( $eC->visibleAfter1stSched, "1", "0" ).
+              "visible_only_in_collection=".( $eC->visibleOnlyInCollection ?  "1" :  "0"  ).
+              ", visible_before_first_sched=".( $eC->visibleBefore1stSched ?  "1" :  "0"  ).
+              ", visible_during_sched=".( $eC->visibleDuringSched ?  "1" :  "0"  ).
+              ", visible_after_first_sched=".( $eC->visibleAfter1stSched ?  "1" :  "0"  ).
               ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
     if ( $eC->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eC->history)."' )";
                          else $toSet .= ": ".$lng->get("dataSetCreated")."' )";

@@ -181,7 +181,8 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     $theQuery  = "SELECT 'idx' FROM ".$into." WHERE ".$where;
     if (mysql_num_rows( $this->query(  $theQuery ) ) == 0){
       $toReplace = Array( "&&", "||" ); // to be replaced by , before insert!
-      return $this->mkInsert( $what.retIfTrue( $where != "", ", ".str_replace( $toReplace, ",", $where )), $into );
+      return $this->mkInsert( $what.( $where != '' ?  ', '.str_replace( $toReplace, ',', $where ) : '' ),
+                              $into );
     } else return $res;
     
     /* 2008/ 01/ 11: mysql_affected_rows() reported 1 on Gentoo even though it should be 0?!? so this is used now
@@ -192,7 +193,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
       return $res;
     else{ // if that doesn't succeed: INSERT INTO $into SET $what.$where
       $toReplace = Array( "&&", "||" ); // to be replaced by , before insert!
-      return $this->mkInsert( $what.retIfTrue( $where != "", ", ".str_replace( $toReplace, ",", $where )), $into );
+      return $this->mkInsert( $what.( $where != "" ?  ", ".str_replace( $toReplace, ",", $where )), $into  : '' );
     }
        */
   }

@@ -133,7 +133,7 @@ class LmDBInterface {
               "answer_explanation='".$this->myDBC->escapeString($eM->answerExplanation)."', ".
               "correct_mask='".$eM->correctMask."', ".
               "visible_for=".$eM->visibleFor.", ".
-              "visible_only_in_collection=".retIfTrue( $eM->visibleOnlyInCollection, 1, 0).', '.
+              "visible_only_in_collection=".( $eM->visibleOnlyInCollection ?  1 :  0 ).', '.
               "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
     if ( $eM->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eM->history)."' )";
                          else $toSet .= ": ".$lng->get("dataSetCreated")."' )";

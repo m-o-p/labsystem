@@ -51,7 +51,7 @@ $pge->visibleFor   = IS_USER;
      // query ALL fields
      $result = $userDBC->mkSelect( "*", 
                                    $cfg->get('UserDatabaseTable'), 
-                                   $cfg->get('UserDBField_uid')."='".retIfTrue( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData(),$usr->theSeeingUid() ,$usr->uid )."'" 
+                                   $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'" 
                                   );
      $data = mysql_fetch_assoc( $result ); // -> only associative array
     

@@ -27,21 +27,6 @@
 * @version    1.0
 */
 
-/**
-* Returns $consequent, if the test is true. Otherwise $alternative.
-* (p.e. return "foo".retIfTrue( ($foo>$bar), " is bigger", " is smaller or equal" );
-*
-* The big disadvantage to if is that test and consequent are passed by value and therefore evaluated.
-*
-* @param $test        The test.
-* @param $consequent  The $consequent.
-* @param $alternative The alternative.
-* @return             The consequent or the alternative.
-*/
-function retIfTrue( $test, $consequent, $alternative="" ){ 
-  if ($test) return $consequent;
-  return $alternative;
-}
 
 /**
 * Returns an info arrow with describing $text as title (appears at mousevoer in most browsers)
@@ -49,7 +34,7 @@ function retIfTrue( $test, $consequent, $alternative="" ){
 * @param $grayed  Should the arrow be grayed?
 */
 function infoArrow( $text, $grayed=false ){
-  return "<img src=\"../syspix/arrow_left_9_12".retIfTrue( $grayed, "_gray" ).".gif\" width=\"9\" height=\"12\" border=\"0\" alt=\"&lt;\" title=\"".$text."\">";
+  return "<img src=\"../syspix/arrow_left_9_12".( $grayed ? "_gray" : '' ).".gif\" width=\"9\" height=\"12\" border=\"0\" alt=\"&lt;\" title=\"".$text."\">";
 }
 
 /**
@@ -63,8 +48,8 @@ function infoArrow( $text, $grayed=false ){
 function rightsBox( $name, $value, $rights, $disabled=false ){ 
   global $lng, $usr, $pge;
   return "<input type=\"checkbox\" id=\"".$name."\" name=\"".$name."\" value=\"".$value."\" tabindex=\"".$pge->nextTab++."\"".
-         retIfTrue( $usr->isOfKind($value, $rights),  " checked=\"checked\"" ).
-         retIfTrue( $disabled, " disabled=\"disables\"" ).
+         ( $usr->isOfKind($value, $rights) ?  " checked=\"checked\"" : '').
+         ( $disabled ? " disabled=\"disabled\"" : '' ).
          "><label for=\"".$name."\" class=\"labsys_mop_input_field_label\">".infoArrow( $lng->get("Explain_UR_".$value), $disabled )."</label>"/*."\n" removed to save space... */;
 }
 
@@ -144,7 +129,7 @@ function tidyHTML( &$string ){
        ( substr( $string, 0, 6 ) == '[HTML]' ) &&  // this is and HTML element
        class_exists( 'tidy' ) ){ // tidy exists on this system
     if (!isset( $GLOBALS['tidy'] )) $GLOBALS['tidy'] = new tidy();
-    $string = "[HTML]\n".$GLOBALS['tidy']->repairString( substr( $string, 6 ), array('indent' => TRUE, 'show-body-only' => TRUE, 'vertical-space' => TRUE, 'wrap' => 2000) );
+    $string = "[HTML]\n".$GLOBALS['tidy']->repairString( substr( $string, 6 ), array('indent' => TRUE, 'show-body-only' => TRUE, 'vertical-space' => TRUE, 'wrap' => 100) );
   }
 }
 

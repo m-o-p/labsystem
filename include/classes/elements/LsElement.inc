@@ -165,7 +165,7 @@ class LsElement extends Element{
 
     for ( $i=1; $i <= $daysInMonth; $i++ ){
       $dayNames   .= "<td class=\"labsys_mop_s_table_day_name\">".date( "D", mktime( 0, 0, 0, date("n", $givenDate), $i, date("Y", $givenDate) ) )."</td>";
-      $dayNumbers .= "<td class=\"labsys_mop_s_table_".retIfTrue( $i == $today, "to" )."day\">".$i."</td>"; 
+      $dayNumbers .= "<td class=\"labsys_mop_s_table_".( $i == $today ?  "to"  : '' )."day\">".$i."</td>"; 
                                         }
 
     // There might be empty fields at the end (p.e. februrary) to fill the 31 columns.
@@ -277,9 +277,9 @@ class LsElement extends Element{
                                Array( "s".$element->idx =>  "<a href=\"".$url->link2( "../pages/view.php?address=".$element->id.$element->num )."\">".$element2->title."</a>".
                                                             " (".date( $lng->get("DateFormat"),  $element->start ).
                                                             " - ".date( $lng->get("DateFormat"), $element->stop ).")".
-                                                            retIfTrue( $usr->isOfKind( IS_SCHEDULER ), " ".EB::edit( "s".$element->idx ).EB::delete( "s".$element->idx ) ).
+                                                            ( $usr->isOfKind( IS_SCHEDULER ) ? " ".EB::edit( "s".$element->idx ).EB::delete( "s".$element->idx ) : '' ).
                                                             " ".EB::history( $element->history, "s".$element->idx, false ).
-                                                            retIfTrue( $element->comment != "", "\n<br />".$element->comment."\n" )
+                                                            ( $element->comment != "" ?  "\n<br />".$element->comment."\n"  : '' )
                                      ) 
                               );
       }
@@ -288,7 +288,7 @@ class LsElement extends Element{
       $this->addSchedule( $element->start,
                           $element->stop, 
                           "<a href=\"".$url->link2( "../pages/view.php?address=".$element->id.$element->num )."\" ".
-                              "title=\""."s".$element->idx.': '.$element2->title.retIfTrue( $element->comment != "", "\n".$element->comment )."\">".
+                              "title=\""."s".$element->idx.': '.$element2->title.( $element->comment != "" ?  "\n".$element->comment  : '' )."\">".
                           $element2->title."</a>",
                           $schedules,
                           $legend
@@ -346,7 +346,7 @@ class LsElement extends Element{
       
       for ( $i=$first_N; $i<=$last_N; $i++ ){
         $ret .= "<option value=\"".$i."\"".
-                retIfTrue( ($i == $selected_N ), " selected=\"selected\"").
+                ( ($i == $selected_N ) ?  " selected=\"selected\"" : '' ).
                 ">".$i."</option>\n";
       }
       return $ret;
@@ -371,7 +371,7 @@ class LsElement extends Element{
     $DBI->getAllData( "idx", true );    // sorted by idx ascending
     while ( $element = $DBI->getNextData() ){
       $dropDownOptionsCollLab.= "<option value=\"l".$element->idx."\"".
-                                retIfTrue( ("l".$element->idx == $this->id.$this->num), " selected=\"selected\"").
+                                ( ("l".$element->idx == $this->id.$this->num) ?  " selected=\"selected\"" : '' ).
                                 ">l".$element->idx.": ".$element->title."</option>\n";
     }
     // collections
@@ -380,10 +380,10 @@ class LsElement extends Element{
     $DBI->getAllData( "idx", true );    // sorted by idx ascending
     while ( $element = $DBI->getNextData() ){
       $dropDownOptionsCollLab.= "<option value=\"C".$element->idx."\"".
-                                retIfTrue( ("C".$element->idx == $this->id.$this->num), " selected=\"selected\"").
+                                ( ("C".$element->idx == $this->id.$this->num) ?  " selected=\"selected\"" : '' ).
                                 ">C".$element->idx.": ".$element->title."</option>\n";
       $dropDownOptionsCollLab.= "<option value=\"c".$element->idx."\"".
-                                retIfTrue( ("c".$element->idx == $this->id.$this->num), " selected=\"selected\"").
+                                ( ("c".$element->idx == $this->id.$this->num) ?  " selected=\"selected\"" : '' ).
                                 ">c".$element->idx.": ".$element->title."</option>\n";
     }
     
@@ -505,7 +505,7 @@ class LsElement extends Element{
           
         // element properties
           "<fieldset><legend>".$lng->get("properties")."</legend>\n".
-          "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".retIfTrue( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ),  " checked=\"checked\"" ).">".
+          "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' ).">".
           "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
           "</fieldset>\n".
     

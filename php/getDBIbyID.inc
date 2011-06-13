@@ -30,7 +30,7 @@
 *
 * @return $DBI  Sets $DBI to the appropriate DBI.
 */
-  $prefix = retIfTrue( $id == strtoupper( $id ), "B", "L" ).$id; /* little */
+  $prefix = ( $id == strtoupper( $id ) ?  "B" :  "L"  ).$id; /* little */
   
   if ( !file_exists ( INCLUDE_DIR."/classes/elements/".$prefix."DBInterface.inc" ) ){ 
                                                                                       trigger_error( $id.": ".$lng->get( "elementNotExist" ), E_USER_ERROR );

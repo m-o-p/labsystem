@@ -221,14 +221,14 @@ class EB{ /* ElementButtons */
       $historyText .= '<a href="'.$_SERVER['REQUEST_URI'].'&amp;fullHistory='.$address.'#history_'.$address.'">[...]</a>'."\n";
     
     return " <a tabindex=\"".$pge->nextTab++."\" name=\"history_".$address."\" href=\"".
-                $url->link2("../pages/history.php?address=".$address.retIfTrue( $sendAsAddHist, "&amp;history=".$shrtHistURL) ).
+                $url->link2("../pages/history.php?address=".$address.( $sendAsAddHist ?  "&amp;history=".$shrtHistURL : '' ) ).
                 "\"".
                 " onMouseUp=\"if (document.getElementById('history_".$pge->nextTab."').style.display != 'block') document.getElementById('history_".$pge->nextTab."').style.display = 'block'; else document.getElementById('history_".$pge->nextTab."').style.display = 'none';\" onClick=\"return false;\"".
                 ">".
            "<img src=\"../syspix/button_history_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"".$lng->get("explainHistory")."\">".
 //           "<div>\n".nl2br($history)."\n</div>".
            "</a>".
-           "<div id=\"history_".$pge->nextTab."\" class=\"labsys_mop_history\"".retIfTrue( $url->available( 'fullHistory' ) && ($url->get( 'fullHistory' ) == $address), ' style="display: block;"').">\n".
+           "<div id=\"history_".$pge->nextTab."\" class=\"labsys_mop_history\"".( $url->available( 'fullHistory' ) && ($url->get( 'fullHistory' ) == $address) ?  ' style="display: block;"' : '' ).">\n".
 // could be added to clode on click on the whole element:        onClick=\"this.style.display = 'none';\"
            '<div style="display: inline; float: right; text-align: center; padding-right: 2px; color: #555555;">'.
 //           '&lt;a href="../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__"&gt;Text&lt;/a&gt;'.

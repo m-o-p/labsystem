@@ -77,7 +77,7 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
                     
     $pge->put( '<div class="labsys_mop_u_row">'."\n" );
     for ( $i=0; $i<count( $courseArray ); $i++)
-      $pge->put( '<input type="checkbox" id="'.$courseArray[ $i ].'" name="'.$courseArray[ $i ].'" value="1" tabindex="'.$pge->nextTab++.'"'./* check this' id to enable those users to edit their data! */retIfTrue( $courseArray[ $i ] == $cfg->get( 'User_courseID' ), ' checked="checked"').'>'.
+      $pge->put( '<input type="checkbox" id="'.$courseArray[ $i ].'" name="'.$courseArray[ $i ].'" value="1" tabindex="'.$pge->nextTab++.'"'./* check this' id to enable those users to edit their data! */( $courseArray[ $i ] == $cfg->get( 'User_courseID' ) ?  ' checked="checked"' : '' ).'>'.
                  '<label for="'.$courseArray[ $i ].'" class="labsys_mop_input_field_label">'.infoArrow( $courseArray[ $i ], false ).'</label>'/*."\n" removed to save space... */
                 );
 

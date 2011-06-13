@@ -85,9 +85,9 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                                                       '&startFrom='.$i.
                                                       '&frameSize='.$frameSize ).
                              '">'.
-                             retIfTrue( ($startFrom == $i), '<b>' ).
+                             ( ($startFrom == $i) ?  '<b>'  : '' ).
                              $j++.
-                             retIfTrue( ($startFrom == $i), '</b>' ).
+                             ( ($startFrom == $i) ?  '</b>'  : '' ).
                              '</a> '."\n";
       }
   

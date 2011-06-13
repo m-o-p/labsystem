@@ -68,10 +68,7 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
   $updateString = "";
   for( $i=0; $i<count( $courseArray ); $i++ ){
     $key = $courseArray[ $i ];
-    $postedValue = retIfTrue( isset( $_POST[ $data[ $cfg->get('UserDBField_uid') ].$key ] ),
-                              1,
-                              0
-                             );
+    $postedValue = ( isset( $_POST[ $data[ $cfg->get('UserDBField_uid') ].$key ] ) ? 1 : 0 );
     $updateString .= ', '.$key."='".$postedValue."'";
   }
   // $updatestring starts with ", "!

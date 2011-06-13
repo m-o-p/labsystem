@@ -80,14 +80,14 @@ $sendViaBCC = isset( $_POST['MAIL_VIA_BCC'] ) && $_POST['MAIL_VIA_BCC'] == '1';
 
 if ( $mailto == "" ) $url->put( "sysalert=".urlencode( $lng->get("NoReceiver") ) );
 else{
-    mail( encodeMailconform( retIfTrue( $sendViaBCC, $mailFrom, $mailto ) ), // Bcc? -> mail to sender
+    mail( encodeMailconform( ( $sendViaBCC ?  $mailFrom :  $mailto  ) ), // Bcc? -> mail to sender
           encodeMailconform( '['.$cfg->get("SystemTitle").'] '.$_POST['SUBJECT'] ), 
           encodeMailconform( str_replace( "\r\n", "\n", $_POST['MAILTEXT']).
                              eval( 'return "'.$cfg->get('mailFooter').'";' ) ). // complicated? Well have to process /r/n and so on...
                              "\r\n",
                              "From: ".encodeMailconform( $mailFrom )."\r\n".
                              "Reply-To: ".encodeMailconform( $mailFrom )."\r\n".
-                             encodeMailconform( retIfTrue( $sendViaBCC, 'Bcc: '.$mailto, 'Cc: '.$myAddr4Copy ) )."\r\n". // Bcc? -> receivers
+                             encodeMailconform( ( $sendViaBCC ?  'Bcc: '.$mailto :  'Cc: '.$myAddr4Copy  ) )."\r\n". // Bcc? -> receivers
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
