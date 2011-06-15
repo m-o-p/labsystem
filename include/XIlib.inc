@@ -424,7 +424,10 @@ function reindexCollectionElements( &$content, &$IDmappingArray ){
 	$content = '';
 	foreach ( $contents as $element ){
 	  $new = mapIt( $element, $IDmappingArray );
-    if ($new != 'missing') $content .= ' '.$new;
+    if ($new == 'missing') 
+      $GLOBALS['pge']->put( 'Element MISSING and removed: '.$element );
+    else
+      $content .= ' '.$new;
   }
 	$content = substr( $content, 1); // cut first space
 }
