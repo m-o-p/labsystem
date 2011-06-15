@@ -223,9 +223,10 @@ function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true,
   function mapIt( $oldID, &$IDmappingArray ){
     $ID = strtolower( $oldID[0] ); // make ID small letter (big and small c's...
     $IDX = substr( $oldID, 1 );
-    return array_key_exists( $ID.$IDX, $IDmappingArray ) ? $oldID[0].substr( $IDmappingArray[$ID.$IDX], 1 ) /*keep first letter big... */ : $oldID[0].'1' /* default element */;
+    return array_key_exists( $ID.$IDX, $IDmappingArray ) ? $oldID[0].substr( $IDmappingArray[$ID.$IDX], 1 ) /*keep first letter big... */ : 'missing' /* not found */;
   }
   /** end of functions */
+  
 function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
 	$HTMLcode= preg_replace_callback(  '#(?=address=|\#)'. // Assertion "must be preceded by" (link or anchor usage...
                                      '(l'.$labNumber.')'.              // Just replace things for the current lab
@@ -421,8 +422,10 @@ function importFiles( &$HTMLcode ){
 function reindexCollectionElements( &$content, &$IDmappingArray ){
 	$contents = explode(' ', $content);
 	$content = '';
-	foreach ( $contents as $element )
-	  $content .= ' '.mapIt( $element, $IDmappingArray );
+	foreach ( $contents as $element ){
+	  $new = mapIt( $element, $IDmappingArray );
+    if ($new != 'missing') $content .= ' '.$new;
+  }
 	$content = substr( $content, 1); // cut first space
 }
 

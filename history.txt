@@ -8,13 +8,17 @@ Feature Requests:
 
 2011-06-15
 -------------------
-  History deleted all previous history (bug from some revisions ago)
   /include/classes/elements/LiDBInterface.inc
   /include/classes/elements/LmDBInterface.inc
   /include/classes/elements/LsDBInterface.inc
   /include/classes/elements/LpDBInterface.inc
   /include/classes/elements/LcDBInterface.inc
   /include/classes/elements/LlDBInterface.inc
+    History deleted all previous history (bug from some revisions ago)
+
+  /include/XIlib.inc
+    Changed mapIt not to return identity but missing when there is no mapping. There is no mapping for deleted elements for instance.
+    Changed reindexCollectionElements to use only non-missing elements (before it added ?1 then which led to confusions when a lab was exported that contained already deleted elements in collections).
 
 2011-06-13
 -------------------
