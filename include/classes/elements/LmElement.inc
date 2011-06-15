@@ -235,7 +235,7 @@ class LmElement extends Element{
         $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell_".( $actualMask == $this->correctMask ?  "right" :  "wrong"  )."\">".
                  "<input type=\"checkbox\" ".
                         "tabindex=\"".$pge->nextTab++."\" ".
-                        "title='".$lng->get( 'isCorrect' )."'".
+                        "title='".$lng->get( 'isCorrect' )."' ".
                          ( ($actualMask & LmElement::mask($actualAnswer)) ?  
                                     "checked=\"checked\" " : ''
                                    ).
@@ -385,7 +385,7 @@ class LmElement extends Element{
                          "<input type=\"checkbox\" ".
                                 "name=\"CORRECTMASK".$i."\" ".
                                 "value=\"".$i."\" ".
-                                "tabindex=\"".$pge->nextTab++."\"".
+                                "tabindex=\"".$pge->nextTab++."\" ".
                                 "title='".$lng->get( 'isCorrect' )."'".
                                  ( ( $correctMask & LmElement::mask($i) ) ?   " checked=\"checked\""  : '' ).
                           "></td>\n".

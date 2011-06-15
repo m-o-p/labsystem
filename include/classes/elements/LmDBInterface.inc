@@ -133,15 +133,17 @@ class LmDBInterface {
               "answer_explanation='".$this->myDBC->escapeString($eM->answerExplanation)."', ".
               "correct_mask='".$eM->correctMask."', ".
               "visible_for=".$eM->visibleFor.", ".
-              "visible_only_in_collection=".( $eM->visibleOnlyInCollection ?  1 :  0 ).', '.
-              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
-    if ( $eM->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eM->history)."' )";
-                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
+              "visible_only_in_collection=".( $eM->visibleOnlyInCollection ?  1 :  0 ).', ';
 
     if ( $createNew )
-      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+      return $this->myDBC->mkInsertReturnIDX( $toSet.
+                                              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' '.$lng->get("dataSetCreated")."\\n' )", 
+                                              $this->myTable );
     else
-      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eM->idx );
+      return $this->myDBC->mkUpdIns( $toSet.
+                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )", 
+                                     $this->myTable, 
+                                     "idx=".$eM->idx );
   }
  
   /**

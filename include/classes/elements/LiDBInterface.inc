@@ -126,15 +126,17 @@ class LiDBInterface {
               "example_solution='".$this->myDBC->escapeString( $eI->exampleSolution )."', ".
               "possible_credits='".$this->myDBC->escapeString($eI->possibleCredits * 100)."', ". // stored as int but float :2
               "visible_for=".$eI->visibleFor.", ".
-              "visible_only_in_collection=".( $eI->visibleOnlyInCollection ?  1 :  0  ).", ".
-              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
-    if ( $eI->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eI->history)."' )";
-                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
+              "visible_only_in_collection=".( $eI->visibleOnlyInCollection ?  1 :  0  ).", ";
 
     if ( $createNew )
-      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+      return $this->myDBC->mkInsertReturnIDX( $toSet.
+                                              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' '.$lng->get("dataSetCreated")."\\n' )", 
+                                              $this->myTable );
     else
-      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eI->idx );
+      return $this->myDBC->mkUpdIns( $toSet.
+                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )", 
+                                     $this->myTable, 
+                                     "idx=".$eI->idx );
   }
   
   /**

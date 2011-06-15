@@ -181,15 +181,17 @@ class LsDBInterface {
               "num='".$eS->num."', ".
               "start='".date("YmdHis", $eS->start)."', ".
               "stop='".date("YmdHis", $eS->stop )."', ".
-              "comment='".$this->myDBC->escapeString($eS->comment)."', ".
-              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
-    if ( $eS->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eS->history)."' )";
-                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
+              "comment='".$this->myDBC->escapeString($eS->comment)."', ";
 
     if ( $createNew )
-      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+      return $this->myDBC->mkInsertReturnIDX( $toSet.
+                                              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' '.$lng->get("dataSetCreated")."\\n' )", 
+                                              $this->myTable );
     else
-      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eS->idx );
+      return $this->myDBC->mkUpdIns( $toSet.
+                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )", 
+                                     $this->myTable, 
+                                     "idx=".$eS->idx );
   }
 
   /**

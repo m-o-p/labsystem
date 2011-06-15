@@ -135,15 +135,17 @@ class LcDBInterface {
               "visible_only_in_collection=".( $eC->visibleOnlyInCollection ?  "1" :  "0"  ).
               ", visible_before_first_sched=".( $eC->visibleBefore1stSched ?  "1" :  "0"  ).
               ", visible_during_sched=".( $eC->visibleDuringSched ?  "1" :  "0"  ).
-              ", visible_after_first_sched=".( $eC->visibleAfter1stSched ?  "1" :  "0"  ).
-              ", history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
-    if ( $eC->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eC->history)."' )";
-                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
+              ", visible_after_first_sched=".( $eC->visibleAfter1stSched ?  "1" :  "0"  ).', ';
 
     if ( $createNew )
-      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+      return $this->myDBC->mkInsertReturnIDX( $toSet.
+                                              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' '.$lng->get("dataSetCreated")."\\n' )", 
+                                              $this->myTable );
     else
-      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eC->idx );
+      return $this->myDBC->mkUpdIns( $toSet.
+                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )", 
+                                     $this->myTable, 
+                                     "idx=".$eC->idx );
   }
 
   /**

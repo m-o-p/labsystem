@@ -5,9 +5,22 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
- 
+
+2011-06-15
+-------------------
+  History deleted all previous history (bug from some revisions ago)
+  /include/classes/elements/LiDBInterface.inc
+  /include/classes/elements/LmDBInterface.inc
+  /include/classes/elements/LsDBInterface.inc
+  /include/classes/elements/LpDBInterface.inc
+  /include/classes/elements/LcDBInterface.inc
+  /include/classes/elements/LlDBInterface.inc
+
 2011-06-13
 -------------------
+  /css/sys/labsys_mop_basic.css
+    Changed style labsys_mop_m_answers_table_checkbox_cell (added width: 100%) as text boxes for MCs were not full width in Chrome.
+  
   Replaced retIfTrue( [condition], [consequence], [alternative] ); with ( ([condition]) ? [consequence] : [alternative] ) in
   /include/classes/ElementMenues.inc
   /include/classes/DBConnection.inc
@@ -48,6 +61,8 @@ Feature Requests:
   /pages/uaCreateUsers.php
   /php/uaManageUsersSave.php
   /include/helper.inc
+  
+  As retIfTrue always evaluated consequence and alternative this could noticeable speed the system up.
   
 2011-06-12
 -------------------

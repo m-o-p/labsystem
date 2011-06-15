@@ -124,15 +124,17 @@ class LpDBInterface {
               "contents='".$this->myDBC->escapeString($eP->contents)."', ".
               "matching_menu='".$this->myDBC->escapeString($eP->matchingMenu)."', ".
               "visible_for=".$eP->visibleFor.", ".
-              "visible_only_in_collection=".( $eP->visibleOnlyInCollection ?  1 :  0  ).', '.
-              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName;
-    if ( $eP->history != "" ) $toSet .= "\\n ".$this->myDBC->escapeString($eP->history)."' )";
-                         else $toSet .= ": ".$lng->get("dataSetCreated")."' )";
+              "visible_only_in_collection=".( $eP->visibleOnlyInCollection ?  1 :  0  ).', ';
 
     if ( $createNew )
-      return $this->myDBC->mkInsertReturnIDX( $toSet, $this->myTable );
+      return $this->myDBC->mkInsertReturnIDX( $toSet.
+                                              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' '.$lng->get("dataSetCreated")."\\n' )", 
+                                              $this->myTable );
     else
-      return $this->myDBC->mkUpdIns( $toSet, $this->myTable, "idx=".$eP->idx );
+      return $this->myDBC->mkUpdIns( $toSet.
+                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )", 
+                                     $this->myTable, 
+                                     "idx=".$eP->idx );
   }
   
   /**

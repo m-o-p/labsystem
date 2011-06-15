@@ -740,6 +740,7 @@ fieldset{
                     font-size: 0.9em;
                     text-align: justify;
                     padding-bottom: 0.5em;
+                    width: 100%;
   }
   
   .labsys_mop_m_save_button{
