@@ -6,6 +6,11 @@ Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
 
+2011-06-16
+-------------------
+  /plugins/CSSTidy
+    Added use of CSSTidy in saveFile for the CSS. It fixes the CSS and optimizes it.
+
 2011-06-15
 -------------------
   /include/classes/elements/LiDBInterface.inc

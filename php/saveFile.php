@@ -60,6 +60,22 @@ if ( !( isset($_POST['SESSION_ID']) &&
       exit;
      }
 
+
+// Tidy the CSS
+if (($_POST['FILENAME'] == $cfg->get("UserStyleSheet")) && include_once( '../plugins/CSSTidy/class.csstidy.php') ){
+  $css = new csstidy();
+  $css->set_cfg('remove_last_;',TRUE);
+  $css->set_cfg('preserve_css',TRUE);
+  $css->parse($_POST['FILECONTENT']);
+  $logText = '';
+  foreach ( $css->log as $logEntry ){
+    $logText .= '  '.$logEntry[0]['t'].': '.$logEntry[0]['m']."\n";
+  }
+  $url->put( "sysalert=".urlencode( $logText ) );
+  $_POST['FILECONTENT'] = $css->print->plain();
+}
+
+
 // save   
 	if ( !(
           $theFile = fopen( $_POST['FILENAME'], "w" )     // w ^= write and create (if not exist)
