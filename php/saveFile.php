@@ -67,7 +67,7 @@ if (($_POST['FILENAME'] == $cfg->get("UserStyleSheet")) && include_once( '../plu
   $css->set_cfg('remove_last_;',TRUE);
   $css->set_cfg('preserve_css',TRUE);
   $css->parse($_POST['FILECONTENT']);
-  $logText = '';
+  $logText = 'CSSTidy: ';
   foreach ( $css->log as $logEntry ){
     $logText .= '  '.$logEntry[0]['t'].': '.$logEntry[0]['m']."\n";
   }

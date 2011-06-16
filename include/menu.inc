@@ -40,18 +40,50 @@ $myMenu = new Menu( "labsys_mop_menuEntry", "on", "off", "hover", "title", "spac
 
 $mainMenuIni = parse_ini_file( $cfg->get("SystemResourcePath").$cfg->get("SystemMenuFile"), TRUE ); // The menu resource file gets loaded.
 
-foreach ( $mainMenuIni as $key => $value ){ // Iteration over the menu entries.
+foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
   $hasTitle = false; // -> $this::doTitle();
   $possibleMenu = "";
   
-  // "[sys_login]" starts with the login/ -ou stuff.
+  // "[sys_login]" starts with
+  // - the login/ -out
+  //   - myRights
+  //   - myStatistics
+  //   - sendMail
   if ( $key == "sys_login" ){
                               $key = $usr->userName;
                               if ( $usr->isLoggedIn() ) 
-                                $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogOut" ), "../php/logout.php" );
+                                $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogOut" ), "../php/logout.php" ).
+                                                 $myMenu->entry( $lng->get( "MnuEntryMyRights" ), "../pages/myRights.php" ).
+                                                 $myMenu->entry( $lng->get( "MnuEntryMyStatistics" ), "../pages/view.php?address=l2.ALLlabStatus" ).
+                                                 $myMenu->spacer().
+                                                 $myMenu->entry( $lng->get( "MnuEntrySendMail" ), "../pages/mailForm.php" );
                               else
                                 $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?  'https://'.$_SERVER[ 'SERVER_NAME' ].'/pages/login.php' :  '../pages/login.php' ) );
                              }
+
+  // this "magic menu" lists all labs acessable to the user                          
+  if ( $key == 'accessable_labs' ){
+    $key = $cfg->get('SystemTitle');
+    if ( !is_array($value) ) $value = array( '' );
+
+  // Overview page
+    $value[ $lng->get('MnuEntryCourseContent') ] = '../pages/accessableLabs.php';
+    
+  // Labs that are visible without a schedule
+    //SELECT `idx` FROM `labs` WHERE `visible_before_first_sched`=1
+    $lDBI->queryResult = $lDBI->myDBC->mkSelect( 'idx', $lDBI->myTable, "idx!=1 && `visible_before_first_sched`=1" );
+    while( $nextData=mysql_fetch_array($lDBI->queryResult) ){
+      array_push( $value, '!l'.$nextData['idx'] );
+    }
+
+  // Currently scheduled in order of schedule
+    //SELECT `num` FROM `schedules` WHERE 1 GROUP BY num ORDER BY `start`
+    $sDBI->queryResult = $sDBI->myDBC->mkSelect( 'num', $sDBI->myTable, 'idx!=1', '`start`', 'num' );
+    while( $nextData=mysql_fetch_array($sDBI->queryResult) ){
+      if (  !in_array( '!l'.$nextData['num'], $value ) ) // do not add twice...
+        array_push( $value, '!l'.$nextData['num'] );
+    }
+  }
 
   // Parse the submenu:
   foreach ( $value as $key_ => $value_ ){ // Parse the section and make the menu entries
@@ -77,7 +109,7 @@ foreach ( $mainMenuIni as $key => $value ){ // Iteration over the menu entries.
     }else $possibleMenu .= $myMenu->entry( $key_, $value_ ); // show the menu entry
   }
   
-  if ( $possibleMenu != "" ) echo( $myMenu->title( $key ).$possibleMenu ); // Only show the title if there is something inside the section.
+  if ( $possibleMenu != "" ) echo( $myMenu->title( $key ).$possibleMenu.$myMenu->spacer() ); // Only show the title if there is something inside the section.
 }
 echo("\t</ul></div>\n");
 ?>

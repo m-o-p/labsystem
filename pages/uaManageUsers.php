@@ -40,7 +40,7 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
   else{ // showing
   // head (create new)
      $pge->put(  "<div class=\"labsys_mop_elements_menu_u\">\n".
-                 EB::mkLink( $url->link2( '../pages/uaCreateUsers.php' ) , "<img src=\"../syspix/button_new_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"new\" title=\"".$lng->get("explainCreateNew")."\">" ).
+                 EB::mkLink( $url->link2( '../pages/uaCreateUsers.php' ) , "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2").": ".$link."\">" ).
                  "</div>\n"
                );
             

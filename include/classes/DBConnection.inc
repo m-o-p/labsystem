@@ -105,12 +105,14 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
   * @param  $from   Name of the database to select from.
   * @param  $where  Clause defining where to search (p.e. name="marc").
   * @param  $order  Clause defining how to order the results (p.e. idx ASC).
+  * @param  $order  Defining the grouping.
   * @return         The return value of the query.
   */
-  /*private*/ function mkSelect( $what, $from, $where="", $orderBy="" ){
-    // SELECT $what FROM $from {WHERE $where} {ORDER BY $orderBy}
+  /*private*/ function mkSelect( $what, $from, $where="", $orderBy="", $groupBy='' ){
+    // SELECT $what FROM $from {WHERE $where} {GROUP BY $groupBy} {ORDER BY $orderBy}
                           $theQuery  = "SELECT ".$what." FROM ".$from;
     if ( $where != "" )   $theQuery .= " WHERE ".$where;
+    if ( $groupBy != "" ) $theQuery .= " GROUP BY ".$groupBy;
     if ( $orderBy != "" ) $theQuery .= " ORDER BY ".$orderBy;
     return $this->query(  $theQuery );
   }

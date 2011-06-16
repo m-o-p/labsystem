@@ -905,3 +905,23 @@ fieldset{
   div.labsys_mop_history hr{
                     height: 1px;
   }
+
+/******************************* accessableLabs *******************************/
+  .labsys_mop_content .labIndexNumber {
+    font-size:30px;
+    font-style:italic;
+    text-align:right;
+    vertical-align:top;
+    color:#f9b857;
+    /*border: 1px solid #cccccc;*/
+    padding:0
+  }
+
+  .labsys_mop_content .labIndexText {
+    font-size:10pt;
+    text-align:justify;
+    vertical-align:top;
+    color:#89897c;
+    border:1px solid #ccc;
+    padding:5px
+  }

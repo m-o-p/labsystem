@@ -311,6 +311,7 @@ class LsElement extends Element{
     return EM::viewTopSchedule( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
            "<div class=\"labsys_mop_h2\">".$lng->get("titleSchedules")." - ".$cfg->get("SystemTitle")."</div>".
+           ( $lng->get("showScheduleNote") != '' ? "<div class=\"labsys_mop_note\">\n".$lng->get("showScheduleNote")."</div>\n" : '' ). // note
            "<table class=\"labsys_mop_s_table\">\n".
            $this->emptyRow().
            $myCalendar.

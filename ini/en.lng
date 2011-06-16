@@ -56,6 +56,8 @@ iManageNote         = ""
 cManageNote         = "" 
 lManageNote         = ""
 sManageNote         = ""
+showScheduleNote    = 'You can find the <a href="../pages/accessableLabs.php?__LINKQUERY__">module descriprions here</a>.'
+AccessableLabsNote  = 'You can find the <a href="../pages/view.php?address=s1&amp;__LINKQUERY__">schedule here</a>.' ; appears on top of the accessableLab.php page.
 
 ;; These note will appear on top of the export_import_lab page
 lExportImportNote   = "" ;- empty note -
@@ -105,7 +107,11 @@ MnuEntryLogOut      = "log out"
 MnuEntryUserRights  = "user rights"   ;; must be the same as in the menu file for proper highlighting
 
 ; myRights.php
-MnuEntryMyRights    = "myRights"
+MnuEntryMyRights    = "my rights"
+
+MnuEntryMyStatistics = "my statistics"
+MnuEntrySendMail     = "send mail"
+MnuEntryCourseContent= "Course Content"
 
 ;l
 mnuEntryPrelab2Fin  = "&raquo; all questions (checkable)" ; appears under the prelab section if the prelab is not finished

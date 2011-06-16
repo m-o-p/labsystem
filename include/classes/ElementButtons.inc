@@ -47,18 +47,34 @@ class EB{ /* ElementButtons */
   }
   
   /**
-  * This button represents a link to the given element.
+  * This method is only called internally and returns a hidden div with the link in a textbox for copying.
   *
-  * @param $address  The element's address.
+  * @param $link  The link to link to.
+  * @param $img   The image that is used as button.
   *
-  * @return          The button's html-code.
+  * @return       The link's html-code.
   */
-  function link2( $address ){
-    global $lng, $url;
-    $link = $url->link2( "../pages/view.php?address=".$address );
-    return EB::mkLink( $link, "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2").": ".$link."\">" );
+  /*private*/ function mkHiddenDiv( $link, $img, $content ){
+    global $pge;
+    return " <a tabindex=\"".$pge->nextTab++."\" href=\"".
+                $link.
+                "\"".
+                " onMouseUp=\"if (document.getElementById('hiddenDiv_".$pge->nextTab.
+                  "').style.display != 'block') document.getElementById('hiddenDiv_".$pge->nextTab.
+                  "').style.display = 'block'; else document.getElementById('hiddenDiv_".$pge->nextTab.
+                  "').style.display = 'none';\" onClick=\"return false;\"".
+                ">".
+           $img.
+           "</a>".
+           "<div id=\"hiddenDiv_".$pge->nextTab."\" class=\"labsys_mop_history\">\n".
+           '<div style="display: inline; float: right; text-align: center; padding-right: 2px; color: #555555;">'.
+           '<a href="#" onClick="document.getElementById(\'hiddenDiv_'.$pge->nextTab.'\').style.display = \'none\'; return false;">X</a>'.
+           '</div>'.
+            $content.
+           "\n</div>"
+           ;
   }
-  
+   
   /**
   * This button contains the url of the given element with all necessary values for integrating it on a page.
   * So you can copy the elements address and paste it into a page element.
@@ -69,8 +85,9 @@ class EB{ /* ElementButtons */
   */
   function link2Element( $address ){
     global $lng;
-    $link = '#onlyJS" onClick="javascript: confirm(\'&lt;a href=&quot;../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__&quot;&gt;Text&lt;/a&gt;\'); return false;"';
-    return EB::mkLink( $link, "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2").": ".$link."\">" );
+    return EB::mkHiddenDiv( "../pages/view.php?address=".$address."&amp;amp;&#x005F;_LINKQUERY__",
+                            "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
+                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__&quot;&gt;Link to '.$address.'&lt;/a&gt;" onClick="this.select();">' );
   }
   
   /**
@@ -82,7 +99,10 @@ class EB{ /* ElementButtons */
   */
   function link2Url( $link ){
     global $lng;
-    return EB::mkLink( $link, "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2").": ".$link."\">" );
+    $link .= '&amp;amp;&#x005F;_LINKQUERY__';
+    return EB::mkHiddenDiv( $link,
+                            "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
+                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;'.$link.'&quot;&gt;Text&lt;/a&gt;" onClick="this.select();">' );
   }
   
   /**

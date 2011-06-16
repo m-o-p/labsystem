@@ -11,6 +11,26 @@ Feature Requests:
   /plugins/CSSTidy
     Added use of CSSTidy in saveFile for the CSS. It fixes the CSS and optimizes it.
 
+  /include/classes/ElementButtons.inc
+    Removed link2 as it was identical to link2Element.
+    link2Element, link2Url changed to use hidden divs.
+
+  /include/menu.inc
+    Introduced [accessable_labs] in menu. It automatically lists all available (visible before schedule) and then all scheduled labs in the order of their schedule.
+    More labs have to be set visible_before_schedule or to be scheduled. They are accessable over the "manage elements" page.
+    Moved my rights, my status and send mail to menu.inc out of the individual menu files.
+
+  /css/sys/labsys_mop_basic.css
+    Added   .labsys_mop_content.labIndexNumber, .labsys_mop_content.labIndexText used by
+  /pages/accessableLabs.php
+    Lists all labs that are either visablebefore1stschedule or scheduled (same as with the [accessable_labs] in menu).
+    
+  /include/classes/elements/LsElement.inc:show
+    Added showScheduleNote to be displayed on the AllSchedules page when shown.
+    
+  /include/classes/ElementMenues.inc
+    Added link to s element's-Menu.
+
 2011-06-15
 -------------------
   /include/classes/elements/LiDBInterface.inc

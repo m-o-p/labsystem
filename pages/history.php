@@ -42,7 +42,7 @@ $pge->title        = $lng->get("historyOf")." ".$id.$num.": ".$element->title;
 $pge->matchingMenu = $element->getMatchingMenu();
 
 $pge->put('<div class="labsys_mop_h2"><span class="labsys_mop_grayed">'.$lng->get("historyOf")." ".$id.$num.": </span>".$element->title.'</div>'."\n");
-$pge->put('<div class="labsys_mop_history" style="display: block;">'.nl2br( $element->history ).'</div>' );
+$pge->put('<div class="labsys_mop_hiddenDiv" style="display: block;">'.nl2br( $element->history ).'</div>' );
 
 // history= & title= set in url? -> Additional history (like user answer stuff) -> doesn't get loaded but displayed
 if ( isset( $_GET['history'] ) ){

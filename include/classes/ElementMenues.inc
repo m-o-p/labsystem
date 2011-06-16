@@ -108,13 +108,12 @@ class EM{ /* ElementMenues */
     global $usr, $lng;
 
     $elShortcut = "s";
-
-    if ( $usr->isOfKind( IS_SCHEDULER ) )
-     return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
-            "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
-            EB::createNew( $elShortcut ).
-            "</div>\n";
-    else return;
+    
+    return ( $usr->isOfKind( IS_CONTENT_EDITOR ) || $usr->isOfKind( IS_SCHEDULER ) ? "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
+                                                                                     "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n" :'' ).
+           ( $usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::link2Element( 's1' ) : '' ).
+           ( $usr->isOfKind( IS_SCHEDULER ) ? EB::createNew( $elShortcut ) : '' ).
+           ( $usr->isOfKind( IS_CONTENT_EDITOR ) || $usr->isOfKind( IS_SCHEDULER ) ?"</div>\n" : '' );
   }
   function viewBottomSchedule( &$eS, $fullAddress ){
     return EM::viewBottomStandard( $eS, $fullAddress, "s" );
