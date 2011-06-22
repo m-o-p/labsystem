@@ -56,7 +56,7 @@ iManageNote         = ""
 cManageNote         = "" 
 lManageNote         = ""
 sManageNote         = ""
-showScheduleNote    = 'You can find the <a href="../pages/accessableLabs.php?__LINKQUERY__">module descriprions here</a>.'
+showScheduleNote    = 'You can find the <a href="../pages/accessableLabs.php?__LINKQUERY__">module descriptions here</a>.'
 AccessableLabsNote  = 'You can find the <a href="../pages/view.php?address=s1&amp;__LINKQUERY__">schedule here</a>.' ; appears on top of the accessableLab.php page.
 
 ;; These note will appear on top of the export_import_lab page
@@ -161,6 +161,8 @@ uaSurNameEmpty      = "Please provide name and surname!"
 uaAsUsrNmeIsUsedBy  = "as username is already used by"
 uaNotBelong2Usr     = "was not found. It does not belong to any user here..."
 
+;unsaved changes
+discardChangesWarning = "Leave without saving?"
 ;i
 NotAllowedSaveLockAt= "You are not allowed to save this answer as the lock is at " ;; If the lock got placed on another answer this is not savable anymore.
 LockTakenFrom       = "The lock was taken from input" ;; " [idx of input]" gets added

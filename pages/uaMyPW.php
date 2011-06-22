@@ -50,15 +50,15 @@ $pge->visibleFor   = IS_USER;
      $pge->put( 
      // new password input
                 '<label for="newPW" class="labsys_mop_input_field_label_top">'.$lng->get('newPW').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="password" id="newPW" name="NEWPW" class="labsys_mop_input_fullwidth" value="" />'."\n".
+                '<input tabindex="'.$pge->nextTab++.'" type="password" id="newPW" name="NEWPW" class="labsys_mop_input_fullwidth" value="" onchange="isDirty=true">'."\n".
      // reType
                 '<label for="newPWreType" class="labsys_mop_input_field_label_top">'.$lng->get('newPWreType').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="password" id="newPWreType" name="NEWPWRETYPE" class="labsys_mop_input_fullwidth" value="" />'."\n"
+                '<input tabindex="'.$pge->nextTab++.'" type="password" id="newPWreType" name="NEWPWRETYPE" class="labsys_mop_input_fullwidth" value="" onchange="isDirty=true">'."\n"
                );
                
      $pge->put( "</div>\n".
                 "</fieldset>\n".
-                "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\">\n".            
+                "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".            
                 "</FORM>"
                );
                

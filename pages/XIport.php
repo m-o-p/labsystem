@@ -178,7 +178,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
      $pge->put( $value->showExportImportRow( '', false ) ); // show the property row
      
   // saving
-    $pge->put("<input TABINDEX=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("yesIconfirm")."\" accesskey=\"s\">" );
+    $pge->put("<input TABINDEX=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("yesIconfirm")."\" accesskey=\"s\" onclick='isDirty=false'>" );
   
   
   // close the form

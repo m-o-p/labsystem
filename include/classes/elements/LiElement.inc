@@ -220,7 +220,7 @@ class LiElement extends Element{
   function showComment( $isInCorrection=false ){
     global $usr, $pge, $cfg;
     if ( $isInCorrection ) 
-      return "<textarea tabindex=\"".$pge->nextTab++."\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultICommentRows")."\">".
+      return "<textarea tabindex=\"".$pge->nextTab++."\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultICommentRows")."\" onchange='isDirty=true'>".
              returnEditable( $this->answerComment ).
              "</textarea>\n";
     else if ( $this->answerComment != "" )
@@ -242,7 +242,7 @@ class LiElement extends Element{
                                                   'name="ANSWER" '.
                                                   'class="labsys_mop_textarea" '.
                                                   'rows="'.$cfg->get("DefaultIAnswerRows").'"'.
-                                                  '>'.
+                                                  ' onchange="isDirty=true">'.
                                                   $this->userAnswer.
                                                   "</textarea>\n";
                          else if ( $this->userAnswer != "" ) return "<div class=\"labsys_mop_textarea\">".
@@ -272,7 +272,7 @@ class LiElement extends Element{
                        "<input type=\"checkbox\" name=\"IS_CORRECTED\" value=\"1\" ".
                         "tabindex=\"".$pge->nextTab++."\" ".
                         "checked=\"checked\"". // so it will be checked by default
-                       ">" : ''
+                       " onchange='isDirty=true'>" : ''
                       ).
             // the credits
             "[".
@@ -281,7 +281,7 @@ class LiElement extends Element{
                        "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".
                        // on first entering set the points to full points
                        ( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || $this->answerComment!='' ?  $this->givenCredits :  $this->possibleCredits  ).
-                       "\">"."/ " :
+                       "\" onchange='isDirty=true'>"."/ " :
                        ( !$possiblePtsOnly ?
                                   ( ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )) ? 
                                               // show given credits
@@ -389,13 +389,13 @@ class LiElement extends Element{
       if ( $usr->isOfKind( IS_CORRECTOR ) )
         if ( !$this->isClosed ) ; 
         else if ( $isInCorrection ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                   "value=\"".$lng->get("save")."\" accesskey=\"s\">\n";
+                                                   "value=\"".$lng->get("save")."\" accesskey=\"s\" onchange='isDirty=true;'>\n";
                                else if ( !isset( $_POST['FULLADDRESS'] ) )  $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                                                           "value=\"".$lng->get("correct")."\">\n";
+                                                                                           "value=\"".$lng->get("correct")."\" onchange='isDirty=true'>\n";
                                     else ; // another is opened yet
       else if ( $this->isClosed ) ;
            else  if ( $isGettingAnswered ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                          "value=\"".$lng->get("save")."\">\n";
+                                                          "value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n";
                                       else if ( !$this->lockIsSetTo )
                                            $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                           "value=\"".$lng->get("giveAnswer")."\">\n";
@@ -510,34 +510,34 @@ class LiElement extends Element{
             
           // question
             "<label for=\"question\" class=\"labsys_mop_input_field_label_top\">".$lng->get("question")."</label>".
-            "<textarea tabindex=\"".$pge->nextTab++."\" id=\"question\" name=\"QUESTION\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultIQuestionRows")."\">".
+            "<textarea tabindex=\"".$pge->nextTab++."\" id=\"question\" name=\"QUESTION\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultIQuestionRows")."\" onchange='isDirty=true'>".
             returnEditable( $this->question ). /* _ -> &#x005F; needed cause otherwise Replacement on $pge->show */
             "</textarea>\n".
 
           // example solution
             "<label for=\"exSol\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputExSolutionExpl")."</label>".
-            "<textarea tabindex=\"".$pge->nextTab++."\" id=\"exSol\" name=\"EXAMPLE_SOLUTION\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultIExSolutionRows")."\">".
+            "<textarea tabindex=\"".$pge->nextTab++."\" id=\"exSol\" name=\"EXAMPLE_SOLUTION\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultIExSolutionRows")."\" onchange='isDirty=true'>".
             returnEditable( $this->exampleSolution ). /* _ -> &#x005F; needed cause otherwise Replacement on $pge->show */
             "</textarea>\n".
 
           // credits
             "<div class=\"labsys_mop_i_credits\">".
             "<label for=\"pC\" class=\"labsys_mop_input_field_label\">".$lng->get("Credits")."</label> ".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"pC\" name=\"POSSIBLE_CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".$this->possibleCredits."\">".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"pC\" name=\"POSSIBLE_CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".$this->possibleCredits."\" onchange='isDirty=true'>".
             "</div>\n".
                           
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\">\n".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
 
           // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
               "<table width=\"100%\"><tr><td valign=\"top\" width=\"40%\">\n".
                   "<fieldset><legend>".$lng->get("visibility")."</legend>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
                       "<label for=\"visAlways\" class=\"labsys_mop_input_field_label\">".$lng->get("visAlways")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
                       "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInColl")."</label>".
                     "</div>\n".
                   "</fieldset>\n".
@@ -549,11 +549,11 @@ class LiElement extends Element{
                 "</div>\n".
                 "</fieldset>\n".
               "</td></tr></table>\n".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' ).">".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' )." onchange='isDirty=true'>".
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\">\n".            
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".            
 
             "</FORM>\n".
             '<script language="JavaScript" type="text/javascript">
@@ -846,9 +846,9 @@ class LiElement extends Element{
   function getPropertyRow( $prefix, $disabled=false ){
     global $pge, $lng, $cfg;
     return  
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visAlways"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visOnlyInColl"), $disabled ).
             ( $disabled ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
             " | ".

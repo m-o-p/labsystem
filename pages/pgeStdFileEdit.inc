@@ -41,12 +41,12 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n".
           '   <input type="hidden" name="FILENAME" value="'.$file2edit.'">'."\n".
           '   <input type="hidden" name="REDIRECTTO" value="'.urlencode($url->link2( $_SERVER['PHP_SELF'] ) ).'">'."\n".
           '   <input type="hidden" name="SESSION_ID" value="'.session_id().'">'."\n".
-          '   <textarea TABINDEX="1" id="fc" name="FILECONTENT" class="labsys_mop_textarea" rows="'.$cfg->get("DefaultTextareaRows").'">'."\n");
+          '   <textarea TABINDEX="1" id="fc" name="FILECONTENT" class="labsys_mop_textarea" rows="'.$cfg->get("DefaultTextareaRows").'" onchange="isDirty=true">'."\n");
            
 $pge->put( htmlentities( file_get_contents($file2edit) ) );
 
 $pge->put('</textarea>'."\n".
-          '   <input TABINDEX="2" type="submit" class="labsys_mop_input" value="'.$lng->get("save").'" accesskey="s">'."\n".
+          '   <input TABINDEX="2" type="submit" class="labsys_mop_input" value="'.$lng->get("save").'" accesskey="s" onclick="isDirty=false">'."\n".
  
           ' </FORM>'."\n".
             

@@ -40,7 +40,8 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
   else{ // showing
   // head (create new)
      $pge->put(  "<div class=\"labsys_mop_elements_menu_u\">\n".
-                 EB::mkLink( $url->link2( '../pages/uaCreateUsers.php' ) , "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2").": ".$link."\">" ).
+                 EB::link2Url( '../pages/uaCreateUsers.php' ).
+                 EB::mkLink( $url->link2( '../pages/uaCreateUsers.php' ), "<img src=\"../syspix/button_new_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"new\" title=\"".$lng->get("explainCreateNew")."\">").
                  "</div>\n"
                );
             
@@ -184,7 +185,7 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
       
       foreach ( $data as $key => $value )
         if( $key[0] == '_' )
-          $pge->put( '<input type="checkbox" id="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" name="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" value="'.$value.'" tabindex="'.$pge->nextTab++.'" '.( ($value == 1) ?  'checked="checked" '  : '' ).'/>'.
+          $pge->put( '<input type="checkbox" id="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" name="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" value="'.$value.'" tabindex="'.$pge->nextTab++.'" '.( ($value == 1) ?  'checked="checked" '  : '' ).' onchange="isDirty=true">'.
                      '<label for="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" class="labsys_mop_input_field_label">'.infoArrow( $key, false ).'</label>' );
 
       $pge->put( ' '.( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '<a href="'.$url->link2( '../php/uaManageUsersExecute.php?function=see&param='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ).'&redirectTo='.urlencode( '../pages/uaMyData.php' ) ).'">' : '').
@@ -224,7 +225,7 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
     
     
 // /form
-    $pge->put( "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\">\n".            
+    $pge->put( "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".            
                "</FORM>"
              );
   } // /showing

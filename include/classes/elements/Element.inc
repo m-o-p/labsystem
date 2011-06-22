@@ -267,7 +267,7 @@ class Element{
     $disabled = true; // With this implementation saving wont be possible
     $retVal = "";
     foreach( get_class_vars( get_class( $this ) ) as $key=>$value )
-      $retVal .=  "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend_".$key."\" checked=\"checked\"".( $disabled ?  " disabled=\"disabled\"" : '' ).">".
+      $retVal .=  "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend_".$key."\" checked=\"checked\"".( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
                   infoArrow( $prefix."_".$key, $disabled )." ";
 
     return $retVal."| ".$this->title;

@@ -99,7 +99,7 @@ class EB{ /* ElementButtons */
   */
   function link2Url( $link ){
     global $lng;
-    $link .= '&amp;amp;&#x005F;_LINKQUERY__';
+    $link .= '?&#x005F;_LINKQUERY__';
     return EB::mkHiddenDiv( $link,
                             "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
                             '<input type="text" style="width: 100%" value="&lt;a href=&quot;'.$link.'&quot;&gt;Text&lt;/a&gt;" onClick="this.select();">' );

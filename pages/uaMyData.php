@@ -64,16 +64,16 @@ $pge->visibleFor   = IS_USER;
      $pge->put( 
      // userName
                 '<label for="userName" class="labsys_mop_input_field_label_top">'.$lng->get('userName').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="userName" name="USERNAME" class="labsys_mop_input_fullwidth" value="'.$data[ $cfg->get('UserDBField_username') ].'" />'."\n".
+                '<input tabindex="'.$pge->nextTab++.'" type="text" id="userName" name="USERNAME" class="labsys_mop_input_fullwidth" value="'.$data[ $cfg->get('UserDBField_username') ].'" onchange="isDirty=true">'."\n".
      // surName
                 '<label for="surName" class="labsys_mop_input_field_label_top">'.$lng->get('surName').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="surName" name="NAME" class="labsys_mop_input_fullwidth" value="'.$data[ $cfg->get('UserDBField_name') ].'" />'."\n".
+                '<input tabindex="'.$pge->nextTab++.'" type="text" id="surName" name="NAME" class="labsys_mop_input_fullwidth" value="'.$data[ $cfg->get('UserDBField_name') ].'" onchange="isDirty=true">'."\n".
      // foreName
                 '<label for="name" class="labsys_mop_input_field_label_top">'.$lng->get('foreName').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="name" name="FORENAME" class="labsys_mop_input_fullwidth" value="'.$data[ $cfg->get('UserDBField_forename') ].'" />'."\n".
+                '<input tabindex="'.$pge->nextTab++.'" type="text" id="name" name="FORENAME" class="labsys_mop_input_fullwidth" value="'.$data[ $cfg->get('UserDBField_forename') ].'" onchange="isDirty=true">'."\n".
      // email
                 '<label for="email" class="labsys_mop_input_field_label_top">'.$lng->get('eMail').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="eMail" name="EMAIL" class="labsys_mop_input_fullwidth" value="'.$data[ $cfg->get('UserDBField_email') ].'" />'."\n"
+                '<input tabindex="'.$pge->nextTab++.'" type="text" id="eMail" name="EMAIL" class="labsys_mop_input_fullwidth" value="'.$data[ $cfg->get('UserDBField_email') ].'" onchange="isDirty=true">'."\n"
                );
                
      // The rest of the fields.
@@ -93,12 +93,12 @@ $pge->visibleFor   = IS_USER;
       else $pge->put(
                      // new key
                         '<label for="labsys_mop_'.$key.'" class="labsys_mop_input_field_label_top">'.$key.'</label>'."\n".
-                        '<input tabindex="'.$pge->nextTab++.'" type="text" id="labsys_mop_'.$key.'" name="LABSYS_MOP_'.$key.'" class="labsys_mop_input_fullwidth" value="'.$value.'" />'."\n"
+                        '<input tabindex="'.$pge->nextTab++.'" type="text" id="labsys_mop_'.$key.'" name="LABSYS_MOP_'.$key.'" class="labsys_mop_input_fullwidth" value="'.$value.'" onchange="isDirty=true">'."\n"
                      );
         
      $pge->put( "</div>\n".
                 "</fieldset>\n".
-                "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\">\n".            
+                "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".            
                 "</FORM>"
                );
 

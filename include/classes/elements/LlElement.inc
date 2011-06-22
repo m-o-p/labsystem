@@ -1027,18 +1027,18 @@ class LlElement extends Element{
             
            // title
             "<label for=\"title\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputTitle")."</label>".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"title\" name=\"TITLE\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->title."\">\n".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"title\" name=\"TITLE\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->title."\" onchange='isDirty=true'>\n".
 
            // prelab selector
             "<fieldset><legend>".$lng->get("inputPreLab")."</legend>\n".
-              "<select tabindex=\"".$pge->nextTab++."\" name=\"PRELAB\" size=\"1\" class=\"labsys_mop_input\">\n".
+              "<select tabindex=\"".$pge->nextTab++."\" name=\"PRELAB\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
               $dropDownOptionsPreLab.
               "</select>".
             "</fieldset>\n".
             
            // lab selector
             "<fieldset><legend>".$lng->get("inputLab")."</legend>\n".
-              "<select tabindex=\"".$pge->nextTab++."\" name=\"LAB\" size=\"1\" class=\"labsys_mop_input\">\n".
+              "<select tabindex=\"".$pge->nextTab++."\" name=\"LAB\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
               $dropDownOptionsLab.
               "</select>".
             "</fieldset>\n".
@@ -1047,31 +1047,31 @@ class LlElement extends Element{
             "<fieldset><legend>".$lng->get("metaData")."</legend>\n".            
               // authors
               "<label for=\"authors\" class=\"labsys_mop_input_field_label_top\">".$lng->get('authors')."</label>".
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"authors\" name=\"AUTHORS\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->authors."\">\n".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"authors\" name=\"AUTHORS\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->authors."\" onchange='isDirty=true'>\n".
                             
               // abstract
               "<label for=\"comment\" class=\"labsys_mop_input_field_label_top\">".$lng->get('abstract')."<br>\n".$lng->get('abstractNote')."</label>".
-              "<textarea tabindex=\"".$pge->nextTab++."\" id=\"comment\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultLCommentRows")."\">".
+              "<textarea tabindex=\"".$pge->nextTab++."\" id=\"comment\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultLCommentRows")."\" onchange='isDirty=true'>".
               returnEditable( $this->comment ).    // Process [HTML]. (../include/helper.inc).
               "</textarea>\n".             
             "</fieldset>\n".
                                              
            // save
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\">\n".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
            
            // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
               "<label for=\"mM\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputMatchingMnu")."</label>".
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"mM\" name=\"MATCHINGMENU\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->matchingMenu."\">\n".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"mM\" name=\"MATCHINGMENU\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->matchingMenu."\" onchange='isDirty=true'>\n".
 
               "<table width=\"100%\"><tr><td valign=\"top\" width=\"33%\">\n".
                   "<fieldset><legend>".$lng->get("visibility")."</legend>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
                       "<label for=\"visAlways\" class=\"labsys_mop_input_field_label\">".$lng->get("visAlways")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
                       "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInColl")."</label>".
                     "</div>\n".
                   "</fieldset>\n".
@@ -1079,20 +1079,20 @@ class LlElement extends Element{
                  // schedule
                   "<fieldset><legend>".$lng->get("schedule")."</legend>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visBef1stSched\" name=\"VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".( $this->visibleBefore1stSched ?  " checked=\"checked\"" : '' ).">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visBef1stSched\" name=\"VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".( $this->visibleBefore1stSched ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
                       "<label for=\"visBef1stSched\" class=\"labsys_mop_input_field_label\">".$lng->get("visibleBef1stSched")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visDuringSched\" name=\"VISIBLE_DURING_SCHED\" value=\"1\"".( $this->visibleDuringSched ?  " checked=\"checked\"" : '' ).">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visDuringSched\" name=\"VISIBLE_DURING_SCHED\" value=\"1\"".( $this->visibleDuringSched ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
                       "<label for=\"visDuringSched\" class=\"labsys_mop_input_field_label\">".$lng->get("visibleDuringSched")."</label>".
                     "</div>\n".
                     "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visAft1stSched\" name=\"VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".( $this->visibleAfter1stSched ?  " checked=\"checked\"" : '' ).">".
+                      "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"visAft1stSched\" name=\"VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".( $this->visibleAfter1stSched ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
                       "<label for=\"visAft1stSched\" class=\"labsys_mop_input_field_label\">".$lng->get("visibleAftr1stSched")."</label>".
                     "</div>\n".
                   "</fieldset>\n".
               "</td></tr></table>\n".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' ).">".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' )." onchange='isDirty=true'>".
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
             
@@ -1102,10 +1102,10 @@ class LlElement extends Element{
               "<label for=\"uniqueID\" class=\"labsys_mop_input_field_label_top\">".$lng->get('uniqueID')."<br>\r\n".$lng->get('uniqueIDnote')."</label>".
               "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"uniqueID\" name=\"UNIQUEID\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".
               $this->uniqueID.
-              "\">\n".
+              "\" onchange='isDirty=true'>\n".
             "</fieldset>\n".
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\">\n".            
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".            
 
             "</FORM>\n".
             '<script language="JavaScript" type="text/javascript">
@@ -1253,19 +1253,19 @@ class LlElement extends Element{
   function getPropertyRow( $prefix, $disabled=false ){
     global $pge, $lng;
     
-    return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
+    return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visAlways"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visOnlyInColl"), $disabled ).
             ( $disabled ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
             " | ".
            // schedule issues
             ( $disabled ?  "</span>"  : '' ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".( $this->visibleBefore1stSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\"".( $this->visibleBefore1stSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visibleBef1stSched"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_DURING_SCHED\" value=\"1\"".( $this->visibleDuringSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_DURING_SCHED\" value=\"1\"".( $this->visibleDuringSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visibleDuringSched"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".( $this->visibleAfter1stSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' ).">".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"".$prefix."_VISIBLE_AFTER_FIRST_SCHED\" value=\"1\"".( $this->visibleAfter1stSched ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visibleAftr1stSched"), $disabled ).
             " ".
               $this->title;
@@ -1282,12 +1282,12 @@ class LlElement extends Element{
     global $pge, $lng;
     
     if ( $isExport )
-      return    "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"EXPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' ).">".
+      return    "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"EXPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export"> '.
                 $this->title;
     else
       return  '<img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="next" title="export"> '.
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"IMPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' )."> ".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"IMPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'> ".
               $this->title;
   }
   

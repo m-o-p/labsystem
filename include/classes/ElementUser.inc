@@ -76,7 +76,7 @@ class ElementUser {
     global $pge;
     return  "<div class=\"labsys_mop_u_row\">\n".
             showRightsHorizontal( 'ID'.$this->uid, $this->userRights, $disabled ).
-            " <input type=\"text\" name=\"".$this->uid."_team\" tabindex=\"".$pge->nextTab++."\" class=\"labsys_mop_input_team\" value=\"".$this->currentTeam."\">\n".
+            " <input type=\"text\" name=\"".$this->uid."_team\" tabindex=\"".$pge->nextTab++."\" class=\"labsys_mop_input_team\" value=\"".$this->currentTeam."\" onchange='isDirty=true'>\n".
             " ".$this->surName.", ".$this->foreName." (".$this->userName.")\n".
             " <a href=\"mailto:".$this->mailAddress."\"><img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" title=\"".$this->mailAddress."\" alt=\"".$this->mailAddress."\"></a>\n".
             EB::history( $this->surName.", ".$this->foreName.":<br>\n".$this->history, "p1", true )."\n".

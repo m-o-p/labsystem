@@ -97,11 +97,11 @@ $counter=0;
 $checkAll = isset( $_GET['checkAll'] );
 
 $allSupporterInputs = "";
-foreach( $allSupporter as $key => $value ) $allSupporterInputs .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".( $checkAll ?  " checked=\"checked\" "  : '' ).">".
+foreach( $allSupporter as $key => $value ) $allSupporterInputs .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".( $checkAll ?  " checked=\"checked\" "  : '' )." onchange='isDirty=true'>".
                                                                   "<label for=\"MAIL2_".$counter."\" class=\"labsys_mop_input_field_label\">".$key."</label><br />\n";
 $allOtherInputs = "";
 if ( $usr->isOfKind( IS_ALL_MAILER ) )
-  foreach( $allOther as $key => $value ) $allOtherInputs         .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".( $checkAll ?  " checked=\"checked\" "  : '' ).">".
+  foreach( $allOther as $key => $value ) $allOtherInputs         .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".( $checkAll ?  " checked=\"checked\" "  : '' )." onchange='isDirty=true'>".
                                                                     "<label for=\"MAIL2_".$counter."\" class=\"labsys_mop_input_field_label\">".$key."</label><br />\n";
 
 $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/sendMail.php")."\">\n".
@@ -139,20 +139,20 @@ $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST
             "<fieldset><legend>".$lng->get("yourMail")."</legend>\n".
            // subject
             "<label for=\"subject\" class=\"labsys_mop_input_field_label_top\">".$lng->get("subject")."</label>".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"subject\" name=\"SUBJECT\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"\">\n".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"subject\" name=\"SUBJECT\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"\" onchange='isDirty=true'>\n".
            // mailbody
             "<label for=\"mailtext\" class=\"labsys_mop_input_field_label_top\">".$lng->get("message")."</label>".
-            "<textarea tabindex=\"".$pge->nextTab++."\" id=\"mailtext\" name=\"MAILTEXT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("sendMailBodyRows")."\">".
+            "<textarea tabindex=\"".$pge->nextTab++."\" id=\"mailtext\" name=\"MAILTEXT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("sendMailBodyRows")."\" onchange='isDirty=true'>".
             "</textarea>\n".
             "</fieldset>\n".
             
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"noCopy2Me\" name=\"NO_COPY_2_ME\" value=\"1\" checked=\"checked\">".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"noCopy2Me\" name=\"NO_COPY_2_ME\" value=\"1\" checked=\"checked\" onchange='isDirty=true'>".
             "<label for=\"noCopy2Me\" class=\"labsys_mop_input_field_label\">".$lng->get("noCopy2Me")."</label><br />\r\n".
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"mailViaBcc\" name=\"MAIL_VIA_BCC\" value=\"1\"".( $cfg->get("mailViaBcc") == '1' ?  " checked=\"checked\""  : '' ).">".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"mailViaBcc\" name=\"MAIL_VIA_BCC\" value=\"1\"".( $cfg->get("mailViaBcc") == '1' ?  " checked=\"checked\""  : '' )." onchange='isDirty=true'>".
             "<label for=\"mailViaBcc\" class=\"labsys_mop_input_field_label\">".$lng->get("mailViaBcc")."</label>".
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" value=\"".$lng->get("sendMail")."\" accesskey=\"s\">\n".            
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" value=\"".$lng->get("sendMail")."\" accesskey=\"s\" onclick='isDirty=false'>\n".            
                         
             "</td></tr>\n".
             "</table>\n".

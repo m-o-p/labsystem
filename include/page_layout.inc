@@ -85,7 +85,10 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     <link rel="shortcut icon" href="<?php $cfg->say("Favicon"); ?>">
     
     <script src="../pages/scripts.js" type="text/javascript" language="javascript"></script>
-
+    <script language="javascript" type="text/javascript">
+      var discardChangesWarning = "<?php $lng->say('discardChangesWarning'); ?>";
+    </script>
+    
 <?PHP /* TinyMCE (WYSIWYG-Editor) integration */
     if ($url->available('tinyMCE')) 
       echo('
@@ -130,7 +133,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     <TITLE><?php echo( $pge->title ); ?> [<?php echo( $usr->userName."@" ); $cfg->say("SystemTitle"); ?>]</TITLE>
   </HEAD>
   
-  <BODY>
+  <BODY onbeforeunload="return dirtyWarning();">
     <table class="labsys_mop_maintable" align="center" cellpadding="0" cellspacing="0">
       <?php /* table layout fixed: first row sets the width */
         echo("<tr><td class=\"labsys_mop_ableMenu\"></td>". // show/ hide menu

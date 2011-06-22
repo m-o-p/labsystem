@@ -398,7 +398,7 @@ class LsElement extends Element{
           
         // selectors for the element the schedule is for
           "<fieldset><legend>".$lng->get("scheduleFor")."</legend>\n".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"collLab\" name=\"COLL_LAB\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"collLab\" name=\"COLL_LAB\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $dropDownOptionsCollLab.
             "</select>".
           "</fieldset>\n".
@@ -406,7 +406,7 @@ class LsElement extends Element{
         // the start date selectors
           "<fieldset><legend>".$lng->get("startDate")."</legend>\n".
             "<label for=\"sY\" class=\"labsys_mop_input_field_label_left\">".$lng->get("year")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"sY\" name=\"START_YEAR\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"sY\" name=\"START_YEAR\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions(  date( "Y", mktime(0, 0, 0, 1,   1,   date( "Y", $this->start )-1) ), // one year before schedule
                                  date( "Y", mktime(0, 0, 0, 1,   1,   date("Y")+1) ), // one year after now
                                  date( "Y", $this->start )
@@ -414,7 +414,7 @@ class LsElement extends Element{
             "</select> \n".
             
            "<label for=\"sM\" class=\"labsys_mop_input_field_label_left\">".$lng->get("month")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"sM\" name=\"START_MONTH\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"sM\" name=\"START_MONTH\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions( 1, 
                                 12,
                                 date( "m", $this->start )
@@ -422,7 +422,7 @@ class LsElement extends Element{
             "</select> \n".
     
            "<label for=\"sD\" class=\"labsys_mop_input_field_label_left\">".$lng->get("day")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"sD\" name=\"START_DAY\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"sD\" name=\"START_DAY\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions( 1, 
                                 31,
                                 date( "d", $this->start )
@@ -430,7 +430,7 @@ class LsElement extends Element{
             "</select> \n".
             
            "<label for=\"sH\" class=\"labsys_mop_input_field_label_left\">".$lng->get("hour")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"sH\" name=\"START_HOUR\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"sH\" name=\"START_HOUR\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions( 0, 
                                 23,
                                 date( "H", $this->start )
@@ -438,7 +438,7 @@ class LsElement extends Element{
             "</select> \n".
             
            "<label for=\"sMin\" class=\"labsys_mop_input_field_label_left\">".$lng->get("minute")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"sMin\" name=\"START_MINUTE\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"sMin\" name=\"START_MINUTE\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions( 0, 
                                 59,
                                 date( "i", $this->start )
@@ -450,7 +450,7 @@ class LsElement extends Element{
         // the start date selectors
           "<fieldset><legend>".$lng->get("stopDate")."</legend>\n".
             "<label for=\"stopY\" class=\"labsys_mop_input_field_label_left\">".$lng->get("year")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopY\" name=\"STOP_YEAR\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopY\" name=\"STOP_YEAR\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions( date( "Y", mktime(0, 0, 0, 1,   1,   date( "Y", $this->stop )-1) ), // one year before schedule
                                 date( "Y", mktime(0, 0, 0, 1,   1,   date("Y")+1) ), // one year after now
                                 date( "Y", $this->stop )
@@ -458,7 +458,7 @@ class LsElement extends Element{
             "</select> \n".
             
            "<label for=\"stopM\" class=\"labsys_mop_input_field_label_left\">".$lng->get("month")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopM\" name=\"STOP_MONTH\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopM\" name=\"STOP_MONTH\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions( 1, 
                                 12,
                                 date( "m", $this->stop )
@@ -466,7 +466,7 @@ class LsElement extends Element{
             "</select> \n".
     
            "<label for=\"stopD\" class=\"labsys_mop_input_field_label_left\">".$lng->get("day")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopD\" name=\"STOP_DAY\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopD\" name=\"STOP_DAY\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions( 1, 
                                 31,
                                 date( "d", $this->stop )
@@ -474,7 +474,7 @@ class LsElement extends Element{
             "</select> \n".
             
            "<label for=\"stopH\" class=\"labsys_mop_input_field_label_left\">".$lng->get("hour")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopH\" name=\"STOP_HOUR\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopH\" name=\"STOP_HOUR\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions( 0, 
                                 23,
                                 date( "H", $this->stop )
@@ -482,7 +482,7 @@ class LsElement extends Element{
             "</select> \n".
             
            "<label for=\"stopMin\" class=\"labsys_mop_input_field_label_left\">".$lng->get("minute")." </label>".
-            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopMin\" name=\"STOP_MINUTE\" size=\"1\" class=\"labsys_mop_input\">\n".
+            "<select tabindex=\"".$pge->nextTab++."\" id=\"stopMin\" name=\"STOP_MINUTE\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
             $this->makeOptions( 0, 
                                 59,
                                 date( "i", $this->stop )
@@ -496,21 +496,21 @@ class LsElement extends Element{
             "<textarea tabindex=\"".$pge->nextTab++."\" ".
                       "name=\"COMMENT\" ".
                       "class=\"labsys_mop_textarea\" ".
-                      "rows=\"".$cfg->get("DefaultSCommentRows")."\">".
+                      "rows=\"".$cfg->get("DefaultSCommentRows")."\" onchange='isDirty=true'>".
             $this->comment.
             "</textarea>".
           "</fieldset>\n".
                     
         // the save button
-          "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\">\n".
+          "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
           
         // element properties
           "<fieldset><legend>".$lng->get("properties")."</legend>\n".
-          "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' ).">".
+          "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' )." onchange='isDirty=true'>".
           "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
           "</fieldset>\n".
     
-          "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\">\n".            
+          "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".            
     
           "</FORM>\n".
           '<script language="JavaScript" type="text/javascript">

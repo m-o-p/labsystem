@@ -5,7 +5,30 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
-
+2011-06-22
+-------------------
+  /include/page_layout.inc
+  /pages/scripts.js
+  /ini/en.lng (discardChangesWarning)
+  /include/classes/LcElement.inc
+  /include/classes/LiElement.inc
+  /include/classes/LlElement.inc
+  /include/classes/LmElement.inc
+  /include/classes/LpElement.inc
+  /include/classes/LsElement.inc
+  /pages/mailForm.php
+  /pages/manageUsers.php
+  /include/classes/ElementUser.inc
+  /include/helper.inc
+  /pages/myRights.php
+  /pages/pgeStdFileEdit.inc
+  /pages/uaCreateUsers.php
+  /pages/uaMyData.php
+  /pages/uaMyPW.php
+  /pages/XIport.php
+  /include/classes/elements/Element.inc
+    Implemented javaScript warning onbeforeunload when things were changed on the page but not saved.
+  
 2011-06-16
 -------------------
   /plugins/CSSTidy

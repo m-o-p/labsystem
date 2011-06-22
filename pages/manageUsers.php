@@ -155,7 +155,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
   $pge->put('
               <input type="hidden" name="REDIRECTTO" value="'.urlencode($_SERVER['REQUEST_URI']).'">
               <input type="hidden" name="SESSION_ID" value="'.session_id().'">
-              <input TABINDEX="'.$pge->nextTab++.'" type="submit" class="labsys_mop_input" value="'.$lng->get("save").'"  accesskey="s">
+              <input TABINDEX="'.$pge->nextTab++.'" type="submit" class="labsys_mop_input" value="'.$lng->get("save").'"  accesskey="s" onclick="isDirty=false">
               
               </div></FORM>
   ');

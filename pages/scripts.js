@@ -47,3 +47,16 @@ function confirmLink(theLink, theMsg)
 
     return is_confirmed;
 } // end of the 'confirmLink()' function
+
+/**
+ * This variable is used for the dirty bit functionality.
+ * The dirty bit is set by the inputs when they are changed.
+ * It is cleared by the save vuttons.
+ * If not cleared it shows a warning.
+ */
+var isDirty = false;
+
+function dirtyWarning(){
+  if (isDirty) return confirm(discardChangesWarning);
+  return retVal;
+}
