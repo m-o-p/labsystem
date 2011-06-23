@@ -5,6 +5,20 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+  
+2011-06-23
+-------------------
+  /ini/de.lng
+  /ini/en.lng
+    Comparison and translation of language strings for new functions.
+    
+  /include/language.inc
+  /include/page_layout.inc
+  /ini/en.lng
+  /ini/de.lng
+  /pages/selectSysLng.php
+    Added page to select system language.
+
 2011-06-22
 -------------------
   /include/page_layout.inc
@@ -28,6 +42,10 @@ Feature Requests:
   /pages/XIport.php
   /include/classes/elements/Element.inc
     Implemented javaScript warning onbeforeunload when things were changed on the page but not saved.
+      In script.js a variable isDirty is initialized with false. It indicates the page is clean.
+      In all inputs, textboxes and selectors onchange='isDirty=true' happens.
+      In all saves onclick='isDirty=false' happens.
+      The body is checking in its onbeforeunload if the page is dirty and if so showing the warning.
   
 2011-06-16
 -------------------

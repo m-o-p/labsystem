@@ -172,7 +172,9 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
                   '<img src="../syspix/button_paused_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
                   ' ]'.
                   '</span> ' );
-          echo(date( $lng->get("DateFormat") )); 
+          echo(date( $lng->get("DateFormat") ).
+               ' | <a href="'.$url->link2('../pages/selectSysLng.php').'">'.$runningSystemLanguage.'</a>' // link to language selector (from /include/language.inc)
+               ); 
         ?>
       </td></tr>
 <!-- ************************* stop of top sysinfo ************************* -->

@@ -23,7 +23,7 @@
 
 Content-Language   = "de" ; take an international language identifier since it is used inside the html header!
 
-DateFormat         = "r" ; formatstring for all dates (-> php-function date() )
+DateFormat         = "j.n.Y | G:i:s" ; formatstring for all dates (-> php-function date() )
 
 include	     = "en" ; include all strings from the en.lng first. (maybe some items are not translated yet...)
 
@@ -58,7 +58,11 @@ iManageNote         = ""
 cManageNote         = "" 
 lManageNote         = ""
 sManageNote         = ""
+showScheduleNote    = 'Sie finden die <a href="../pages/accessableLabs.php?__LINKQUERY__">Modulbeschreibungen hier</a>.'
+AccessableLabsNote  = 'Sie finden den <a href="../pages/view.php?address=s1&amp;__LINKQUERY__">Zeitplan hier</a>.' ; appears on top of the accessableLab.php page.
 
+;; These note will appear on top of the export_import_lab page
+lExportImportNote   = "" ;- empty note -
 
 ;; prefixes that will be put in front of any (pre)lab paragraph ***************************************
 ; e.g. element 1.3.5 will get lPrefixLab.1.3.5
@@ -105,6 +109,10 @@ MnuEntryUserRights  = "Nutzerrechte"   ;; must be the same as in the menu file f
 ; myRights.php
 MnuEntryMyRights    = "meineRechte"
 
+MnuEntryMyStatistics = "meine Statistik"
+MnuEntrySendMail     = "Mail senden"
+MnuEntryCourseContent= "Kursinhalt"
+
 ;l
 mnuEntryPrelab2Fin  = "&raquo; alle Fragen (Korrektur)" ; appears under the prelab section if the prelab is not finished
 mnuEntryPrelabFin   = "&raquo; alle Fragen" ; same as above but prelab finished
@@ -119,6 +127,13 @@ MnuEntryUaMyPW      = "meinPasswort"
 MnuEntryUaUnPwRem   = "Passwort vergessen?"
 MnuEntryUaManageUsr = "Benutzerverwaltung"
 MnuEntryUaCreateUsr = "erstelle Benutzer"
+
+; choseSysLng.php
+MnuEntrySysLng      = "Systemsprache"
+TitleSysLngSelect   = "Systemsprachauswahl"
+AvailableLng        = "Folgende Sprachen stehen zur Verfügung"
+NoteChooseSysLng    = "Klicken Sie auf den gewünschten Ländercode und das System läuft in der entsprechenden Sprache. (Dies gilt nur für das System, nicht für die Inhalte.)"
+NoteCreateOwnLng    = "Ihre Sprache fehlt? Kein Problem. Kopieren Sie einfach die folgenden Name = Wert Paare in eine Textdatei mit dem Namen [Ländercode].lng, übersetzen Sie die Strings in die gewünschte Sprache und speichern Sie diese im Systemverzeichnis des labsystems. Ab dann steht die Sprache hier zur Verfügung. Bitte stellen Sie die Sprachdatei der Community zur Verfügung. Kontaktdaten unten im System. Danke!"
 
 ;; sysinfos ******************************************************************************************
 DataHasBeenSaved    = "Die Daten wurden gespeichert."
@@ -152,6 +167,9 @@ uaMailInvalid       = "Die Mailadresse ist ung&uuml;ltig!"
 uaSurNameEmpty      = "Bitte Vor- und Nachnamen angeben!"
 uaAsUsrNmeIsUsedBy  = "als Benutzername wird schon verwendet von"
 uaNotBelong2Usr     = "wurde nicht gefunden. Die Adresse geh&ouml;rt zu keinem Benutzer..."
+
+;unsaved changes
+discardChangesWarning = "Sie haben Ihre Änderungen auf der Seite noch nicht gespeichert. Wollen Sie die Seite wirklich verlassen?"
 
 ;i
 NotAllowedSaveLockAt= "Keine Erlaubnis zum Speichern der Antwort! Es gibt bereits ein Lock auf" ;; If the lock got placed on another answer this is not savable anymore.
@@ -199,6 +217,9 @@ toCloseTheLab       = "klicken, um das Lab zu schlie&szlig;en... (Um es wieder &
 labCloseNote        = "Durch Klick auf diesen Knopf werden <b>alle Antworten geschlossen</b>. "
 prelabCheckNote     = "Durch Klick auf diesen Knopf werden <b>alle Antworten korrigiert</b>. Erst wenn alle PreLab-Fragen von allen Teammitgliedern richtig (symbolisiert durch einen gr&uuml;nen Rand) ausgef&uuml;llt wurden, wird das Lab sichtbar.<br />Zur Beantwortung steht die folgende Anzahl an Versuchen zur Verf&uuml;gung: "
 prelabStatusNote    = "Diese Benutzer (in <b>Reihenfolge des Beendens</b>) haben das PreLab schon beendet."
+
+uniqueIDnote        = "Dieser Bezeichner wird verwendet, wenn Sie das Lab exportieren. Er muss für jedes Lab eindeutig sein, da er verwendet wird, das Modul ins SVN einzuchecken. Am besten verwenden Sie für Ihre Institution und Ihren Kurs ein Prefix (z.B. TUM_ilab1_Statis_routing). Achtung: wenn Sie diesen Bezeichner ändern, wird das Modul unter dem neuen bezeichner exportiert und es besteht kein Bezug zum alten Bezeichner mehr."
+abstractNote        = "Diese Kurzfassung wird auf der Übersichtsseite jedes Moduls sowie auf der Übersichtsseite aller installierten Lernmodule angezeigt."
 
 ; uaMyData.php
 uaMyDataNote        = "Hier k&ouml;nnen Sie Ihre pers&ouml;nlichen Daten &auml;ndern<br />Bitte geben Sie eine g&uuml;ltige Emailadresse an, die Sie regelm&auml;&szlig;ig abrufen, da Rundmails, vergessene Passw&ouml;rter und &auml;hnliches an diese Adresse geschickt werden..."
@@ -275,6 +296,11 @@ Credits             = "Punkte"
 inputPreLab         = "PreLab"                  ;; l-edit field descriptor
 inputLab            = "Lab"                     ;; l-edit field descriptor
 inputIsCorrected    = "Korrigiert?"             ;; Explanation to the corrector's checkbox.
+metaData            = "Metadatrn"               ;; Explanation on the edit field around the following meta data
+authors             = "Autoren"
+abstract            = "Kurzbeschreibung"
+exportImport        = "Export/ Import"          ;; Header for the fieldset about export/ import
+uniqueID            = "Eindeutiger Bezeichner"
 
 ;s
 scheduleFor         = "Der Schedule gilt f&uuml;r"   ;; legend on top of the selector

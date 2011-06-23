@@ -25,6 +25,8 @@ Content-Language   = "en" ; take an international language identifier since it i
 
 DateFormat         = "r" ; formatstring for all dates (-> php-function date() )
 
+
+
 ;; strings that have to be present for each element ***************************************************
 pNumber             = "page number "
 mNumber             = "multiple choice number "
@@ -61,8 +63,6 @@ AccessableLabsNote  = 'You can find the <a href="../pages/view.php?address=s1&am
 
 ;; These note will appear on top of the export_import_lab page
 lExportImportNote   = "" ;- empty note -
-
-
 
 ;; prefixes that will be put in front of any (pre)lab paragraph ***************************************
 ; e.g. element 1.3.5 will get lPrefixLab.1.3.5
@@ -128,6 +128,13 @@ MnuEntryUaUnPwRem   = "getPassword"
 MnuEntryUaManageUsr = "manage users"
 MnuEntryUaCreateUsr = "create users"
 
+; choseSysLng.php
+MnuEntrySysLng      = "system language"
+TitleSysLngSelect   = "System language select"
+AvailableLng        = "Click on one of the following languages"
+NoteChooseSysLng    = "Click on the country code and the system is runing with the localized strings. (This does NOT affect the user content but only the system itself)."
+NoteCreateOwnLng    = "Your language is missing? No problem, simply copy the following text into a file called [yourCountryCode].lng, translate the strings and store it in the /ini/ directory. Then it will be available for selection on this page. Please provide your language file to others by sending it to me (contact on the bottom of this page). Thanks!"
+
 ;; sysinfos ******************************************************************************************
 DataHasBeenSaved    = "The data has been saved."
 
@@ -163,6 +170,7 @@ uaNotBelong2Usr     = "was not found. It does not belong to any user here..."
 
 ;unsaved changes
 discardChangesWarning = "You are about to leave this page without saving your changes... sure?"
+
 ;i
 NotAllowedSaveLockAt= "You are not allowed to save this answer as the lock is at " ;; If the lock got placed on another answer this is not savable anymore.
 LockTakenFrom       = "The lock was taken from input" ;; " [idx of input]" gets added

@@ -51,6 +51,8 @@ if ( !file_exists( $languageFile ) ){
                                       trigger_error( $languageFile.' missing! (language-file)' , E_USER_ERROR );
                                       exit;
                                      }
+
+$runningSystemLanguage = isset($_GET["lng"]) ? $_GET["lng"] : substr( $cfg->get("SystemDefaultLanguage"), 0, strpos( $cfg->get("SystemDefaultLanguage"), '.' ) ); // used by /include/page_layout.inc to link to the language selector
                                      
 $languageData = parse_ini_file( $languageFile );
 
