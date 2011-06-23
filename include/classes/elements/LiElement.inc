@@ -389,7 +389,7 @@ class LiElement extends Element{
       if ( $usr->isOfKind( IS_CORRECTOR ) )
         if ( !$this->isClosed ) ; 
         else if ( $isInCorrection ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                   "value=\"".$lng->get("save")."\" accesskey=\"s\" onchange='isDirty=true;'>\n";
+                                                   "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n";
                                else if ( !isset( $_POST['FULLADDRESS'] ) )  $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                                                            "value=\"".$lng->get("correct")."\" onchange='isDirty=true'>\n";
                                     else ; // another is opened yet
