@@ -223,6 +223,7 @@ function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true,
   function mapIt( $oldID, &$IDmappingArray ){
     $ID = strtolower( $oldID[0] ); // make ID small letter (big and small c's...
     $IDX = substr( $oldID, 1 );
+    if ($IDX == 1) return $oldID; // 1 = prototype => preserve
     return array_key_exists( $ID.$IDX, $IDmappingArray ) ? $oldID[0].substr( $IDmappingArray[$ID.$IDX], 1 ) /*keep first letter big... */ : 'missing' /* not found */;
   }
   /** end of functions */

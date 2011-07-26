@@ -155,7 +155,10 @@ class LlDBInterface {
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eL->history."' )", 
+                                     ( $eL->history != '' ? 
+                                        "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eL->history."' )" : // if the program changed the history: take it (done when importing...)
+                                        "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )"
+                                     ), 
                                      $this->myTable, 
                                      "idx=".$eL->idx );
   }

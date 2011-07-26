@@ -15,6 +15,7 @@ Feature Requests:
     Link to element from import page (top).
   /include/XIlib.inc
     Edited error in processElement.
+    mapIt: preserve 1 as it is prototype and used for "non-existing" in Labs...
   /include/helper.inc:
     createNew:
       aded 's' element.
