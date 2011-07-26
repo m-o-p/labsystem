@@ -5,6 +5,19 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+2011-07-26
+-------------------
+  /include/classes/elements/L?DBInterface.inc
+    setData()
+      the adding was done using the DB. While this is in general good it removes also all history when importing. Thus it got changed back to using the provided history instead of that from the DB.
+  /pages/XIport.php
+    Import creates now automatically a schedule for yesterday for each imported element. -> Easy to edit. Gone so no security problem.
+    Link to element from import page (top).
+  /include/XIlib.inc
+    Edited error in processElement.
+  /include/helper.inc:
+    createNew:
+      aded 's' element.
   
 2011-06-23
 -------------------

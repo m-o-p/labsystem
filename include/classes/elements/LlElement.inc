@@ -89,7 +89,6 @@ class LlElement extends Element{
     
     $this->idx                      = $idx;
     $this->uniqueID                 = $uniqueID;
-    if ($this->idx==1) $this->uniqueID .= '-'.urlencode ( $_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() ) ); // none or initialized from prototype...
     
     $this->title                    = $title;
     $this->authors                  = $authors;

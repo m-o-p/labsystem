@@ -56,7 +56,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         
         $newLabId = $labElementArray['l2'];
         
-        $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.$newLabId.')</h3>'."\r\n" );
+        $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.$newLabId.' <a href="'.$url->link2('../pages/edit.php?address='.$newLabId).'">edit...</a>)</h3>'."\r\n" );
 
       // import elements
         foreach ($labElementArray as $value=>$newID){
@@ -74,7 +74,21 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $externallyLinked = $cfg->get('exportImportDir').$subDir.'/data/externallyLinked.txt';
         if ( file_exists( $externallyLinked ) )
           $pge->put( '<pre>'.$externallyLinked.':'."\r\n".file_get_contents( $externallyLinked ).'</pre>' );
-
+          
+        // create new schedule
+        $newIdx = createNew( 's' );
+        // load it
+        $newSchedule = $GLOBALS[ 'sDBI' ]->getData2idx( $newIdx );
+        $newSchedule->id = $newLabId[0];
+        $newSchedule->num = substr( $newLabId, 1);
+        // yesterday morning
+        $startTime = mktime(0, 0, 0, date('m'), date('d')-1, date('Y'));
+        // yesterday night
+        $endTime = mktime(23, 59, 59, date('m'), date('d')-1, date('Y'));     
+        $newSchedule->start = $startTime;
+        $newSchedule->stop = $endTime;
+        $pge->put( persistElement( $newSchedule, '', true ) );
+        $pge->put( '<a href="'.$url->link2('../pages/edit.php?address=s'.$newIdx).'">Please edit the schedule...</a>' );
 // doImport
       }else{
 // doExport

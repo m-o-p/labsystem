@@ -132,7 +132,7 @@ class LpDBInterface {
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )", 
+                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eP->history."' )", 
                                      $this->myTable, 
                                      "idx=".$eP->idx );
   }

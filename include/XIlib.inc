@@ -488,7 +488,7 @@ Fill $exportContent and write it at the bottom once!
       processContent( $element->exampleSolution,$labNumber, $mappingArray, true, $isImport );
       break;
     default:
-      $pge->put( 'ELEMENT NOT EXPORTED! '.$element->elementId.$element->idx );
+      $pge->put( 'Element NOT '.( $isImport ?  'Imported ' :  'Exported '  ).'! '.$element->elementId.$element->idx );
       break;
   }
 }

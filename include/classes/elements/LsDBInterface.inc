@@ -189,7 +189,7 @@ class LsDBInterface {
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )", 
+                                     "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eS->history."' )", 
                                      $this->myTable, 
                                      "idx=".$eS->idx );
   }
