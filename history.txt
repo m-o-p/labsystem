@@ -5,6 +5,12 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+ 
+2011-09-02
+-------------------
+  /css/sys/labsys_mop_basic.css
+    Changed multiple styles. Esp. m_around, i_around, i_around .labsys_mop_textbox{ width 
+    
 2011-07-26
 -------------------
   /include/classes/elements/L?DBInterface.inc

@@ -253,7 +253,7 @@ a:hover {             text-decoration:underline; color: #0065BD;}
 }
 
 .labsys_mop_textarea{
-                    width: 100%;
+                   width: 100%;
                   /*  height: 100%; */
                     margin: 1px 1px 1px 1px;
                   	border: solid 1px #4682B4;
@@ -700,6 +700,9 @@ fieldset{
   .labsys_mop_elements_m_around{ /* put around the m element */
                     /*background-color: #f9f9f9;*/
                     margin-bottom: 1em;
+                    background-color: #FDFCF7;
+                    border: solid 1px #cccccc;
+                    border-radius: 0.3em;
   }
   .labsys_mop_m_question{
                     border-bottom: 1px solid #eeeeee;
@@ -709,6 +712,7 @@ fieldset{
                     font-size: 0.7em;
                     border-top: solid 1px #eeeeee;
                     padding: 5px 5px 5px 5px;
+                    color: #555555;
   }
   
   .labsys_mop_m_answers_table { /* The multiple choice checkboxes and answers are inside this table. */
@@ -764,11 +768,20 @@ fieldset{
   
 /* ------ additional styles for the i element ------ */ 
   .labsys_mop_elements_i_around{ /* put around the i element */
-                    background-color: #dddddd; /*#f9f5f5;*/
+                    background-color: #FDFCF7; /*#f9f5f5;*/
+                    border: solid 1px #cccccc;
+                    border-radius: 0.3em;
                     margin-bottom: 1em;
+  }
+  
+  .labsys_mop_elements_i_around .labsys_mop_textarea{ /* put around the i element */
+                    width: 98%;
   }
   .labsys_mop_i_question{
                     padding: 5px 5px 5px 5px;
+  }
+  .labsys_mop_i_question p {
+                    display: inline;
   }
   .labsys_mop_i_credits{
                     font-size: 0.7em;
@@ -792,7 +805,6 @@ fieldset{
   }
 
   .labsys_mop_i_comment{ /* The comment as shown when not in edit mode */
-                    width: 100%;
                     margin: 1px 1px 1px 1px;
                     color: #444444;
                    	font-size: 0.8em;
@@ -807,7 +819,7 @@ fieldset{
                   	text-align: left;
                     padding: 5px 5px 5px 5px;
                     font-family: times, serif;
-                    background-color: #ffffee;
+                    background-color: #ffffaa;
   } 
   
   /* Has to be limited as much as possible since the pastings have huge width sometimes */
