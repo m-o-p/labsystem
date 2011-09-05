@@ -910,7 +910,7 @@ fieldset{
                   margin: 0;
                   margin-left: 0.3em;
                   padding: 0.1em;
-                  
+                  border: none;
   }
 /* ------ additional styles for the s element ------ */ 
   .labsys_mop_s_table { /* The schedule rows are in here */
