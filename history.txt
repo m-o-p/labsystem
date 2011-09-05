@@ -6,6 +6,56 @@ Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
  
+2011-09-05
+-------------------
+  /setup/sql_new_ddb_input_tbl.sql
+    Added new row `hasFileUpload` tinyint(1) DEFAULT '0'
+    
+  !!! Due to the added field in the input element no old exported inputs can be imported anymore as order is mandatory...
+    
+  Added Upload functionality to inputs.
+  /include/classes/elements/LiElement.inc:
+    showFileUpload
+  /include/classes/elements/LiDBInterfaceAnswers.inc:
+    Added functionality for handling upload(ed) files.
+  /include/classes/elements/LiDBInterface.inc:
+    Added functionality for hasFileUpload field (load + save);
+  /ini/en.lng
+  /ini/de.lng
+    New Strings
+
+  Table data/inputs needs new field tinyint(1) hasFileUpload.
+  New ini options:
+    UploadDirectory = "/tmp"
+    InputDirectory = "inputs"
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
+  !!! Note: Do not forget to protect the upload directory via .htaccess !!!
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  
+  New Language Strings:
+  noFilesYet
+  fileList
+  deleteFile
+  upload
+  hasFileUpload
+  options
+  
+  New Styles:
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload
+    .labsys_mop_i_file_list
+    .labsys_mop_i_file_description
+    .labsys_mop_i_file
+    .labsys_mop_i_arrow
+    .labsys_mop_i_noUploads
+  
+  New Images:
+  ../syspix/delete-arrow.gif
+  
+  /php/getUploadedFile.php
+    To download the uploaded files from access protected directory. Checks permissions.
+
+
+ 
 2011-09-02
 -------------------
   /css/sys/labsys_mop_basic.css

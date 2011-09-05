@@ -29,6 +29,9 @@ body {
                       font-family: verdana, sans-serif; 
                       text-align:justify; 
 }
+input, textarea, fieldset { /* round edges on the buttons and inputs */
+                      border-radius: 0.3em;
+      }
 
 a {                   text-decoration:none; color: #0065BD;}
 a:hover {             text-decoration:underline; color: #0065BD;}
@@ -778,6 +781,7 @@ fieldset{
   
   .labsys_mop_elements_i_around .labsys_mop_textarea{ /* put around the i element */
                     width: 98%;
+                    border-radius: 0.3em;
   }
   .labsys_mop_i_question{
                     padding: 5px 5px 5px 5px;
@@ -848,6 +852,65 @@ fieldset{
                     border: none;
                     background-color: #999999;
                     color: #ffffff;
+  }
+  
+  /* File Upload stuff */
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload {
+                    background-color: #FFECE7; /*#f9f5f5;*/
+                    border: solid 1px #cccccc;
+                    border-radius: 0.3em;
+                    margin: 1em;
+                    margin-left: 0.5em;
+                    margin-right: 2em;
+  }
+  
+
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload .labsys_mop_i_noUploads {
+                  background-color: #aa5555;
+                  color: #ffffff;
+                  padding: 0.2em;
+                  text-align: center;
+                  width: 30em;
+                  margin-bottom: 0.5em;
+                  margin-left: 0.3em;
+  }
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload ul.labsys_mop_i_file_list { 
+                  list-style-type: none; 
+                  padding: 0px; 
+                  margin: 0px; 
+  }  
+
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload ul.labsys_mop_i_file_list input { 
+                  margin-right: 5px; 
+  }  
+
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload ul.labsys_mop_i_file_list li,
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload ul.labsys_mop_i_file_list li input { 
+                  margin-bottom: 0.2em;
+                  background-color: #f0f0f0;
+                  color: #ff0000;
+  }
+
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload img.labsys_mop_i_arrow { 
+                  margin-bottom: -12px;  
+                  margin-left: 1px; 
+  } 
+
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload input.labsys_mop_i_file { 
+                  margin-left: 5px; 
+  } 
+
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload .labsys_mop_i_file_description { 
+                  font-size: 0.7em; 
+                  display: inline;
+  } 
+  .labsys_mop_elements_i_around .labsys_mop_i_fileUpload h3{
+                  font-weight: normal;
+                  font-size: 0.9em;
+                  margin: 0;
+                  margin-left: 0.3em;
+                  padding: 0.1em;
+                  
   }
 /* ------ additional styles for the s element ------ */ 
   .labsys_mop_s_table { /* The schedule rows are in here */

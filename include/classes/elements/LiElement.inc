@@ -24,9 +24,8 @@
 * This element consists of a question the user can answer.
 *
 * @module     ../include/classes/elements/LiElement.inc
-* @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
+* @author     Marc-Oliver Pahl, Sebastian Hoecht (FileUpload)
+* @version    1.1
 */
 
 /*
@@ -79,6 +78,7 @@ class LiElement extends Element{
 
   var $isClosed;              // Is the user answer closed?
   var $isCorrected;           // Is the user answer corrected?
+  var $hasFileUpload;         // If true users can upload files to this question.
   var $answerHistory;         // The user answer's history.
   
   var $getDataOfTeam;         // The tem number data should be loaded of.
@@ -142,7 +142,7 @@ class LiElement extends Element{
       $this->loadUserData4(); // Fills rest of the structures with neutral values.
     }
     
-    $this->serializationArray       = array( 'idx', 'question', 'exampleSolution', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
+    $this->serializationArray       = array( 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
   }
   
   /**
@@ -252,6 +252,46 @@ class LiElement extends Element{
   }
   
   /**
+  * Returns the HTML code of the fileUpload.
+  *
+  * @param  $isGettingAnswered  If true files can be uploaded and deleted. Otherwhise they can only be downloaded.
+  *
+  * @return string            The html representation of the correctors comment.
+  */
+  private function showFileUpload( $isGettingAnswered=false ){
+    global $lng, $url;
+    if (!$this->hasFileUpload) return 'bu'; // Has no upload -> nothing to see here
+  
+    $ret = '<div class="labsys_mop_i_fileUpload">';
+    $ret .= '<h3><img src="../syspix/button_save_13x12.gif" width="13" height="12" alt="'.$lng->get('upload').'"> '.$lng->get('fileList').'</h3>'; 
+    $files = $this->uaDBI->getFiles($this->getDataOfTeam, $this->idx); 
+    if (empty($files)) $ret .= '<div class="labsys_mop_i_noUploads">'.$lng->get('noFilesYet').'</div>'; 
+    else { 
+      if ( $isGettingAnswered ) // allow deleting files with this button
+        $ret .= '<img class="labsys_mop_i_arrow" src="../syspix/delete-arrow.gif" alt="delete" /><input type="submit" name="fileDelete" value="'.$lng->get('deleteFile').'">';
+        
+      $ret .= '<ul class="labsys_mop_i_file_list">'; 
+      foreach ($files as $file) { // List files. If isGettingAnswered with delete button.
+        $pathInfo = pathinfo($file['fileName']); 
+        $ret .= '<li>'; 
+        $filesize = round($file['size'] / 1024).' KB'; 
+        $fileTime = date('H:i j.n.Y', $file['timestamp']); 
+        $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />'; 
+        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' . 
+    	          $pathInfo['basename']. 
+                '</a> <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div></li>'; 
+      } 
+      $ret .= '</ul>'; 
+    } 
+    
+    if ( $isGettingAnswered ) // if we can answer we can upload.
+      $ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" name=\"file\" \">".     
+              "<input type=\"submit\" name=\"fileUpload\" value=\"".$lng->get('upload')."\"><br /><br />"; 
+    $ret .= '</div>';
+    return $ret;
+  }
+  
+  /**
   * Shows the credits.
   *
   * @param  $isInCorrection   If true the credits are an input.
@@ -294,7 +334,7 @@ class LiElement extends Element{
   }
   
   /**
-  * Shows the user's answer. Includes some msic!
+  * Shows the user's answer. Includes some misc!
   *                       Since there might be many independent inputs on one page the
   *                       corrector is prevented from forgetting to save the same way
   *                       as the user is with the multiple choice questions.
@@ -349,7 +389,7 @@ class LiElement extends Element{
       if ($isGettingAnswered) makeLogEntry( 'i', 'getting answered', $this->idx );
 
       $ret =   "<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
-               "<FORM class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
+               "<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
                "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && !$isInCorrection) ?
                                       // link for the corrector to unlock... (-> see description above method)
                                       $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam) :
@@ -375,7 +415,8 @@ class LiElement extends Element{
               "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
               "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
               "<input type=\"hidden\" name=\"TEAM\" value=\"".$this->getDataOfTeam."\">\n".
-              
+            // Contains File Upload?
+              ( $this->hasFileUpload ? $this->showFileUpload( $isGettingAnswered && !$usr->isOfKind( IS_CORRECTOR ) ) : '').
             // answer
               $this->showAnswer( $isGettingAnswered && !$usr->isOfKind( IS_CORRECTOR ) ); // correctors never edit answers
               
@@ -444,7 +485,7 @@ class LiElement extends Element{
     if ( !$usr->isOfKind( IS_CORRECTOR ) && !$usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ){ // "normal" user
       $this->loadUserData4( $this->utDBI->getData4( $usr->uid, $this->idx, $usr->currentTeam ) );    // create dataset tith user's team
       $answers = $this->showAnswerData( $fullAddress );
-    }
+    }elseif ( $this->hasFileUpload ) $answers = $this->showFileUpload(); // show Upload for editors.
     
     if ( $usr->isSeeingSomeonesData() ) // correcting someone
       if ( $usr->theSeeingUid() != "all" ){
@@ -528,6 +569,14 @@ class LiElement extends Element{
                           
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
 
+          // element options
+            "<fieldset><legend>".$lng->get("options")."</legend>\n". 
+              "<div>". 
+              "<input type=\"hidden\" name=\"HAS_FILE_UPLOAD\" value=\"0\" /><input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"hasFileUpload\" name=\"HAS_FILE_UPLOAD\" value=\"1\"".( $this->hasFileUpload ? " checked=\"checked\"" : '').">". 
+              "<label for=\"hasFileUpload\" class=\"labsys_mop_input_field_label\">".$lng->get("hasFileUpload")."</label>". 
+              "</div>\n". 
+            "</fieldset>\n". 
+
           // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
               "<table width=\"100%\"><tr><td valign=\"top\" width=\"40%\">\n".
@@ -579,7 +628,8 @@ class LiElement extends Element{
          !isset($_POST['FULLADDRESS']) || 
          !isset($_POST['QUESTION']) || 
          !isset($_POST['EXAMPLE_SOLUTION']) || 
-         !isset($_POST['POSSIBLE_CREDITS'])
+         !isset($_POST['POSSIBLE_CREDITS']) ||
+         !isset($_POST['HAS_FILE_UPLOAD'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
@@ -605,6 +655,7 @@ class LiElement extends Element{
                                 ($_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1"),
                                 ""
                                );
+    $newInput->hasFileUpload = $_POST['HAS_FILE_UPLOAD']; 
                                
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
@@ -666,10 +717,20 @@ class LiElement extends Element{
        
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
     
+    
+
+
     if ( $this->lockIsSetTo == $this->idx ){
-      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
-      makeLogEntry( 'i', 'saved', $this->idx );
-      $this->removeLock();
+      $this->history='';
+      if ( isset($_POST['fileUpload']) || isset($_POST['fileDelete'])){
+        // file handling
+        $this->handleUploadedFiles(); // modifies $this->history!
+      } else {
+        // non file handling operation
+        makeLogEntry( 'i', 'saved', $this->idx );
+        $this->removeLock();
+      }
+      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->isClosed, $this->isCorrected, $this->history ); 
     } else{ // You are only allowed to answer one question at the same time. 
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
@@ -683,6 +744,24 @@ class LiElement extends Element{
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
+  
+  /** 
+  * uploads a file, if a file has been sent, and deletes files, if they have been marked for deletion. 
+  */ 
+  private function handleUploadedFiles(){ 
+    global $url, $lng, $usr; 
+    if ($this->hasFileUpload){
+      if (!empty($_FILES['file']['size'])) { 
+        $this->uaDBI->uploadFile($_POST['TEAM'], $this->idx, $_FILES['file']['tmp_name'], $_FILES['file']['name']); 
+        $this->history = $_FILES['file']['name'].' uploaded';
+      } else if (!empty($_POST['deleteFileNames'])) { 
+ 	      foreach ($_POST['deleteFileNames'] as $fileName) { 
+          $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName); 
+          $this->history .= $fileName.' deleted';
+        } 
+      } 
+    } else $url->put( "sysalert=".urlencode( $lng->get("ElementHasNoFileUpload")) ); 
+  } 
   
   /**
   * Used to save the corrector's comment and given points.

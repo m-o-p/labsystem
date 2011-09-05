@@ -24,9 +24,8 @@
 
 /**
 * @module     ../include/classes/elements/LiDBInterfaceAnswers.inc
-* @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
+* @author     Marc-Oliver Pahl, Sebastian Hoecht (File Upload)
+* @version    1.1
 */
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 
@@ -120,4 +119,60 @@ class LiDBInterfaceAnswers {
     if ( $data = mysql_fetch_array($this->queryResult) ) return $data['team'];
                                                     else return false;
   }
+
+  /** 
+  * Get all files stored for a input Element for a certain team. 
+  * @param intger $team the team number. 
+  * @param integer $iIdx the id of the input Element. 
+  * @return an array of the paths of the files relative to upload dir. 
+  */ 
+  public static function getFiles($team, $iIdx) { 
+    global $lng;
+    $filePaths = array(); 
+    self::createUploadFolderIfNotExisting($iIdx, $team); 
+    $dir = dir(self::getUploadDirectory($iIdx, $team)); 
+    while (false !== ($entry = $dir->read())) { 
+      if ($entry != '.' && $entry != '..') { 
+        $filePath = self::getUploadDirectory($iIdx, $team).'/'.$entry; 
+        $fileChangedTime = filectime($filePath); 
+        $filesize = filesize($filePath); 
+        $filePaths[$entry] = array( 
+          'fileName' => $entry, 
+          'timestamp' => $fileChangedTime, 
+          'size' => $filesize 
+        ); 
+      } 
+    } 
+    ksort($filePaths); 
+    return $filePaths; 
+  } 
+
+  function createUploadFolderIfNotExisting($questionIdx, $team) { 
+    $teamFolder = self::getUploadDirectory($questionIdx, $team); 
+    if (!file_exists($teamFolder)) mkdir($teamFolder, 0755, true); 
+  } 
+
+  /** 
+  * Get the upload directory dependent from config used. 
+  * @param string global $_GET['config'] 
+  * @param integer $questionIdx the id of the input Element. 
+  * @param integer $team the id of the team. 
+  * @return the absolute path of the upload directory 
+  */ 
+  public static function getUploadDirectory($questionIdx, $team) { 
+    global $cfg; 
+    return $cfg->get('UploadDirectory').'/'.$cfg->get('User_courseID').'/'.$cfg->get('InputDirectory').'/i'.$questionIdx.'/team'.$team; 
+  } 
+  
+  function uploadFile( $team, $iIdx, $tmpFilePath, $originalName) { 
+    global $usr, $cfg; 
+
+    $this->createUploadFolderIfNotExisting($iIdx, $team); 
+    $uploadDirectory = $this->getUploadDirectory($iIdx, $team); 
+    move_uploaded_file($tmpFilePath, $uploadDirectory.'/'.$originalName); 
+  } 
+
+  function deleteFile($team, $iIdx, $fileName) { 
+    unlink($this->getUploadDirectory($iIdx, $team).'/'.$fileName); 
+  } 
 }

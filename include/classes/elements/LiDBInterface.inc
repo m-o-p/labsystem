@@ -63,7 +63,7 @@ class LiDBInterface {
       return false;
       exit;
     }else{
-      return new LiElement( $data['idx'],                                   // $idx
+      $nEl = new LiElement( $data['idx'],                                   // $idx
                             $this->myDBC->unEscapeString($data['question']),                // $question
                             $this->myDBC->unEscapeString($data['example_solution']),        // $exampleSolution
                             ($data['possible_credits'] / 100),              // float; $possibleCredits
@@ -72,6 +72,8 @@ class LiDBInterface {
                             $data['history'],                               // $history
                             $isInColl                                       // $isInColl
                           );
+       $nEl->hasFileUpload = ( isset($data['hasFileUpload']) && $data['hasFileUpload'] == 1 ? true : false );
+       return $nEl;
     }
   }
   
@@ -123,6 +125,7 @@ class LiDBInterface {
     tidyHTML( $eI->question );
     tidyHTML( $eI->exampleSolution );
     $toSet =  "question='".$this->myDBC->escapeString($eI->question)."', ".
+              "hasFileUpload='".( $eI->hasFileUpload ? 1 : 0 )."', ".
               "example_solution='".$this->myDBC->escapeString( $eI->exampleSolution )."', ".
               "possible_credits='".$this->myDBC->escapeString($eI->possibleCredits * 100)."', ". // stored as int but float :2
               "visible_for=".$eI->visibleFor.", ".
