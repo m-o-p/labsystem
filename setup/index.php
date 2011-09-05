@@ -504,6 +504,11 @@ echo('
   Do not forget to change your admin user\'s password if you got the notification above!!!!
 ');
 
+echo('<br>
+  <br><span style="color: #ff5555">Make sure your team upload directory "'.$cfg->get('UploadDirectory').'" is protected!<br>
+  (non web accessable) by the webserver and writable by it.</span>
+');
+
 if (substr( $_GET['config'], -9 ) == 'useradmin') echo('<br><br>If you want to proceed with your initial setup you can <a href="'.$url1.'/setup?config=demo"><button>continue with the setup for \'demo\'...</button></a>');
 
 echo('<br /><br />*** HAVE FUN WITH THE SYSTEM! ***<br /><br />_');
