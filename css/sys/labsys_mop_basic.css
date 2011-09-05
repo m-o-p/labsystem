@@ -703,6 +703,7 @@ fieldset{
                     background-color: #FDFCF7;
                     border: solid 1px #cccccc;
                     border-radius: 0.3em;
+                    margin-left: 1em;
   }
   .labsys_mop_m_question{
                     border-bottom: 1px solid #eeeeee;
@@ -772,6 +773,7 @@ fieldset{
                     border: solid 1px #cccccc;
                     border-radius: 0.3em;
                     margin-bottom: 1em;
+                    margin-left: 1em;
   }
   
   .labsys_mop_elements_i_around .labsys_mop_textarea{ /* put around the i element */
