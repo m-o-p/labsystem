@@ -491,6 +491,60 @@ if ( !file_exists( $cfg->get("PrintStyleSheet") ) )
   else  echo("print stylesheet copied...<br>\n");
 
 
+/**/
+say_toptitle( 'Checking directories...' ); /***********************************/
+/*
+* Checks if a directory is writable and returns o.k. or failed.
+* To do so it creates the subfolder "/test23r2" and deletes it if successful.
+*/
+function checkDirectoryWritable( $configFieldName ){
+  global $cfg;
+  $directory = $cfg->get($configFieldName);
+  echo( '<br><br><span style="color: #ffff99">['.$configFieldName.': '.$cfg->get($configFieldName).']</span> ' );
+  if (!file_exists($directory))
+    echo('not existing. Creating it... '.(mkdir($directory, 0755, true) ? '<span style="color: #77ff77;">o.k.</span>' : '<span style="color: #ff7777;">failed!</span>' ).'<br>' );
+  else
+    echo('exists. Testing subfolder... Creating... '.
+         (mkdir($directory.'/test23r2', 0755, true) ? 
+            '<span style="color: #77ff77;">o.k.</span> Deleting... '.(rmdir($directory.'/test23r2') ? 
+                                                                          '<span style="color: #77ff77;">o.k.</span>' : 
+                                                                          '<span style="color: #ff7777;">failed!</span>' ) : 
+            '<span style="color: #ff7777;">failed!</span>' ).
+         '<br>' );
+}
+
+say_title('User Uploads');
+checkDirectoryWritable('UploadDirectory');
+
+say_title('Export/ Import Uploads');
+checkDirectoryWritable('exportImportDir');
+checkDirectoryWritable('importPictureDir');
+checkDirectoryWritable('importFilesDir');
+
+say_title('Summary expected Protection of Directories and Files');
+echo('<span style="color: #ff5555">Please make sure the following access policies are met.</span><br>');
+/*
+* Echos $configFieldName \t its value \t $msg
+*/
+function fileNote( $configFieldName, $msg ){
+  global $cfg;
+  echo( str_pad($configFieldName,            30, ' ', STR_PAD_RIGHT).
+        str_pad($cfg->get($configFieldName), 50, ' ', STR_PAD_RIGHT).
+        str_pad($msg,                        30, ' ', STR_PAD_RIGHT).
+        "\r\n" );
+}
+echo( '<pre><span style="color: #888888">' );
+fileNote( 'fieldName', 'access policy</span>' );
+fileNote( 'UploadDirectory', 'php rw, www <span style="color: #ff5555">deny</span>' );
+fileNote( 'exportImportDir', 'php rw, www <span style="color: #ff5555">deny</span>' );
+fileNote( 'SystemMenuFile',  'php rw, www <span style="color: #ff5555">deny</span>' );
+fileNote( 'UserStyleSheet',  'php rw, www <span style="color: #ff5555">deny</span>' );
+fileNote( 'importPictureDir','php rw, www r' );
+fileNote( 'importFilesDir',  'php rw, www r' );
+echo( '</pre>' );
+
+
+
 /* C: AFTER INSTALLATION NOTES */
 say_toptitle( 'Installation done!' ); /***********************************/
 /***** additional infos *****/
@@ -502,11 +556,6 @@ echo('
   You can access your new instance by the following URL:<br>
   <a href="'.$url.'">'.$url.'</a><br><br>
   Do not forget to change your admin user\'s password if you got the notification above!!!!
-');
-
-echo('<br>
-  <br><span style="color: #ff5555">Make sure your team upload directory "'.$cfg->get('UploadDirectory').'" is protected!<br>
-  (non web accessable) by the webserver and writable by it.</span>
 ');
 
 if (substr( $_GET['config'], -9 ) == 'useradmin') echo('<br><br>If you want to proceed with your initial setup you can <a href="'.$url1.'/setup?config=demo"><button>continue with the setup for \'demo\'...</button></a>');

@@ -5,7 +5,13 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
- 
+
+2011-09-06
+-------------------
+ /setup/index.php
+   Checks for proper accessability of folders now.
+   Clarified the expected access rights for directories and files.
+   
 2011-09-05
 -------------------
   /setup/sql_new_ddb_input_tbl.sql
