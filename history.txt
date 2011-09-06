@@ -5,6 +5,8 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+ - CSS on export/ import
+ - Register form
 
 2011-09-06
 -------------------
