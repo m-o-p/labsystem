@@ -889,6 +889,7 @@ fieldset{
                   margin-bottom: 0.2em;
                   background-color: #f0f0f0;
                   color: #ff0000;
+                  padding-left: 0;
   }
 
   .labsys_mop_elements_i_around .labsys_mop_i_fileUpload img.labsys_mop_i_arrow { 

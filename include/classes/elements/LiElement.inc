@@ -260,7 +260,7 @@ class LiElement extends Element{
   */
   private function showFileUpload( $isGettingAnswered=false ){
     global $lng, $url;
-    if (!$this->hasFileUpload) return 'bu'; // Has no upload -> nothing to see here
+    if (!$this->hasFileUpload) return ''; // Has no upload -> nothing to see here
   
     $ret = '<div class="labsys_mop_i_fileUpload">';
     $ret .= '<h3><img src="../syspix/button_save_13x12.gif" width="13" height="12" alt="'.$lng->get('upload').'"> '.$lng->get('fileList').'</h3>'; 
@@ -466,13 +466,13 @@ class LiElement extends Element{
   /**
   * Returns the element's HTML-representation in the way the VIEWER should see it.
   *
-  * @param $_GET['noExSol'] If set the example solution is hidden.
+  * @param $_GET['hideExampleSolutionInThisTab'] If set the example solution is hidden.
   * @param $fullAddress     The element's full address (p.e. C23.c42.p13)
   * @param $paragraph       The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   * @return string          The html code of the element's view view.
   */ 
   function show( $fullAddress, $paragraph="" ){
-    global $usr, $lng, $pge;
+    global $usr, $lng, $pge, $url;
     if (  !$this->isVisible() ){ // not enough rights->no content
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
@@ -485,7 +485,7 @@ class LiElement extends Element{
     if ( !$usr->isOfKind( IS_CORRECTOR ) && !$usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ){ // "normal" user
       $this->loadUserData4( $this->utDBI->getData4( $usr->uid, $this->idx, $usr->currentTeam ) );    // create dataset tith user's team
       $answers = $this->showAnswerData( $fullAddress );
-    }elseif ( $this->hasFileUpload ) $answers = $this->showFileUpload(); // show Upload for editors.
+    }
     
     if ( $usr->isSeeingSomeonesData() ) // correcting someone
       if ( $usr->theSeeingUid() != "all" ){
@@ -513,13 +513,14 @@ class LiElement extends Element{
              "</div>\n".
              
            // example solution
-             ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !isset( $_GET['noExSol'] ) ? 
+             ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !$url->available('hideExampleSolutionInThisTab') ? 
                                    "<div class=\"labsys_mop_i_example_solution\">".
                                    '<!-- example solution -->'."\r\n".
                                    $this->exampleSolution.
                                    '<!-- /example solution -->'."\r\n".
                                    "</div>\n" : ''
                        ).
+             ( $this->hasFileUpload && ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) || $usr->isOfKind( IS_CONTENT_EDITOR ) ) ? $this->showFileUpload() : ''). // show Upload for editors. Others see it in showAnswer.
                         
            // answer + eventually comment + credits
              $answers.

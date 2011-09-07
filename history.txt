@@ -7,7 +7,21 @@ Feature Requests:
  - manage.php: Limit database select to wanted data!
  - CSS on export/ import
  - Register form
+   - register directly into the table with a comment for the course (selectable fields=avail configs lexi up)
+   - create a manage page that shows those regs that are only linked to the ui so far
 
+2011-09-07
+-------------------
+  /include/classes/elements/LlElement.inc
+    reMapUidTeam added update after remapping
+  /include/classes/elements/LiElement.inc
+    showAnswer embedded the fileUpload so that also the credits are shown for editors.
+    Get parameter "hideExampleSolutionInThisTab" hides the example solutions. Added this to the menu line (under logo).
+    
+  /syspix/button_{play, stop, paused}_9x9.gif new/ colored
+  /include/page_layout.inc
+    Added proper url handling temporarily hiding user answer data and example solutions in the menu.
+    
 2011-09-06
 -------------------
  /setup/index.php

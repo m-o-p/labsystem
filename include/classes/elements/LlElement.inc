@@ -1555,8 +1555,12 @@ class LlElement extends Element{
                               $labStatus['labPossibleCredits'],     // $possibleCredits
                               $lng->get("userReMapped")." (".$team.")" );          // $history
     
+    // recheck the prelab... as new team
+    $_POST['REDIRECTTO'] = $url->get('redirectTo');
+    $_POST['IDX'] = $this->idx;
+    $this->updateStatus(); // links automatically
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
+    //header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
   }
   
   /**
