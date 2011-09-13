@@ -362,6 +362,7 @@ checkPrelab         = "PreLab-Fragen korrigieren" ; label of the button...
 closeLab            = "Lab schlie&szlig;en"
 showAllUsersAnswers = "Antworten ALLEr BENUTZER"
 stopSeeingData      = "Ich will keine Daten von anderen mehr sehen." ;; below the user statistic page if the corrector is viewing someones data
+hideExampleSolutionInThisTab = "Musterl&ouml;sungen in diesem Tab ausblenden."
 updateStatus        = "Status aktualisieren"
 statusOfAllLabs     = "Statistik aller Labs."
 ;; used on the all lab overview page:
