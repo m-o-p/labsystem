@@ -90,7 +90,9 @@ class LpElement extends Element{
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
     
     return EM::viewTopPage( $this, $fullAddress ).
-           "<div class=\"labsys_mop_contentArea\">".$this->contents."</div>".
+           "<div class=\"labsys_mop_contentArea\">".
+           "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
+           $this->contents."</div>".
            EM::viewBottomPage( $this, $fullAddress );
   }
   

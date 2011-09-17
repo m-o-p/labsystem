@@ -12,6 +12,11 @@ Feature Requests:
 
 2011-09-13
 -------------------
+  /include/classes/LpElement.inc
+    Added anchor as link when clicking on the view icon at the edit page.
+
+2011-09-13
+-------------------
   /ini/en,de.lng
     Added hideExampleSolutionInThisTab = "Hide the example solutions in this tab."
 
