@@ -213,6 +213,8 @@ class EB{ /* ElementButtons */
   function history ( $history, $address, $sendAsAddHist=false ){
     global $pge, $lng, $url, $cfg;
     
+    if $url->available( 'hideHistory' ) return ''; // temporarily handy for HTML diffs...
+    
     // Shortening for Link (no stylesheet+JavaScript enabled)
     $shrtHistURL = "";
     if ( $sendAsAddHist ){

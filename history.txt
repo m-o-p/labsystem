@@ -14,6 +14,8 @@ Feature Requests:
 -------------------
   /include/classes/LpElement.inc
     Added anchor as link when clicking on the view icon at the edit page.
+  /include/classes/ElementButtons.inc  
+    Added url flag "hideHistory". Temporarily handy for HTML diffs...
 
 2011-09-13
 -------------------
