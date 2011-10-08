@@ -28,7 +28,7 @@
 
 ////////////////////////////// called externally /////////////////////////////////////////
 /**
- * Creates the mapping array out of the array containing the existing element indices as vale.
+ * Creates the mapping array out of the array containing the existing element indices as values.
  *
  * @param array $labElementArray  An array containing all elements to be exported as values.
  * @return                        Acts directly on the given array.
@@ -195,6 +195,7 @@ function removeExampleSolutions(&$HTMLcode){
 function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true, $isImport=false ){
 	reMapIDs($HTMLcode, $labNumber, $IDmappingArray); // Replace the linked internal elements in $HTMLcode identified by address= or #
   if ( !$isImport ){ // Export
+    if ( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) updateUsedClasses($HTMLcode); // collect Style information
     processLocalPix($HTMLcode, $doCopy);
     processLocalFiles($HTMLcode, $doCopy);
   } else { // Import
@@ -286,7 +287,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
    
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
-    $localFileWithPath = preg_replace_callback(  '#(http(s?)://)?'.$_SERVER['SERVER_NAME'].'#', 
+    $localFileWithPath = preg_replace_callback(  '#(http(s)?://)?'.$_SERVER['SERVER_NAME'].'#', 
                                                  create_function(
                                                                 '$matches',
                                                                 'return "..";'
@@ -347,6 +348,31 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     return $destDir.$fileName;
   }
   /** end of functions */
+
+/** The following processors parse the code for links and pictures.
+ *
+ *  The content may be 
+ *   - HTML (prefix "[HTML]")
+ *   - MarkDown (prefix "[MD]")
+ *   - plain (no prefix)
+ */
+ 
+/**
+ * Helper: Apples regex on text and call func on matches.
+ * @param $regEx   To be identified in $text
+ * @param $func    To be executed on $matches (array containing regex matches)
+ * @param &$text   Text to be searched in
+ */
+function applyFunctionOnRegEx( $regEx, $func, &$text ){
+  $text = preg_replace_callback( $regEx,
+                                 create_function(
+                                   '$matches',
+                                   $func
+                                  ),
+                                  $text
+                                );
+}
+
 /** EXPORT
  * Searches $HTMLcode for local images and if $doCopy is set copies them to the server/ directory.
  *
@@ -355,13 +381,28 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
  * @return                           Directly alters $HTMLcode.
  */
 function processLocalPix( &$HTMLcode, $doCopy=true ){
-	$HTMLcode = preg_replace_callback(   '#(?=<img )(.*? src=[\',"])(?!../syspix/|/syspix/)(\S+)([\',"].*>)#',
-                                       create_function(
-                                        '$matches',
-                                        'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];'
-                                       ),
-                                       $HTMLcode
-                                       );
+  if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
+       && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
+       ) return; // nothing to do as it is plaintext
+       
+  if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
+  // MarkDown: Additionally to the <img tag it has
+  // ![Alt text](/path/to/img.jpg)
+  // ![Alt text](/path/to/img.jpg "Optional title")
+  //
+  // The following will NOT BE SUPPORTED for ewxport:
+  // ![Alt text][id]
+  // [id]: url/to/image  "Optional title attribute"
+  	applyFunctionOnRegEx( '#(\!\[.*\]\()(?!../syspix/|/syspix/)(\S+)([\s\S]?(?<!\))\))#',
+                          'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];',
+                           $HTMLcode
+                         );
+  
+    
+	applyFunctionOnRegEx( '#(?=<img )(.*? src=[\',"])(?!../syspix/|/syspix/)(\S+)([\',"].*>)#',
+                        'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];', 
+                        $HTMLcode
+                       );
 }
 /** IMPORT
  * Searches $HTMLcode for images and if copies them to the $cfg->get("importPictureDir") directory.
@@ -371,13 +412,27 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
  */
 function importPix( &$HTMLcode ){
   global $cfg;
-	$HTMLcode = preg_replace_callback(   '#(?=<img )(.*? src=[\',"])(images/\S+)([\',"].*>)#',
-                                       create_function(
-                                        '$matches',
-                                        'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];'
-                                       ),
-                                       $HTMLcode
-                                       );
+  if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
+       && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
+       ) return; // nothing to do as it is plaintext
+       
+  if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
+  // MarkDown: Additionally to the <img tag it has
+  // ![Alt text](/path/to/img.jpg)
+  // ![Alt text](/path/to/img.jpg "Optional title")
+  //
+  // The following will NOT BE SUPPORTED for ewxport:
+  // ![Alt text][id]
+  // [id]: url/to/image  "Optional title attribute"
+  	applyFunctionOnRegEx( '#(\!\[.*\]\()(images/\S+)([\s\S]?(?<!\))\))#',
+                          'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
+                          $HTMLcode
+                         );
+                                       
+	applyFunctionOnRegEx( '#(?=<img )(.*? src=[\',"])(images/\S+)([\',"].*>)#',
+                        'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
+                        $HTMLcode
+                       );
 }
 
 /** EXPORT
@@ -388,13 +443,27 @@ function importPix( &$HTMLcode ){
  * @return                           Directly alters $HTMLcode.
  */
 function processLocalFiles( &$HTMLcode, $doCopy=true ){
-	$HTMLcode = preg_replace_callback(   '#(?=<a )(.*? href=[\',"])(?!../pages/|/pages/|\#)(\S+)([\',"].*>)#',
-                                       create_function(
-                                        '$matches',
-                                        'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];'
-                                       ),
-                                       $HTMLcode
-                                       );
+  if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
+       && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
+       ) return; // nothing to do as it is plaintext
+       
+  if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
+  // MarkDown: Additionally to the <img tag it has
+  // This is [an example](http://example.com/ "Title") inline link.
+  // [This link](http://example.net/) has no title attribute.
+  //
+  // The following will NOT BE SUPPORTED for ewxport:
+  // This is [an example] [id] reference-style link.
+  // [id]: http://example.com/  "Optional Title Here"
+  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(?!../pages/|/pages/|\#)(\S+)([\s\S]?(?<!\))\))#',
+                          'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];',
+                          $HTMLcode
+                         );
+
+	applyFunctionOnRegEx( '#(?=<a )(.*? href=[\',"])(?!../pages/|/pages/|\#)(\S+)([\',"].*>)#',
+                        'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];',
+                        $HTMLcode
+                       );
 }
 /** IMPORT
  * Searches $HTMLcode for referenced files and copies them to the $cfg->get("importFilesDir") directory.
@@ -404,13 +473,27 @@ function processLocalFiles( &$HTMLcode, $doCopy=true ){
  */
 function importFiles( &$HTMLcode ){
   global $cfg;
-	$HTMLcode = preg_replace_callback(   '#(?=<a )(.*? href=[\',"])(data/\S+)([\',"].*>)#',
-                                       create_function(
-                                        '$matches',
-                                        'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];'
-                                       ),
-                                       $HTMLcode
-                                       );
+  if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
+       && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
+       ) return; // nothing to do as it is plaintext
+       
+  if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
+  // MarkDown: Additionally to the <img tag it has
+  // This is [an example](http://example.com/ "Title") inline link.
+  // [This link](http://example.net/) has no title attribute.
+  //
+  // The following will NOT BE SUPPORTED for ewxport:
+  // This is [an example] [id] reference-style link.
+  // [id]: http://example.com/  "Optional Title Here"
+  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(data/\S+)([\s\S]?(?<!\))\))#',
+                          'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
+                          $HTMLcode
+                         );
+                         
+	applyFunctionOnRegEx( '#(?=<a )(.*? href=[\',"])(data/\S+)([\',"].*>)#',
+                        'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
+                        $HTMLcode
+                       );
 }
 
 /**
@@ -523,6 +606,116 @@ function getLabsFromDirectory( $directory ){
     }
   }
   return $retArray;
+}
+
+/////////////////////////////////// Stylesheet functions ////////////////////////////////////////////////////////
+/**
+ * The system has a user stylesheet. There editors can define their own styles.
+ * As the styles belong to the modules we want to export them as well.
+ * This usually makes it necessary to build a dom tree as the styles are nested.
+ *
+ * We will NOT do that. Instead we will limit ourselves only to the last tags and also exclude system tags (without a dot at the begining).
+ * Thus when defined .blalba .lalilu .lolila we will identify <div class="lolila"... as a match independent of any surrounding divs.
+ * This should be sufficient for most cases.
+ */
+ 
+// Content processing
+ 
+/**
+* Collects all styles used in the current $content.
+* Has to be called for each HTML content to be parsed.
+*
+* @param $content  The content to search in.
+* @param global $usedClasses Gets filled.
+*/
+$usedClasses = array();
+function updateUsedClasses( $content ){
+  preg_replace_callback( '#(\s[c,C][l,L][a,A][s,S][s,S]=")(\S*)(")#',
+                         create_function(
+                          '$matches',
+                          'global $usedClasses; if (!in_array($matches[2], $usedClasses)) $usedClasses[] = trim($matches[2]);'
+                         ),
+                         $content
+                         );
+}
+
+
+// StyleSheet processing
+
+/**
+ * Parses the $styleSheetTxt and returns a list of tags $tagArray and definitions $styleDefinitions
+ * @param $styleSheetTxt    The text of the style
+ * @param $tagArray         The array that should get filled with the tags (without comments). Indexed the same way as the definitions.
+ * @param $definitionsArray The array that should get filled with the style definitions. Indexed the same way as the tags.
+ */
+function parseStyleSheet( $styleSheetTxt, &$tagArray, &$definitionsArray ){
+  global $tagNamesTmp, $styleDefinitionsTmp;
+  
+  $tagNamesTmp = array();
+  $styleDefinitionsTmp = array();
+  
+  // 1) Separate $tagNames and $styleDefinitions (preserve everything in here)
+  preg_replace_callback(   '#(((?<!{).)*){.*?}#s',
+                           create_function(
+                            '$matches',
+                            'global $tagNamesTmp, $styleDefinitionsTmp; $tagNamesTmp[] = $matches[1]; $styleDefinitionsTmp[] = $matches[0];' // print_r($matches); echo("<br><br>");'
+                           ),
+                           $styleSheetTxt
+                           );
+     
+  // 2) Remove comments from $tagNames
+  foreach ( $tagNamesTmp as $key=>$value )
+    $tagNamesTmp[$key] = preg_replace_callback(  '#(\/\*.*\*\/)#s',
+                                                 create_function(
+                                                  '$matches',
+                                                  'return "";'
+                                                 ),
+                                                 $value
+                                                 );
+   
+   $tagArray = $tagNamesTmp;
+   $definitionsArray = $styleDefinitionsTmp;
+}
+
+/**
+ * Keep only the last Tag and there only the custom ones (starting with .)
+ * This leeds to a limited search that is restricted to last tags only.
+ * This approach is chosen to prevent from building DOM trees.
+ * @param $tagList  The list of the available tags.
+ * @return $tagStylePointer An array with style name pointing to an array of indices in the definitions.
+ */
+function getTagPointer( $tagList ){
+  $tagStylePointer = array(); // holds a list of pointers to each tag
+  foreach ( $tagList as $indexStyle=>$value ) 
+    foreach( explode(',', $value ) as $value2 ){ //$value2 are all style tags
+      $value2=trim($value2); // remove white spaces
+      $lastSubTagStart = strrpos( $value2, ' ' ); // where does the last subtag start?
+      $lastTag = ( $lastSubTagStart===false ? $value2 : substr( $value2, $lastSubTagStart+1 ) );
+      if ($lastTag[0] == '.'){ // ignore non custom HTML tags   
+        $tagName = substr($lastTag, 1);
+        if ( !isset( $tagStylePointer[$tagName] ) || !in_array( $indexStyle, $tagStylePointer[$tagName] ) ) //already in => do nothing
+          $tagStylePointer[$tagName][] = $indexStyle; // entry exists but pointer has to be added 
+      }
+    }
+  return $tagStylePointer;
+}
+
+/**
+ * Creates a list of the hashed tags ($hashArray) and a mapping array for back matching ($mappingArray).
+ * This is needed to merge the existing with the new stylesheets (prevent double definitions).
+ *
+ * @param $sourceArray  The array with the values to be hashed.
+ * @param $hashArray    The array containing the hashed values.
+ * @param $mappingArray The back mapping array
+ */
+function getTagHashes( $sourceArray, &$hashArray, &$mappingArray ){
+  $hashArray = array();
+  $mappingArray = array();
+  foreach ( $sourceArray as $key=>$value ){
+    $hashedValue = sha1( str_replace( ' ', '', trim($value) ) ); // try to hash something unchangeable...
+    $hashArray[] = $hashedValue;
+    $mappingArray[ $hashedValue ] = $key;
+  } 
 }
 
 ?>

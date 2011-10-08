@@ -27,6 +27,7 @@
 */
 require( "../include/init.inc");
 $id = 'l';
+$userRestriction  = IS_CONTENT_EDITOR;
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
 require( '../include/XIlib.inc' ); // H E L P E R functions
@@ -38,6 +39,14 @@ $pge->visibleFor  = IS_CONTENT_EDITOR;
 $pge->put( EM::manageTop( $id ) );
 $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
+// UserStyleSheet preprocessing (needed for export and import)
+  $tagNames = array(); // holds only the tag names
+  $styleDefinitions = array(); // holds the full definition
+  // both arrays are joined via their numeric index!
+  parseStyleSheet( file_get_contents( $cfg->get('UserStyleSheet') ), 
+                   $tagNames, 
+                   $styleDefinitions );
+
 // do the import/ export
   if (isset($_POST) && count($_POST) > 0){
     foreach ($_POST as $key => $value){
@@ -46,7 +55,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       if ( $value == 'IMPORT' ){ // doImport
         $subDir = base64_decode( $key ); // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(
         $GLOBALS['exportUID'] = $subDir;
-        
+     
       // load information about the lab
         $labToImport = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
         $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/l0000002.txt') );
@@ -70,7 +79,38 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           
           $pge->put( persistElement( $nextElement, '', true ) );
         } // /foreach
-
+    
+      // Integrate css/user_styles.css into the current user stylesheet.
+        if (file_exists( $cfg->get('exportImportDir').$subDir.'/css/user_styles.css' ) ){
+          // load from the user_styles.css import
+          $importTagNames = array(); // holds only the tag names
+          $importStyleDefinitions = array(); // holds the full definition
+          // both arrays are joined via their numeric index!
+          parseStyleSheet( file_get_contents($cfg->get('exportImportDir').$subDir.'/css/user_styles.css' ), 
+                           $importTagNames, 
+                           $importStyleDefinitions );
+          
+          $existingStylesHashed = array();
+          $importStylesHashed = array();
+          $importStyleMapping = array();
+          // hash the existing styles
+          getTagHashes( $tagNames, $existingStylesHashed, $importStyleMapping /*dummy*/ ); // hash existing
+          // hash the possibly new styles to be imported
+          getTagHashes( $importTagNames, $importStylesHashed, $importStyleMapping ); // hash the ones to be imported
+  
+          // identify all tags that are not already in the user stylesheet
+          $notAlreadyThereTagsHashes = array_diff( $importStylesHashed, $existingStylesHashed );
+                 
+          $newStyles = array();
+          foreach( $notAlreadyThereTagsHashes as $values )
+            $newStyles[] = $importStyleDefinitions[ $importStyleMapping[$values] ];
+          // add the data to the file
+          if ( count($newStyles) > 0 ){
+            array_unshift( $newStyles, "\n\n".'/* Following styles imported by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r').' */' );
+            file_put_contents( $cfg->get( "UserStyleSheet" ), join($newStyles), FILE_APPEND | LOCK_EX);
+          }
+        }
+      
         $externallyLinked = $cfg->get('exportImportDir').$subDir.'/data/externallyLinked.txt';
         if ( file_exists( $externallyLinked ) )
           $pge->put( '<pre>'.$externallyLinked.':'."\r\n".file_get_contents( $externallyLinked ).'</pre>' );
@@ -111,20 +151,38 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $GLOBALS['externallyLinkedElements'] = array();
         fileWrite( 'images/readme.txt', 'In this directory the images are stored.', $GLOBALS['exportUID'] );
         fileWrite( 'data/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
+        fileWrite( 'css/readme.txt', 'In this directory the style sheets for the preview and the user_styles.css for import are stored.', $GLOBALS['exportUID'] );
         
     // get the HTML PREVIEW
         // Remove user rights 
         $oldUsrRights = $usr->userRights;
         $usr->userRights -= IS_CONTENT_EDITOR;
-        $htmlPreviewLab = $labToExport->show( 'l'.$key.'.all' );
+        $htmlPreviewLab = '[HTML]'.$labToExport->show( 'l'.$key.'.all' );
         $usr->userRights = $oldUsrRights;
       // remove the example solutions and relocate the embedded objects
         removeExampleSolutions($htmlPreviewLab);
       // relocate linked objects like images, linked files, etc.
         processContent($htmlPreviewLab, $key, $labElementArray, false);
+        $htmlPreviewLab = substr( $htmlPreviewLab, 6 ); // remove the [HTML] again as it is only needed for right processing.
+      // relocate syspix to global server
+        $htmlPreviewLab = str_replace( '../syspix/', 'http://labsystem.m-o-p.de/syspix/', $htmlPreviewLab );
+        
         $pge->put(  '<div class="labsys_mop_elements_menu_l">preview.html'.
                     ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                     "</div>\r\n" );
+      // copy the system stylesheets for preview
+        $file2importWithPath = $cfg->get('SystemStyleSheet');
+        copy( $file2importWithPath, 
+              $cfg->get('exportImportDir').$labToExport->uniqueID.'/css/system.css' ) or trigger_error("Can't copy file ".$file2copyWithPath, E_USER_WARNING);
+        if ( $cfg->get('SysOverridingSheet') != '' ){
+          $file2importWithPath = $cfg->get('SysOverridingSheet');
+          copy( $file2importWithPath, 
+                $cfg->get('exportImportDir').$labToExport->uniqueID.'/css/system_override.css' ) or trigger_error("Can't copy file ".$file2copyWithPath, E_USER_WARNING);
+        }
+        $file2importWithPath = $cfg->get('PrintStyleSheet');
+        copy( $file2importWithPath, 
+              $cfg->get('exportImportDir').$labToExport->uniqueID.'/css/print.css' ) or trigger_error("Can't copy file ".$file2copyWithPath, E_USER_WARNING);
+      // user css gets processed below with the export as only used styles are exported        
         fileWrite( 'preview.html', 
                    '
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -133,12 +191,13 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <meta http-equiv="Content-Language" content="en">
     <meta name="generator" content="labsystem.m-o-p.de">
-    <link rel="stylesheet" type="text/css" href="../css/sys/labsys_mop_basic.css">         
-    <link rel="stylesheet" type="text/css" href="../css/labsys_user_style_ilab2_ss10.css">
-    <link rel="stylesheet" type="text/css" href="../css/sys/labsys_mop_print_theme.css" media="print">
-    <link rel="shortcut icon" href="../syspix/favicon.ico">
-    <script src="../pages/scripts.js" type="text/javascript" language="javascript"></script>
-    <TITLE>labs - administration [mop@ilab2 ws10]</TITLE>
+    <link rel="stylesheet" type="text/css" href="css/system.css">
+    '.( $cfg->get('SysOverridingSheet') != '' ? '<link rel="stylesheet" type="text/css" href="css/system_override.css">' : '' ).
+    '<link rel="stylesheet" type="text/css" href="css/user_styles.css">
+    <link rel="stylesheet" type="text/css" href="css/print.css" media="print">
+    <link rel="shortcut icon" href="http://labsystem.m-o-p.de/syspix/favicon.ico">
+    <script src="http://labsystem.m-o-p.de/syspix/pages/scripts.js" type="text/javascript" language="javascript"></script>
+    <TITLE>'.$labToExport->title.'</TITLE>
   </HEAD><BODY><div class="labsys_mop_content">
                    '.
                    $htmlPreviewLab.
@@ -162,6 +221,27 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                   'The following external ressources are linked in this lab:'."\n".
                   implode( "\n", $GLOBALS['externallyLinkedElements'] ), 
                   $GLOBALS['exportUID'] );
+      $pge->put(  '<div class="labsys_mop_elements_menu_l">data/externallyLinked.txt'.
+                  ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
+                  "</div>\r\n" );
+   // StyleSheet processing 
+//      $styleDefinitions = array(); // holds the full definition
+
+      $tagStylePointer = getTagPointer( $tagNames ); // Tag => array( indices from $styleDefinitions );
+      
+//      $stylesToExport = array(); // gets filled now
+      foreach ( $GLOBALS['usedClasses'] as $value )
+        if ( isset( $tagStylePointer[$value] ) )
+          foreach ( $tagStylePointer[$value] as $index )
+            $stylesToExport[] = $styleDefinitions[ $index ];
+                 
+      fileWrite(  'css/user_styles.css', 
+                  implode( "\n", $stylesToExport ), 
+                  $GLOBALS['exportUID'] );
+      $pge->put(  '<div class="labsys_mop_elements_menu_l">user_styles.css'.
+                  ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
+                  "</div>\r\n" );
+      
       } // /doExport
     }
   } // end of do the import

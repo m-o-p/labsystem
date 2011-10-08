@@ -9,7 +9,27 @@ Feature Requests:
  - Register form
    - register directly into the table with a comment for the course (selectable fields=avail configs lexi up)
    - create a manage page that shows those regs that are only linked to the ui so far
+2011-10-08
+-------------------
+  /include/XIlib.inc
+  /pages/XIport.php
+    Added Export and Import for Stylesheet info from the user style:
+      - loads the $cfg->get('UserStyleSheet')
+      - parses it extracting the tags
+      - only takes into regard the last tags to prevent from building a dom tree
+      - when importing only imports non existing styles
+    Fixed stylesheet issues for the previes.html.
+    Included picture links to labsystem.m-o-p.de into preview.html so that it should be fully usable now.
 
+2011-10-07
+-------------------
+  /include/XIlib.inc
+    Added support for MarkDown links and pictures when exporting/ importing.
+    An alternative would be to convert Markdown to HTML when exporting. Did not chose this path for readability.
+  /css/sys/labsys_mop_basic.css
+    CAdded "inline" for _m_question p as MarkDown uses this style...
+  
+    
 2011-09-13
 -------------------
   /include/classes/LpElement.inc

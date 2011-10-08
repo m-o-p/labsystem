@@ -712,6 +712,9 @@ fieldset{
                     border-bottom: 1px solid #eeeeee;
                     padding: 5px 5px 5px 5px;
   }
+  .labsys_mop_m_question p { /* for MarkDown ... */
+                    display: inline;
+  }
   .labsys_mop_m_answer_explanation{
                     font-size: 0.7em;
                     border-top: solid 1px #eeeeee;
@@ -786,7 +789,7 @@ fieldset{
   .labsys_mop_i_question{
                     padding: 5px 5px 5px 5px;
   }
-  .labsys_mop_i_question p {
+  .labsys_mop_i_question p {  /* for MarkDown ... */
                     display: inline;
   }
   .labsys_mop_i_credits{
