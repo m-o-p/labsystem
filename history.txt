@@ -9,6 +9,7 @@ Feature Requests:
  - Register form
    - register directly into the table with a comment for the course (selectable fields=avail configs lexi up)
    - create a manage page that shows those regs that are only linked to the ui so far
+   
 2011-10-08
 -------------------
   /include/XIlib.inc
@@ -20,6 +21,10 @@ Feature Requests:
       - when importing only imports non existing styles
     Fixed stylesheet issues for the previes.html.
     Included picture links to labsystem.m-o-p.de into preview.html so that it should be fully usable now.
+    Added user output when exporting and importing styles so that the user knows what is done.
+    Changed the access rights to the page (IS_CONTENT_EDITOR needed now).
+  /php/saveFile.php
+    Removed warning popup when CSStidy has nothing to say.
 
 2011-10-07
 -------------------

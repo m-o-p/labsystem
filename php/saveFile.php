@@ -71,7 +71,7 @@ if (($_POST['FILENAME'] == $cfg->get("UserStyleSheet")) && include_once( '../plu
   foreach ( $css->log as $logEntry ){
     $logText .= '  '.$logEntry[0]['t'].': '.$logEntry[0]['m']."\n";
   }
-  $url->put( "sysalert=".urlencode( $logText ) );
+  if ( $logText != 'CSSTidy: ' ) $url->put( "sysalert=".urlencode( $logText ) );
   $_POST['FILECONTENT'] = $css->print->plain();
 }
 
