@@ -127,6 +127,7 @@ MnuEntryUaMyPW      = "myPassword"
 MnuEntryUaUnPwRem   = "getPassword"
 MnuEntryUaManageUsr = "manage users"
 MnuEntryUaCreateUsr = "create users"
+MnuEntryUaUsrRights = "user rights"
 
 ; choseSysLng.php
 MnuEntrySysLng      = "system language"
@@ -134,6 +135,16 @@ TitleSysLngSelect   = "System language select"
 AvailableLng        = "Click on one of the following languages"
 NoteChooseSysLng    = "Click on the country code and the system is runing with the localized strings. (This does NOT affect the user content but only the system itself)."
 NoteCreateOwnLng    = "Your language is missing? No problem, simply copy the following text into a file called [yourCountryCode].lng, translate the strings and store it in the /ini/ directory. Then it will be available for selection on this page. Please provide your language file to others by sending it to me (contact on the bottom of this page). Thanks!"
+
+; s
+MnuEntrySchedule    = "schedule"
+
+; edit
+MnuTitleEdit        = "edit"
+MnuEntryElements    = "elements"
+MnuEntryStyleSheet  = "edit css"
+MnuEntryXIport      = "import | export"
+MnuEntryEditMenu    = "edit menu"
 
 ;; sysinfos ******************************************************************************************
 DataHasBeenSaved    = "The data has been saved."
@@ -249,7 +260,6 @@ orderPrelabFin      = "Order the users finished the prelab"
 ;s
 start               = "start" ; used in the sorter (manage schedules)
 stop                = "stop"
-
 
 ;; manage users
 foreName            = "foreName"
@@ -458,3 +468,6 @@ yesIconfirm         = "Yes, Iam sure, do it!"
 uaUnPwRemSubject    = "Username/ Password reminder from __SYSTEMTITLE__" ;; Subject of the reminding mail
 uaUnPwRemMailText   = "Hello,\r\nsomeone requested a reminding mail with a new password for you account at the __SYSTEMTITLE__.\r\n\r\nFrom now on you can only logon with this new password.\r\nYou can change the password as well as your username on the website..."
 uaNewUsrsSubscript  = "The new users will have these subscriptions."
+
+;; setup ******************************************************************************************
+fieldName           = "directory" ; for legend in setup

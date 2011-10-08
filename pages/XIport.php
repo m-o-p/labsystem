@@ -33,7 +33,7 @@ require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 require( '../include/XIlib.inc' ); // H E L P E R functions
 
 $pge->title       = $lng->get( strtolower($id)."ManageTitle" );
-$pge->matchingMenu= $lng->get( strtolower($id)."ManageMnuEntry" );
+$pge->matchingMenu= $lng->get( "MnuEntryXIport" );
 $pge->visibleFor  = IS_CONTENT_EDITOR;
 
 $pge->put( EM::manageTop( $id ) );

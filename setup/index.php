@@ -474,6 +474,8 @@ if ( !file_exists( $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles") 
       ) echo("failed to copy user roles...<br>\n");
   else  echo("user roles copied...<br>\n");
   
+/**************************** labs database ****************************/
+say_title( 'style sheets' );
 /* If necessary create the userStyleSheet-file */
 if ( !file_exists( $cfg->get("UserStyleSheet") ) )
   if (!copy(  '../css/sys/labsys_user_style_proto.css', 
@@ -499,7 +501,7 @@ say_toptitle( 'Checking directories...' ); /***********************************/
 */
 function checkDirectoryWritable( $configFieldName ){
   global $cfg;
-  $directory = $cfg->get($configFieldName);
+  $directory = dirname($cfg->get($configFieldName));
   echo( '<br><br><span style="color: #ffff99">['.$configFieldName.': '.$cfg->get($configFieldName).']</span> ' );
   if (!file_exists($directory))
     echo('not existing. Creating it... '.(mkdir($directory, 0755, true) ? '<span style="color: #77ff77;">o.k.</span>' : '<span style="color: #ff7777;">failed!</span>' ).'<br>' );
@@ -521,6 +523,8 @@ checkDirectoryWritable('exportImportDir');
 checkDirectoryWritable('importPictureDir');
 checkDirectoryWritable('importFilesDir');
 
+checkDirectoryWritable('UserStyleSheet');
+
 say_title('Summary expected Protection of Directories and Files');
 echo('<span style="color: #ff5555">Please make sure the following access policies are met.</span><br>');
 /*
@@ -537,9 +541,9 @@ echo( '<pre><span style="color: #888888">' );
 fileNote( 'fieldName', 'access policy</span>' );
 fileNote( 'UploadDirectory', 'php rw, www <span style="color: #ff5555">deny</span>' );
 fileNote( 'exportImportDir', 'php rw, www <span style="color: #ff5555">deny</span>' );
-fileNote( 'UserStyleSheet',  'php rw, www <span style="color: #ff5555">deny</span>' );
 fileNote( 'SystemResourcePath', 'php r , www <span style="color: #ff5555">deny</span>' );
 fileNote( 'SystemMenuFile',  'php rw, www <span style="color: #ff5555">deny</span>' );
+fileNote( 'UserStyleSheet',  'php rw, www r' );
 fileNote( 'importPictureDir','php rw, www r' );
 fileNote( 'importFilesDir',  'php rw, www r' );
 echo( '</pre>' );

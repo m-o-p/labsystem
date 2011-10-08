@@ -32,7 +32,7 @@ require( "../include/init.inc" );
 
 $file2edit        = $cfg->get("UserStyleSheet");
 $userRestriction  = IS_CONTENT_EDITOR;
-$matchingMenu     = "stylesheet"; /* must be the same as in the menu file fo rhighlighting! */
+$matchingMenu     = $lng->get( "MnuEntryStyleSheet" ); /* must be the same as in the menu file fo rhighlighting! */
 
 require( "pgeStdFileEdit.inc" );
 

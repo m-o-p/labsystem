@@ -26,6 +26,24 @@ Feature Requests:
   /php/saveFile.php
     Removed warning popup when CSStidy has nothing to say.
 
+  /include/menu.inc
+    Added schedule to LogIN menu.
+    
+  /ini/{de,en}.lng
+    Added Strings for
+      - MnuEntrySchedule    = "schedule"
+      - MnuEntryUaUsrRights = "user rights"
+      - MnuTitleEdit        = "edit"
+      - MnuEntryElements    = "elements"
+      - MnuEntryStyleSheet  = "edit css"
+      - MnuEntryXIport      = "import | export"
+      - MnuEntryEditMenu    = "edit menu"
+      
+   All menus are now auto generated.
+   
+   /setup/index.php
+     Copies prototypes of user roles, user stylesheet and menu if the one given in the ini file are not present (= init).
+      
 2011-10-07
 -------------------
   /include/XIlib.inc

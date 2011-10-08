@@ -127,6 +127,7 @@ MnuEntryUaMyPW      = "meinPasswort"
 MnuEntryUaUnPwRem   = "Passwort vergessen?"
 MnuEntryUaManageUsr = "Benutzerverwaltung"
 MnuEntryUaCreateUsr = "erstelle Benutzer"
+MnuEntryUaUsrRights = "Nutzerrechte"
 
 ; choseSysLng.php
 MnuEntrySysLng      = "Systemsprache"
@@ -134,6 +135,16 @@ TitleSysLngSelect   = "Systemsprachauswahl"
 AvailableLng        = "Folgende Sprachen stehen zur Verfügung"
 NoteChooseSysLng    = "Klicken Sie auf den gewünschten Ländercode und das System läuft in der entsprechenden Sprache. (Dies gilt nur für das System, nicht für die Inhalte.)"
 NoteCreateOwnLng    = "Ihre Sprache fehlt? Kein Problem. Kopieren Sie einfach die folgenden Name = Wert Paare in eine Textdatei mit dem Namen [Ländercode].lng, übersetzen Sie die Strings in die gewünschte Sprache und speichern Sie diese im Systemverzeichnis des labsystems. Ab dann steht die Sprache hier zur Verfügung. Bitte stellen Sie die Sprachdatei der Community zur Verfügung. Kontaktdaten unten im System. Danke!"
+
+; s
+MnuEntrySchedule    = "Zeitplan"
+
+; edit
+MnuTitleEdit        = "Editieren"
+MnuEntryElements    = "Elemente"
+MnuEntryStyleSheet  = "CSS editieren"
+MnuEntryXIport      = "Import | Export"
+MnuEntryEditMenu    = "Menu editieren"
 
 ;; sysinfos ******************************************************************************************
 DataHasBeenSaved    = "Die Daten wurden gespeichert."
@@ -458,3 +469,6 @@ yesIconfirm         = "Ja, ich bin mir sicher!"
 uaUnPwRemSubject    = "Benutzername/ Passwort Erinnerung von __SYSTEMTITLE__" ;; Subject of the reminding mail
 uaUnPwRemMailText   = "Hallo,\r\njemand hat eine Erinnerungsmail mit einem neuen Passwort f&uuml;r Ihren Zugang zum  __SYSTEMTITLE__ angefordert.\r\n\r\nSie k&ouml;nnen sich nur noch mit Ihrem neuen Passwort einloggen.\r\Benutzernamen und Passwort k&ouml;nnen Sie auf der Webseite &auml;ndern..."
 uaNewUsrsSubscript  = "Die neu angelegten Benutzer werden diesen Kursen zugeordnet."
+
+;; setup ******************************************************************************************
+fieldName           = "Verzeichnis" ; Legende im Setup

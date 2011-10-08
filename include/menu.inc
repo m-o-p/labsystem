@@ -55,6 +55,7 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
                                 $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogOut" ), "../php/logout.php" ).
                                                  $myMenu->entry( $lng->get( "MnuEntryMyRights" ), "../pages/myRights.php" ).
                                                  $myMenu->entry( $lng->get( "MnuEntryMyStatistics" ), "../pages/view.php?address=l2.ALLlabStatus" ).
+                                                 ( !$usr->isOfKind( IS_USER_RIGHTS_EDITOR ) ? '' : $myMenu->entry( $lng->get( "MnuEntryUaUsrRights" ), "../pages/manageUsers.php" ) ).
                                                  $myMenu->spacer().
                                                  $myMenu->entry( $lng->get( "MnuEntrySendMail" ), "../pages/mailForm.php" );
                               else
@@ -83,7 +84,20 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
       if (  !in_array( '!l'.$nextData['num'], $value ) ) // do not add twice...
         array_push( $value, '!l'.$nextData['num'] );
     }
+    
+    array_push( $value, '' ); // spacer
+    $value[$lng->get( "MnuEntrySchedule" )]="../pages/view.php?address=s1"; // schedule
   }
+
+  if ( $key == "edit_menu" && $usr->isOfKind( IS_CONTENT_EDITOR )){
+                            $key = $lng->get( 'MnuTitleEdit' );
+                            $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryElements" ), "../pages/view.php?address=p2" ).
+                                             $myMenu->entry( $lng->get( "MnuEntryStyleSheet" ), "../pages/editUsrCss.php" ).
+                                             $myMenu->spacer().
+                                             $myMenu->entry( $lng->get( "MnuEntryEditMenu" ), "../pages/editMenu.php" ).
+                                             $myMenu->spacer().
+                                             $myMenu->entry( $lng->get( "MnuEntryXIport" ), "../pages/XIport.php" );
+                           }
 
   // Parse the submenu:
   foreach ( $value as $key_ => $value_ ){ // Parse the section and make the menu entries
