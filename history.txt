@@ -9,7 +9,21 @@ Feature Requests:
  - Register form
    - register directly into the table with a comment for the course (selectable fields=avail configs lexi up)
    - create a manage page that shows those regs that are only linked to the ui so far
-   
+ - Edit page for new semesters config
+ 
+2011-10-09
+-------------------
+  /include/classes/elements/LiDBInterface.inc
+  /include/classes/elements/LcDBInterface.inc
+  /include/classes/elements/LpDBInterface.inc
+  /include/classes/elements/LmDBInterface.inc
+  /include/classes/elements/LlDBInterface.inc
+  /include/classes/elements/LsDBInterface.inc
+    Changed the setData function history. "]" as string[0] indicates the import now and 
+    prevents adding the current user line so that the history is the original one.
+  /include/XIlib.inc
+    Added code to add the character ] to the history.
+
 2011-10-08
 -------------------
   /include/XIlib.inc

@@ -155,8 +155,11 @@ class LlDBInterface {
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     ( $eL->history != '' ? 
-                                        "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eL->history."' )" : // if the program changed the history: take it (done when importing...)
+                                     ( $eL->history != '' ?
+                                        ( $eL->history[0] == ']' ?
+                                            'history=\''.substr( $eL->history, 1 )."'" : // import... -> no stamping please
+                                            "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eL->history."' )" )
+                                        : // if the program changed the history: take it
                                         "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )"
                                      ), 
                                      $this->myTable, 

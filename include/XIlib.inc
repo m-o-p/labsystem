@@ -92,6 +92,7 @@ function persistElement( &$element, $labUID, $isImport=false ){
            ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
            "</div>\r\n";
   } else { // IMPORT
+    $element->history = ']'.$element->history; // add sign for indicating not to stamp data
     $GLOBALS[ $element->elementId."DBI" ]->setData( $element );
   	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
   	htmlentities($element->title).

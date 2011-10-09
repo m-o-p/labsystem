@@ -142,7 +142,10 @@ class LmDBInterface {
     else
       return $this->myDBC->mkUpdIns( $toSet.
                                      ( $eM->history != '' ? 
-                                        "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eM->history."' )" : // if the program changed the history: take it (done when importing...)
+                                        ( $eM->history[0] == ']' ?
+                                            'history=\''.substr( $eM->history, 1 )."'" : // import... -> no stamping please
+                                            "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eM->history."' )" ) 
+                                        : // if the program changed the history: take it
                                         "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )"
                                      ), 
                                      $this->myTable, 

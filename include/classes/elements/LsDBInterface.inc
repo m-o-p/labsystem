@@ -190,7 +190,10 @@ class LsDBInterface {
     else
       return $this->myDBC->mkUpdIns( $toSet.
                                      ( $eS->history != '' ? 
-                                        "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eS->history."' )" : // if the program changed the history: take it (done when importing...)
+                                        ( $eS->history[0] == ']' ?
+                                            'history=\''.substr( $eS->history, 1 )."'" : // import... -> no stamping please
+                                            "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eS->history."' )" )
+                                        : // if the program changed the history: take it
                                         "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )"
                                      ), 
                                      $this->myTable, 
