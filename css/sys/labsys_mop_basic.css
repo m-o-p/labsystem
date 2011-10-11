@@ -698,6 +698,12 @@ fieldset{
                     /* background-color is set in LlElement.inc */
                     /* width is set in LlElement.inc */
   }
+  
+  .labsys_mop_l_row .labsys_mop_l_file_description { 
+                  font-size: 0.7em; 
+                  display: inline;
+                  background-color: #ffffaa;
+  } 
 
 /* ------ additional styles for the m element ------ */  
   .labsys_mop_elements_m_around{ /* put around the m element */
@@ -908,6 +914,7 @@ fieldset{
                   font-size: 0.7em; 
                   display: inline;
   } 
+  
   .labsys_mop_elements_i_around .labsys_mop_i_fileUpload h3{
                   font-weight: normal;
                   font-size: 0.9em;

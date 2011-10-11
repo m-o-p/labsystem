@@ -318,6 +318,8 @@ authors             = "authors"
 abstract            = "abstract"
 exportImport        = "export/ import"          ;; Header for the fieldset about export/ import
 uniqueID            = "unique ID"
+exportFollowingLabs = "Export the following labs..."
+importFollowingLabs = "Import the following labs..."
 
 ;s
 scheduleFor         = "schedule is for"   ;; legend on top of the selector

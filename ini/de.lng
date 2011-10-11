@@ -319,6 +319,8 @@ authors             = "Autoren"
 abstract            = "Kurzbeschreibung"
 exportImport        = "Export/ Import"          ;; Header for the fieldset about export/ import
 uniqueID            = "Eindeutiger Bezeichner"
+exportFollowingLabs = "Folgende labs EXportieren..."
+importFollowingLabs = "Folgende labs IMportieren..."
 
 ;s
 scheduleFor         = "Der Schedule gilt f&uuml;r"   ;; legend on top of the selector

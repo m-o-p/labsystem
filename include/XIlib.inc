@@ -592,6 +592,7 @@ Fill $exportContent and write it at the bottom once!
  * @return array            The array containing the l-Elements as values.
  */
 function getLabsFromDirectory( $directory ){
+  global $lng;
   $retArray = array();
   if (!is_dir( $directory )) return $retArray;
 	$subDirs = scandir( $directory );
@@ -601,6 +602,7 @@ function getLabsFromDirectory( $directory ){
     if( file_exists($file_name) ){
       $myLelement = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
       $myLelement->initFromSerialized( file_get_contents( $file_name ) );
+      $myLelement->title .= '&nbsp;<div class="labsys_mop_l_file_description">&nbsp;'.date ( $lng->get("DateFormat"), filemtime($file_name)).'&nbsp;</div>&nbsp;';
       $myLelement->idx = base64_encode( $subDirs[$i] ); // set the base64_encode( directory ) as ID for importable directories
       // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(
       array_push( $retArray, $myLelement );

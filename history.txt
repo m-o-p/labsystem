@@ -5,12 +5,22 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
- - CSS on export/ import
  - Register form
    - register directly into the table with a comment for the course (selectable fields=avail configs lexi up)
    - create a manage page that shows those regs that are only linked to the ui so far
  - Edit page for new semesters config
- 
+
+2011-10-11
+-------------------
+  /include/XIlib.inc
+  /pages/XIport.php
+    Added headlines to the export and the import part on the xiport page.
+    Added the filedate for the import labs on the overview.
+  /css/sys/labsys_mop_basic.css
+    Added style for .labsys_mop_l_row .labsys_mop_l_file_description
+  /ini/{de,en}.lng
+    {ex, im}portFollowingLabs
+  
 2011-10-09
 -------------------
   /include/classes/elements/LiDBInterface.inc
