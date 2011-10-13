@@ -131,7 +131,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
    }
    if ( $lng->get('thankYouForRegisteringNote') != '' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get('thankYouForRegisteringNote')."</div>\n" );
    
-   if ( $cfg->doesExist('thankYouForRegisteringNote') && ($cfg->get('registerNote') != '') ) $pge->put( "<div class=\"labsys_mop_note\">\n".$cfg->get('thankYouForRegisteringNote').( isset($newPW) ? $newPW : '' )."</div>\n" );
+   if ( $cfg->doesExist('thankYouForRegisteringNote') && ($cfg->get('registerNote') != '') ) $pge->put( "<div class=\"labsys_mop_note\">\n".$cfg->get('thankYouForRegisteringNote')."</div>\n" );
    
     // send after register mail
     mail( $_POST['EMAIL'],

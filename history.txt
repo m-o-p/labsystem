@@ -12,8 +12,21 @@ Feature Requests:
  - Edit page for new semesters config
  
  - Test new config files
- - Add info for registering
+ - Fields in setup adden!
 
+2011-10-13
+-------------------
+  /ini/{en,de}.lng
+    Added field description for registration "intendedDegree"
+  /index.php
+    Added url rewriting for address=accessableLabs & address=register
+  /pages/manageUsers.php
+    View is now also stable after saving.
+    
+  /include/classes/DBInterfaceUserRights.inc
+    Changed team numbering for new user setup. Now every user becomes his own team number.
+    The number is built: $cfg->get("DefaultAuthUserTeam")+$newIDX (=idx the user gets in the workingDB)
+    
 2011-10-12
 -------------------
   /setup/index.php
@@ -22,6 +35,10 @@ Feature Requests:
     Changed the ini files to use the include statement.
   /pages/register.php
     Added form to register for the current course.
+    
+    Nice feature: All fields you add to your userDB will automatically be queried!
+                  You can even add customized explanations in your language file by just naming the String like the DB field.
+    
   /ini/{en,de}.lng
     titleRegister, MnuEntryRegister, 
   /include/menu.inc

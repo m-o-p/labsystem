@@ -207,9 +207,13 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                  '.$cfg->get("UserDBField_name").' char(255) NOT NULL,
                  '.$cfg->get("UserDBField_forename").' char(255) NOT NULL,
                  '.$cfg->get("UserDBField_email").' char(255) NOT NULL,
+                 `desiredTeamPartner` varchar(255) NOT NULL,
+                 `reasonToParticipate` text NOT NULL,
                  '.$cfg->get("UserDBField_uid").' char(32) NOT NULL UNIQUE,
+                 `registerFor` varchar(255) NOT NULL
                  '.$cfg->get("User_courseID").' tinyint(1) NOT NULL default \'1\',
                  labsys_mop_last_change timestamp default NOW(),
+                 `_unassigned` tinyint(1) NOT NULL,
                  PRIMARY KEY  ( '.$cfg->get("UserDBField_username").' ),
                  INDEX( '.$cfg->get("UserDBField_username").' )
                  )';

@@ -258,6 +258,7 @@ thankYouForRegisteringNote = "Danke, dass Sie sich registriert haben!"
 desiredTeamPartner  = "Falls Sie bereits wissen, mit wem Sie ein Team bilden m&ouml;chten geben Sie Ihren gew&uuml;nschten Teampartner bitte hier an."
 reasonToParticipate = "Bitte nennen Sie uns einen Grund, warum Sie denken, besonders geeignet f&uuml;r den Kurs zu sein."
 placesLeft          = "Pl&auml;tze frei"
+intendedDegree      = "Welches ist Ihr angestrebter n&auml;chster Abschluss? (Bachelor, Master, Diplom, ...)"
 
 ;; names for the order by selector ********************************************************************
 restrictTo          = "beschr&auml;nkt auf "

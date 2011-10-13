@@ -50,13 +50,23 @@ class DBInterfaceUserRights {
   *                 "history" => string );
   */
   function getData4( $uid ){
-    global $cfg, $lng;
+    global $usr, $cfg, $lng;
     $result = $this->myDBC->mkSelect( "rights, currentTeam, history", $this->myTable, "uid='".$uid."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       /* no dataset found => create a new one with the default values */
+      // each new member should get his own team number
+      // therefore we insert the record and add the index to the given start index
+      $rights = $cfg->get("DefaultAuthUserRights");
+      $currentTeam = $cfg->get("DefaultAuthUserTeam");
+      $toSet = "";
+      $toSet = ( $rights != "" ?       "rights='".$rights."', " : '' ).
+               ( $currentTeam != "" ?  "currentTeam='".$currentTeam."', "  : '' ).
+               "uid='".$uid."', ".
+               "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' (rights: '.$rights.'; team: '.$currentTeam.') '."\\n', ".$this->myTable.".history )";
+      $newIDX = $this->myDBC->mkInsertReturnIDX( $toSet, 'user_rights' );
       $this->setData4( $uid, $cfg->get("DefaultAuthUserRights"), $cfg->get("DefaultAuthUserTeam"), $lng->get("dataSetCreated") );
       return Array( "rights"      => $cfg->get("DefaultAuthUserRights"),
-                    "currentTeam" => $cfg->get("DefaultAuthUserTeam"), 
+                    "currentTeam" => $cfg->get("DefaultAuthUserTeam")+$newIDX, 
                     "history"     => "");
     }else
       return Array( "rights"      => $data['rights'],

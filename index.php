@@ -29,8 +29,9 @@
   if ( isset( $_GET['address'] ) ) $address = $_GET['address']; // address provided
    else $address = 'p3'; // use this (startpage is 3) as defaul value
 
-
-  header ('Location: pages/view.php?address='.$address.'&config='.$config);
+  if ($address == 'accessableLabs') header ('Location: pages/accessableLabs.php?config='.$config);
+  else if ($address == 'register') header ('Location: pages/register.php?config='.$config);
+  else header ('Location: pages/view.php?address='.$address.'&config='.$config);
 
 /*
  * You might create other forwaders to other pages:

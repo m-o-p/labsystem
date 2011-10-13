@@ -153,7 +153,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
 
 //saving
   $pge->put('
-              <input type="hidden" name="REDIRECTTO" value="'.urlencode($_SERVER['REQUEST_URI']).'">
+              <input type="hidden" name="REDIRECTTO" value="'.$url->rawLink2( $_SERVER['PHP_SELF'].( isset($startFrom) ? '?startFrom='.$startFrom.'&frameSize='.$frameSize : '' ) ).'">
               <input type="hidden" name="SESSION_ID" value="'.session_id().'">
               <input TABINDEX="'.$pge->nextTab++.'" type="submit" class="labsys_mop_input" value="'.$lng->get("save").'"  accesskey="s" onclick="isDirty=false">
               

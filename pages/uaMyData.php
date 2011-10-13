@@ -86,7 +86,8 @@ $pge->visibleFor   = IS_USER;
                                  $cfg->get('UserDBField_email'),
                                  $cfg->get('UserDBField_uid'),
                                  $cfg->get('UserDBField_password'),
-                                 'labsys_mop_last_change'
+                                 'labsys_mop_last_change',
+                                 'registerFor'
                                 );
      foreach ( $data as $key => $value )
       if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ) /* do nothing */;
