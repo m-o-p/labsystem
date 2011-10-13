@@ -41,6 +41,19 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 // additional note
   if ( $lng->get( strtolower($id)."ManageNote" ) != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get( strtolower($id)."ManageNote" )."</div>\n" );
   
+// Multipageresult-Filtering Init $_GET as it is used by the sorter...
+      if ( isset( $_GET['startFrom'] ) &&
+           is_numeric ( $_GET['startFrom'] ) &&
+           ($_GET['startFrom'] > 0)
+          ) $startFrom = $_GET['startFrom']; else $startFrom = 1;
+    
+      if ( isset( $_GET['frameSize'] ) &&
+           is_numeric ( $_GET['frameSize'] ) &&
+           ($_GET['frameSize'] > 0)
+          ) $frameSize = $_GET['frameSize']; else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
+// /Multipageresult-Filtering Init $_GET as it is used by the sorter...
+
+$url->preserve( 'address' );
 
 // sorting
  // get array of sorter keys from DBInterface
@@ -60,29 +73,18 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 // With more than 360 elements more than 8M are used and it gets slow!
 // -> only show result partially!
 // In mysql exists [LIMIT offset, rows] as argument, one could use that. BUT how many totally?
-  if ( $url->available('startFrom') &&
-       is_numeric ( $url->get('startFrom') ) &&
-       ($url->get('startFrom') > 0)
-      ) $startFrom = $url->get('startFrom'); else $startFrom = 1;
-
-  if ( $url->available('frameSize') &&
-       is_numeric ( $url->get('frameSize') ) &&
-       ($url->get('frameSize') > 0)
-      ) $frameSize = $url->get('frameSize'); else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
-
-  
   $manageNavigation = '<!-- navigation -->'."\n";
   $manageNavigation .= '<div class="labsys_mop_element_navigation">'."\n";
 
     // back Arrows
-    if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php?address='.$id.
-                                                                                 '&startFrom='.($startFrom-$frameSize).
+    if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php?'.
+                                                                                 'startFrom='.($startFrom-$frameSize).
                                                                                  '&frameSize='.$frameSize ).'">&lt;&lt;</a> '."\n";
   
       $j = 1;
       for ( $i=1; $i<=$existingElemnts; $i+=$frameSize ){
-        $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php?address='.$id.
-                                                      '&startFrom='.$i.
+        $manageNavigation .= '<a href="'.$url->rawLink2( '../pages/manage.php?'.
+                                                      'startFrom='.$i.
                                                       '&frameSize='.$frameSize ).
                              '">'.
                              ( ($startFrom == $i) ?  '<b>'  : '' ).
@@ -92,13 +94,13 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       }
   
     // forward Arrows
-    if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php?address='.$id.
-                                                                                    '&startFrom='.($startFrom+$frameSize).
+    if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php?'.
+                                                                                    'startFrom='.($startFrom+$frameSize).
                                                                                     '&frameSize='.$frameSize ).'">&gt;&gt;</a>'."\n";
 
   $manageNavigation .= '</div>'."\n";
   $manageNavigation .= '<!-- /navigation -->'."\n";
-  
+
   $pge->put( $manageNavigation );
   
   $currElNr = 0;
@@ -136,6 +138,13 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
 // the bottom menu
   $pge->put( EM::manageBottom( $id ) );
+
+  // Clean up url variables
+// otherwhise it ends up in the menu etc...
+$url->rem( 'address='.$_GET['address'] );
+$url->rem( 'orderBy='.$orderByKey );
+$url->rem( 'asc='.( $asc ?  'asc' :  'desc'  ) );
+$url->rem( 'restrictTo='.$restrictToKey );
 
 // show!
   require( $cfg->get("SystemPageLayoutFile") );

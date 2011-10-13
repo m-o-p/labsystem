@@ -68,6 +68,22 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
                                 $cfg->get('UserDatabasePassWord'), 
                                 $cfg->get('UserDatabaseName'));
 
+// Multipageresult-Filtering Init $_GET as it is used by the sorter...
+      if ( isset( $_GET['startFrom'] ) &&
+           is_numeric ( $_GET['startFrom'] ) &&
+           ($_GET['startFrom'] > 0)
+          ) $startFrom = $_GET['startFrom']; else $startFrom = 1;
+
+// new restriction? => set start to 1!
+if (isset($_POST['restrictTo'])) $startFrom = 1;
+    
+      if ( isset( $_GET['frameSize'] ) &&
+           is_numeric ( $_GET['frameSize'] ) &&
+           ($_GET['frameSize'] > 0)
+          ) $frameSize = $_GET['frameSize']; else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
+// /Multipageresult-Filtering Init $_GET as it is used by the sorter...
+
+//Sorter
   // which courses exist?
     // ask for the couseID fields starting with _                         
     // list all columns
@@ -79,7 +95,9 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
     // now the array is [n] => $key but for sorting it has to be $keyExpl => $key
     $sortArrayAdd = array_flip( $courseArray );
     foreach( array_keys( $sortArrayAdd ) as $value ) $sortArrayAdd[ $value ] = $value;
-     
+  // if set a restrict to field is shown by sorter.inc
+      $restrictToArray = $sortArrayAdd;
+      $restrictToArray = array_merge( array( ""=>"" ), $restrictToArray ); //add empty for no restriction
   // sorting
       $sortArray = array_merge( DBInterfaceUser::sortableByArray(), Array( $lng->get( 'lastChange' ) => 'labsys_mop_last_change' ) );
      // get array of sorter keys from DBInterface
@@ -87,15 +105,41 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
      // fill $sorter with the sorters html code and set $orderBy and $asc
       require( "../pages/sorter.inc" );
     // the sorter
+// /Sorter
       $pge->put( $sorter );
-
+      
 // DB Query
     $result = $userDBC->mkSelect( '*', 
                                   $cfg->get('UserDatabaseTable'), 
-                                  '',
-                                  $orderBy.( $asc ?  ' ASC' :  ' DESC'  )
+                                  ( (isset($_POST['restrictTo'])) ? // POST overrides GET!
+                                      ( $_POST['restrictTo']!='' ? $_POST['restrictTo'].'=1' : '' ) : // empty? ignore!
+                                    ( (isset($_GET['restrictTo'])) && $_GET['restrictTo']!='' ? $_GET['restrictTo'].'=1' : '' ) 
+                                   ),
+                                  $orderBy.( $asc ?  ' ASC' :  ' DESC'  ),
+                                  ( $restrictToKey == '_unassigned' ? 'registerFor' : '' ) // if unassigned group by courses registered to
                                  );
-                                 
+
+// EXPORT CSV
+   if (isset($_GET['exportCSV'])){
+     header('Content-type: text/x-csv');
+     header('Content-Disposition: attachment; filename="labsystem'.$restrictToKey.'CSV.txt"');
+     $doNotListFromUser = Array( $cfg->get('UserDBField_uid'),
+                                 $cfg->get('UserDBField_password'),
+                                 'labsys_mop_last_change'
+                                );
+      $printLegend = true;
+      while($data = mysql_fetch_assoc($result)){
+        if ($printLegend){
+          $printLegend = false;
+          foreach( $data as $key => $value ) if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ) ; else echo( $key."\t" );
+          echo("\r\n");
+        }
+        foreach( $data as $key => $value ) if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ) ; else echo( str_replace( "\n", '', $value )."\t" );
+        echo("\r\n");
+      }
+      exit();
+    }
+                   
 // Multipageresult-Filtering
       // How many lines were returned?
       $existingElemnts = $userDBC->datasetsIn($result);
@@ -103,34 +147,20 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
     // With more than 360 elements more than 8M are used and it gets slow!
     // -> only show result partially!
     // In mysql exists [LIMIT offset, rows] as argument, one could use that. BUT how many totally?
-      if ( isset( $_GET['startFrom'] ) &&
-           is_numeric ( $_GET['startFrom'] ) &&
-           ($_GET['startFrom'] > 0)
-          ) $startFrom = $_GET['startFrom']; else $startFrom = 1;
-    
-      if ( isset( $_GET['frameSize'] ) &&
-           is_numeric ( $_GET['frameSize'] ) &&
-           ($_GET['frameSize'] > 0)
-          ) $frameSize = $_GET['frameSize']; else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
-    
-      
+     
       $manageNavigation = '<!-- navigation -->'."\n";
       $manageNavigation .= '<div class="labsys_mop_element_navigation">'."\n";
     
         // back Arrows
         if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php?'.
                                                                                      'startFrom='.($startFrom-$frameSize).
-                                                                                     '&frameSize='.$frameSize.
-                                                                                     '&orderBy='.$orderByKey.
-                                                                                     '&asc='.( $asc ?  'asc' :  'desc'  ) ).'">&lt;&lt;</a> '."\n";
+                                                                                     '&frameSize='.$frameSize ).'">&lt;&lt;</a> '."\n";
       
           $j = 1;
           for ( $i=1; $i<$existingElemnts; $i+=$frameSize ){
             $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php?'.
                                                           'startFrom='.$i.
-                                                          '&frameSize='.$frameSize.
-                                                          '&orderBy='.$orderByKey.
-                                                          '&asc='.( $asc ?  'asc' :  'desc'  ) ).
+                                                          '&frameSize='.$frameSize ).
                                  '">'.
                                  ( ($startFrom == $i) ?  '<b>'  : '' ).
                                  $j++.
@@ -141,17 +171,17 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
         // forward Arrows
         if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php?'.
                                                                                         'startFrom='.($startFrom+$frameSize).
-                                                                                        '&frameSize='.$frameSize.
-                                                                                        '&orderBy='.$orderByKey.
-                                                                                        '&asc='.( $asc ?  'asc' :  'desc'  ) ).'">&gt;&gt;</a>'."\n";
+                                                                                        '&frameSize='.$frameSize ).'">&gt;&gt;</a>'."\n";
     
       $manageNavigation .= '</div>'."\n";
       $manageNavigation .= '<!-- /navigation -->'."\n";
       
-      
-      $pge->put( $manageNavigation );
+    // If preserved before the links above become unsusable...  
+      $url->preserve( 'startFrom' );
+      $url->preserve( 'frameSize' );
 // /Multipageresult-Filtering
-      
+
+      $pge->put( $manageNavigation );
       
 // legend
       $pge->put( "<div class=\"labsys_mop_u_row\">\n".
@@ -170,9 +200,9 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
 // form
     $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/uaManageUsersSave.php")."\">\n".
                "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
-               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/uaManageUsers.php\">\n"
+               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"".urlencode($url->rawLink2( $_SERVER['PHP_SELF'] ))."\">\n"
               );
-
+              
     $currElNr = 0;
     $stopAt = $startFrom+$frameSize;
     while( $data = mysql_fetch_assoc( $result ) ){
@@ -216,6 +246,9 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
                                             ) 
                               ), 'p1', true ).
 // /history
+                 ( isset( $data[ '_unassigned' ] ) && ($data[ '_unassigned' ] == 1) ? '<br><b>'.$data[ 'registerFor' ]."</b> ".
+                                                                                      ( $data[ 'desiredTeamPartner' ] != '' ? "| <img src=\"../syspix/prelabFin_yes_15x12.gif\" border=\"0\" title=\"".$lng->get("desiredTeamPartner")."\">".$data[ 'desiredTeamPartner' ] : '').
+                                                                                      ' | '.$data[ 'reasonToParticipate' ]  : '').
                  "</div>\n" );
     }
 
@@ -225,10 +258,17 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
     
     
 // /form
-    $pge->put( "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".            
+    $pge->put( "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
+               '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?exportCSV=true' ).'">exportCSV.txt</a>'.
                "</FORM>"
-             );
+             );        
   } // /showing
+
+// Clean up url variables
+// otherwhise it ends up in the menu etc...
+$url->rem( 'orderBy='.$orderByKey );
+$url->rem( 'asc='.( $asc ?  'asc' :  'desc'  ) );
+$url->rem( 'restrictTo='.$restrictToKey );
 
 // show!
   require( $cfg->get("SystemPageLayoutFile") );

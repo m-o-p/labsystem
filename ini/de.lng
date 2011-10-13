@@ -98,6 +98,9 @@ titleUaUnPwRem      = "Erinnerungsmail mit Benutzernamen und Passwort"
 titleUaManageUsr    = "Benutzerverwaltung"
 titleUaCreateUsr    = "Erstellen von Nutzern"
 
+; register.php
+titleRegister       = "Kursregistrierung"
+
 ;; menu entries ***************************************************************************************
 ; login.php
 MnuEntryLogIn       = "einloggen"
@@ -128,6 +131,9 @@ MnuEntryUaUnPwRem   = "Passwort vergessen?"
 MnuEntryUaManageUsr = "Benutzerverwaltung"
 MnuEntryUaCreateUsr = "erstelle Benutzer"
 MnuEntryUaUsrRights = "Nutzerrechte"
+
+; register.php
+MnuEntryRegister    = "registrieren"
 
 ; choseSysLng.php
 MnuEntrySysLng      = "Systemsprache"
@@ -246,7 +252,15 @@ uaUnPwRemNote       = "Wenn Sie ein registrierter Benutzer sind, k&ouml;nnen Sie
 uaManageUsrNote     = "Um die Benutzerdaten zu &auml;ndern, auf die Benutzer klicken. (Sie m&uuml;ssen Korrektor sein!).<br />Die Zuordnungen zu den Kursen k&ouml;nnen auf dieser Seite vorgenommen werden."
 uaCreateUsrNote     = "Sie k&ouml;nnen Benutzer anlegen, indem Sie eine mit Liste von <b>Emailadressen</b> in das Feld eintragen (<b>Eine pro Zeile!</b>).<br />Die Benutzer werden dann mit Emailadresse als Benutzernamen und einem generierten Passwort angelegt und bekommen initial die in der Kurskonfiguration festgelegten Default-Rechte.<br />Beides k&ouml;nnen sie auf der Passwort und/ oder Benutzernamenvergessen-Seite anfordern und dann dort auch &auml;ndern. Das hat den Seiteneffekt, dass die unvollst&auml;ndigen Benutzerdaten vervollst&auml;ndigt werden m&uuml;ssen zum Speichern..."
 
+; register.php
+registerNote        = "Please fill out the fields below to register for the course."
+thankYouForRegisteringNote = "Danke, dass Sie sich registriert haben!"
+desiredTeamPartner  = "Falls Sie bereits wissen, mit wem Sie ein Team bilden m&ouml;chten geben Sie Ihren gew&uuml;nschten Teampartner bitte hier an."
+reasonToParticipate = "Bitte nennen Sie uns einen Grund, warum Sie denken, besonders geeignet f&uuml;r den Kurs zu sein."
+placesLeft          = "Pl&auml;tze frei"
+
 ;; names for the order by selector ********************************************************************
+restrictTo          = "beschr&auml;nkt auf "
 orderBy             = "geordnet nach "
 team                = "Team"
 rights              = "Rechte"

@@ -5,11 +5,57 @@ This file contains the history of labsystem.m-o-p.de.
 Feature Requests:
 -------------------
  - manage.php: Limit database select to wanted data!
+               - search
  - Register form
    - register directly into the table with a comment for the course (selectable fields=avail configs lexi up)
    - create a manage page that shows those regs that are only linked to the ui so far
  - Edit page for new semesters config
+ 
+ - Test new config files
+ - Add info for registering
 
+2011-10-12
+-------------------
+  /setup/index.php
+    Fixed setup demopage content login link.
+  /ini/*.ini
+    Changed the ini files to use the include statement.
+  /pages/register.php
+    Added form to register for the current course.
+  /ini/{en,de}.lng
+    titleRegister, MnuEntryRegister, 
+  /include/menu.inc
+    Added register to LogIN menu.
+    
+  New cfg fields: 
+    - registerNote contains a note for the register page of this lab.
+    - thankYouForRegisteringNote shown after registration is done.
+    - maxRegistrations number of maximum people to register with this course id.
+    - afterRegisterMailSubject
+    - afterRegisterMailText
+
+  New lng fields:
+    - registerNote
+    - thankYouForRegisteringNote
+    - desiredTeamPartner
+    - reasonToParticipate
+    - placesLeft
+    - restrictTo
+  New syspix
+    /syspix/freePlace_11x12.gif
+    /Pathsyspix/fullPlace_11x12.gif
+
+  /pages/uaManageUsers.php
+    Removed jumps when saving.
+    Added Restrict to.
+    Improved the selection and link logic.
+    Added export.csv to export the current query as csv (useful if you have to keep track of your marks somewhere else...).
+  /pages/sorter.inc
+    Added restrict to for uaManageUsers.
+    
+  /include/classes/elements/LlElement.inc
+    Added csv export for compact view.
+    
 2011-10-11
 -------------------
   /include/XIlib.inc

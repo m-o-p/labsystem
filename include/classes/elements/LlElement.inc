@@ -418,7 +418,7 @@ class LlElement extends Element{
       require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
     $i = 0;
-   // If $showSummation is set the credits are summated and a row is added at the table's bottom with that summary.
+   // If $showSummation is set the credits are summed up and a row is added at the table's bottom with that summary.
     if ( $showSummation ){
       $sumGivenCreditsPreLab = 0; 
       $sumPossibleCreditsPreLab = 0;
@@ -491,7 +491,7 @@ class LlElement extends Element{
                      $labName."\n";
 
         $previousMembersname = $userData["name"].", ".$userData["foreName"]; // to output one's name only once (summary page)
-                     
+        
        // show which are corrected
         if ( $labStatus['labClosed'] && !$labStatus['labCorrected'] && ($labStatus['whichCorrected'] != "") &&
              ( ($labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR ) )
@@ -579,6 +579,7 @@ class LlElement extends Element{
                      "<td class=\"labsys_mop_l_status_table_cell_number\"></td>".
                      "<td class=\"labsys_mop_l_status_table_cell_team\">";
       if ( $onlySummation && isset( $usersTeam ) ) $myRetVal .= $usersTeam; 
+/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) echo( ( isset($usersTeam) ? $usersTeam : '' )."\t" );
       $myRetVal .=  "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_name\">";
                      
@@ -602,7 +603,7 @@ class LlElement extends Element{
                           round( $sumGivenCreditsPreLab/ $summandsPreLab, 2 )."/ ".
                           round( $sumPossibleCreditsPreLab/ $summandsPreLab, 2 ).
                           "</span>\n";
-
+/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) echo( round($percentage*100, 2)."%\t" );
       }
       $myRetVal .=   "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_prelab_fin\"></td>".
@@ -620,6 +621,7 @@ class LlElement extends Element{
                           round( $sumGivenCreditsLab/ $summandsLab, 2 )."/ ".
                           round( $sumPossibleCreditsLab/ $summandsLab, 2 ).
                           "</span>\n";
+/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) echo( round($percentage*100, 2)."%" );
       }
 
       $myRetVal .=   "</td></tr>\n";
@@ -752,7 +754,7 @@ class LlElement extends Element{
     $myRetVal .= "<div class=\"labsys_mop_note\">\n".
                  '<a href="'.$url->link2( '../pages/view.php?address=l'.$this->idx.'.ALLlabStatus'.( !$compact ?  'Compact' : '' ) ).'">'.
                  $lng->get('SwitchTo').' '.( $compact ?  $lng->get('StandardView') :  $lng->get('CompactView' ) ).
-                 '</a>'.
+                 '</a>'.( $compact && $usr->isSeeingSomeonesData() && ($usr->theSeeingUid() == 'all') ? ' | <a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address').'&exportCSV=true' ).'">exportCSV.txt</a>' : '' ).
                  "</div>\n";
       
     $observedUID = $usr->uid;
@@ -768,7 +770,11 @@ class LlElement extends Element{
       $myRetVal .= '</div>'.
                    $this->labStatusUIDALLLabs( $observedUID, $compact );
     }else{ // all users
-
+/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) {
+     header('Content-type: text/x-csv');
+     header('Content-Disposition: attachment; filename="labsystem_result_summary'.$GLOBALS['cfg']->get('User_courseID').'CSV.txt"');
+     echo( "name\tforename\tteam\tprelabCredits\tlabCredits\r\n");
+}
               /* the first entry is the default */
               require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
               require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
@@ -798,6 +804,7 @@ class LlElement extends Element{
                 else{
                         $nameData = $usr->getUserInformation( $userData["uid"] );
                         $myRetVal .= $nameData["name"].", ".$nameData["foreName"];
+/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) echo( "\r\n".$nameData["name"]."\t".$nameData["foreName"]."\t" );
                      }
                 $myRetVal .= "</div>";
                 $myRetVal .= $this->labStatusUIDALLLabs( $userData["uid"], $compact )."<div>&nbsp;</div>\n";
@@ -805,7 +812,7 @@ class LlElement extends Element{
     }
     
     $myRetVal .= $this->getTableResultsLegend();
-                      
+/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) exit;
     return $myRetVal;
   }
 

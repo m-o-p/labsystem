@@ -1013,3 +1013,17 @@ fieldset{
     border:1px solid #ccc;
     padding:5px
   }
+  
+  .labsys_mop_content .registerPlacesLeft {
+    display: inline;
+    padding: 4px;
+    padding-right: 1em;
+    padding-left: 1em;
+    border: solid 1px #aaaaaa;
+    color: #555555;
+    font-size: 0.7em;
+    border-radius: 0.3em;
+  }
+  
+  .labsys_mop_content .registerPlacesLeft img {
+  }

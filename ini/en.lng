@@ -98,6 +98,9 @@ titleUaUnPwRem      = "Get reminder eMail with username and password"
 titleUaManageUsr    = "Manage the users"
 titleUaCreateUsr    = "Create users"
 
+; register.php
+titleRegister       = "Registering for the course"
+
 ;; menu entries ***************************************************************************************
 ; login.php
 MnuEntryLogIn       = "log in"
@@ -128,6 +131,9 @@ MnuEntryUaUnPwRem   = "getPassword"
 MnuEntryUaManageUsr = "manage users"
 MnuEntryUaCreateUsr = "create users"
 MnuEntryUaUsrRights = "user rights"
+
+; register.php
+MnuEntryRegister    = "register"
 
 ; choseSysLng.php
 MnuEntrySysLng      = "system language"
@@ -246,7 +252,15 @@ uaUnPwRemNote       = "As member you can receive a mail with your login <b>usern
 uaManageUsrNote     = "You can edit the user's by clicking on them. (You have to be able to correct for that!).<br />You can change the subsciptions to the courses here."
 uaCreateUsrNote     = "You can create the users her by entering a <b>list of mailaddresses (ONE per line!)</b> in the field below.<br />The users will get the mailadress as username and a generated password. For the subscribed courses they will get its ini-file default rights assigned by the course-portal.<br />Since the data is not mailed to them and their dataset is incomplete they are supposed to <b>request username and password from the reminder page</b> and to change/ enter their data after that."
 
+; register.php
+registerNote        = "Please fill out the fields below to register for the course."
+thankYouForRegisteringNote = "Thank you for registering!"
+desiredTeamPartner  = "Do you already know with whom you want to be on a team? Her you can name the one..."
+reasonToParticipate = "For which reason do you think you are the right one to participate in the course? (Just provide one short sentence.)"
+placesLeft          = "places left"
+
 ;; names for the order by selector ********************************************************************
+restrictTo          = "Restrict to "
 orderBy             = "Order by "
 team                = "team"
 rights              = "rights"
