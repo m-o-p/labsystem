@@ -115,13 +115,15 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
                                       ( $_POST['restrictTo']!='' ? $_POST['restrictTo'].'=1' : '' ) : // empty? ignore!
                                     ( (isset($_GET['restrictTo'])) && $_GET['restrictTo']!='' ? $_GET['restrictTo'].'=1' : '' ) 
                                    ),
-                                  $orderBy.( $asc ?  ' ASC' :  ' DESC'  ),
-                                  ( $restrictToKey == '_unassigned' ? 'registerFor' : '' ) // if unassigned group by courses registered to
+                                   ( $restrictToKey == '_unassigned' ? 'registerFor, ' : '' ). // if unassigned order as well by courses registered to
+                                   $orderBy.( $asc ?  ' ASC' :  ' DESC'  )
                                  );
 
 // EXPORT CSV
    if (isset($_GET['exportCSV'])){
      header('Content-type: text/x-csv');
+
+     // Es wird downloaded.pdf benannt
      header('Content-Disposition: attachment; filename="labsystem'.$restrictToKey.'CSV.txt"');
      $doNotListFromUser = Array( $cfg->get('UserDBField_uid'),
                                  $cfg->get('UserDBField_password'),
@@ -259,7 +261,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
     
 // /form
     $pge->put( "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
-               '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?exportCSV=true' ).'">exportCSV.txt</a>'.
+               '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?exportCSV=true' ).'">export.csv</a>'.
                "</FORM>"
              );        
   } // /showing

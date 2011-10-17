@@ -212,9 +212,10 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                  '.$cfg->get("UserDBField_uid").' char(32) NOT NULL UNIQUE,
                  `registerFor` varchar(255) NOT NULL
                  '.$cfg->get("User_courseID").' tinyint(1) NOT NULL default \'1\',
-                 labsys_mop_last_change timestamp default NOW(),
+                 `labsys_mop_last_change` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                  `_unassigned` tinyint(1) NOT NULL,
                  PRIMARY KEY  ( '.$cfg->get("UserDBField_username").' ),
+                 UNIQUE KEY `'.$cfg->get("UserDBField_uid").'` (`'.$cfg->get("UserDBField_uid").'`)
                  INDEX( '.$cfg->get("UserDBField_username").' )
                  )';
        $usrDB->query($query);

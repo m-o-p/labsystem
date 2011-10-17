@@ -42,10 +42,12 @@ require( INCLUDE_DIR."/helper.inc" );           // Some helper functions that ar
 /* An interesting feature is to use name based hosts 
  * to select the proper configuration files.
  *
- * In the following script the $_GET['config'] gets
- * rewritten according to the hostname.
+ * In the following script the $configPrefix gets
+ * filled according to the hostname.
+ * In config inc $configPrefix.$_GET['config'] is used 
+  * to identify the configuration file.
  */
-#require( INCLUDE_DIR."/hostname2config.inc" );
+require( INCLUDE_DIR."/hostname2config.inc" );
 
 require( INCLUDE_DIR."/configuration.inc" );    // Include the global configuration. => Object $cfg.
 require( $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles") );  // Include the user role constants.

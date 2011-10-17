@@ -60,7 +60,7 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
                                                  $myMenu->entry( $lng->get( "MnuEntrySendMail" ), "../pages/mailForm.php" );
                               else
                                 $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?  'https://'.$_SERVER[ 'SERVER_NAME' ].'/pages/login.php' :  '../pages/login.php' ) ).
-                                                 $myMenu->entry( $lng->get("MnuEntryRegister"), "../pages/register.php" );
+                                                 $myMenu->entry( $lng->get("MnuEntryRegister"), "/?address=register" );
                              }
 
   // this "magic menu" lists all labs acessable to the user                          

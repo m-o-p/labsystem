@@ -4,16 +4,27 @@ This file contains the history of labsystem.m-o-p.de.
 
 Feature Requests:
 -------------------
- - manage.php: Limit database select to wanted data!
-               - search
- - Register form
-   - register directly into the table with a comment for the course (selectable fields=avail configs lexi up)
-   - create a manage page that shows those regs that are only linked to the ui so far
  - Edit page for new semesters config
  
  - Test new config files
  - Fields in setup adden!
-
+ 
+2011-10-17
+-------------------
+  /setup/index.php
+    Changed timestamp in userDB.
+  /pages/uaManageUsers.php
+    GroupBy -> orderBy for sorting as group by only lists one entry...
+  /pages/register.php
+    registerFor field added ('.$_GET['config'].') as when registering on the _ua otherwhise there is no separation between servers possible.
+    registerFor contains now CourseID.Server Subdomain.
+  /include/init.inc
+    Changed comments for config2host as it does not change $_GET['config'] but fill the $configPrefix (has to be like this for links...)
+  /include/menu.inc
+    Registration link points to /?address=register
+  /index.php
+    Added routing for address=accessableLabs and address=register
+ 
 2011-10-13
 -------------------
   /ini/{en,de}.lng
