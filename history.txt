@@ -9,14 +9,23 @@ Feature Requests:
  - Test new config files
  - Fields in setup adden!
  
- - check teamNumber update
+ - Stylesheet imports too much...!
+ - Add Markdown help as module or as standard...
+ 
+ 
 2011-10-18
 -------------------
   /include/classes/DBInterfaceUserRights.inc
     Updated team assignment to really assign to each participant current idx in DB + Offset $cfg->get("DefaultAuthUserTeam")
   /include/XIlib.inc
     Added multiline support to some regex searches for styles and local files and pix
- 
+  /include/classes/elements/LiDBInterfaceAnswers.inc
+    Changed $cfg->get('UploadDirectory') to end with a slash like all other directories given in the ini files.
+  /ini/{en,de}.lng
+    Added MarkDown [MD] hint to inputContentsHtml
+  /setup/index.php
+    Updated directory check to work with subdirectories correctly.
+    
 2011-10-17
 -------------------
   /setup/index.php

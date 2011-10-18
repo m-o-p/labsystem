@@ -465,7 +465,7 @@ else
 
 /* If necessary create menu-file */
 if ( !file_exists( $cfg->get("SystemResourcePath").$cfg->get("SystemMenuFile") ) )
-  if (!copy(  $cfg->get("SystemResourcePath").'en_menu_demo.ini', 
+  if (!copy(  $cfg->get("SystemResourcePath").'menu_prototype.ini', 
               $cfg->get("SystemResourcePath").$cfg->get("SystemMenuFile")
             )
       ) echo("failed to copy menu...<br>\n");
@@ -506,14 +506,16 @@ say_toptitle( 'Checking directories...' ); /***********************************/
 */
 function checkDirectoryWritable( $configFieldName ){
   global $cfg;
-  $directory = dirname($cfg->get($configFieldName));
-  echo( '<br><br><span style="color: #ffff99">['.$configFieldName.': '.$cfg->get($configFieldName).']</span> ' );
+  $directory = ( substr( $cfg->get($configFieldName), -1, 1 ) == '/' ? 
+                    $cfg->get($configFieldName) : // is already a directory...
+                    dirname($cfg->get($configFieldName)) ); // is not...
+  echo( '<br><br><span style="color: #ffff99">['.$configFieldName.': '.$directory.']</span> ' );
   if (!file_exists($directory))
     echo('not existing. Creating it... '.(mkdir($directory, 0755, true) ? '<span style="color: #77ff77;">o.k.</span>' : '<span style="color: #ff7777;">failed!</span>' ).'<br>' );
   else
     echo('exists. Testing subfolder... Creating... '.
          (mkdir($directory.'/test23r2', 0755, true) ? 
-            '<span style="color: #77ff77;">o.k.</span> Deleting... '.(rmdir($directory.'/test23r2') ? 
+            '<span style="color: #77ff77;">o.k.</span> Deleting... '.(rmdir($directory.'/test23r2/') ? 
                                                                           '<span style="color: #77ff77;">o.k.</span>' : 
                                                                           '<span style="color: #ff7777;">failed!</span>' ) : 
             '<span style="color: #ff7777;">failed!</span>' ).
@@ -522,6 +524,14 @@ function checkDirectoryWritable( $configFieldName ){
 
 say_title('User Uploads');
 checkDirectoryWritable('UploadDirectory');
+/* If necessary create the userStyleSheet-file */
+if ( !file_exists( $cfg->get('UploadDirectory').'.htaccess' ) )
+  if (!copy(  $cfg->get('SystemResourcePath').'.htaccess', 
+              $cfg->get('UploadDirectory').'.htaccess'
+            )
+      ) echo("failed to copy .htaccess to ".$cfg->get('UploadDirectory')."...<br>\n");
+  else  echo(".htaccess copied to ".$cfg->get('UploadDirectory')."...<br>\n");
+
 
 say_title('Export/ Import Uploads');
 checkDirectoryWritable('exportImportDir');

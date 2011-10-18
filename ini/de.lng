@@ -312,7 +312,7 @@ mailaddressesNewUsr = "Hier die Emailadressen der Benutzer, die angelegt werden 
 inputTitle          = "<b>Titel</b> (Wird z.B. f&uuml;r den Browsertitel verwendet.)"
 inputMatchingMnu    = "<b>Zuge&ouml;riges Menu</b> (Der Menueintrag mit diesem Text wird hervorgehoben, wenn diese Seite angezeigt wird [kann leer sein].<br />Wenn Sie Shortcuts (z.B. !p1, !C2) verwenden wird dieser Text als Menueintrag verwendet.)"
 inputContents       = "<b>Inhalt</b>"
-inputContentsHtml   = "(Wenn Sie html-Tags verwenden wollen, muss als Erstes <b>[HTML]</b> stehen)."
+inputContentsHtml   = "(Wenn Sie html-Tags verwenden wollen, muss als Erstes <b>[HTML]</b> stehen, f&uuml;r <b>MarkDown [MD]</b>)."
 inputReplaceKeys    = "Die folgenden Konstanten werden beim Anzeigen der Seite durch ihre aktuellen Werte ersetzt:"
 
 ;m

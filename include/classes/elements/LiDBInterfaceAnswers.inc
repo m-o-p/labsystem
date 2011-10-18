@@ -161,7 +161,7 @@ class LiDBInterfaceAnswers {
   */ 
   public static function getUploadDirectory($questionIdx, $team) { 
     global $cfg; 
-    return $cfg->get('UploadDirectory').'/'.$cfg->get('User_courseID').'/'.$cfg->get('InputDirectory').'/i'.$questionIdx.'/team'.$team; 
+    return $cfg->get('UploadDirectory').$cfg->get('User_courseID').'/'.$cfg->get('InputDirectory').'/i'.$questionIdx.'/team'.$team; 
   } 
   
   function uploadFile( $team, $iIdx, $tmpFilePath, $originalName) { 

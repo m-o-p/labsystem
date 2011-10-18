@@ -288,7 +288,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
    
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
-    $localFileWithPath = preg_replace_callback(  '#(http(s)?://)?'.$_SERVER['SERVER_NAME'].'#s', 
+    $localFileWithPath = preg_replace_callback(  '#(http(s)?://)?'.$_SERVER['SERVER_NAME'].'#', 
                                                  create_function(
                                                                 '$matches',
                                                                 'return "..";'
@@ -394,7 +394,7 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
   // The following will NOT BE SUPPORTED for ewxport:
   // ![Alt text][id]
   // [id]: url/to/image  "Optional title attribute"
-  	applyFunctionOnRegEx( '#(\!\[.*\]\()(?!../syspix/|/syspix/)(\S+)([\s\S]?(?<!\))\))#s',
+  	applyFunctionOnRegEx( '#(\!\[.*\]\()(?!../syspix/|/syspix/)(\S+)([\s\S]?(?<!\))\))#',
                           'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];',
                            $HTMLcode
                          );
@@ -425,7 +425,7 @@ function importPix( &$HTMLcode ){
   // The following will NOT BE SUPPORTED for ewxport:
   // ![Alt text][id]
   // [id]: url/to/image  "Optional title attribute"
-  	applyFunctionOnRegEx( '#(\!\[.*\]\()(images/\S+)([\s\S]?(?<!\))\))#s',
+  	applyFunctionOnRegEx( '#(\!\[.*\]\()(images/\S+)([\s\S]?(?<!\))\))#',
                           'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
                           $HTMLcode
                          );
@@ -456,7 +456,7 @@ function processLocalFiles( &$HTMLcode, $doCopy=true ){
   // The following will NOT BE SUPPORTED for ewxport:
   // This is [an example] [id] reference-style link.
   // [id]: http://example.com/  "Optional Title Here"
-  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(?!../pages/|/pages/|\#)(\S+)([\s\S]?(?<!\))\))#s',
+  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(?!../pages/|/pages/|\#)(\S+)([\s\S]?(?<!\))\))#',
                           'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];',
                           $HTMLcode
                          );
@@ -486,7 +486,7 @@ function importFiles( &$HTMLcode ){
   // The following will NOT BE SUPPORTED for ewxport:
   // This is [an example] [id] reference-style link.
   // [id]: http://example.com/  "Optional Title Here"
-  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(data/\S+)([\s\S]?(?<!\))\))#s',
+  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(data/\S+)([\s\S]?(?<!\))\))#',
                           'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
                           $HTMLcode
                          );
@@ -633,7 +633,7 @@ function getLabsFromDirectory( $directory ){
 */
 $usedClasses = array();
 function updateUsedClasses( $content ){
-  preg_replace_callback( '#(\s[c,C][l,L][a,A][s,S][s,S]=")(\S*)(")#s',
+  preg_replace_callback( '#(\s[c,C][l,L][a,A][s,S][s,S]=")(\S*)(")#',
                          create_function(
                           '$matches',
                           'global $usedClasses; if (!in_array($matches[2], $usedClasses)) $usedClasses[] = trim($matches[2]);'
