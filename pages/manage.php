@@ -100,6 +100,9 @@ $url->preserve( 'address' );
 
   $manageNavigation .= '</div>'."\n";
   $manageNavigation .= '<!-- /navigation -->'."\n";
+  
+// otherwhise it ends up in the menu etc...
+$url->rem( 'address='.$_GET['address'] );
 
   $pge->put( $manageNavigation );
   
@@ -141,7 +144,6 @@ $url->preserve( 'address' );
 
   // Clean up url variables
 // otherwhise it ends up in the menu etc...
-$url->rem( 'address='.$_GET['address'] );
 $url->rem( 'orderBy='.$orderByKey );
 $url->rem( 'asc='.( $asc ?  'asc' :  'desc'  ) );
 $url->rem( 'restrictTo='.$restrictToKey );

@@ -56,12 +56,12 @@ else{
             $restrictToKey = key( $restrictToArray );                                              // 3rd default (the first el of $restrictToArray)
 }
 // keep it in links
-$url->put( 'orderBy='.$orderByKey );
-$url->put( 'asc='.( $asc ?  'asc' :  'desc'  ) );
-$url->put( 'restrictTo='.$restrictToKey );
+$GLOBALS['url']->put( 'orderBy='.$orderByKey );
+$GLOBALS['url']->put( 'asc='.( $asc ?  'asc' :  'desc'  ) );
+$GLOBALS['url']->put( 'restrictTo='.$restrictToKey );
 
 // sorting select
-$sorter = "<FORM class=\"labsys_mop_sort_form\" NAME=\"sort_options\" METHOD=\"POST\" ACTION=\"".$url->rawLink2( $_SERVER['PHP_SELF'].( isset($startFrom) ? '?startFrom='.$startFrom.'&frameSize='.$frameSize : '' ) )."\">\n";
+$sorter = "<FORM class=\"labsys_mop_sort_form\" NAME=\"sort_options\" METHOD=\"POST\" ACTION=\"".$GLOBALS['url']->rawLink2( $_SERVER['PHP_SELF'].( $GLOBALS['url']->available('address') ? '?address='.$GLOBALS['url']->get('address') : '?address=none' ).( isset($startFrom) ? '&amp;startFrom='.$startFrom.'&amp;frameSize='.$frameSize : '' ) )."\">\n";
 
 if (isset($restrictToArray)){
   $sorter .=$lng->get('restrictTo').

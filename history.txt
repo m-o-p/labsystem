@@ -9,6 +9,14 @@ Feature Requests:
  - Test new config files
  - Fields in setup adden!
  
+ - check teamNumber update
+2011-10-18
+-------------------
+  /include/classes/DBInterfaceUserRights.inc
+    Updated team assignment to really assign to each participant current idx in DB + Offset $cfg->get("DefaultAuthUserTeam")
+  /include/XIlib.inc
+    Added multiline support to some regex searches for styles and local files and pix
+ 
 2011-10-17
 -------------------
   /setup/index.php
@@ -24,6 +32,10 @@ Feature Requests:
     Registration link points to /?address=register
   /index.php
     Added routing for address=accessableLabs and address=register
+  /pages/sorter.inc
+    Added address=
+  /include/XIlib.inc
+    isLocal(): Added mailto as criterion for non-local files.
  
 2011-10-13
 -------------------

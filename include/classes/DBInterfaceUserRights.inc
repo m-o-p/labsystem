@@ -64,7 +64,7 @@ class DBInterfaceUserRights {
                "uid='".$uid."', ".
                "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' (rights: '.$rights.'; team: '.$currentTeam.') '."\\n', ".$this->myTable.".history )";
       $newIDX = $this->myDBC->mkInsertReturnIDX( $toSet, 'user_rights' );
-      $this->setData4( $uid, $cfg->get("DefaultAuthUserRights"), $cfg->get("DefaultAuthUserTeam"), $lng->get("dataSetCreated") );
+      $this->setData4( $uid, $cfg->get("DefaultAuthUserRights"), $cfg->get("DefaultAuthUserTeam")+$newIDX, $lng->get("dataSetCreated") );
       return Array( "rights"      => $cfg->get("DefaultAuthUserRights"),
                     "currentTeam" => $cfg->get("DefaultAuthUserTeam")+$newIDX, 
                     "history"     => "");
