@@ -11,8 +11,20 @@ Feature Requests:
  
  - Stylesheet imports too much...!
  - Add Markdown help as module or as standard...
- 
- 
+
+2011-10-21
+-------------------
+  /pages/register.php
+    Changed Mailsender to systemname <noreply@servername>.
+    Changed DB query for registered...
+  /php/uaPwRemind.php
+    Changed Mailsender to systemname <noreply@servername>.
+    
+2011-10-19
+-------------------
+  /pages/register.php
+    Saves now really all additional DB fields...
+    
 2011-10-18
 -------------------
   /include/classes/DBInterfaceUserRights.inc

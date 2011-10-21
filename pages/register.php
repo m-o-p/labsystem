@@ -84,16 +84,33 @@ if( isset($_POST['NAME']) && (( $_POST['NAME'] == '' ) || ( $_POST['FORENAME'] =
 
 
 if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no errors found.
+  // process the custom fields (all fields that are added in the DB can be set...
+    $customFields = '';
+    // The following fields and those starting with "_" (course id)  will not be processed:
+    $doNotListFromUser = Array( $cfg->get('UserDBField_username'), 
+                                $cfg->get('UserDBField_name'), 
+                                $cfg->get('UserDBField_forename'),
+                                $cfg->get('UserDBField_email'),
+                                $cfg->get('UserDBField_uid'),
+                                $cfg->get('UserDBField_password'),
+                                'labsys_mop_last_change'
+                               );
+    foreach ( $_POST as $key => $value )
+      if( substr( $key, 0, 11 ) == 'LABSYS_MOP_' ){ // all start with that prefix
+        $key = substr( $key, 11 );
+        if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ) /* do nothing */;
+        else $customFields .= $key."=CONCAT( '".$userDBC->escapeString( $value )." | ', ".$key.' ), ';
+      }
+
   // Is this email already registered?
    $result = $userDBC->mkSelect( "*", 
                                  $cfg->get('UserDatabaseTable'), 
                                  'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $_POST['EMAIL'] )."')" 
                                 );
    if ($userDBC->datasetsIn( $result ) > 0) // yes => just update the interest
-    $userDBC->mkUpdate( 'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')\', '.
-                        '_unassigned=1, '.
-                        "reasonToParticipate=CONCAT( '".$userDBC->escapeString($_POST['LABSYS_MOP_reasonToParticipate'] )."\\n', reasonToParticipate ), ".
-                        "desiredTeamPartner=CONCAT( '".$userDBC->escapeString($_POST['LABSYS_MOP_desiredTeamPartner'] )."\\n', desiredTeamPartner )",
+    $userDBC->mkUpdate( $customFields.
+                        'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')\', '.
+                        '_unassigned=1',
                         $cfg->get('UserDatabaseTable'),
                         'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $_POST['EMAIL'] )."')" );
    else{ // email is new => create new entry
@@ -102,10 +119,9 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
         srand((double)microtime()*1000000);
         $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
         
-        $userDBC->mkInsert( 'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')\', '.
+        $userDBC->mkInsert( $customFields.
+                            'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')\', '.
                             '_unassigned=1, '.
-                            "reasonToParticipate=CONCAT( '".$userDBC->escapeString($_POST['LABSYS_MOP_reasonToParticipate'] )."\\n', reasonToParticipate ), ".
-                            "desiredTeamPartner=CONCAT( '".$userDBC->escapeString($_POST['LABSYS_MOP_desiredTeamPartner'] )."\\n', desiredTeamPartner ), ".
                             $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $_POST['EMAIL'] )."', ".
                             $cfg->get('UserDBField_name')."='".$userDBC->escapeString( $_POST['NAME'] )."', ".
                             $cfg->get('UserDBField_forename')."='".$userDBC->escapeString( $_POST['FORENAME'] )."', ".
@@ -123,8 +139,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
          $lng->get('passWord').': '.$newPW."\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
          "\r\n",
-         "From: ".$_POST['EMAIL']."\r\n".
-         "Reply-To: ".$_POST['EMAIL']."\r\n".
+         "From: ".$cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].">\r\n".
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
@@ -139,8 +154,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
          str_replace( $pge->replaceKey, $pge->replaceValue,  eval( 'return "'.$cfg->get('afterRegisterMailText').'";' ) )."\r\n\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
          "\r\n",
-         "From: ".$_POST['EMAIL']."\r\n".
-         "Reply-To: ".$_POST['EMAIL']."\r\n".
+         "From: ".$cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].">\r\n".
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
@@ -199,7 +213,7 @@ else{ // no data posted or errors found
     // How many people registered from this course already?
      $result = $userDBC->mkSelect( 'registerFor', 
                                    $cfg->get('UserDatabaseTable'), 
-                                   'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')\''
+                                   '_unassigned=1 && registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')\''
                                   );
      $registrations = $userDBC->datasetsIn( $result ); // number of registrations under this courseID
      $max = ($cfg->doesExist('maxRegistrations') ? $cfg->get('maxRegistrations') : $registrations + $DEFAULT_PLACES);

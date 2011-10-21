@@ -85,8 +85,7 @@ else{
          $lng->get('passWord').': '.$newPW."\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
          "\r\n",
-         "From: ".$_POST['EMAIL']."\r\n".
-         "Reply-To: ".$_POST['EMAIL']."\r\n".
+         "From: ".$cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].">\r\n".
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...

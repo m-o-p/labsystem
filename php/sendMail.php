@@ -86,7 +86,6 @@ else{
                              eval( 'return "'.$cfg->get('mailFooter').'";' ) ). // complicated? Well have to process /r/n and so on...
                              "\r\n",
                              "From: ".encodeMailconform( $mailFrom )."\r\n".
-                             "Reply-To: ".encodeMailconform( $mailFrom )."\r\n".
                              encodeMailconform( ( $sendViaBCC ?  'Bcc: '.$mailto :  'Cc: '.$myAddr4Copy  ) )."\r\n". // Bcc? -> receivers
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
