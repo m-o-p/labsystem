@@ -12,6 +12,11 @@ Feature Requests:
  - Stylesheet imports too much...!
  - Add Markdown help as module or as standard...
 
+2011-11-03
+-------------------
+  /include/classes/elements/LlElement.inc
+    getExportImportRow added $prefix (used by pages/XIport.php to indicate the lab number).
+    
 2011-10-21
 -------------------
   /pages/register.php

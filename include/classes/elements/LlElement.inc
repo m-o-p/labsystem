@@ -1290,11 +1290,11 @@ class LlElement extends Element{
     if ( $isExport )
       return    "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"EXPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export"> '.
-                $this->title;
+                $prefix.$this->title;
     else
       return  '<img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="next" title="export"> '.
               "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"IMPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'> ".
-              $this->title;
+              $prefix.$this->title;
   }
   
 // The next functions are adfditional functions of the element. *********************************************

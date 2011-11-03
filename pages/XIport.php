@@ -270,15 +270,14 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
    
     $pge->put('<FORM NAME="export_import" METHOD="POST" ACTION="#">');
     $pge->put( '<h4>'.$lng->get('exportFollowingLabs').'</h4>' );
-    while ( $element = $DBI->getNextData() ){ 
-      $pge->put( $element->showExportImportRow( $element->idx, true ) ); // show the property row
-    }
+    while ( $element = $DBI->getNextData() )
+      $pge->put( $element->showExportImportRow( $element->idx.': ', true ) ); // show the property row
     
     // Importable labs
     $pge->put( '<h4>'.$lng->get('importFollowingLabs').'</h4>' );
     $importableLabs = getLabsFromDirectory( $cfg->get('exportImportDir') );
     foreach( $importableLabs as $key=>$value )
-     $pge->put( $value->showExportImportRow( '', false ) ); // show the property row
+      $pge->put( $value->showExportImportRow( '', false ) ); // show the property row
      
   // saving
     $pge->put("<input TABINDEX=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("yesIconfirm")."\" accesskey=\"s\" onclick='isDirty=false'>" );
