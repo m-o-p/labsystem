@@ -108,7 +108,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           if ( count($newStyles) > 0 ){
             array_unshift( $newStyles, "\n\n".'/* Following styles imported by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r').' */' );
             file_put_contents( $cfg->get( "UserStyleSheet" ), join($newStyles), FILE_APPEND | LOCK_EX);
-            $pge->put(  '<pre>'.implode( "<br>\n", $newStyles )."</pre>\n".
+            $pge->put(  '<pre>'.htmlentities(implode( "<br>\n", $newStyles ))."</pre>\n".
                         '<div class="labsys_mop_elements_menu_l">'.
                         'user_styles.css <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import">'.
                         $cfg->get( "UserStyleSheet" ).
@@ -243,7 +243,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       fileWrite(  'css/user_styles.css', 
                   join( $stylesToExport ), 
                   $GLOBALS['exportUID'] );
-      $pge->put(  '<pre>'.implode( "\n", $stylesToExport )."</pre>\n".
+      $pge->put(  '<pre>'.htmlentities(implode( "\n", $stylesToExport ))."</pre>\n".
                   '<div class="labsys_mop_elements_menu_l">user_styles.css'.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                   "</div>\r\n" );

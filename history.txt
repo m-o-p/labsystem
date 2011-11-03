@@ -16,6 +16,9 @@ Feature Requests:
 -------------------
   /include/classes/elements/LlElement.inc
     getExportImportRow added $prefix (used by pages/XIport.php to indicate the lab number).
+
+  /pages/XIport.php
+    Added htmlentities to style sheet info in <PRE> at import and export.
     
 2011-10-21
 -------------------
