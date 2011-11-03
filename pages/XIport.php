@@ -154,6 +154,9 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       // Needed in some XIlib functions.
         $GLOBALS['exportUID'] = $labToExport->uniqueID;
         $GLOBALS['externallyLinkedElements'] = array();
+        
+        deleteExportDirectory( $GLOBALS['exportUID'] ); // empty export directory
+        
         fileWrite( 'images/readme.txt', 'In this directory the images are stored.', $GLOBALS['exportUID'] );
         fileWrite( 'data/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
         fileWrite( 'css/readme.txt', 'In this directory the style sheets for the preview and the user_styles.css for import are stored.', $GLOBALS['exportUID'] );

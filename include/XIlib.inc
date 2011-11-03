@@ -121,6 +121,38 @@ function fileWrite( $fileName, $content, $labUID ) {
 }
 
 /**
+ * rm -rf $cfg->get('exportImportDir').$labUID
+ *
+ * @param string $labUID       The unique identifier of this lab (UID for export).
+ * @return boolean Success?
+ */
+function deleteExportDirectory( $labUID ) { 
+  global $cfg, $pge;
+  $dir = $cfg->get('exportImportDir').$labUID;
+  
+  $pge->put( '<div class="labsys_mop_elements_menu_l">Exporting to directory '.$dir.'.</div>' );
+  
+  if (!file_exists($dir)) return true;
+  
+  $pge->put( '<div class="labsys_mop_elements_menu_l">Removed existing content.</div>' );
+  return deleteDirectory( $dir );
+}
+
+// from http://php.net/manual/en/function.rmdir.php [EDITOR NOTE: "Credits to erkethan at free dot fr." - thiago]
+function deleteDirectory($dir) { 
+  if (!file_exists($dir)) return true; 
+  if (!is_dir($dir) || is_link($dir)) return unlink($dir); 
+      foreach (scandir($dir) as $item) { 
+          if ($item == '.' || $item == '..') continue; 
+          if (!deleteDirectory($dir . "/" . $item)) { 
+              chmod($dir . "/" . $item, 0777); 
+              if (!deleteDirectory($dir . "/" . $item)) return false; 
+          }; 
+      } 
+      return rmdir($dir); 
+}
+
+/**
  * Removes the example solutions from $HTMLcode.
  *
  * @param string  &$HTMLcode                The html code to be altered.
