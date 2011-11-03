@@ -20,6 +20,10 @@ Feature Requests:
   /pages/XIport.php
     Added htmlentities to style sheet info in <PRE> at import and export.
     
+  /include/XIlib.inc
+    Included the function validFilename to make compatible filenames from exported files.
+    Added urldecode here as proper filenames in html are with %20 instead of space etc.
+    
 2011-10-21
 -------------------
   /pages/register.php

@@ -270,6 +270,21 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     return ((substr( $fileWithPath, 0, 4 ) != 'http') && (substr( $fileWithPath, 0, 6 ) != 'mailto') && !(is_array( $parts ) && in_array( $parts[1], $ignorePaths )) );
   }
   
+  /**
+   * Makes the given String a valid filename.
+   * This function is used to sanitize filenames for making
+   * the exported files more compatible with any destination
+   * system.
+   * @param string  The current filename
+   * @return string The sanitized filename
+   */
+  function validFilename($string = ''){
+   // Replace all weird characters with dashes
+   $string = preg_replace('/[^\w\-~_\.]+/u', '-', $string);
+   // Only allow one dash separator at a time (and make string lowercase)
+   return mb_strtolower(preg_replace('/--+/u', '-', $string), 'UTF-8');
+  }
+  
   /** For Export:
    * If the file passed by $localFileWithPath is recognized as local and 
    * $doCopy is set (not the case for the HTML preview), then the file
@@ -307,8 +322,9 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
       return $localFileWithPath;
     }
     //break else:
-    
+    $localFileWithPath = urldecode( $localFileWithPath ); // normally it should be proper HTML with %20 instead of ' ' etc. ...
     $fileName = end(explode('/', $localFileWithPath));
+    $fileName = validFilename( $fileName );
     if ($doCopy){
       // Here the move to server should happen...
       $itWorked = copy( $localFileWithPath, $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName )
