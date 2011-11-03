@@ -61,14 +61,15 @@ function createIdImportMappingInitDB( $labFolder ){
   $IdMapping = array();
   $labElementsOnDisk = scandir( $cfg->get('exportImportDir').$labFolder.'/data' );
   foreach ( $labElementsOnDisk as $value ){
-    if ( (strlen( $value ) < 4) || (substr($value, -4) != '.txt') ) continue; // skip all uninteresting files
-        
+    if ( (strlen( $value ) < 4) || (substr($value, -4) != '.txt') || ($value[1] != '0') ) continue; // skip all uninteresting files
+    
     $elementType = $value[0]; // get type (first letter)
     $elementID = intval( substr($value, 1, 7) ); // get number (rest)
 
     $newIdx = createNew( $elementType ); // creates element in DB
     $IdMapping[$elementType.$elementID] = $elementType.$newIdx;
   }
+
   return $IdMapping;
 }
 
@@ -297,6 +298,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
    * @return bool
    */
   function isLocal( $fileWithPath ){
+    if (($fileWithPath == '') || ($fileWithPath[0] == '#') || (strpos($fileWithPath, '?') !== false)) return false; // anchor, file with ?
     $ignorePaths = array( 'extern', 'pages', 'ini', 'include', 'css', 'php', 'sessiondata', 'syspix');
     $parts = explode( '/', $fileWithPath );
     return ((substr( $fileWithPath, 0, 4 ) != 'http') && (substr( $fileWithPath, 0, 6 ) != 'mailto') && !(is_array( $parts ) && isset($parts[1]) && in_array( $parts[1], $ignorePaths )) );
@@ -362,8 +364,8 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     $fileName = validFilename( $fileName );
     if ($doCopy){
       // Here the move to server should happen...
-      $itWorked = copy( $localFileWithPath, $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName )
-      or trigger_error("Can't copy file ".$localFileWithPath, E_USER_WARNING);
+      $itWorked = (file_exists($localFileWithPath) && copy( $localFileWithPath, $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName ))
+      or trigger_error("Can't copy file [".htmlentities($localFileWithPath).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
       $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                   $localFileWithPath.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
@@ -392,7 +394,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     $fileName = end(explode('/', $file2importWithPath));
     if ( !file_exists($destDir)){ mkdir($destDir, 0755, true) or trigger_error("Can't create directory ".$destDir, E_USER_ERROR); }
     
-    copy( $file2importWithPath, $destDir.'/'.$fileName ) or trigger_error("Can't copy file ".$file2importWithPath, E_USER_WARNING);
+    (file_exists($file2importWithPath) && copy( $file2importWithPath, $destDir.'/'.$fileName ) ) or trigger_error("Can't copy file [".htmlentities($file2importWithPath).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
     $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                 ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
                 $fileName.
@@ -450,9 +452,8 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
                           'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];',
                            $HTMLcode
                          );
-  
     
-	applyFunctionOnRegEx( '/(<img .*?src\s*=\s*[",\'])(?!..\/syspix\/|\/syspix\/)(.+?)([",\'])/s',
+	applyFunctionOnRegEx( '/(<img [^\>]*?src\s*=\s*[",\'])(?!..\/syspix\/|\/syspix\/)(.+?)([",\'])/s',
                         'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];', 
                         $HTMLcode
                        );
@@ -482,7 +483,7 @@ function importPix( &$HTMLcode ){
                           $HTMLcode
                          );
                                        
-	applyFunctionOnRegEx( '/(<img .*?src\s*=\s*[",\'])(images\/\S?)([",\'])/s',
+	applyFunctionOnRegEx( '/(<img [^\>]*?src\s*=\s*[",\'])(images\/\S+)([",\'])/s',
                         'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
                         $HTMLcode
                        );
@@ -513,7 +514,7 @@ function processLocalFiles( &$HTMLcode, $doCopy=true ){
                           $HTMLcode
                          );
 
-	applyFunctionOnRegEx( '/(<a .*?href\s*=\s*[",\'])(?!..\/pages\/|\/pages\/)(.+?)([",\'])/s',
+	applyFunctionOnRegEx( '/(<a [^\>]*?href\s*=\s*[",\'])(?!..\/pages\/|\/pages\/)(.+?)([",\'])/s',
                         'return $matches[1].handleLocalFile( $matches[2], \'files/\', '.intval($doCopy).' ).$matches[3];',
                         $HTMLcode
                        );
@@ -543,7 +544,7 @@ function importFiles( &$HTMLcode ){
                           $HTMLcode
                          );
                          
-	applyFunctionOnRegEx( '/(<a .*?href\s*=\s*[",\'])(files\/.+?)([",\'])/s',
+	applyFunctionOnRegEx( '/(<a [^\>]*?href\s*=\s*[",\'])(files\/.+?)([",\'])/s',
                         'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
                         $HTMLcode
                        );

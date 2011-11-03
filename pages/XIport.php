@@ -116,7 +116,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           }
         }
       
-        $externallyLinked = $cfg->get('exportImportDir').$subDir.'/data/externallyLinked.txt';
+        $externallyLinked = $cfg->get('exportImportDir').$subDir.'/files/externallyLinked.txt';
         if ( file_exists( $externallyLinked ) )
           $pge->put( '<pre>'.$externallyLinked.':'."\r\n".file_get_contents( $externallyLinked ).'</pre>' );
           
@@ -159,7 +159,8 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $usedClasses = array(); // empty used styles!
         
         fileWrite( 'images/readme.txt', 'In this directory the images are stored.', $GLOBALS['exportUID'] );
-        fileWrite( 'data/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
+        fileWrite( 'files/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
+        fileWrite( 'data/readme.txt', 'In this directory the serialized database data files are stored.', $GLOBALS['exportUID'] );
         fileWrite( 'css/readme.txt', 'In this directory the style sheets for the preview and the user_styles.css for import are stored.', $GLOBALS['exportUID'] );
         
     // get the HTML PREVIEW
@@ -168,15 +169,17 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $usr->userRights -= IS_CONTENT_EDITOR;
         $htmlPreviewLab = '[HTML]'.$labToExport->show( 'l'.$key.'.all' );
         $usr->userRights = $oldUsrRights;
+        
       // remove the example solutions and relocate the embedded objects
         removeExampleSolutions($htmlPreviewLab);
+
       // relocate linked objects like images, linked files, etc.
         processContent($htmlPreviewLab, $key, $labElementArray, false);
-        
+                
         $htmlPreviewLab = substr( $htmlPreviewLab, 6 ); // remove the [HTML] again as it is only needed for right processing.
       // relocate syspix to global server
         $htmlPreviewLab = str_replace( '../syspix/', 'http://labsystem.m-o-p.de/syspix/', $htmlPreviewLab );
-        
+               
         $pge->put(  '<div class="labsys_mop_elements_menu_l">preview.html'.
                     ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                     "</div>\r\n" );
@@ -231,7 +234,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                   'The following external ressources are linked in this lab:'."\n".
                   implode( "\n", $GLOBALS['externallyLinkedElements'] ), 
                   $GLOBALS['exportUID'] );
-      $pge->put(  '<div class="labsys_mop_elements_menu_l">data/externallyLinked.txt'.
+      $pge->put(  '<div class="labsys_mop_elements_menu_l">files/externallyLinked.txt'.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                   "</div>\r\n" );
    // StyleSheet processing 
