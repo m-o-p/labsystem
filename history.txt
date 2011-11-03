@@ -31,6 +31,12 @@ Feature Requests:
     Updated the regex for handling files and pictures.
     Added code to decode urlencoded urls and to remove trailing and heading spaces.
     
+    Changed file structure for export:
+     /css
+     /images
+     /files
+     /data
+    
 2011-10-21
 -------------------
   /pages/register.php

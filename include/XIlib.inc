@@ -59,7 +59,7 @@ function createIdMapping( &$labElementArray ){
 function createIdImportMappingInitDB( $labFolder ){
   global $cfg;
   $IdMapping = array();
-  $labElementsOnDisk = scandir( $cfg->get('exportImportDir').$labFolder );
+  $labElementsOnDisk = scandir( $cfg->get('exportImportDir').$labFolder.'/data' );
   foreach ( $labElementsOnDisk as $value ){
     if ( (strlen( $value ) < 4) || (substr($value, -4) != '.txt') ) continue; // skip all uninteresting files
         
@@ -81,7 +81,7 @@ function createIdImportMappingInitDB( $labFolder ){
  */
 function persistElement( &$element, $labUID, $isImport=false ){
   if (!$isImport) { // EXPORT
-  	$fileName = $element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
+  	$fileName = 'data/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
   	fileWrite( $fileName, $element->getSerialized(), $labUID );
   
   	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
@@ -452,8 +452,7 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
                          );
   
     
-	applyFunctionOnRegEx( //'#(?=<img )(.*? src=[\',"])(?!../syspix/|/syspix/)(\S+)([\',"]?)#si',
-                        '/(<img .*?src\s*=\s*[",\'])(?!..\/syspix\/|\/syspix\/)(.+?)([",\'])/s',
+	applyFunctionOnRegEx( '/(<img .*?src\s*=\s*[",\'])(?!..\/syspix\/|\/syspix\/)(.+?)([",\'])/s',
                         'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];', 
                         $HTMLcode
                        );
@@ -483,8 +482,7 @@ function importPix( &$HTMLcode ){
                           $HTMLcode
                          );
                                        
-	applyFunctionOnRegEx( //'#(?=<img )(.*? src=[\',"])(images/\S+)([\',"].*>)#s',
-                        '/(<img .*?src\s*=\s*[",\'])(images\/\S?)([",\'])/s',
+	applyFunctionOnRegEx( '/(<img .*?src\s*=\s*[",\'])(images\/\S?)([",\'])/s',
                         'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
                         $HTMLcode
                        );
@@ -511,13 +509,12 @@ function processLocalFiles( &$HTMLcode, $doCopy=true ){
   // This is [an example] [id] reference-style link.
   // [id]: http://example.com/  "Optional Title Here"
   	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(?!../pages/|/pages/|\#)(\S+)([\s\S]?(?<!\))\))#',
-                          'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];',
+                          'return $matches[1].handleLocalFile( $matches[2], \'files/\', '.intval($doCopy).' ).$matches[3];',
                           $HTMLcode
                          );
 
-	applyFunctionOnRegEx( //'#(?=<a )(.*? href=[\',"])(?!../pages/|/pages/|\#)(\S+)([\',"].*>)#s',
-                        '/(<a .*?href\s*=\s*[",\'])(?!..\/pages\/|\/pages\/)(.+?)([",\'])/s',
-                        'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];',
+	applyFunctionOnRegEx( '/(<a .*?href\s*=\s*[",\'])(?!..\/pages\/|\/pages\/)(.+?)([",\'])/s',
+                        'return $matches[1].handleLocalFile( $matches[2], \'files/\', '.intval($doCopy).' ).$matches[3];',
                         $HTMLcode
                        );
 }
@@ -541,13 +538,12 @@ function importFiles( &$HTMLcode ){
   // The following will NOT BE SUPPORTED for ewxport:
   // This is [an example] [id] reference-style link.
   // [id]: http://example.com/  "Optional Title Here"
-  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(data/\S+)([\s\S]?(?<!\))\))#',
+  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(files/\S+)([\s\S]?(?<!\))\))#',
                           'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
                           $HTMLcode
                          );
                          
-	applyFunctionOnRegEx( //'#(?=<a )(.*? href=[\',"])(data/\S+)([\',"].*>)#s',
-                        '/(<a .*?href\s*=\s*[",\'])(data\/.+?)([",\'])/s',
+	applyFunctionOnRegEx( '/(<a .*?href\s*=\s*[",\'])(files\/.+?)([",\'])/s',
                         'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
                         $HTMLcode
                        );
@@ -654,7 +650,7 @@ function getLabsFromDirectory( $directory ){
 	$subDirs = scandir( $directory );
   for( $i=0; $i<sizeof( $subDirs ); $i++){
     if ( $subDirs[$i] == '.' || $subDirs[$i] == '..' ) continue; // skip those
-    $file_name = $directory.$subDirs[$i].'/l0000002.txt';
+    $file_name = $directory.$subDirs[$i].'/data/l0000002.txt';
     if( file_exists($file_name) ){
       $myLelement = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
       $myLelement->initFromSerialized( file_get_contents( $file_name ) );

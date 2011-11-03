@@ -58,7 +58,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
      
       // load information about the lab
         $labToImport = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
-        $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/l0000002.txt') );
+        $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/l0000002.txt') );
 
       // create the mapping from the directory and create the "empty" DB objects for the elements
         $labElementArray = createIdImportMappingInitDB( $labToImport->uniqueID );
@@ -70,7 +70,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       // import elements
         foreach ($labElementArray as $value=>$newID){
           $nextElement = $GLOBALS[ $newID[0]."DBI" ]->getData2idx( substr($newID, 1) ); // load existing empty DB object
-          $nextElement->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/'.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt') );
+          $nextElement->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/'.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt') );
           
           processElement( $nextElement, $labElementArray, 1, true );
           
