@@ -679,7 +679,7 @@ function getLabsFromDirectory( $directory ){
 * @param $content  The content to search in.
 * @param global $usedClasses Gets filled.
 */
-$usedClasses = array();
+$usedClasses = array(); // has to be initialized for each export
 function updateUsedClasses( $content ){
   preg_replace_callback( '#(\s[c,C][l,L][a,A][s,S][s,S]=")(\S*)(")#',
                          create_function(

@@ -156,6 +156,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $GLOBALS['externallyLinkedElements'] = array();
         
         deleteExportDirectory( $GLOBALS['exportUID'] ); // empty export directory
+        $usedClasses = array(); // empty used styles!
         
         fileWrite( 'images/readme.txt', 'In this directory the images are stored.', $GLOBALS['exportUID'] );
         fileWrite( 'data/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
@@ -233,11 +234,11 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                   "</div>\r\n" );
    // StyleSheet processing 
-//      $styleDefinitions = array(); // holds the full definition
+      //$styleDefinitions = array(); // holds the full definition
 
       $tagStylePointer = getTagPointer( $tagNames ); // Tag => array( indices from $styleDefinitions );
       
-//      $stylesToExport = array(); // gets filled now
+      $stylesToExport = array(); // gets filled now
       foreach ( $GLOBALS['usedClasses'] as $value )
         if ( isset( $tagStylePointer[$value] ) )
           foreach ( $tagStylePointer[$value] as $index )
