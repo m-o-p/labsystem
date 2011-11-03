@@ -172,6 +172,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         removeExampleSolutions($htmlPreviewLab);
       // relocate linked objects like images, linked files, etc.
         processContent($htmlPreviewLab, $key, $labElementArray, false);
+        
         $htmlPreviewLab = substr( $htmlPreviewLab, 6 ); // remove the [HTML] again as it is only needed for right processing.
       // relocate syspix to global server
         $htmlPreviewLab = str_replace( '../syspix/', 'http://labsystem.m-o-p.de/syspix/', $htmlPreviewLab );

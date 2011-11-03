@@ -299,7 +299,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
   function isLocal( $fileWithPath ){
     $ignorePaths = array( 'extern', 'pages', 'ini', 'include', 'css', 'php', 'sessiondata', 'syspix');
     $parts = explode( '/', $fileWithPath );
-    return ((substr( $fileWithPath, 0, 4 ) != 'http') && (substr( $fileWithPath, 0, 6 ) != 'mailto') && !(is_array( $parts ) && in_array( $parts[1], $ignorePaths )) );
+    return ((substr( $fileWithPath, 0, 4 ) != 'http') && (substr( $fileWithPath, 0, 6 ) != 'mailto') && !(is_array( $parts ) && isset($parts[1]) && in_array( $parts[1], $ignorePaths )) );
   }
   
   /**
@@ -332,6 +332,10 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
    */
   function handleLocalFile( $localFileWithPath, $destDir, $doCopy ){
     global $cfg, $pge, $externallyLinkedElements;
+    
+    // Remove urlencoded chars as they are not in filenames.
+    // Remove heading and trailing whitespaces.
+    $localFileWithPath = trim(urldecode($localFileWithPath));
    
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
@@ -354,7 +358,6 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
       return $localFileWithPath;
     }
     //break else:
-    $localFileWithPath = urldecode( $localFileWithPath ); // normally it should be proper HTML with %20 instead of ' ' etc. ...
     $fileName = end(explode('/', $localFileWithPath));
     $fileName = validFilename( $fileName );
     if ($doCopy){
@@ -366,7 +369,8 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                  "</div>\r\n" );
     }
-    return (!isset( $itWorked ) || $itWorked) ? $destDir.$fileName : $localFileWithPath;
+    return (!isset( $itWorked ) // $doCopy === false...
+            || $itWorked) ? $destDir.$fileName : $localFileWithPath;
   }
   
   /** For Import
@@ -448,7 +452,8 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
                          );
   
     
-	applyFunctionOnRegEx( '#(?=<img )(.*? src=[\',"])(?!../syspix/|/syspix/)(\S+)([\',"].*>)#s',
+	applyFunctionOnRegEx( //'#(?=<img )(.*? src=[\',"])(?!../syspix/|/syspix/)(\S+)([\',"]?)#si',
+                        '/(<img .*?src\s*=\s*[",\'])(?!..\/syspix\/|\/syspix\/)(.+?)([",\'])/s',
                         'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];', 
                         $HTMLcode
                        );
@@ -478,7 +483,8 @@ function importPix( &$HTMLcode ){
                           $HTMLcode
                          );
                                        
-	applyFunctionOnRegEx( '#(?=<img )(.*? src=[\',"])(images/\S+)([\',"].*>)#s',
+	applyFunctionOnRegEx( //'#(?=<img )(.*? src=[\',"])(images/\S+)([\',"].*>)#s',
+                        '/(<img .*?src\s*=\s*[",\'])(images\/\S?)([",\'])/s',
                         'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
                         $HTMLcode
                        );
@@ -509,7 +515,8 @@ function processLocalFiles( &$HTMLcode, $doCopy=true ){
                           $HTMLcode
                          );
 
-	applyFunctionOnRegEx( '#(?=<a )(.*? href=[\',"])(?!../pages/|/pages/|\#)(\S+)([\',"].*>)#s',
+	applyFunctionOnRegEx( //'#(?=<a )(.*? href=[\',"])(?!../pages/|/pages/|\#)(\S+)([\',"].*>)#s',
+                        '/(<a .*?href\s*=\s*[",\'])(?!..\/pages\/|\/pages\/)(.+?)([",\'])/s',
                         'return $matches[1].handleLocalFile( $matches[2], \'data/\', '.intval($doCopy).' ).$matches[3];',
                         $HTMLcode
                        );
@@ -539,7 +546,8 @@ function importFiles( &$HTMLcode ){
                           $HTMLcode
                          );
                          
-	applyFunctionOnRegEx( '#(?=<a )(.*? href=[\',"])(data/\S+)([\',"].*>)#s',
+	applyFunctionOnRegEx( //'#(?=<a )(.*? href=[\',"])(data/\S+)([\',"].*>)#s',
+                        '/(<a .*?href\s*=\s*[",\'])(data\/.+?)([",\'])/s',
                         'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
                         $HTMLcode
                        );

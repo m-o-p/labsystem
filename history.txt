@@ -28,6 +28,9 @@ Feature Requests:
     
     Included function to delete export directory before export if it exists.
     
+    Updated the regex for handling files and pictures.
+    Added code to decode urlencoded urls and to remove trailing and heading spaces.
+    
 2011-10-21
 -------------------
   /pages/register.php
