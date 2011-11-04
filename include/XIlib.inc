@@ -689,7 +689,7 @@ function updateUsedClasses( $content ){
   preg_replace_callback( '#\<[^\>]*class[^\>]*=[^\>]*[",\']([^>]*)[",\']#i',
                          create_function(
                           '$matches',
-                          'global $usedClasses; if (!in_array($matches[2], $usedClasses)) $usedClasses[] = trim($matches[2]);'
+                          'global $usedClasses; if (!in_array($matches[1], $usedClasses)) $usedClasses[] = trim($matches[1]);'
                          ),
                          $content
                          );
