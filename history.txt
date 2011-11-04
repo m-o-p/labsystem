@@ -12,6 +12,11 @@ Feature Requests:
  - Stylesheet imports too much...!
  - Add Markdown help as module or as standard...
 
+2011-11-04
+-------------------
+  /include/XIlib.inc
+    updateUsedClasses: updated regEx to match more precisely
+    
 2011-11-03
 -------------------
   /include/classes/elements/LlElement.inc

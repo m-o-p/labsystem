@@ -686,7 +686,7 @@ function getLabsFromDirectory( $directory ){
 */
 $usedClasses = array(); // has to be initialized for each export
 function updateUsedClasses( $content ){
-  preg_replace_callback( '#(\s[c,C][l,L][a,A][s,S][s,S]=")(\S*)(")#',
+  preg_replace_callback( '#\<[^\>]*class[^\>]*=[^\>]*[",\']([^>]*)[",\']#i',
                          create_function(
                           '$matches',
                           'global $usedClasses; if (!in_array($matches[2], $usedClasses)) $usedClasses[] = trim($matches[2]);'
