@@ -65,8 +65,8 @@ class Url
       return $newQS;
     }
     if ( $key == 'newQueryStringRaw' ) return substr( $this->queryString, 1 );
-    if ( $key == 'oldQueryString' )return $_SERVER[ 'QUERY_STRING' ];
-    if ( isset( $_GET[$key] ) ) return $_GET[$key];
+    if ( $key == 'oldQueryString' )return htmlentities(urldecode($_SERVER[ 'QUERY_STRING' ]));
+    if ( isset( $_GET[$key] ) ) return htmlentities(urldecode($_GET[$key]));
     else return '';
   }
   
