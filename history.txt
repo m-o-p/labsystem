@@ -17,7 +17,12 @@ Feature Requests:
   /include/classes/Url.inc
     Fixed reflected XSS flaw in url->get()
     Thanks to Johannes Naab for reporting!!
-    
+  /include/classes/elements/LlElement.inc
+    Added delete button for labs to be exported. Deletes only the l-Element 
+    keeping all building blocks. This removes the lab from the list. Helpful 
+    when a lab is imported multiple times but not needed any more (updated 
+    version in same instance etc.). Full deletion is not necessary as simply 
+    a new instance can be spawned.
     
 2011-11-04
 -------------------
