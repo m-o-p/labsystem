@@ -23,6 +23,9 @@ Feature Requests:
     when a lab is imported multiple times but not needed any more (updated 
     version in same instance etc.). Full deletion is not necessary as simply 
     a new instance can be spawned.
+  /pages/XIport.php
+  /syspix/labsystem_wait_17x117.gif
+    Added progress bar image on exporting.
     
 2011-11-04
 -------------------
