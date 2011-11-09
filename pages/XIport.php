@@ -288,7 +288,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       $pge->put( $value->showExportImportRow( '', false ) ); // show the property row
      
   // saving
-    $pge->put("<input TABINDEX=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("yesIconfirm")."\" accesskey=\"s\" onclick='isDirty=false; this.disabled = \"disabled\"; document.getElementById(\"progressBar\").style.display = \"inline\";'> ".
+    $pge->put("<input TABINDEX=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("yesIconfirm")."\" accesskey=\"s\" onclick='isDirty=false; document.getElementById(\"progressBar\").style.display = \"inline\";'> ".
               '<div id="progressBar" style="display: none;"><img src="../syspix/labsystem_wait_17x117.gif" width="117" height="17"></div>' );
   
   
