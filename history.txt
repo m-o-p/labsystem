@@ -62,6 +62,26 @@ Feature Requests:
   /ini/host2config.ini
     Changed $_GET and isset( $_GET to $url->get and $url->available
     This adds escape methods and secures parameters via URL thereby.
+    
+  /include/classes/elements/LiElement.inc
+  /include/classes/elements/LlElement.inc
+  /include/classes/elements/LmElement.inc
+  /include/classes/elements/LpElement.inc
+  /include/classes/elements/LsElement.inc
+  /include/logger.inc
+  /php/authenticate.php
+  /php/saveFile.php
+  /php/saveUserRights.php
+  /php/sendMail.php
+  /php/uaCreateUsers.php
+  /php/uaManageUsersExecute.php
+  /php/uaManageUsersSave.php
+  /php/uaMyDataSave.php
+  /php/uaMyPWSave.php
+  /php/uaUnPwRemind.php
+    Moved urlencode for parameter into the $url class out of the local files.
+    If cooke is available use the cookie for transport when possible.
+
 
 2011-11-09
 -------------------

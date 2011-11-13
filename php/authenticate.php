@@ -52,7 +52,7 @@ $url->clearQueryString(); $url->put( $url->get("oldQueryString") );
 
 if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD']) ) ){ 
  // not authenticated
-  $url->put( "sysalert=".urlencode( $lng->get("AlertWrongUsrPw") ) );
+  $url->put( "sysalert=".$lng->get("AlertWrongUsrPw") );
   header( "Location: ".$url->rawLink2("../pages/login.php") );
   exit;
   }

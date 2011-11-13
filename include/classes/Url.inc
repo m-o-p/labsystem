@@ -52,7 +52,10 @@ class Url
         $varName = $string;
         $varContent = 'true';
       }
-      $this->queryString .= "&".$varName.'='.urlencode( $varContent );
+      if ( isset($_SESSION["uid"]) && // Session running?
+           ( ($varName == 'sysinfo') || ($varName == 'sysalert') )
+           ) $_SESSION[$varName]=$varContent; // If session is running use the cookie for transport
+      else $this->queryString .= "&".$varName.'='.urlencode( $varContent );
     }
   }
   
@@ -76,7 +79,15 @@ class Url
     }
     if ( $key == 'newQueryStringRaw' ) return substr( $this->queryString, 1 );
     if ( $key == 'oldQueryString' )return htmlentities(urldecode($_SERVER[ 'QUERY_STRING' ]));
-    if ( $GLOBALS['url']->available($key) ) return htmlentities(urldecode($_GET[$key]));
+    if ( isset( $_GET[$key]) ) return htmlentities(urldecode($_GET[$key]));
+    else if (  isset($_SESSION["uid"]) && // Session running?
+               ( ($key == 'sysinfo') || ($key == 'sysalert') ) &&
+               isset($_SESSION[$key])
+             ){
+                $val = $_SESSION[$key];
+                $_SESSION[$key] = ''; // empty value as it is only used by page layout and should be empty now
+                return urldecode($val); // If session is running use the cookie for transport
+              }
     else return '';
   }
   
@@ -85,7 +96,11 @@ class Url
   * @param $key   The identifier of the element whos value should be returned.
   */
   function available( $key ){
-    return isset( $_GET[$key] );
+    return isset( $_GET[$key] ) || ( isset($_SESSION["uid"]) && // Session running?
+                                     ( ($key == 'sysinfo') || ($key == 'sysalert') ) &&
+                                     isset($_SESSION[$key]) && 
+                                     ($_SESSION[$key] != '')
+                                    ); // If session is running the cookie can be used for transport;
   }
   
   /**

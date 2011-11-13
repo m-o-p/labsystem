@@ -669,7 +669,7 @@ class LiElement extends Element{
     }
     
     // some user information
-    $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved")." ".$lng->get("iNumber")." ".$newInput->idx ) );
+    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("iNumber")." ".$newInput->idx );
     makeLogEntry( 'edit', 'saved', 'i'.$newInput->idx );
       
     // One could also display the page here but that way it is left to the normal mechanism...
@@ -735,7 +735,7 @@ class LiElement extends Element{
     } else{ // You are only allowed to answer one question at the same time. 
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
-            $url->put( "sysalert=".urlencode( $lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo ) );
+            $url->put( "sysalert=".$lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
             
            // As this case should never happen, we save here anyway not to lose data:
            // To abondon parallel answering we replace all spaces by NO_LOCK so the user has to remove this later again.
@@ -761,7 +761,7 @@ class LiElement extends Element{
           $this->history .= $fileName.' deleted';
         } 
       } 
-    } else $url->put( "sysalert=".urlencode( $lng->get("ElementHasNoFileUpload")) ); 
+    } else $url->put( "sysalert=".$lng->get("ElementHasNoFileUpload")); 
   } 
   
   /**
@@ -823,11 +823,11 @@ class LiElement extends Element{
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
      
     if ($this->isClosed)
-      $url->put( "sysalert=".urlencode( $lng->get("InputAlreadyClosed") ) );
+      $url->put( "sysalert=".$lng->get("InputAlreadyClosed") );
     else{
       $reForceLock = ( $this->lockIsSetTo && $this->forceReLock ); // lock is set yet and user clicked on lock -> place a note but set it
       if ( $reForceLock )
-        $url->put( "sysalert=".urlencode( $lng->get("LockTakenFrom")." ".$this->lockIsSetTo ) );
+        $url->put( "sysalert=".$lng->get("LockTakenFrom")." ".$this->lockIsSetTo );
 
       if (!$this->lockIsSetTo || $reForceLock){
         $this->acquireLock4( $_POST['FULLADDRESS'] );

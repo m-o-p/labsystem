@@ -68,9 +68,9 @@ elseif( $url->get( 'function' ) == 'del' ){
   if ( !$userDBC->mkDelete( $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_uid')."='".$url->get( 'param' )."'" ) )
     $text = $userDBC->reportErrors();
   else $text = $url->get( 'param' ).": ".$lng->get( "deleted" );
-  $url->put( 'sysalert='.urlencode( $text ) );
+  $url->put( 'sysalert='.$text );
 }
-else /* alert */ $url->put( 'sysalert='.urlencode( $lng->get('NotAllowedToMkCall') ) );
+else /* alert */ $url->put( 'sysalert='.$lng->get('NotAllowedToMkCall') );
 
 // redirect
   header( "Location: ".$url->rawLink2( stripslashes( $url->get( 'redirectTo' ) ) ) );

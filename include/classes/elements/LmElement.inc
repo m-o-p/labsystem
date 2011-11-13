@@ -547,7 +547,7 @@ class LmElement extends Element{
     }
     
     // some user information
-    $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved")." ".$lng->get("mNumber")." ".$newMultipleChoice->idx ) );
+    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("mNumber")." ".$newMultipleChoice->idx );
     makeLogEntry( 'm', 'saved', $newMultipleChoice->idx );
       
     // One could also display the page here but that way it is left to the normal mechanism...

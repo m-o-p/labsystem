@@ -90,7 +90,7 @@ while ( $data = mysql_fetch_assoc( $result ) ){
 }
 
 // note
-  $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );
+  $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
 
 // redirect
   header( "Location: ".urldecode($_POST['REDIRECTTO']) );

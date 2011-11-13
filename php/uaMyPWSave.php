@@ -53,10 +53,10 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
 
 if ( $_POST['NEWPW'] != $_POST['NEWPWRETYPE'] )
     // alert
-    $url->put( 'sysalert='.urlencode( $lng->get('uaPwRetypeMismath') ) );
+    $url->put( 'sysalert='.$lng->get('uaPwRetypeMismath') );
 elseif ( strlen( $_POST['NEWPW'] ) <= $cfg->get('uaMinPassLength') )
     // alert
-    $url->put( 'sysalert='.urlencode( $lng->get('uaPwTooShort').' ( !<='.$cfg->get('uaMinPassLength').' )' ) );
+    $url->put( 'sysalert='.$lng->get('uaPwTooShort').' ( !<='.$cfg->get('uaMinPassLength').' )' );
 else{ // save new PW
     // new Interface to the userDB
     $userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 
@@ -69,7 +69,7 @@ else{ // save new PW
                         $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
                        );
     // note
-    $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );
+    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
     makeLogEntry( 'useradmin', 'saved password of '.$_POST['USERNAME'] );
 }
 

@@ -1185,7 +1185,7 @@ class LlElement extends Element{
     }
     
     // some user information
-    $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved")." ".$lng->get("lNumber")." ".$newLab->idx ) );
+    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("lNumber")." ".$newLab->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );

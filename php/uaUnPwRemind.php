@@ -61,7 +61,7 @@ $result = $userDBC->mkSelect( $cfg->get('UserDBField_username').', '.
                              );
 if ( mysql_num_rows( $result ) < 1)
   // alert
-  $url->put( 'sysalert='.urlencode( $_POST['EMAIL'].' '.$lng->get('uaNotBelong2Usr') ) );
+  $url->put( 'sysalert='.$_POST['EMAIL'].' '.$lng->get('uaNotBelong2Usr') );
 else{
   while( $data = mysql_fetch_assoc( $result ) ){
     // generate new Password:
@@ -91,7 +91,7 @@ else{
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
   }
 
-  $url->put( "sysinfo=".urlencode( $lng->get('MailHasBeenSent').' '.htmlentities( $_POST['EMAIL'] )/*.' '.$newPW*/ ) );
+  $url->put( "sysinfo=".$lng->get('MailHasBeenSent').' '.htmlentities( $_POST['EMAIL'] )/*.' '.$newPW*/ );
 }
 
 // redirect

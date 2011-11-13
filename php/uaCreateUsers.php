@@ -106,7 +106,7 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
   }
   
 // note
-  $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );
+  $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
   
   makeLogEntry( 'useradmin', 'new users created' );
 

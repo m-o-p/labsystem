@@ -71,7 +71,7 @@ if (($_POST['FILENAME'] == $cfg->get("UserStyleSheet")) && include_once( '../plu
   foreach ( $css->log as $logEntry ){
     $logText .= '  '.$logEntry[0]['t'].': '.$logEntry[0]['m']."\n";
   }
-  if ( $logText != 'CSSTidy: ' ) $url->put( "sysalert=".urlencode( $logText ) );
+  if ( $logText != 'CSSTidy: ' ) $url->put( "sysalert=".$logText );
   $_POST['FILECONTENT'] = $css->print->plain();
 }
 
@@ -81,15 +81,15 @@ if (($_POST['FILENAME'] == $cfg->get("UserStyleSheet")) && include_once( '../plu
           $theFile = fopen( $_POST['FILENAME'], "w" )     // w ^= write and create (if not exist)
                                                       ) )
    // alert file open error
-    $url->put( "sysalert=".urlencode( $lng->get("errorOpeningFile")." (".$_POST['FILENAME'].")" ) );
+    $url->put( "sysalert=".$lng->get("errorOpeningFile")." (".$_POST['FILENAME'].")" );
 	elseif (
           fwrite( $theFile, stripslashes( html_entity_decode ($_POST['FILECONTENT']) ) ) // slashes automatically added by posting
                                                       )
        // note that it worked
-        $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved")." (".$_POST['FILENAME'].")" ) );
+        $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." (".$_POST['FILENAME'].")" );
       else
        // alert that it didn't work
-        $url->put( "sysalert=".urlencode( $lng->get("errorWritingFile")." (".$_POST['FILENAME'].")" ) );
+        $url->put( "sysalert=".$lng->get("errorWritingFile")." (".$_POST['FILENAME'].")" );
     
 	fclose( $theFile );
 

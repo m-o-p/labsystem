@@ -75,7 +75,7 @@ if ( !( isset($_POST['SESSION_ID']) &&
   }
 
 // note
-  $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved") ) );
+  $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
   
   makeLogEntry( 'system', 'user rights saved' );
 

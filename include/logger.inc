@@ -54,7 +54,7 @@ global $cfg, $configPrefix;
           $logFile = fopen( $theLogFile, 'a+' )     // w ^= write and create (if not exist)
                                                       ) )
    // alert file open error
-    $url->put( 'sysalert='.urlencode( $GLOBALS['lng']->get('errorOpeningFile').' ('.$theLogFile.')' ) );
+    $url->put( 'sysalert='.$GLOBALS['lng']->get('errorOpeningFile').' ('.$theLogFile.')' );
 
   $logEntry = date("Y-m-d\tH:i:s")."\t".
               $_SESSION['uid']."\t".
@@ -73,7 +73,7 @@ global $cfg, $configPrefix;
           fwrite( $logFile, $logEntry )
                                                       ) )
      // alert that it didn't work
-    $url->put( 'sysalert='.urlencode( $lng->get('errorWritingFile').' ('.$theLogFile.')' ) );
+    $url->put( 'sysalert='.$lng->get('errorWritingFile').' ('.$theLogFile.')' );
   
   fclose($logFile);
 }
