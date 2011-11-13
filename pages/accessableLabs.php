@@ -53,8 +53,8 @@ $pge->title        = $cfg->get('SystemTitle').' '.$lng->get('MnuEntryCourseConte
     //SELECT `num` FROM `schedules` WHERE 1 GROUP BY num ORDER BY `start`
     $sDBI->queryResult = $sDBI->myDBC->mkSelect( 'num', $sDBI->myTable, 'idx!=1', '`start`', 'num' );
     while( $nextData=mysql_fetch_array($sDBI->queryResult) ){
-      if (  !in_array( $nextData['num'], $alreadyAdded ) ) // do not add twice...
-        $accessableLabs[] = $lDBI->getData2idx( $nextData['num'] );
+      if (  !in_array( $nextData['num'], $alreadyAdded ) && ($nextLab = $lDBI->getData2idx( $nextData['num'] )) ) // do not add twice...
+        $accessableLabs[] = $nextLab;
     }
 
      $counter = 0;

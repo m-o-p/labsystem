@@ -273,6 +273,12 @@ class LsElement extends Element{
         $id = $element->id;
         require( "../php/getDBIbyID.inc" ); // -> $DBI
         $element2 = $DBI->getMenuData2idx( $element->num );
+
+        if (!$element2){ // delete schedules for non-existing elements
+          $sDBI->deleteData( $element->idx );
+          continue; // continue with next element
+        }
+
         $legend = array_merge( $legend, 
                                Array( "s".$element->idx =>  "<a href=\"".$url->link2( "../pages/view.php?address=".$element->id.$element->num )."\">".$element2->title."</a>".
                                                             " (".date( $lng->get("DateFormat"),  $element->start ).
