@@ -202,7 +202,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
 // form
     $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/uaManageUsersSave.php")."\">\n".
                "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
-               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"".urlencode($url->rawLink2( $_SERVER['PHP_SELF'] ))."\">\n"
+               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"".$url->rawLink2( $_SERVER['PHP_SELF'] )."\">\n"
               );
               
     $currElNr = 0;
@@ -227,7 +227,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
                      ( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '</a>' : '' )."\n".
 // delete button
                  ' <a tabindex="'.$pge->nextTab++.'" '.
-                    'href="'.$url->link2( '../php/uaManageUsersExecute.php?function=del&param='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ).'&redirectTo='.urlencode( $_SERVER['REQUEST_URI'] ) )."\" ".
+                    'href="'.$url->rawLink2( '../php/uaManageUsersExecute.php?function=del&param='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ).'&redirectTo='.urlencode( $_SERVER['PHP_SELF'].'?'.$url->get('newQueryStringRaw') ) )."\" ".
                     "onClick='return confirmLink(this, \"".$data[ $cfg->get('UserDBField_forename') ].' '.$data[ $cfg->get('UserDBField_name') ].': '.$lng->get('confirmDelete').'");'."'".
                  '>'.
                  "<img src=\"../syspix/button_delete_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"delete\" title=\"".$lng->get("explainDeleteElemnt")."\">".

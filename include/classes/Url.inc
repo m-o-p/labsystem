@@ -44,18 +44,24 @@ class Url
   */
   function put( $string ){
     if ( $string != "" ){
-      $posEq = strpos( $string, '=' );
-      if ($posEq !== false){
-        $varName = substr( $string, 0, $posEq );
-        $varContent = substr( $string, $posEq+1 );
-      } else {
-        $varName = $string;
-        $varContent = 'true';
+      $string = urldecode( html_entity_decode( $string ) ); // remove any escapes as they are added again here
+      if ( strpos( $string, '&' ) === false) $string.='&';
+      $strings = explode( '&', $string);
+      foreach ($strings as $string){
+        if ($string == '') continue; // jump over empty strings...
+        $posEq = strpos( $string, '=' );
+        if ($posEq !== false){
+          $varName = substr( $string, 0, $posEq );
+          $varContent = urldecode(substr( $string, $posEq+1 ));
+        } else {
+          $varName = $string;
+          $varContent = 'true';
+        }
+        if ( isset($_SESSION["uid"]) && // Session running?
+             ( ($varName == 'sysinfo') || ($varName == 'sysalert') )
+             ) $_SESSION[$varName]=$varContent; // If session is running use the cookie for transport
+        else $this->queryString .= "&".$varName.'='.urlencode( $varContent );
       }
-      if ( isset($_SESSION["uid"]) && // Session running?
-           ( ($varName == 'sysinfo') || ($varName == 'sysalert') )
-           ) $_SESSION[$varName]=$varContent; // If session is running use the cookie for transport
-      else $this->queryString .= "&".$varName.'='.urlencode( $varContent );
     }
   }
   
@@ -78,8 +84,8 @@ class Url
       return $newQS;
     }
     if ( $key == 'newQueryStringRaw' ) return substr( $this->queryString, 1 );
-    if ( $key == 'oldQueryString' )return htmlentities(urldecode($_SERVER[ 'QUERY_STRING' ]));
-    if ( isset( $_GET[$key]) ) return htmlentities(urldecode($_GET[$key]));
+    if ( $key == 'oldQueryString' )return urldecode($_SERVER[ 'QUERY_STRING' ]);
+    if ( isset( $_GET[$key]) ) return urldecode($_GET[$key]);
     else if (  isset($_SESSION["uid"]) && // Session running?
                ( ($key == 'sysinfo') || ($key == 'sysalert') ) &&
                isset($_SESSION[$key])
@@ -108,7 +114,7 @@ class Url
   * @param $string  The text to be removed.
   */
   function rem( $string ){ 
-    $this->queryString = str_replace( "&".$string, "", $this->queryString );
+    $this->queryString = str_replace( '&'.$string, '', $this->queryString );
   }
   
   /**
@@ -116,8 +122,12 @@ class Url
   * @param $key     The key to be preserved.
   */
   function preserve( $key ){
-    if ( $GLOBALS['url']->available($key) ) 
-      if ( $_GET[$key] == "" ) $this->put( $key ); else $this->put( $key."=".$_GET[$key] );
+    if ( isset( $_GET[$key] ) ) {
+      if ( $_GET[$key] == '' )
+        $this->put( $key ); 
+      else 
+        $this->put( $key."=".$_GET[$key] );
+    }
   }
   
   /**

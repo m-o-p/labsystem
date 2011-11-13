@@ -81,7 +81,14 @@ Feature Requests:
   /php/uaUnPwRemind.php
     Moved urlencode for parameter into the $url class out of the local files.
     If cooke is available use the cookie for transport when possible.
-
+  /pages/accessableLabs.php
+    If a schedule exists but the lab does not this entry is ignored on this page.
+  /include/classes/LsElement.inc
+    If a schedule exists for a non-available element the schedule gets automatically deleted.
+  /include/classes/Url.inc
+  /pages/uaManageUsers.php
+  /php/uaManageUsersExecute.php
+    Fixed redirect link.
 
 2011-11-09
 -------------------
