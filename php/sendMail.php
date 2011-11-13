@@ -93,7 +93,7 @@ else{
 
     makeLogEntry( 'system', 'mail sent' );
     
-    $url->put( "sysinfo=".urlencode( $lng->get("MailHasBeenSent")." ".htmlentities( $mailFrom ) ) );
+    $url->put( "sysinfo=".$lng->get("MailHasBeenSent")." ".$mailFrom );
 }
 
 header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );

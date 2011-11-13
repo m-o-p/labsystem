@@ -32,13 +32,13 @@
 * @return $lastFinal
 */
 
-if ( !isset($_GET['address']) ){
+if ( !$GLOBALS['url']->available('address') ){
                                   trigger_error( $lng->get( "noAddressPosted" ), E_USER_ERROR );
                                   exit;
                                 }
 
 // there might be possible SQL injections...
-if ( $_GET['address']!=Ddbc::escapeString($_GET['address']) ){
+if ( $GLOBALS['url']->get('address')!=Ddbc::escapeString($GLOBALS['url']->get('address')) ){
                                                                 trigger_error( $lng->get( "elementNotExist" ), E_USER_ERROR );
                                                                 exit;
                                                               }

@@ -109,7 +109,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
                                 );
    if ($userDBC->datasetsIn( $result ) > 0) // yes => just update the interest
     $userDBC->mkUpdate( $customFields.
-                        'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')\', '.
+                        'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\', '.
                         '_unassigned=1',
                         $cfg->get('UserDatabaseTable'),
                         'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $_POST['EMAIL'] )."')" );
@@ -120,7 +120,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
         $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
         
         $userDBC->mkInsert( $customFields.
-                            'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')\', '.
+                            'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\', '.
                             '_unassigned=1, '.
                             $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $_POST['EMAIL'] )."', ".
                             $cfg->get('UserDBField_name')."='".$userDBC->escapeString( $_POST['NAME'] )."', ".
@@ -174,7 +174,7 @@ else{ // no data posted or errors found
 
      $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"#\">\n".
                 "<input type=\"hidden\" name=\"REGISTER4\" value=\"".$cfg->get('User_courseID')."\">\n".
-                "<fieldset><legend>".$lng->get("MnuEntryRegister").' | '.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')'."</legend>\n".
+                "<fieldset><legend>".$lng->get("MnuEntryRegister").' | '.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')'."</legend>\n".
                 "<div class=\"labsys_mop_in_fieldset\">\n" );
 
      $pge->put( 
@@ -213,7 +213,7 @@ else{ // no data posted or errors found
     // How many people registered from this course already?
      $result = $userDBC->mkSelect( 'registerFor', 
                                    $cfg->get('UserDatabaseTable'), 
-                                   '_unassigned=1 && registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$_GET['config'].')\''
+                                   '_unassigned=1 && registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\''
                                   );
      $registrations = $userDBC->datasetsIn( $result ); // number of registrations under this courseID
      $max = ($cfg->doesExist('maxRegistrations') ? $cfg->get('maxRegistrations') : $registrations + $DEFAULT_PLACES);

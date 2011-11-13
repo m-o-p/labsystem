@@ -43,7 +43,17 @@ class Url
   * @param $string  The content to be added.
   */
   function put( $string ){
-    if ( $string != "" ) $this->queryString .= "&".$string;
+    if ( $string != "" ){
+      $posEq = strpos( $string, '=' );
+      if ($posEq !== false){
+        $varName = substr( $string, 0, $posEq );
+        $varContent = substr( $string, $posEq+1 );
+      } else {
+        $varName = $string;
+        $varContent = 'true';
+      }
+      $this->queryString .= "&".$varName.'='.urlencode( $varContent );
+    }
   }
   
   /**
@@ -66,7 +76,7 @@ class Url
     }
     if ( $key == 'newQueryStringRaw' ) return substr( $this->queryString, 1 );
     if ( $key == 'oldQueryString' )return htmlentities(urldecode($_SERVER[ 'QUERY_STRING' ]));
-    if ( isset( $_GET[$key] ) ) return htmlentities(urldecode($_GET[$key]));
+    if ( $GLOBALS['url']->available($key) ) return htmlentities(urldecode($_GET[$key]));
     else return '';
   }
   
@@ -91,7 +101,7 @@ class Url
   * @param $key     The key to be preserved.
   */
   function preserve( $key ){
-    if ( isset( $_GET[$key] ) ) 
+    if ( $GLOBALS['url']->available($key) ) 
       if ( $_GET[$key] == "" ) $this->put( $key ); else $this->put( $key."=".$_GET[$key] );
   }
   

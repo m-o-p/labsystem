@@ -130,9 +130,9 @@ class Menu{
     // The second possibility of setting a menu active is by its title:
     global $pge; if ( !$isOn && 
                       !$this->gotOneMenuEntry &&
-                      ( ( isset($_GET['address']) && ( "../pages/view.php?address=".$_GET['address'] == $link ) ) 
+                      ( ( $GLOBALS['url']->available('address') && ( "../pages/view.php?address=".$GLOBALS['url']->get('address') == $link ) ) 
                         || // this link
-                        ( !isset($_GET['address']) && ( $strText == $pge->matchingMenu ) )
+                        ( !$GLOBALS['url']->available('address') && ( $strText == $pge->matchingMenu ) )
                        )
                      ) $isOn = true;
 

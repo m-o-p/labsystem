@@ -94,7 +94,7 @@ ksort( $allOther );
 
 $counter=0;
 
-$checkAll = isset( $_GET['checkAll'] );
+$checkAll = $GLOBALS['url']->available('checkAll');
 
 $allSupporterInputs = "";
 foreach( $allSupporter as $key => $value ) $allSupporterInputs .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".( $checkAll ?  " checked=\"checked\" "  : '' )." onchange='isDirty=true'>".

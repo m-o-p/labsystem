@@ -40,12 +40,37 @@
 */
 if ( isset($cfg) ) return;
 
-if ( !isset($configPrefix) ) $configPrefix='';
-
 require_once( INCLUDE_DIR."/classes/Rom.inc" );
 
-if ( isset($_GET["config"]) )
-  $configFile = "../ini/config_".$configPrefix.$_GET["config"].".ini";
+// use the hostname prefix as base for the config?
+  $configPrefix='';
+  /* An interesting feature is to use name based hosts 
+   * to select the proper configuration files.
+   *
+   * In the following script the $_GET['config'] gets
+   * rewritten according to the hostname.
+   *
+   * As configuration for /include/configuration.inc the following 
+   * file is used. 
+   * 
+   * Note the big letters of the hostnames.
+   * Its content is:
+   * HOSTNAME     =  "configprefix"
+   * ILAB         =  "ilab_"
+   * ILAB2        = "ilab2_"
+   */
+  $h2cFile = "../ini/host2config.ini";
+  if ( !file_exists( $h2cFile ) ) return; // no configuration there
+  $h2c = new Rom( parse_ini_file( $h2cFile ) );
+  $subHost = strtoupper( substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.') ) );
+  if ($h2c->doesExist( $subHost )) $configPrefix=$h2c->get( $subHost );
+  // to always add the infix of the hostname the following code may help:
+  // $configPrefix=strtolower(substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.'))).'_';
+// /use the hostname prefix as base for the config?
+
+
+if ( $GLOBALS['url']->available("config") )
+  $configFile = "../ini/config_".$configPrefix.$GLOBALS['url']->get("config").".ini";
 else
   $configFile = "../ini/config_demo.ini";
 

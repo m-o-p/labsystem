@@ -83,14 +83,14 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
 // -> only show result partially!
 // In mysql exists [LIMIT offset, rows] as argument, one could use that. BUT how many totally?
   if ( $url->available('startFrom') &&
-       is_numeric ( $_GET['startFrom'] ) &&
-       ($_GET['startFrom'] > 0)
-      ) $startFrom = $_GET['startFrom']; else $startFrom = 1;
+       is_numeric ( $GLOBALS['url']->get('startFrom') ) &&
+       ($GLOBALS['url']->get('startFrom') > 0)
+      ) $startFrom = $GLOBALS['url']->get('startFrom'); else $startFrom = 1;
 
   if ( $url->available('frameSize') &&
-       is_numeric ( $_GET['frameSize'] ) &&
-       ($_GET['frameSize'] > 0)
-      ) $frameSize = $_GET['frameSize']; else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
+       is_numeric ( $GLOBALS['url']->get('frameSize') ) &&
+       ($GLOBALS['url']->get('frameSize') > 0)
+      ) $frameSize = $GLOBALS['url']->get('frameSize'); else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
 
   
   $manageNavigation = '<!-- navigation -->'."\n";

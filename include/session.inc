@@ -27,10 +27,10 @@
 * @version    1.0
 */
 
-if ( !isset( $_GET["inside"] ) &&    // if user is not logged in, we don't need that
+if ( !$GLOBALS['url']->available("inside") &&    // if user is not logged in, we don't need that
      !isset( $NEWSESSION ) ) return; // but if we just authenticated and want to start!
 
-if ( isset( $_GET["config"] ) ) session_name ( $url->get("config") );
+if ( $GLOBALS['url']->available("config") ) session_name ( $url->get("config") );
 /* This allows users to log on for different configurations with different cookies.
    Otherwise the one session cookie would be used for all configurations and that could cause trouble
    because some settings (p.e. seeingUID for correcting) might not exist in the other config's DBs...
@@ -55,7 +55,7 @@ require_once( INCLUDE_DIR."/classes/Url.inc");
 if ( strip_tags(SID) != "" ) $url->put( strip_tags(SID) );
 
 if ( isset($_SESSION["uid"]) &&/* if one of the fields is available all must be */
-     ( ($_SESSION["config"] == "") || ( isset( $_GET['config'] ) && ($_SESSION["config"] == $url->get('config') ) ) )
+     ( ($_SESSION["config"] == "") || ( $GLOBALS['url']->available('config') && ($_SESSION["config"] == $url->get('config') ) ) )
      /* This second check (you view data for your configuration) is important because otherwise
         one could change to another configuration and keep his rights even thoug he did never log
         in for that configuration!

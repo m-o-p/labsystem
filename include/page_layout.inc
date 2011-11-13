@@ -137,7 +137,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     <table class="labsys_mop_maintable" align="center" cellpadding="0" cellspacing="0">
       <?php /* table layout fixed: first row sets the width */
         echo("<tr><td class=\"labsys_mop_ableMenu\"></td>". // show/ hide menu
-             "<td class=\"labsys_mop_menu".( isset( $_GET['nomenu'] ) ? "_hidden" : '' )."\"></td>". // the menu
+             "<td class=\"labsys_mop_menu".( $GLOBALS['url']->available('nomenu') ? "_hidden" : '' )."\"></td>". // the menu
              "<td></td></tr>\n"); // the content area
       ?>
 <!-- ************************* start of topmost header ************************* -->
@@ -201,7 +201,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 
 <!-- ************************* start of menu ************************* -->
       <tr><?php /* hide/ show menu table row */
-          $menuVisible = !isset( $_GET['nomenu'] );
+          $menuVisible = !$GLOBALS['url']->available('nomenu');
           $url2 = new Url(); $url2->put( $url->get("oldQueryString") );
           if ( $menuVisible ) $url2->put( "nomenu=true" ); else $url2->rem( "nomenu=true" );
          

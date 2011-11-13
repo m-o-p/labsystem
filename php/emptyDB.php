@@ -32,6 +32,9 @@
  */
 define( "INCLUDE_DIR", "../include" );
 
+require( INCLUDE_DIR."/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
+                                                // needed to get parameters from the url ($url->get, ->available)
+
 require( INCLUDE_DIR."/customErrHandle.inc" );  // The custom Error handler.
 
 $allowed = Array( 'demo1',
@@ -40,8 +43,8 @@ $allowed = Array( 'demo1',
                   'demo4',
                   'demo5'
                  );
-if ( !in_array( $_GET['config'], $allowed ) ){
-                                                trigger_error( 'db.emptying not allowed with this config! '.$_GET['config'], E_USER_ERROR );
+if ( !in_array( $GLOBALS['url']->get('config'), $allowed ) ){
+                                                trigger_error( 'db.emptying not allowed with this config! '.$GLOBALS['url']->get('config'), E_USER_ERROR );
                                                 exit;
                                               }
 
@@ -51,6 +54,6 @@ require_once( INCLUDE_DIR."/configuration.inc" );
 exec( 'mysql --debug-info -u'.$cfg->get("WorkingDatabaseUserName").' -p'.$cfg->get("WorkingDatabasePassWord").' '.$cfg->get("WorkingDatabaseName").' < forTest.sql' );
 
 sleep ( 2 ); // wait for db to settle...
-header( 'Location: ../php/authenticate4Demo.php?config='.$_GET['config'].'&sysinfo='.urlencode( 'db.emtied' ).'&userrole='.$_GET['userrole'] );
+header( 'Location: ../php/authenticate4Demo.php?config='.$GLOBALS['url']->get('config').'&sysinfo='.urlencode( 'db.emtied' ).'&userrole='.$GLOBALS['url']->get('userrole') );
 
 ?>

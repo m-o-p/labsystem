@@ -301,7 +301,7 @@ class LcElement extends Element{
   function showEdit( $fullAddress ){
     global $lng, $usr, $url, $cfg, $pge, $cDBI;
     
-    if ( $url->available('insert') ){ $url->rem('insert'); $this->insertNew( $_GET['insert'] ); } // inserts an element of the given type at the end of the collection
+    if ( $url->available('insert') ){ $url->rem('insert'); $this->insertNew( $GLOBALS['url']->get('insert') ); } // inserts an element of the given type at the end of the collection
     
     $myRetVal =  "<FORM class=\"labsys_mop_std_form\" NAME=\"collectionEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=c")."\">\n".
                  "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
@@ -378,7 +378,7 @@ class LcElement extends Element{
                   "</fieldset>\n".
                   
                 "</td></tr></table>\n".
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' )." onchange='isDirty=true;'>".
+              "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( $GLOBALS['url']->available("saveAsNew") || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' )." onchange='isDirty=true;'>".
               "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
               "</fieldset>\n".
 
@@ -458,7 +458,7 @@ class LcElement extends Element{
     }
     
     // some user information
-    $url->put( "sysinfo=".urlencode( $lng->get("DataHasBeenSaved")." ".$lng->get("cNumber")." ".$newCollection->idx ) );
+    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("cNumber")." ".$newCollection->idx );
  
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );

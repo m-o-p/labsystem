@@ -36,7 +36,7 @@ $pge->put("<div class=\"labsys_mop_h2\">".$pge->title."</div>\n".
           $lng->get("TxtLogInPage")."\n".
           "<FORM NAME=\"login\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/authenticate.php")."\">");
 
-if ( isset($_GET['redirectTo']) )
+if ( $GLOBALS['url']->available('redirectTo') )
   // Cause authenticate.php to redirect to that page instead of the default one from the config.
   // Happens if you have a link to a special page but are not logged in. So after log on you get directed there...
   $pge->put('<input type="hidden" name="REDIRECTTO" value="'.$url->get('redirectTo').'">');

@@ -69,18 +69,18 @@ $pge->visibleFor   = IS_DB_USER_ADMIN;
                                 $cfg->get('UserDatabaseName'));
 
 // Multipageresult-Filtering Init $_GET as it is used by the sorter...
-      if ( isset( $_GET['startFrom'] ) &&
-           is_numeric ( $_GET['startFrom'] ) &&
-           ($_GET['startFrom'] > 0)
-          ) $startFrom = $_GET['startFrom']; else $startFrom = 1;
+      if ( $GLOBALS['url']->available('startFrom') &&
+           is_numeric ( $GLOBALS['url']->get('startFrom') ) &&
+           ($GLOBALS['url']->get('startFrom') > 0)
+          ) $startFrom = $GLOBALS['url']->get('startFrom'); else $startFrom = 1;
 
 // new restriction? => set start to 1!
 if (isset($_POST['restrictTo'])) $startFrom = 1;
     
-      if ( isset( $_GET['frameSize'] ) &&
-           is_numeric ( $_GET['frameSize'] ) &&
-           ($_GET['frameSize'] > 0)
-          ) $frameSize = $_GET['frameSize']; else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
+      if ( $GLOBALS['url']->available('frameSize') &&
+           is_numeric ( $GLOBALS['url']->get('frameSize') ) &&
+           ($GLOBALS['url']->get('frameSize') > 0)
+          ) $frameSize = $GLOBALS['url']->get('frameSize'); else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
 // /Multipageresult-Filtering Init $_GET as it is used by the sorter...
 
 //Sorter
@@ -113,14 +113,14 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
                                   $cfg->get('UserDatabaseTable'), 
                                   ( (isset($_POST['restrictTo'])) ? // POST overrides GET!
                                       ( $_POST['restrictTo']!='' ? $_POST['restrictTo'].'=1' : '' ) : // empty? ignore!
-                                    ( (isset($_GET['restrictTo'])) && $_GET['restrictTo']!='' ? $_GET['restrictTo'].'=1' : '' ) 
+                                    ( ($GLOBALS['url']->available('restrictTo')) && $GLOBALS['url']->get('restrictTo')!='' ? $GLOBALS['url']->get('restrictTo').'=1' : '' ) 
                                    ),
                                    ( $restrictToKey == '_unassigned' ? 'registerFor, ' : '' ). // if unassigned order as well by courses registered to
                                    $orderBy.( $asc ?  ' ASC' :  ' DESC'  )
                                  );
 
 // EXPORT CSV
-   if (isset($_GET['exportCSV'])){
+   if ($GLOBALS['url']->available('exportCSV')){
      header('Content-type: text/x-csv');
 
      // Es wird downloaded.pdf benannt

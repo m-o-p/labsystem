@@ -2,7 +2,7 @@
 /**
  *  labsystem.m-o-p.de - 
  *                  the web based eLearning tool for practical exercises
- *  Copyright (C) 2010  Marc-Oliver Pahl
+ *  Copyright (C) 2011  Marc-Oliver Pahl
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,11 +23,9 @@
 *
 * @module     ../include/logger.inc
 * @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2010
-* @version    1.0
+* @copyright  Marc-Oliver Pahl 2011
+* @version    2.0
 */
-if ( !isset($configPrefix) ) $configPrefix='';
-$theLogFile = '/srv/www/log/'.$configPrefix.$url->get('config').'_'.date("Y-m-d").'.log';
 
 /**
 * Returns $consequent, if the test is true. Otherwise $alternative.
@@ -42,15 +40,21 @@ $theLogFile = '/srv/www/log/'.$configPrefix.$url->get('config').'_'.date("Y-m-d"
 * @return             The consequent or the alternative.
 */
 function makeLogEntry( $group, $operation, $resource='' ){ 
-global $theLogFile, $doLogging;
+global $cfg, $configPrefix;
 
+  $doLogging = $cfg->doesExist('logDir') && ($cfg->get('logDir') != '');
+  
   if (!isset($doLogging) || !$doLogging || !isset($_SESSION['uid'])) return; // only log for authenticated users
+  
+	if ( !file_exists($cfg->get('logDir'))) 
+    mkdir($cfg->get('logDir'), 0755, true) or trigger_error("Error creating folder ".$cfg->get('logDir'), E_USER_ERROR);
+  $theLogFile = $cfg->get('logDir').( substr( $cfg->get('logDir'), -1 ) != '/' ? '/' : '' ).$configPrefix.$GLOBALS['url']->get('config').'_'.date("Y-m-d").'.log';
 
 	if ( !(
           $logFile = fopen( $theLogFile, 'a+' )     // w ^= write and create (if not exist)
                                                       ) )
    // alert file open error
-    $url->put( 'sysalert='.urlencode( $lng->get('errorOpeningFile').' ('.$theLogFile.')' ) );
+    $url->put( 'sysalert='.urlencode( $GLOBALS['lng']->get('errorOpeningFile').' ('.$theLogFile.')' ) );
 
   $logEntry = date("Y-m-d\tH:i:s")."\t".
               $_SESSION['uid']."\t".

@@ -40,19 +40,19 @@
 // $orderBy: The value (DB field) used with the DB-queries.
 
 if ( isset( $_POST['orderBy'] ) ) $orderByKey = $_POST['orderBy'];                      // 1st $_POST['orderBy']
-elseif ( !isset( $_GET['orderBy'] ) || 
-         !array_key_exists( $orderByKey = stripslashes( $_GET['orderBy'] ), $sortArray ) ) // 2nd $_GET['orderBy']
+elseif ( !$GLOBALS['url']->available('orderBy') || 
+         !array_key_exists( $orderByKey = stripslashes( $GLOBALS['url']->get('orderBy') ), $sortArray ) ) // 2nd $_GET['orderBy']
           $orderByKey = key( $sortArray );                                              // 3rd default (the first el of $sortArray)
   
 if ( isset( $_POST['asc'] ) ) $asc = !( $_POST['asc'] == "desc" );
- elseif ( isset( $_GET['asc'] ) )  $asc = !( $_GET['asc'] == "desc" );
+ elseif ( $GLOBALS['url']->available('asc') )  $asc = !( $GLOBALS['url']->get('asc') == "desc" );
  else $asc = true;
 
 if (!isset($restrictToArray)) $restrictToKey = '';
 else{
   if ( isset( $_POST['restrictTo'] ) ) $restrictToKey = $_POST['restrictTo'];                      // 1st $_POST['restrictTo']
-  elseif ( !isset( $_GET['restrictTo'] ) || 
-           !array_key_exists( $restrictToKey = stripslashes( $_GET['restrictTo'] ), $restrictToArray ) ) // 2nd $_GET['restrictTo']
+  elseif ( !$GLOBALS['url']->available('restrictTo') || 
+           !array_key_exists( $restrictToKey = stripslashes( $GLOBALS['url']->get('restrictTo') ), $restrictToArray ) ) // 2nd $_GET['restrictTo']
             $restrictToKey = key( $restrictToArray );                                              // 3rd default (the first el of $restrictToArray)
 }
 // keep it in links

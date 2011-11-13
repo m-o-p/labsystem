@@ -39,16 +39,16 @@ $pge->visibleFor  = IS_CONTENT_EDITOR;
 $pge->put( EM::manageTop( $id ) );
 $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
-// UserStyleSheet preprocessing (needed for export and import)
-  $tagNames = array(); // holds only the tag names
-  $styleDefinitions = array(); // holds the full definition
-  // both arrays are joined via their numeric index!
-  parseStyleSheet( file_get_contents( $cfg->get('UserStyleSheet') ), 
-                   $tagNames, 
-                   $styleDefinitions );
-
 // do the import/ export
   if (isset($_POST) && count($_POST) > 0){
+    // UserStyleSheet preprocessing (needed for export and import)
+      $tagNames = array(); // holds only the tag names
+      $styleDefinitions = array(); // holds the full definition
+      // both arrays are joined via their numeric index!
+      parseStyleSheet( file_get_contents( $cfg->get('UserStyleSheet') ), 
+                       $tagNames, 
+                       $styleDefinitions );
+                   
     foreach ($_POST as $key => $value){
       //$pge->put( $key.' --- '.$value.'<br>' );
      

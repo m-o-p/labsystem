@@ -38,7 +38,7 @@ if ( ( !$usr->isOfKind( IS_CONTENT_EDITOR ) &&       // only content editors
     ) $text = $lng->get("notAllowed");
 
 else{
-      if ( !isset($_GET["isConfirmed"]) ){ // not confirmed via script -> do it via page
+      if ( !$GLOBALS['url']->available("isConfirmed") ){ // not confirmed via script -> do it via page
         header("Location: ".$url->rawLink2( "../pages/confirm.php?text=".urlencode( $lastFinal.$lng->get("confirmDelete") )."&redirectTo=".urlencode( $_SERVER["REQUEST_URI"] ) ) );
         exit;
       }

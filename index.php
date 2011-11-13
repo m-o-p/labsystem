@@ -23,15 +23,18 @@
  * Put the default configuration (the one that appears when no "config=" 
  * is present in the URL) in the second line where it says else $config = 'demo';
  */
-  if ( isset( $_GET['config'] ) ) $config = $_GET['config']; // config provided
+  require( "include/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
+                                             // needed to get parameters from the url ($url->get, ->available)
+ 
+  if ( $GLOBALS['url']->available('config') ) $config = $GLOBALS['url']->get('config'); // config provided
    else $config = 'demo'; // use as default config: e.g. config_course23.ini -> &config=course23
 
-  if ( isset( $_GET['address'] ) ) $address = $_GET['address']; // address provided
+  if ( $GLOBALS['url']->available('address') ) $address = $GLOBALS['url']->get('address'); // address provided
    else $address = 'p3'; // use this (startpage is 3) as defaul value
 
-  if ($address == 'accessableLabs') header ('Location: pages/accessableLabs.php?config='.$config.( isset($_GET['inside']) ? '&inside=true' : '' ));
-  else if ($address == 'register') header ('Location: pages/register.php?config='.$config.( isset($_GET['inside']) ? '&inside=true' : '' ));
-  else header ('Location: pages/view.php?address='.$address.'&config='.$config.( isset($_GET['inside']) ? '&inside=true' : '' ) );
+  if ($address == 'accessableLabs') header ('Location: pages/accessableLabs.php?config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ));
+  else if ($address == 'register') header ('Location: pages/register.php?config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ));
+  else header ('Location: pages/view.php?address='.$address.'&config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ) );
 
 /*
  * You might create other forwaders to other pages:

@@ -38,11 +38,11 @@ $allowed = Array( 'demo1',
                   'demo4',
                   'demo5'
                  );
-if ( !in_array( $_GET['config'], $allowed ) ){
-                                                trigger_error( 'login not allowed with this config! '.$_GET['config'], E_USER_ERROR );
+if ( !in_array( $GLOBALS['url']->get('config'), $allowed ) ){
+                                                trigger_error( 'login not allowed with this config! '.$GLOBALS['url']->get('config'), E_USER_ERROR );
                                                 exit;
                                               }
-if ( !isset($_GET['userrole']) ){
+if ( !$GLOBALS['url']->available('userrole') ){
                                   trigger_error( 'userrole not provided', E_USER_ERROR );
                                   exit;
                                  }
@@ -81,11 +81,11 @@ $url->clearQueryString(); $url->put( $url->get("oldQueryString") );
   $_SESSION["config"]  = $url->get('config');
 
   $_SESSION["currentTeam"] = 1234;
-if ( $_GET['userrole'] == 'all' ){
+if ( $GLOBALS['url']->get('userrole') == 'all' ){
   $_SESSION["userRights"]  = (MAX_USER_ROLE<<1)-1; // all
   $link2 = $cfg->get("AfterLogInPage");
 }
-elseif ( $_GET['userrole'] == 'corrector' ){
+elseif ( $GLOBALS['url']->get('userrole') == 'corrector' ){
   $_SESSION["userRights"]  = IS_USER+IS_MAIL_SUPPORTER+IS_ALL_MAILER+IS_SCHEDULER+IS_CORRECTOR+IS_EX_SOLUTION_VIEWER; // corrector
   $_SESSION['seeingUID']   = 'participant'; // correct this guy
   $_SESSION['seeingDESCR'] = 'Patrice Participant (patrice)';

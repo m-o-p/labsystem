@@ -35,9 +35,9 @@
 
 require( "../include/init.inc" );
 
-if ( !isset( $_GET['function'] ) ||
-     !isset( $_GET['param'] ) ||
-     !isset( $_GET['redirectTo'] )
+if ( !$GLOBALS['url']->available('function') ||
+     !$GLOBALS['url']->available('param') ||
+     !$GLOBALS['url']->available('redirectTo')
    ){
       trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
       exit;
@@ -55,7 +55,7 @@ if ( $url->get( 'function' ) == 'see' )
   $usr->seesDataOf( stripslashes( $url->get( 'param' ) ) );
 
 elseif( $url->get( 'function' ) == 'del' ){
-  if ( !isset($_GET["isConfirmed"]) ){ // not confirmed via script -> do it via page
+  if ( !$GLOBALS['url']->available("isConfirmed") ){ // not confirmed via script -> do it via page
     header("Location: ".$url->rawLink2( "../pages/confirm.php?text=".urlencode( $lng->get("confirmDelete") )."&redirectTo=".urlencode( $_SERVER["REQUEST_URI"] ) ) );
     exit;
   }

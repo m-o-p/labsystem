@@ -33,6 +33,8 @@
  * /php/emptyDB.php contains further information on this.
  *
  */
+ require( "include/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
+                                            // needed to get parameters from the url ($url->get, ->available)
  $fileName = 'counter.txt';
  
  // get current value
@@ -47,6 +49,6 @@
 
  // PUT the CONFIGURATION you want to use at the END!
  // e.g. config_course23.ini -> &config=course23
- header ('Location: http://labsystem.m-o-p.de/php/emptyDB.php?config=demo'.$currentIdx.'&userrole='.$_GET['userrole']);
+ header ('Location: http://labsystem.m-o-p.de/php/emptyDB.php?config=demo'.$currentIdx.'&userrole='.$url->get('userrole'));
 
 ?>

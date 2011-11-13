@@ -42,8 +42,8 @@
 require_once( INCLUDE_DIR."/configuration.inc" );
 require_once( INCLUDE_DIR."/classes/Rom.inc" );
 
-if ( isset($_GET["lng"]) )
-  $languageFile = $cfg->get("SystemResourcePath").$_GET["lng"].'.lng';
+if ( $GLOBALS['url']->available("lng") )
+  $languageFile = $cfg->get("SystemResourcePath").$GLOBALS['url']->get("lng").'.lng';
 else
   $languageFile = $cfg->get("SystemResourcePath").$cfg->get("SystemDefaultLanguage");
 
@@ -52,7 +52,7 @@ if ( !file_exists( $languageFile ) ){
                                       exit;
                                      }
 
-$runningSystemLanguage = isset($_GET["lng"]) ? $_GET["lng"] : substr( $cfg->get("SystemDefaultLanguage"), 0, strpos( $cfg->get("SystemDefaultLanguage"), '.' ) ); // used by /include/page_layout.inc to link to the language selector
+$runningSystemLanguage = $GLOBALS['url']->available("lng") ? $GLOBALS['url']->get("lng") : substr( $cfg->get("SystemDefaultLanguage"), 0, strpos( $cfg->get("SystemDefaultLanguage"), '.' ) ); // used by /include/page_layout.inc to link to the language selector
                                      
 $languageData = parse_ini_file( $languageFile );
 

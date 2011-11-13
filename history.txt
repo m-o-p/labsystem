@@ -12,6 +12,57 @@ Feature Requests:
  - Stylesheet imports too much...!
  - Add Markdown help as module or as standard...
 
+ 
+2011-11-13
+-------------------
+  /include/hostname2config.inc
+  ->  /include/configuration.inc + ../ini/host2config.ini
+    Moved functionality to the configuration.inc
+      Checks now if ../ini/host2config.ini is present.
+      If so and it contains the current first prefix XYZ. the 
+      prefix from ../ini/host2config.ini is used to load the config.
+  /include/logger.inc      
+    Gets initiated by a config variable now. If logDir = "someDir" is 
+    set the logs will be created in this directory. If it is not set or 
+    empty no logs are getting created.
+  /include/classes/elements/LcElement.inc
+  /include/classes/elements/LiElement.inc
+  /include/classes/elements/LlElement.inc
+  /include/classes/elements/LmElement.inc
+  /include/classes/elements/LpElement.inc
+  /include/classes/elements/LsElement.inc
+  /include/classes/Menu.inc
+  /include/classes/Url.inc
+  /include/configuration.inc
+  /include/hostname2config.inc
+  /include/init.inc
+  /include/language.inc
+  /include/logger.inc
+  /include/page_layout.inc
+  /include/session.inc
+  /index.php
+  /index_demo.php
+  /pages/confirm.php
+  /pages/history.php
+  /pages/login.php
+  /pages/mailForm.php
+  /pages/manage.php
+  /pages/manageUsers.php
+  /pages/register.php
+  /pages/sorter.inc
+  /pages/uaManageUsers.php
+  /php/authenticate4Demo.php
+  /php/delete.php
+  /php/emptyDB.php
+  /php/executeOnLab.php
+  /php/getFirstLastFinal.inc
+  /php/getUploadedFile.php
+  /php/uaManageUsersExecute.php
+  /ini/configBase/ilab2Register.ini
+  /ini/host2config.ini
+    Changed $_GET and isset( $_GET to $url->get and $url->available
+    This adds escape methods and secures parameters via URL thereby.
+
 2011-11-09
 -------------------
   /include/classes/Url.inc

@@ -579,7 +579,7 @@ class LlElement extends Element{
                      "<td class=\"labsys_mop_l_status_table_cell_number\"></td>".
                      "<td class=\"labsys_mop_l_status_table_cell_team\">";
       if ( $onlySummation && isset( $usersTeam ) ) $myRetVal .= $usersTeam; 
-/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) echo( ( isset($usersTeam) ? $usersTeam : '' )."\t" );
+/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( ( isset($usersTeam) ? $usersTeam : '' )."\t" );
       $myRetVal .=  "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_name\">";
                      
@@ -603,7 +603,7 @@ class LlElement extends Element{
                           round( $sumGivenCreditsPreLab/ $summandsPreLab, 2 )."/ ".
                           round( $sumPossibleCreditsPreLab/ $summandsPreLab, 2 ).
                           "</span>\n";
-/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) echo( round($percentage*100, 2)."%\t" );
+/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( round($percentage*100, 2)."%\t" );
       }
       $myRetVal .=   "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_prelab_fin\"></td>".
@@ -621,7 +621,7 @@ class LlElement extends Element{
                           round( $sumGivenCreditsLab/ $summandsLab, 2 )."/ ".
                           round( $sumPossibleCreditsLab/ $summandsLab, 2 ).
                           "</span>\n";
-/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) echo( round($percentage*100, 2)."%" );
+/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( round($percentage*100, 2)."%" );
       }
 
       $myRetVal .=   "</td></tr>\n";
@@ -770,7 +770,7 @@ class LlElement extends Element{
       $myRetVal .= '</div>'.
                    $this->labStatusUIDALLLabs( $observedUID, $compact );
     }else{ // all users
-/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) {
+/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) {
      header('Content-type: text/x-csv');
      header('Content-Disposition: attachment; filename="labsystem_result_summary'.$GLOBALS['cfg']->get('User_courseID').'CSV.txt"');
      echo( "name\tforename\tteam\tprelabCredits\tlabCredits\r\n");
@@ -804,7 +804,7 @@ class LlElement extends Element{
                 else{
                         $nameData = $usr->getUserInformation( $userData["uid"] );
                         $myRetVal .= $nameData["name"].", ".$nameData["foreName"];
-/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) echo( "\r\n".$nameData["name"]."\t".$nameData["foreName"]."\t" );
+/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( "\r\n".$nameData["name"]."\t".$nameData["foreName"]."\t" );
                      }
                 $myRetVal .= "</div>";
                 $myRetVal .= $this->labStatusUIDALLLabs( $userData["uid"], $compact )."<div>&nbsp;</div>\n";
@@ -812,7 +812,7 @@ class LlElement extends Element{
     }
     
     $myRetVal .= $this->getTableResultsLegend();
-/* CSV Export of summarised results */ if (isset($_GET['exportCSV'])) exit;
+/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) exit;
     return $myRetVal;
   }
 
@@ -1098,7 +1098,7 @@ class LlElement extends Element{
                     "</div>\n".
                   "</fieldset>\n".
               "</td></tr></table>\n".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( isSet( $_GET["saveAsNew"] ) || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' )." onchange='isDirty=true'>".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( $GLOBALS['url']->available("saveAsNew") || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' )." onchange='isDirty=true'>".
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
             

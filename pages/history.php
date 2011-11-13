@@ -45,7 +45,7 @@ $pge->put('<div class="labsys_mop_h2"><span class="labsys_mop_grayed">'.$lng->ge
 $pge->put('<div class="labsys_mop_hiddenDiv" style="display: block;">'.nl2br( $element->history ).'</div>' );
 
 // history= & title= set in url? -> Additional history (like user answer stuff) -> doesn't get loaded but displayed
-if ( isset( $_GET['history'] ) ){
+if ( $GLOBALS['url']->available('history') ){
   $pge->put('<div class="labsys_mop_h2"><span class="labsys_mop_grayed">'.$lng->get('addHistory').'</span></div>'."\n");
   $pge->put('<div class="labsys_mop_additional_history">'.stripslashes( $url->get('history') ).'</div>' );
 }

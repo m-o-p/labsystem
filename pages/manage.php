@@ -42,15 +42,15 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
   if ( $lng->get( strtolower($id)."ManageNote" ) != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get( strtolower($id)."ManageNote" )."</div>\n" );
   
 // Multipageresult-Filtering Init $_GET as it is used by the sorter...
-      if ( isset( $_GET['startFrom'] ) &&
-           is_numeric ( $_GET['startFrom'] ) &&
-           ($_GET['startFrom'] > 0)
-          ) $startFrom = $_GET['startFrom']; else $startFrom = 1;
+      if ( $GLOBALS['url']->available('startFrom') &&
+           is_numeric ( $GLOBALS['url']->get('startFrom') ) &&
+           ($GLOBALS['url']->get('startFrom') > 0)
+          ) $startFrom = $GLOBALS['url']->get('startFrom'); else $startFrom = 1;
     
-      if ( isset( $_GET['frameSize'] ) &&
-           is_numeric ( $_GET['frameSize'] ) &&
-           ($_GET['frameSize'] > 0)
-          ) $frameSize = $_GET['frameSize']; else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
+      if ( $GLOBALS['url']->available('frameSize') &&
+           is_numeric ( $GLOBALS['url']->get('frameSize') ) &&
+           ($GLOBALS['url']->get('frameSize') > 0)
+          ) $frameSize = $GLOBALS['url']->get('frameSize'); else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
 // /Multipageresult-Filtering Init $_GET as it is used by the sorter...
 
 $url->preserve( 'address' );
@@ -102,7 +102,7 @@ $url->preserve( 'address' );
   $manageNavigation .= '<!-- /navigation -->'."\n";
   
 // otherwhise it ends up in the menu etc...
-$url->rem( 'address='.$_GET['address'] );
+$url->rem( 'address='.$GLOBALS['url']->get('address') );
 
   $pge->put( $manageNavigation );
   

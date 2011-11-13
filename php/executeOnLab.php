@@ -47,11 +47,11 @@ require( "../php/getDBIbyID.inc" ); /* -> $DBI */
                              "reMapUidTeam" => IS_USER_RIGHTS_EDITOR
                             );
 
-if ( !( isset($_GET['param']) && 
-        isset($_GET['function']) &&
-        isset($_GET['redirectTo']) &&
-        array_key_exists( $_GET['function'], $allowedFunctions ) && 
-        $usr->isOfKind( $allowedFunctions[$_GET['function']] ) // retriction fulfilled?
+if ( !( $GLOBALS['url']->available('param') && 
+        $GLOBALS['url']->available('function') &&
+        $GLOBALS['url']->available('redirectTo') &&
+        array_key_exists( $GLOBALS['url']->get('function'), $allowedFunctions ) && 
+        $usr->isOfKind( $allowedFunctions[$GLOBALS['url']->get('function')] ) // retriction fulfilled?
        ) /* valid call? */   
     ){
         trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
@@ -63,5 +63,5 @@ if ( !$element = $DBI->getData2idx( $num ) ){
                                               exit;
                                              }
 
-eval( '$element->'.$_GET['function']."( ".stripslashes( $_GET['param'] )." );" );
+eval( '$element->'.$GLOBALS['url']->get('function')."( ".stripslashes( $GLOBALS['url']->get('param') )." );" );
 ?>

@@ -36,24 +36,16 @@ ini_set( "register_globals", "Off" ); // a) security b) problems may arise with 
 
 define( "INCLUDE_DIR", "../include" );
 
+require( INCLUDE_DIR."/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
+                                                // needed to get parameters from the url ($url->get, ->available)
+
 require( INCLUDE_DIR."/customErrHandle.inc" );  // The custom Error handler.
 require( INCLUDE_DIR."/helper.inc" );           // Some helper functions that are used.
-
-/* An interesting feature is to use name based hosts 
- * to select the proper configuration files.
- *
- * In the following script the $configPrefix gets
- * filled according to the hostname.
- * In config inc $configPrefix.$_GET['config'] is used 
-  * to identify the configuration file.
- */
-require( INCLUDE_DIR."/hostname2config.inc" );
 
 require( INCLUDE_DIR."/configuration.inc" );    // Include the global configuration. => Object $cfg.
 require( $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles") );  // Include the user role constants.
 require( INCLUDE_DIR."/language.inc" );         // Include the localized Strings. => Object $lng.
 
-require( INCLUDE_DIR."/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
 $url->preserve("nomenu");                       //  keep in url if present (menu off)
 $url->preserve("config");                       //  keep in url if present (config file)
 $url->preserve("lng");                          //  keep in url if present (language file)
@@ -68,7 +60,7 @@ require( INCLUDE_DIR."/session.inc" );          /* Include session management (d
                                                    set the information ($usr data) from the session.
                                                  */
 require( INCLUDE_DIR."/logger.inc" );          /* Include to enable logging. */
-$doLogging = false;
+                                               // activated when config contains lagDir = "someDirectory"
 
 require_once( INCLUDE_DIR."/classes/elements/LpDBInterface.inc" ); // page
 require_once( INCLUDE_DIR."/classes/elements/LmDBInterface.inc" ); // multiple choice

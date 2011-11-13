@@ -32,12 +32,12 @@
 */
 require( "../include/init.inc" );
 
-if ( !isset($_GET['text']) || !isset($_GET['redirectTo']) ){
+if ( !$GLOBALS['url']->available('text') || !$GLOBALS['url']->available('redirectTo') ){
                                                               trigger_error( "Not all necessary values posted!", E_USER_ERROR );
                                                               exit;
                                                             }
 
-$pge->title   = $_GET['text'];
+$pge->title   = $GLOBALS['url']->get('text');
 $pge->put( stripslashes( $url->get('text') )."<br /><br />" );
 $url->put( "isConfirmed=1" );
 $url->rem( "inside=true" ); // otherwhise double (but no problem)

@@ -31,22 +31,22 @@
 require_once( "../include/init.inc" );
 require_once( "../include/classes/elements/LiDBInterfaceAnswers.inc" );
 
-if (($usr->currentTeam != $_GET['team']) && !$usr->isOfKind( IS_CORRECTOR )) {
+if (($usr->currentTeam != $GLOBALS['url']->get('team')) && !$usr->isOfKind( IS_CORRECTOR )) {
 	        trigger_error('Permission denied', E_USER_ERROR);
           exit;
 }
-if (!ctype_digit($_GET['team']) || !ctype_digit($_GET['iIdx'])) {
+if (!ctype_digit($GLOBALS['url']->get('team')) || !ctype_digit($GLOBALS['url']->get('iIdx'))) {
 	        trigger_error('Wrong parameters', E_USER_ERROR);
           exit;
 }
 
-$fileWhiteList = LiDBInterfaceAnswers::getFiles($_GET['team'], $_GET['iIdx']);
-if (!array_key_exists(urldecode($_GET['filename']), $fileWhiteList)) {
+$fileWhiteList = LiDBInterfaceAnswers::getFiles($GLOBALS['url']->get('team'), $GLOBALS['url']->get('iIdx'));
+if (!array_key_exists(urldecode($GLOBALS['url']->get('filename')), $fileWhiteList)) {
           trigger_error('Invalid file', E_USER_ERROR);
           exit;
 }
 
-$filePath = LiDBInterfaceAnswers::getUploadDirectory($_GET['iIdx'], $_GET['team']).'/'.$_GET['filename'];
+$filePath = LiDBInterfaceAnswers::getUploadDirectory($GLOBALS['url']->get('iIdx'), $GLOBALS['url']->get('team')).'/'.$GLOBALS['url']->get('filename');
 
 if (!file_exists($filePath)) {
 	        trigger_error('File doesn\'t exist: '.$filePath, E_USER_ERROR);
