@@ -12,6 +12,14 @@ Feature Requests:
  - Stylesheet imports too much...!
  - Add Markdown help as module or as standard...
 
+2011-11-14
+-------------------
+  /include/classes/Menu.inc
+    Handle https as external link as well...
+  /include/menu.inc
+    Added comment to full url register page.
+    The advantage is that all registrations go to one singl page then.
+    This page can also provide the intro labs already for the automatically created accounts.
  
 2011-11-13
 -------------------

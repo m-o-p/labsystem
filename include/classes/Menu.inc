@@ -137,7 +137,7 @@ class Menu{
                      ) $isOn = true;
 
     // If not absolute link add url stuff.
-    global $url; if ( strpos( $link, "http://" ) === false ) $link = $url->link2( $link );
+    global $url; if ( strtoupper( substr( $link, 0, 4 ) ) != 'HTTP' ) $link = $url->link2( $link );
                      
     if ( $isOn ){ // All states should be on.
       $cssCellClassOn    = $this->cssCellClassOn;
