@@ -38,7 +38,7 @@
 function displayError( $cssColor, $html ){
     echo( '<div>'.
           '<span style="color: '.$cssColor.'; font-size: 1.2em; font-weight: bold;">!</span> '.
-          $html.
+          htmlentities($html).
           '</div>' );
 }
 /**
@@ -55,6 +55,10 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
 {
   if ( defined ( 'E_STRICT' ) && ($errno == constant ( 'E_STRICT' ) ) ) return; // ignore php5 warnings of missing public etc.
 
+  $errno = htmlentities( $errno );
+  $errstr = htmlentities( $errstr );
+  $errfile = htmlentities( $errfile );
+  $errline = htmlentities( $errline );
   switch ($errno) {
   case E_USER_ERROR: // most severe case gets whole page...
     echo( '<html>'.

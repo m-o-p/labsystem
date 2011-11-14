@@ -9,8 +9,9 @@ Feature Requests:
  - Test new config files
  - Fields in setup adden!
  
- - Stylesheet imports too much...!
  - Add Markdown help as module or as standard...
+ 
+ - Captcha/ Check on registraton page
 
 2011-11-14
 -------------------
@@ -20,6 +21,11 @@ Feature Requests:
     Added comment to full url register page.
     The advantage is that all registrations go to one singl page then.
     This page can also provide the intro labs already for the automatically created accounts.
+  /include/classes/Menu.inc
+    Does not handle the login.php page as an external page now.
+  /include/customErrHandle.inc
+    Escaped HTML to fix reflected XSS flaw
+    Thanks to Johannes Naab for reporting!!
  
 2011-11-13
 -------------------
@@ -100,9 +106,6 @@ Feature Requests:
 
 2011-11-09
 -------------------
-  /include/classes/Url.inc
-    Fixed reflected XSS flaw in url->get()
-    Thanks to Johannes Naab for reporting!!
   /include/classes/elements/LlElement.inc
     Added delete button for labs to be exported. Deletes only the l-Element 
     keeping all building blocks. This removes the lab from the list. Helpful 
