@@ -51,6 +51,7 @@ $url->preserve("config");                       //  keep in url if present (conf
 $url->preserve("lng");                          //  keep in url if present (language file)
 $url->preserve("tinyMCE");                      //  keep in url if present (tinyMCE integration (200k js))
 $url->preserve("hideAnswers");                  //  keep in url if present (hideAnswers if in seeing mode)
+$url->preserve('hideExampleSolutionInThisTab');
 
 require( INCLUDE_DIR."/classes/ElementUser.inc" );                // user
 require( INCLUDE_DIR."/classes/Usr.inc" );      /* Creates a current user with default values for accessLevel, name, ... 
