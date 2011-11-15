@@ -54,7 +54,7 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
                               if ( $usr->isLoggedIn() ) 
                                 $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogOut" ), "../php/logout.php" ).
                                                  $myMenu->entry( $lng->get( "MnuEntryMyRights" ), "../pages/myRights.php" ).
-                                                 $myMenu->entry( $lng->get( "MnuEntryMyStatistics" ), "../pages/view.php?address=l2.ALLlabStatus" ).
+                                                 $myMenu->entry( $lng->get( "MnuEntryMyStatistics" ), "../pages/view.php?address=l1.ALLlabStatus" ).
                                                  ( !$usr->isOfKind( IS_USER_RIGHTS_EDITOR ) ? '' : $myMenu->entry( $lng->get( "MnuEntryUaUsrRights" ), "../pages/manageUsers.php" ) ).
                                                  $myMenu->spacer().
                                                  $myMenu->entry( $lng->get( "MnuEntrySendMail" ), "../pages/mailForm.php" );

@@ -13,6 +13,13 @@ Feature Requests:
  
  - Captcha/ Check on registraton page
 
+2011-11-15
+-------------------
+  /include/classes/elements/LlElement.inc
+  /include/menu.inc
+    Changed l?.ALLlabStatusCompact to be linked to l1 and to have the correct title.
+    Thus it will work always now (as l1 is always there).
+
 2011-11-14
 -------------------
   /include/classes/Menu.inc

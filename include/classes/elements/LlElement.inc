@@ -829,7 +829,9 @@ class LlElement extends Element{
   */ 
   function show( $fullAddress, $extParagraph="" ){
     global $usr, $lng, $pge, $url, $cfg;
-    if (  !$this->isVisible() ){ /* not enough rights->no content */
+    if (  !$this->isVisible() && 
+          !(substr($fullAddress, strrpos($fullAddress, '.')+1, strrpos($fullAddress, '.')+13) == 'ALLlabStatus') // the Labstatus should always be visible
+         ){ /* not enough rights->no content */
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
     }
@@ -864,12 +866,17 @@ class LlElement extends Element{
              $this->isVisible() )             $myRetVal .= $this->showLabStatus( $extParagraph );
    // ALL lab's status
     elseif ( $last == "ALLlabStatus" &&
-             $scndLast == $me )          
+             $scndLast == $me ) {
                                               $myRetVal .= $this->showStatusALLLabs();
+                                              $this->title = $lng->get('MnuEntryMyStatistics');
+                                              
+                                 }
    // ALL lab's status compact
     elseif ( $last == "ALLlabStatusCompact" &&
-             $scndLast == $me )          
+             $scndLast == $me ) {
                                               $myRetVal .= $this->showStatusALLLabs( true );
+                                              $this->title = $lng->get('MnuEntryMyStatistics');
+                                 }
    // all visible contents of the lab on one page
     elseif ( $last == "all" &&
              $scndLast == $me ){          
