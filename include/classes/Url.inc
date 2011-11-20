@@ -57,6 +57,7 @@ class Url
           $varName = $string;
           $varContent = 'true';
         }
+
         if ( isset($_SESSION["uid"]) && // Session running?
              ( ($varName == 'sysinfo') || ($varName == 'sysalert') )
              ) $_SESSION[$varName]=$varContent; // If session is running use the cookie for transport
@@ -79,11 +80,11 @@ class Url
   function get( $key ){
     if ( $key == 'newQueryString' ){
       // transform & -> &amp; for valid HTML
-      $newQS = str_replace( '&amp;', '&', substr( $this->queryString, 1 ) ); // if there are any transformed don't recode them!
+      $newQS = str_replace( '&amp;', '&', ( $this->queryString != '' ? substr( $this->queryString, 1 ) : '' ) ); // if there are any transformed don't recode them!
       $newQS = str_replace( '&', '&amp;', $newQS );
       return $newQS;
     }
-    if ( $key == 'newQueryStringRaw' ) return substr( $this->queryString, 1 );
+    if ( $key == 'newQueryStringRaw' ) return ( $this->queryString != '' ? substr( $this->queryString, 1 ) : '' );
     if ( $key == 'oldQueryString' )return urldecode($_SERVER[ 'QUERY_STRING' ]);
     if ( isset( $_GET[$key]) ) return urldecode($_GET[$key]);
     else if (  isset($_SESSION["uid"]) && // Session running?
@@ -138,20 +139,12 @@ class Url
   * @return The full link.
   */
   function rawLink2( $destUrl ){
-    if ( $this->get("newQueryString") == "" ) return $destUrl; /* no query string */
-    $parsedDest = parse_url( $destUrl ); /* parse given url */
-    $newD = ""; /* rebuild it */
-    if ( isset($parsedDest['scheme']) ) $newD .= $parsedDest['scheme']."://";
-    if ( isset($parsedDest['host']) ) $newD .= $parsedDest['host'];
-    if ( isset($parsedDest['user']) ) $newD .= $parsedDest['user'];
-    if ( isset($parsedDest['pass']) ) $newD .= ":".$parsedDest['pass'];
-    if ( isset($parsedDest['user']) || isset($parsedDest['pass']) ) $newD .= "@";
-    if ( isset($parsedDest['path']) ) $newD .= $parsedDest['path']."?";
-    if ( isset($parsedDest['query']) ) $newD .= $parsedDest['query']."&";
-    $newD .= $this->get("newQueryStringRaw");
-    if ( isset($parsedDest['fragment']) ) $newD .= "#".$parsedDest['fragment'];
-
-    return $newD;
+    if ( $this->get('newQueryStringRaw') == '' )
+      return $destUrl; /* no query string */
+    else if ( strpos( $destUrl, '?' ) !== false )
+           return str_replace( '?', '?'.$this->get('newQueryStringRaw').'&', $destUrl ); // contains query
+         else
+          return $destUrl.'?'.$this->get('newQueryStringRaw'); // not found
   }
   
   /**

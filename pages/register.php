@@ -60,6 +60,13 @@ require( "../include/init.inc" );
 $pge->title        = $lng->get("titleRegister");
 $pge->matchingMenu = $lng->get("MnuEntryRegister");
 
+     // If the registerIPprefix variable is set in the config
+     // one can only register if one is inside this prefix:
+     $canRegister = ( !$cfg->doesExist('registerIPprefix') ? true : // not specified: you can register
+                                                             substr( $_SERVER['REMOTE_ADDR'], 0, strlen( $cfg->get('registerIPprefix') ) ) == $cfg->get('registerIPprefix') );
+
+if ( !$canRegister ) unset($_POST); // forget about all postet data...
+
 // check form data
 // eMail must contain @ and have a dot behind
 if ( isset( $_POST['EMAIL'] ) &&
@@ -171,22 +178,24 @@ else{ // no data posted or errors found
      $result = $userDBC->query( "SHOW COLUMNS FROM ".$cfg->get('UserDatabaseTable') ); // Attention: Breaks abstraction!
      $data = array();
      while( $data2 = mysql_fetch_array( $result ) ) $data[] = $data2['Field'];
-
+                                                                
      $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"#\">\n".
                 "<input type=\"hidden\" name=\"REGISTER4\" value=\"".$cfg->get('User_courseID')."\">\n".
-                "<fieldset><legend>".$lng->get("MnuEntryRegister").' | '.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')'."</legend>\n".
+                "<fieldset><legend>".$lng->get("MnuEntryRegister").' | '.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').') '."</legend>\n".
                 "<div class=\"labsys_mop_in_fieldset\">\n" );
 
      $pge->put( 
+     // Warning when IP prefix not matched
+                ( !$canRegister & $cfg->doesExist('registerIPprefixViolationNote') ? "<div class=\"labsys_mop_note\" style=\"color: #ff5555;\">\n".$cfg->get('registerIPprefixViolationNote')."</div>\n" : '' ).
      // surName
                 '<label for="surName" class="labsys_mop_input_field_label_top">'.$lng->get('surName').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="surName" name="NAME" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['NAME'] ) ? $_POST['NAME'] : $lng->get('surName') ).'" onchange="isDirty=true">'."\n".
+                '<input'.( $canRegister ? '' : ' disabled="disabled"' ).' tabindex="'.$pge->nextTab++.'" type="text" id="surName" name="NAME" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['NAME'] ) ? $_POST['NAME'] : $lng->get('surName') ).'" onchange="isDirty=true">'."\n".
      // foreName
                 '<label for="name" class="labsys_mop_input_field_label_top">'.$lng->get('foreName').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="name" name="FORENAME" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['FORENAME'] ) ? $_POST['FORENAME'] : $lng->get('foreName') ).'" onchange="isDirty=true">'."\n".
+                '<input'.( $canRegister ? '' : ' disabled="disabled"' ).' tabindex="'.$pge->nextTab++.'" type="text" id="name" name="FORENAME" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['FORENAME'] ) ? $_POST['FORENAME'] : $lng->get('foreName') ).'" onchange="isDirty=true">'."\n".
      // email
                 '<label for="email" class="labsys_mop_input_field_label_top">'.$lng->get('eMail').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="eMail" name="EMAIL" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['EMAIL'] ) ? $_POST['EMAIL'] : $lng->get('eMail') ).'" onchange="isDirty=true">'."\n"
+                '<input'.( $canRegister ? '' : ' disabled="disabled"' ).' tabindex="'.$pge->nextTab++.'" type="text" id="eMail" name="EMAIL" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['EMAIL'] ) ? $_POST['EMAIL'] : $lng->get('eMail') ).'" onchange="isDirty=true">'."\n"
                );
                
      // The rest of the fields.
@@ -207,7 +216,7 @@ else{ // no data posted or errors found
       else $pge->put(
                      // new key
                         '<label for="labsys_mop_'.$key.'" class="labsys_mop_input_field_label_top">'.( $lng->doesExist($key) ? $lng->get($key) : $key ).'</label>'."\n".
-                        '<input tabindex="'.$pge->nextTab++.'" type="text" id="labsys_mop_'.$key.'" name="LABSYS_MOP_'.$key.'" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['LABSYS_MOP_'.$key] ) ? $_POST['LABSYS_MOP_'.$key]: $key ).'" onchange="isDirty=true">'."\n"
+                        '<input'.( $canRegister ? '' : ' disabled="disabled"' ).' tabindex="'.$pge->nextTab++.'" type="text" id="labsys_mop_'.$key.'" name="LABSYS_MOP_'.$key.'" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['LABSYS_MOP_'.$key] ) ? $_POST['LABSYS_MOP_'.$key]: $key ).'" onchange="isDirty=true">'."\n"
                      );
         
     // How many people registered from this course already?
@@ -225,7 +234,7 @@ else{ // no data posted or errors found
      
      $pge->put( "</div>\n".
                 "</fieldset>\n".
-                "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
+                "<input".( $canRegister ? '' : ' disabled="disabled"' )." tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
                 ' <div class="registerPlacesLeft">'.$lng->get('placesLeft').': '.$remaining.'/'.$max.' '.$icons."</div>\n".
                 "</FORM>"
                );

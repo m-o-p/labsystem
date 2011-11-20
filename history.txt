@@ -13,6 +13,19 @@ Feature Requests:
  
  - Captcha/ Check on registraton page
 
+2011-11-20
+-------------------
+  /include/classes/Url.inc
+    Changed rawLink2 to be faster and to put the variables by the system BEFORE
+    those passed in an URL. This results in overriding by variables given in the link...
+  /pages/register.php
+    Added a check for a given IP prefix to the register page.
+    This effectively allows only students in a certain network prefix (like University)
+    to register.
+    Only if the fields are present in the config the check is done:
+      registerIPprefix   = "131.159." ; Only from this IP prefix (String comparison, so IPv6 should work as well) registration is enabled.
+      registerIPprefixViolationNote = "You can only register from within the university network. Either connect from the university or use the VPN."
+      
 2011-11-15
 -------------------
   /include/classes/elements/LlElement.inc
