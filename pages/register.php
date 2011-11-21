@@ -60,10 +60,19 @@ require( "../include/init.inc" );
 $pge->title        = $lng->get("titleRegister");
 $pge->matchingMenu = $lng->get("MnuEntryRegister");
 
-     // If the registerIPprefix variable is set in the config
-     // one can only register if one is inside this prefix:
-     $canRegister = ( !$cfg->doesExist('registerIPprefix') ? true : // not specified: you can register
-                                                             substr( $_SERVER['REMOTE_ADDR'], 0, strlen( $cfg->get('registerIPprefix') ) ) == $cfg->get('registerIPprefix') );
+ // If the registerIPprefix variable is set in the config
+ // one can only register if one is inside this prefix.
+ // Prefixes can be separated by commas.
+ $canRegister = true;
+ if ($cfg->doesExist('registerIPprefix')){
+   $canRegister = false;
+   $IPranges = explode(',', $cfg->get('registerIPprefix')); 
+   foreach ( $IPranges as $nextIPrange ){
+     $nextIPrange = trim($nextIPrange);
+     $canRegister |= (substr( $_SERVER['REMOTE_ADDR'], 0, strlen( $nextIPrange ) ) == $nextIPrange);
+     if ($canRegister ) break;
+   }
+ }
 
 if ( !$canRegister ) unset($_POST); // forget about all postet data...
 
@@ -186,7 +195,7 @@ else{ // no data posted or errors found
 
      $pge->put( 
      // Warning when IP prefix not matched
-                ( !$canRegister & $cfg->doesExist('registerIPprefixViolationNote') ? "<div class=\"labsys_mop_note\" style=\"color: #ff5555;\">\n".$cfg->get('registerIPprefixViolationNote')."</div>\n" : '' ).
+                ( !$canRegister & $cfg->doesExist('registerIPprefixViolationNote') ? "<div class=\"labsys_mop_note\" style=\"color: #ff5555;\">\n".$cfg->get('registerIPprefixViolationNote').' ['.$_SERVER['REMOTE_ADDR'].']'."</div>\n" : '' ).
      // surName
                 '<label for="surName" class="labsys_mop_input_field_label_top">'.$lng->get('surName').'</label>'."\n".
                 '<input'.( $canRegister ? '' : ' disabled="disabled"' ).' tabindex="'.$pge->nextTab++.'" type="text" id="surName" name="NAME" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['NAME'] ) ? $_POST['NAME'] : $lng->get('surName') ).'" onchange="isDirty=true">'."\n".

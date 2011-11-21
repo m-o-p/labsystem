@@ -60,9 +60,10 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
                                                  $myMenu->entry( $lng->get( "MnuEntrySendMail" ), "../pages/mailForm.php" );
                               else
                                 $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?  'https://'.$_SERVER[ 'SERVER_NAME' ].'/pages/login.php' :  '../pages/login.php' ) ).
-                                                 $myMenu->entry( $lng->get("MnuEntryRegister"), "/?address=register" ); // you can also put an absolute url here (https://ilab2.net.in.tum.de/pages/register.php?config=useradmin)
+                                                 $myMenu->entry( $lng->get("MnuEntryRegister"), "/?address=register" ); // you can also put another config in the url here (/register.php?config=useradmin)
                                                                                                                         // The advantage is that all registrations count to the same system...
                                                                                                                         // Othrwhise they only count to your current instance.
+                                                                                                                        // Do not forget to edit the /index.php to redirect address=register to thre you want
                              }
 
   // this "magic menu" lists all labs acessable to the user                          
