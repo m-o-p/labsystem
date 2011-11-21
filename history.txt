@@ -20,6 +20,10 @@ Feature Requests:
 -------------------
   /pages/register.php
     The config parameter "registerIPprefix" can be a comma separated list now.
+  /include/classes/elements/LlElement.inc
+    Corrected a bug: the lab closing algorithm used the user's current 
+    team which might have changed from when the user did the lab. Now it
+    takes the team from the labUID status ($permissions['currentTeam']).
     
 2011-11-20
 -------------------

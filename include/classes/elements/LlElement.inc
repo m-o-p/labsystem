@@ -149,7 +149,7 @@ class LlElement extends Element{
       if ( $this->preLabAllTeammFinished &&                                         // are data there?
            !$this->labIsClosed &&
            $this->isAfter1stSched && !$this->isInSched
-          ) $this->reallyCloseAllLabInputs( $usr->currentTeam );
+          ) $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
           
     }else{ // time consuming loading is not necessary since it is not visible anyway...
       $this->preLab                   = false;
@@ -1439,6 +1439,7 @@ class LlElement extends Element{
   */
   function reallyCloseAllLabInputs( $team ){
     global $lng, $usr;
+    makeLogEntry( 'l', 'closing all i', 'l'.$this->idx );
    // close all lab inputs:
    // also reMap all inputs  (necessary for users that never entered a question (done together).
     $parameter = Array(); //teamUIDs

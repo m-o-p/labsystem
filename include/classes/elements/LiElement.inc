@@ -685,13 +685,17 @@ class LiElement extends Element{
   */
   function acquireLock4( $fullAddress ){
     $this->lkDBI->setData4( $this->getDataOfTeam, $this->idx, $fullAddress );
+    // makeLogEntry( 'lock', 'set', 'i'.$this->idx );
   }
 
   /**
   * Removes all locks for $this->getDataOfTeam.
   */
   function removeLock(){
-    if ($this->lockIsSetTo) $this->lkDBI->remLock4( $this->getDataOfTeam );
+    if ( $this->lockIsSetTo ){
+      $this->lkDBI->remLock4( $this->getDataOfTeam );
+      // makeLogEntry( 'lock', 'removed by i'.$this->idx, 'i'.$this->lockIsSetTo );
+    }
   }
   
   /**
@@ -742,6 +746,8 @@ class LiElement extends Element{
             $_POST['ANSWER'] = preg_replace( '/\s/', 'NO_LOCK', $_POST['ANSWER'] );
             $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
     }
+    
+    makeLogEntry( 'i', 'aw saved', 'i'.$this->idx );
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
@@ -853,6 +859,7 @@ class LiElement extends Element{
     if (!$this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, true, false, $lng->get("closesInput")  );
     $this->isClosed = true;
     $this->isCorrected = false;
+    makeLogEntry( 'i', 'closed', 'i'.$this->idx );
   }
   
   /**
