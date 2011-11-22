@@ -284,9 +284,14 @@ class LiElement extends Element{
       $ret .= '</ul>'; 
     } 
     
-    if ( $isGettingAnswered ) // if we can answer we can upload.
-      $ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" name=\"file\" \">".     
-              "<input type=\"submit\" name=\"fileUpload\" value=\"".$lng->get('upload')."\"><br /><br />"; 
+    if ( $isGettingAnswered ){ // if we can answer we can upload.
+      $max_upload = (int)(ini_get('upload_max_filesize'));
+      $max_post = (int)(ini_get('post_max_size'));
+      $memory_limit = (int)(ini_get('memory_limit'));
+      $upload_mb = min($max_upload, $max_post, $memory_limit);
+      $ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" name=\"file\" \">".  
+              "<input type=\"submit\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>'; 
+    }
     $ret .= '</div>';
     return $ret;
   }

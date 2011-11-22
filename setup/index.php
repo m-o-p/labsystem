@@ -79,8 +79,8 @@ echo('
 ');
   return;
 }
-
-require( INCLUDE_DIR."/hostname2config.inc" );
+require( INCLUDE_DIR."/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
+                                                // needed to get parameters from the url ($url->get, ->available)
 require_once( INCLUDE_DIR."/configuration.inc" );
 require_once( INCLUDE_DIR."/classes/DBConnection.inc" );
 
@@ -563,7 +563,21 @@ fileNote( 'importPictureDir','php rw, www r' );
 fileNote( 'importFilesDir',  'php rw, www r' );
 echo( '</pre>' );
 
-
+// Upload limit
+$max_upload = (int)(ini_get('upload_max_filesize'));
+$max_post = (int)(ini_get('post_max_size'));
+$memory_limit = (int)(ini_get('memory_limit'));
+$upload_mb = min($max_upload, $max_post, $memory_limit);
+echo( '
+  <span style="color: #ff5555">The <b>upload limit</b> is currently set to <b>'.$upload_mb.'M</b></span><br>
+  To change it change the values of the following variables in your webserver config or .htaccess.<br>
+  <span style="color: #888888">(The minimum of the three restricts the upload size).</span><br>
+  php_value upload_max_filesize '.$max_upload.'M<br>
+  php_value post_max_size '.$max_post.'M<br>
+  php_value memory_limit '.$upload_mb.'M<br>
+  <br>
+  You can also change the values in your php.ini which affects all hosts on the machine then.
+');
 
 /* C: AFTER INSTALLATION NOTES */
 say_toptitle( 'Installation done!' ); /***********************************/

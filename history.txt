@@ -16,6 +16,13 @@ Feature Requests:
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
    - Maybe in page sorter?
 
+2011-11-21
+-------------------
+  /include/classes/elements/LiElement.inc
+  /setup/index.php
+    Added a hint for the upload limit.
+    Fixed setup script (did not reflect hostname2config.inc missing).
+
 2011-11-20
 -------------------
   /pages/register.php
