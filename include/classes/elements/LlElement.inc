@@ -146,7 +146,8 @@ class LlElement extends Element{
       // Close inputs?
       // If 1st schedule is up and there is no running schedule: Close all lab questions! (affects only user!)
       // To reenable lab answering: First make a schedule! (Then the link will appear)
-      if ( $this->preLabAllTeammFinished &&                                         // are data there?
+      if ( $usr->isOfKind( IS_USER ) && // makes no sense for not logged in users!
+           $this->preLabAllTeammFinished &&                                         // are data there?
            !$this->labIsClosed &&
            $this->isAfter1stSched && !$this->isInSched
           ) $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
