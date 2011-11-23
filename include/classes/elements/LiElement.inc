@@ -312,11 +312,11 @@ class LiElement extends Element{
                      ( $this->isCorrected ?  "_green" :  "_red" ) : '' ).
           "\">".
             // the "is corrected" checkbox
-            ( $isInCorrection ? 
+            ( $usr->isOfKind( IS_CORRECTOR ) && ($isInCorrection || !$this->isCorrected) ? 
                        "<label for=\"IS_CORRECTED\" class=\"labsys_mop_input_field_label_left\">".$lng->get("inputIsCorrected")."</label> ".
                        "<input type=\"checkbox\" name=\"IS_CORRECTED\" value=\"1\" ".
-                        "tabindex=\"".$pge->nextTab++."\" ".
-                        "checked=\"checked\"". // so it will be checked by default
+                        "tabindex=\"".$pge->nextTab++.'"'.
+                        ( $isInCorrection ? ' checked="checked"' : '' ). // so it will be checked by default
                        " onchange='isDirty=true'>" : ''
                       ).
             // the credits
@@ -437,7 +437,7 @@ class LiElement extends Element{
         else if ( $isInCorrection ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                    "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n";
                                else if ( !isset( $_POST['FULLADDRESS'] ) )  $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                                                           "value=\"".$lng->get("correct")."\" onchange='isDirty=true'>\n";
+                                                                                           "value=\"".$lng->get("correct")."\" onclick='isDirty=false;'>\n";
                                     else ; // another is opened yet
       else if ( $this->isClosed ) ;
            else  if ( $isGettingAnswered ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
@@ -483,6 +483,8 @@ class LiElement extends Element{
       exit;
     }
 
+    if ( $usr->isOfKind( IS_CORRECTOR ) && isset($_POST['IS_CORRECTED']) ) $this->saveCorrectorStuff(); // directly save without editing further fields
+    
     if ($this->question == "") return "'()";
     
     $answers = "";
@@ -784,6 +786,9 @@ class LiElement extends Element{
   /*static*/ function saveCorrectorStuff(){
     global $url, $lng, $usr;
     
+    if ( $usr->isOfKind( IS_CORRECTOR ) && isset($_POST['IS_CORRECTED']) ) // start over without commenting
+      $_POST['CREDITS'] = $this->possibleCredits;
+
     // check for all necessary values posted
     if ( !isset($_POST['IDX']) || 
          !isset($_POST['REDIRECTTO']) || 

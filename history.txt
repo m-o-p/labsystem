@@ -16,6 +16,12 @@ Feature Requests:
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
    - Maybe in page sorter?
 
+2011-11-23
+-------------------
+  /include/classes/elements/LiElement.inc
+    Now it is possible to set a question as corrected without opening it.
+    (Thanks to Yannick Scherer for the request.)
+    
 2011-11-21
 -------------------
   /include/classes/elements/LiElement.inc
