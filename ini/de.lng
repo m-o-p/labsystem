@@ -328,7 +328,7 @@ Credits             = "Punkte"
 ;l
 inputPreLab         = "PreLab"                  ;; l-edit field descriptor
 inputLab            = "Lab"                     ;; l-edit field descriptor
-inputIsCorrected    = "Korrigiert?"             ;; Explanation to the corrector's checkbox.
+inputIsCorrected    = "Korrektur dieser Frage abgeschlossen?"             ;; Explanation to the corrector's checkbox.
 metaData            = "Metadatrn"               ;; Explanation on the edit field around the following meta data
 authors             = "Autoren"
 abstract            = "Kurzbeschreibung"
