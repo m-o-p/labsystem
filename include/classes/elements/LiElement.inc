@@ -215,18 +215,23 @@ class LiElement extends Element{
   *
   * @param  $isInCorrection   If true the comment is returned as textarea. Otherwise as division.
   *
+  * @param $fullAddress       The elements full address. (Used for the anchor.)
+  *
   * @return string            The html representation of the correctors comment.
   */
-  function showComment( $isInCorrection=false ){
+  function showComment( $isInCorrection=false, $fullAddress='' ){
     global $usr, $pge, $cfg;
     if ( $isInCorrection ) 
-      return "<textarea tabindex=\"".$pge->nextTab++."\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultICommentRows")."\" onchange='isDirty=true'>".
+      return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n". // anchor for retrieving after saving
+             "<textarea tabindex=\"".$pge->nextTab++."\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultICommentRows")."\" onchange='isDirty=true'>".
              returnEditable( $this->answerComment ).
              "</textarea>\n";
     else if ( $this->answerComment != "" )
-      return "<div class=\"labsys_mop_i_comment\">".
+      return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n". // anchor for retrieving after saving
+             "<div class=\"labsys_mop_i_comment\">".
              returnHTML( $this->answerComment ).
              "</div>\n";
+    else return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n"; // anchor for retrieving after saving
   }
   
   /**
@@ -399,7 +404,7 @@ class LiElement extends Element{
                "<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
                "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && !$isInCorrection) ?
                                       // link for the corrector to unlock... (-> see description above method)
-                                      $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam) :
+                                      $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' )) :
                                       // normal handling -> pass method to executeCommandOnElement.php
                                       $url->link2("../php/executeCommandOnElement.php?address=i")
                                      ).
@@ -418,7 +423,7 @@ class LiElement extends Element{
                                       )
                 ).
               "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
-              "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam."\">\n". // return so self
+              "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' )."\">\n". // return so self
               "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
               "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
               "<input type=\"hidden\" name=\"TEAM\" value=\"".$this->getDataOfTeam."\">\n".
@@ -428,7 +433,7 @@ class LiElement extends Element{
               $this->showAnswer( $isGettingAnswered && !$usr->isOfKind( IS_CORRECTOR ) ); // correctors never edit answers
               
     // comment
-      if ( $this->isCorrected || $usr->isOfKind( IS_CORRECTOR ) ) $ret .= $this->showComment( $isInCorrection );
+      if ( $this->isCorrected || $usr->isOfKind( IS_CORRECTOR ) ) $ret .= $this->showComment( $isInCorrection, $fullAddress );
       
     // credits           
       $ret .= $this->showCredits( $isInCorrection );

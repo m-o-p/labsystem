@@ -22,6 +22,9 @@ Feature Requests:
     Now it is possible to set a question as corrected without opening it.
     (Thanks to Yannick Scherer for the request.)
     
+    Changed the behavior to jump to the correctors comment directly when opening 
+    instead of the beginning of the answer (fastens the process for longer answers.)
+    
 2011-11-21
 -------------------
   /include/classes/elements/LiElement.inc
