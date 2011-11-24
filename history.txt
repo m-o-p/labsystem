@@ -16,6 +16,10 @@ Feature Requests:
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
    - Maybe in page sorter?
 
+2011-11-24
+-------------------
+  Fixed bug with the new start over feature when correcting.
+  
 2011-11-23
 -------------------
   /include/classes/elements/LiElement.inc

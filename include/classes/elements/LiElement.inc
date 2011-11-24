@@ -490,7 +490,10 @@ class LiElement extends Element{
       exit;
     }
 
-    if ( $usr->isOfKind( IS_CORRECTOR ) && isset($_POST['IS_CORRECTED']) ) $this->saveCorrectorStuff(); // directly save without editing further fields
+    if ( $usr->isOfKind( IS_CORRECTOR ) && isset($_POST['IS_CORRECTED'])  && !isset($_POST['CREDITS']) && ( $_POST['IDX'] == $this->idx) ){
+      $this->saveCorrectorStuff(); // directly save without editing further fields
+      exit;
+    };
     
     if ($this->question == "") return "'()";
     
@@ -793,8 +796,13 @@ class LiElement extends Element{
   /*static*/ function saveCorrectorStuff(){
     global $url, $lng, $usr;
     
-    if ( $usr->isOfKind( IS_CORRECTOR ) && isset($_POST['IS_CORRECTED']) ) // start over without commenting
+    if ( $usr->isOfKind( IS_CORRECTOR ) 
+         && isset($_POST['IS_CORRECTED']) 
+         && !isset($_POST['CREDITS']) 
+         && ($_POST['IDX'] == $this->idx) ){// start over without commenting
+      makeLogEntry( 'i', 'quick correcting', $this->idx );
       $_POST['CREDITS'] = $this->possibleCredits;
+    }
 
     // check for all necessary values posted
     if ( !isset($_POST['IDX']) || 
