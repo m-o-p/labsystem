@@ -149,7 +149,8 @@ class LlElement extends Element{
       if ( $usr->isOfKind( IS_USER ) && // makes no sense for not logged in users!
            $this->preLabAllTeammFinished &&                                         // are data there?
            !$this->labIsClosed &&
-           $this->isAfter1stSched && !$this->isInSched
+           $this->isAfter1stSched && !$this->isInSched &&
+           ($permissions['currentTeam'] != '') // is there a record for this lab?
           ) $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
           
     }else{ // time consuming loading is not necessary since it is not visible anyway...

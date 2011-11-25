@@ -16,6 +16,11 @@ Feature Requests:
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
    - Maybe in page sorter?
 
+2011-11-25
+-------------------
+  Fixed closing of inputs is only done when a record for the lab exists in the status table (= the lab was started).
+  The missing of such a check led to an error message for users that did not do the lab and access statistics (e.g. correctors).
+
 2011-11-24
 -------------------
   Fixed bug with the new start over feature when correcting.
