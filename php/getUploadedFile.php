@@ -54,6 +54,7 @@ if (!file_exists($filePath)) {
 }
 
 header("Content-Type: ".mime_content_type($filePath));
+header('Content-Disposition: attachment; filename="' . basename($GLOBALS['url']->get('filename')) . '"');
 
 $fp = fopen($filePath, 'rb');
 fpassthru($fp);

@@ -442,13 +442,17 @@ class LiElement extends Element{
       if ( $usr->isOfKind( IS_CORRECTOR ) )
         if ( !$this->isClosed ) ; 
         else if ( $isInCorrection ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                   "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n";
+                                                   "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
+                                            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
+                                                   "value=\"".$lng->get("cancel")."\" onclick='isDirty=false' name=\"cancel\">\n";
                                else if ( !isset( $_POST['FULLADDRESS'] ) )  $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                                                            "value=\"".$lng->get("correct")."\" onclick='isDirty=false;'>\n";
                                     else ; // another is opened yet
       else if ( $this->isClosed ) ;
            else  if ( $isGettingAnswered ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                          "value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n";
+                                                          "value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
+                                                   "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
+                                                          "value=\"".$lng->get("cancel")."\" onclick='isDirty=false' name=\"cancel\">\n";
                                       else if ( !$this->lockIsSetTo )
                                            $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                           "value=\"".$lng->get("giveAnswer")."\">\n";
@@ -739,8 +743,12 @@ class LiElement extends Element{
        
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
     
-    
-
+    if (isset($_POST['cancel'])){ // cancel action
+      $this->removeLock();
+      // One could also display the page here but that way it is left to the normal mechanism...
+      header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+      exit;
+    }
 
     if ( $this->lockIsSetTo == $this->idx ){
       $this->history='';
@@ -825,9 +833,10 @@ class LiElement extends Element{
        
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
 
-    $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ), true, isset($_POST['IS_CORRECTED']) );
-
-    makeLogEntry( 'i', 'correction saved', $this->idx );
+    if (!isset($_POST['cancel'])){ // cancel? -> do nothing
+      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ), true, isset($_POST['IS_CORRECTED']) );
+      makeLogEntry( 'i', 'correction saved', $this->idx );
+    }
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }

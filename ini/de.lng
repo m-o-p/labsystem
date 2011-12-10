@@ -367,6 +367,7 @@ visibleAftr1stSched = "sichtbar <b>nach</b> dem ersten Schedule..."
 
 ;; buttons ********************************************************************************************
 save                = "speichern"          ;; Text of any save button
+cancel              = "abbrechen"
 
 ; sendMail.php
 checkAll            = "alle ausw&auml;hlen"

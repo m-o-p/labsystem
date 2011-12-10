@@ -16,6 +16,20 @@ Feature Requests:
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
    - Maybe in page sorter?
 
+2011-12-02
+-------------------
+  /include/classes/elements/LiElement.inc
+    Added a cancel button when answering a question.
+  /ini/{en,de}.lng
+    Added a string for "cancel".
+  /css/sys/labsys_mop_basic.css
+    Added a style for the cancel button: .labsys_mop_i_cancel_button
+    
+2011-12-02
+-------------------
+  /php/getUploadedFile.php
+    Now the correct file name is used. (Thanks Andrey Uznov for filing this bug.)
+    
 2011-11-25
 -------------------
   Fixed closing of inputs is only done when a record for the lab exists in the status table (= the lab was started).
@@ -33,6 +47,7 @@ Feature Requests:
     
     Changed the behavior to jump to the correctors comment directly when opening 
     instead of the beginning of the answer (fastens the process for longer answers.)
+    (Thanks Sibi Antony for the request.)
     
 2011-11-21
 -------------------
