@@ -317,14 +317,15 @@ class LiElement extends Element{
                      ( $this->isCorrected ?  "_green" :  "_red" ) : '' ).
           "\">".
             // the "is corrected" checkbox
-            ( $usr->isOfKind( IS_CORRECTOR ) && ($isInCorrection || !$this->isCorrected) ? 
-                       "<input type=\"checkbox\" name=\"IS_CORRECTED\" value=\"1\" ".
+            ( $usr->isOfKind( IS_CORRECTOR ) && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ? 
+                        "<input type=\"checkbox\" name=\"IS_CORRECTED\" value=\"1\" ".
                         "tabindex=\"".$pge->nextTab++.'"'.
                         ( $isInCorrection ? ' checked="checked"' : '' ). // so it will be checked by default
-                       " onchange='isDirty=true'>".
-                       "<label for=\"IS_CORRECTED\" class=\"labsys_mop_input_field_label_right\">".
+                        " onchange='isDirty=true'>".
+                        "<label for=\"IS_CORRECTED\" class=\"labsys_mop_input_field_label_right\">".
                           '<img src="../syspix/labCorrected_yes_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
-                       '</label> ' : ''
+                        '</label> '
+                        : ''
                       ).
             // the credits
             "[".

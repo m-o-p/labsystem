@@ -16,6 +16,29 @@ Feature Requests:
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
    - Maybe in page sorter?
    
+ - Documentation:
+   - Demo Markdown lab
+   - Videos
+     - Work as an author
+       - Create course
+       - Work with CSS
+     
+     - Work as a student
+       - Team
+       - Barriers
+     - The Lock mechanism
+     
+     - Work as a Tutor
+       - Schedules
+       - Correction
+       
+     - Work as a course manager
+       - Grading
+       - Registration! (bound to IP range...)
+       - Setup new course
+       
+     - Install
+   
 2011-12-03
 -------------------
   Thanks to Andrey Uzunov for questioning the lock's behaviour.
@@ -33,6 +56,8 @@ Feature Requests:
       - sorted after starting time
       - then sorted after lab idx (time the lab was imported)
     The prototype of the lab is not shown anymore.
+  /include/classes/elements/LiElement.inc
+    Fixed Bug: Checkbox only shown when seeing someone's data...
 
 2011-12-02
 -------------------
