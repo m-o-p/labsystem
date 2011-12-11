@@ -444,7 +444,7 @@ class LiElement extends Element{
         else if ( $isInCorrection ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                    "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
                                             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
-                                                   "value=\"".$lng->get("cancel")."\" onclick='isDirty=false' name=\"cancel\">\n";
+                                                   "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
                                else if ( !isset( $_POST['FULLADDRESS'] ) )  $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                                                            "value=\"".$lng->get("correct")."\" onclick='isDirty=false;'>\n";
                                     else ; // another is opened yet
@@ -452,15 +452,14 @@ class LiElement extends Element{
            else  if ( $isGettingAnswered ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                           "value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
                                                    "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
-                                                          "value=\"".$lng->get("cancel")."\" onclick='isDirty=false' name=\"cancel\">\n";
+                                                          "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
                                       else if ( !$this->lockIsSetTo )
                                            $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                           "value=\"".$lng->get("giveAnswer")."\">\n";
                                            else // lock is set and is not set to this
                                            $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"image\" ".
-                                                          "src=\"../syspix/button_lock_closed_red_7x10.gif\" width=\"7\" height=\"10\" alt=\"".$lng->get("LockSetButForce").' '.$this->lockIsSetTo."\">\r\n".
+                                                          "src=\"../syspix/button_lock_closed_red_7x10.gif\" width=\"7\" height=\"10\" name=\"forceReLock\" value=\"1\" alt=\"".$lng->get("LockSetButForce").' '.$this->lockIsSetTo."\">\r\n";
                                                 // here the users gets indicated that another question is locked, so clicking on the red lock forces acquiring from another question.
-                                                          '<input type="hidden" name="forceReLock" value="1">'."\r\n";
               
             
       $ret .= "</FORM>\n".
@@ -862,19 +861,21 @@ class LiElement extends Element{
      
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
      
-    if ($this->isClosed)
+    if ($this->isClosed){
       $url->put( "sysalert=".$lng->get("InputAlreadyClosed") );
-    else{
-      $reForceLock = ( $this->lockIsSetTo && $this->forceReLock ); // lock is set yet and user clicked on lock -> place a note but set it
-      if ( $reForceLock )
+    }elseif ( $this->lockIsSetTo && ($this->lockIsSetTo != $this->idx) ){ // we do not have the lock
+      if ($this->forceReLock){
+        // lock is set to something else and we want to acquire it (click onlock)
         $url->put( "sysalert=".$lng->get("LockTakenFrom")." ".$this->lockIsSetTo );
-
-      if (!$this->lockIsSetTo || $reForceLock){
-        $this->acquireLock4( $_POST['FULLADDRESS'] );
-        makeLogEntry( 'i', 'open', $this->idx );
+      }else{
+        $url->put( "sysalert=".$lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
       }
     }
-         
+    if (!$this->lockIsSetTo || $this->forceReLock){
+      $this->acquireLock4( $_POST['FULLADDRESS'] );
+      makeLogEntry( 'i', 'open', $this->idx );
+    }
+            
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }

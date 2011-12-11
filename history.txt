@@ -15,11 +15,24 @@ Feature Requests:
  
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
    - Maybe in page sorter?
+   
+2011-12-03
+-------------------
+  /include/classes/elements/LiElement.inc
+    Changed the lock behaviour:
+      The lock assures that the whole team has only one question opened for answering.
+      As the pages do not automatically reload this may reult in trouble when the
+      team members click concurrently on "give answer". Up to now this resulted in a
+      warning and the later request got the lock.
+      NOW when a lock is already there and someone tries to accidentally (not clicking
+      on the red lock) open another question he simply gets a warning and the consistent
+      view. Opening can be done explicitly via clicking on the red lock then.
 
 2011-12-02
 -------------------
   /include/classes/elements/LiElement.inc
-    Added a cancel button when answering a question.
+    Added a cancel button when answering or correcting a question.
+    It results in no action (cancellation).
   /ini/{en,de}.lng
     Added a string for "cancel".
   /css/sys/labsys_mop_basic.css

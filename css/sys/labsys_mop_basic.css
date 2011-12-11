@@ -845,7 +845,6 @@ fieldset{
   .labsys_mop_i_save_button{
                     margin: 5px 0px 5px 0px;
                   	font-size: 0.8em;
-                    float: left;
                   	color:#000000;
                   	text-align: center;
                   	border: solid 1px #000000;
@@ -856,11 +855,10 @@ fieldset{
   .labsys_mop_i_cancel_button{
                     margin: 5px 0px 5px 0px;
                   	font-size: 0.8em;
-                    float: left;
                   	color:#dd8800;
                   	text-align: center;
                   	border: solid 1px #FFaa00;
-                    width: 50%;
+                    width: 100%;
                     background-color: transparent;
   }
 
