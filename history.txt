@@ -57,7 +57,10 @@ Feature Requests:
       - then sorted after lab idx (time the lab was imported)
     The prototype of the lab is not shown anymore.
   /include/classes/elements/LiElement.inc
-    Fixed Bug: Checkbox only shown when seeing someone's data...
+    Fixed Bugs:
+    - Checkbox only shown when seeing someone's data...
+    - XSS problem with </textarea><strong>foo</strong> when editing input...
+      Thanks Leon Winter for pointing this out!
 
 2011-12-02
 -------------------
