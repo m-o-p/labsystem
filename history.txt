@@ -18,6 +18,7 @@ Feature Requests:
    
 2011-12-03
 -------------------
+  Thanks to Andrey Uzunov for questioning the lock's behaviour.
   /include/classes/elements/LiElement.inc
     Changed the lock behaviour:
       The lock assures that the whole team has only one question opened for answering.
@@ -27,9 +28,15 @@ Feature Requests:
       NOW when a lock is already there and someone tries to accidentally (not clicking
       on the red lock) open another question he simply gets a warning and the consistent
       view. Opening can be done explicitly via clicking on the red lock then.
+  /include/classes/elements/LlDBInterfaceUidStatus.inc
+    Changed the order of the results shown on the all lab status:
+      - sorted after starting time
+      - then sorted after lab idx (time the lab was imported)
+    The prototype of the lab is not shown anymore.
 
 2011-12-02
 -------------------
+  Thanks to Andrey Uzunov for suggesting the cancel feature.
   /include/classes/elements/LiElement.inc
     Added a cancel button when answering or correcting a question.
     It results in no action (cancellation).
