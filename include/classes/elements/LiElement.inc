@@ -248,7 +248,7 @@ class LiElement extends Element{
                                                   'class="labsys_mop_textarea" '.
                                                   'rows="'.$cfg->get("DefaultIAnswerRows").'"'.
                                                   ' onchange="isDirty=true">'.
-                                                  returnHTML( $this->userAnswer ).
+                                                  htmlentities( $this->userAnswer ).
                                                   "</textarea>\n";
                          else if ( $this->userAnswer != "" ) return "<div class=\"labsys_mop_textarea\">".
                                                                     returnHTML( $this->userAnswer ).
