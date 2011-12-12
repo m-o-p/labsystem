@@ -38,16 +38,22 @@ Feature Requests:
        - Setup new course
        
      - Install
-2011-12-11
+     
+     
+2011-12-12
 -------------------
   /css/sys/labsys_mop_basic.css
     Added formatting rule for pre to break long lines.
   /include/classes/elements/LiElement.inc
     Clearified some if statements in showAnswerData. May have been a problem for the lock.
     Changed display of answer in using <pre> when unformatted to keep tabs and spaces.
+    Fixed the issue with multiply showing fileUploads.
   /include/helper.inc
     Added formatting for tabs in returnHTML.
 
+  /php/uaManageUsersExecute.php
+  /php/uaMyDataSave.php
+    Fixed unescaped things and link.
 
 2011-12-11
 -------------------

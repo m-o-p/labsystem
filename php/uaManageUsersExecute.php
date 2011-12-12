@@ -73,5 +73,5 @@ elseif( $url->get( 'function' ) == 'del' ){
 else /* alert */ $url->put( 'sysalert='.$lng->get('NotAllowedToMkCall') );
 
 // redirect
-  header( "Location: ".urldecode( $url->get( 'redirectTo' ) ) );
+  header( "Location: ".$url->rawLink2( urldecode( $url->get( 'redirectTo' ) ) ) );
 ?>

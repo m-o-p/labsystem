@@ -80,7 +80,7 @@ else{
                                   $cfg->get('UserDBField_forename').', '.
                                   $cfg->get('UserDBField_uid'), 
                                   $cfg->get('UserDatabaseTable'), 
-                                  $cfg->get('UserDBField_username')."='".$_POST['USERNAME']."' && ".
+                                  $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $_POST['USERNAME'] )."' && ".
                                   $cfg->get('UserDBField_uid')."!='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
                                  );
     $data = mysql_fetch_assoc( $result );
@@ -107,19 +107,19 @@ else{
           if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ) /* do nothing */;
           else $customFields .= $key."='".$value."'".', ';
         }
-  
+        
       // update the values
       $userDBC->mkUpdate( $customFields. // coming on top they will not override system fields below.
-                          $cfg->get('UserDBField_username')."='".$_POST['USERNAME']."', ".
-                          $cfg->get('UserDBField_name')."='".$_POST['NAME']."', ".
-                          $cfg->get('UserDBField_forename')."='".$_POST['FORENAME']."', ".
-                          $cfg->get('UserDBField_email')."='".$_POST['EMAIL']."'", 
+                          $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $_POST['USERNAME'] )."', ".
+                          $cfg->get('UserDBField_name')."='".$userDBC->escapeString( $_POST['NAME'] )."', ".
+                          $cfg->get('UserDBField_forename')."='".$userDBC->escapeString( $_POST['FORENAME'] )."', ".
+                          $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $_POST['EMAIL'] )."'", 
                           $cfg->get('UserDatabaseTable'), 
                           $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ?  $usr->theSeeingUid()  : $usr->uid  )."'"
                          );
       // note
       $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
-      makeLogEntry( 'useradmin', 'saved userdata of '.$_POST['USERNAME'] );
+      makeLogEntry( 'useradmin', 'saved userdata of '.$userDBC->escapeString( $_POST['USERNAME'] ) );
     }
 }
 
