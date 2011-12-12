@@ -129,7 +129,7 @@ class LlDBInterfaceUidStatus {
              "which_corrected='".$whichCorrected."', ".
              "lab_given_credits='".($givenCredits * 100)."', ".
              "lab_possible_credits='".($possibleCredits * 100)."', ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
+             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && uid='".$uid."'" );
   }
   
@@ -153,7 +153,7 @@ class LlDBInterfaceUidStatus {
                      $history = "" ){
     global $usr;
     $toSet = "lab_closed='1', ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
+             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && current_team='".$team."'" );
   }
   
@@ -168,7 +168,7 @@ class LlDBInterfaceUidStatus {
     $toSet = "lab_closed='0', ".
              "lab_corrected='0', ".
              "which_corrected='', ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
+             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && current_team='".$team."'" );
   }
   

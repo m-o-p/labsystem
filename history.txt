@@ -55,6 +55,22 @@ Feature Requests:
   /php/uaMyDataSave.php
     Fixed unescaped things and link.
 
+  /include/classes/DBConnection.inc
+  /include/classes/elements/LcDBInterface.inc
+  /include/classes/elements/LiDBInterface.inc
+  /include/classes/elements/LiDBInterfaceAnswers.inc
+  /include/classes/elements/LiDBInterfaceLocks.inc
+  /include/classes/elements/LiDBInterfaceUidTeam.inc
+  /include/classes/elements/LlDBInterface.inc
+  /include/classes/elements/LlDBInterfaceUidStatus.inc
+  /include/classes/elements/LmDBInterface.inc
+  /include/classes/elements/LmDBInterfaceAnswers.inc
+  /include/classes/elements/LpDBInterface.inc
+  /include/classes/elements/LsDBInterface.inc
+    Fixed XSS issue with username in logs...
+    The user name was not escaped in the DB logs before and thus XSS was possible
+    by inserting XSS in the user name.
+
 2011-12-11
 -------------------
   Thanks to Andrey Uzunov for questioning the lock's behaviour.

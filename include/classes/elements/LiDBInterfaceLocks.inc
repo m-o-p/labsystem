@@ -60,7 +60,7 @@ class LiDBInterfaceLocks {
   function setData4( $team, $lockIdx, $history = "" ){
     global $usr;
     $toSet = "lock_on_idx='".$lockIdx."', ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ?  ": ".$history  : '' )."')"; 
+             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."')"; 
              // discards old history entries: a "one row history" should be enough. Otherwise it would get really big...    
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "team='".$team."'" );
   }

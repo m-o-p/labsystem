@@ -79,7 +79,7 @@ class LiDBInterfaceUidTeam {
   function setData4( $uid, $iIdx, $team, $history = "" ){
     global $usr;
     $toSet = "team='".$team."', ".
-             "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
+             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "i_idx='".$iIdx."' && uid='".$uid."'" );
   }
 }

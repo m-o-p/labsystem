@@ -128,16 +128,16 @@ class LpDBInterface {
 
     if ( $createNew )
       return $this->myDBC->mkInsertReturnIDX( $toSet.
-                                              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' '.$lng->get("dataSetCreated")."\\n' )", 
+                                              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).' '.$lng->get("dataSetCreated")."\\n' )", 
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
                                      ( $eP->history != '' ?
                                         ( $eP->history[0] == ']' ?
                                             'history=\''.substr( $eP->history, 1 )."'" : // import... -> no stamping please
-                                            "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n".$eP->history."' )" ) 
+                                            "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n".$this->myDBC->escapeString( $eP->history )."' )" ) 
                                         : // if the program changed the history: take it
-                                        "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName."\\n', ".$this->myTable.".history )"
+                                        "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n', ".$this->myTable.".history )"
                                      ), 
                                      $this->myTable, 
                                      "idx=".$eP->idx );
