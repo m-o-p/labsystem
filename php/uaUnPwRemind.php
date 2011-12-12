@@ -55,7 +55,7 @@ $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
                                 
 // check if the mailAddress exists:
 $result = $userDBC->mkSelect( $cfg->get('UserDBField_username').', '.
-                              $cfg->get('UserDBField_uid'), 
+                              $cfg->get('UserDBField_uid').' AS uid', 
                               $cfg->get('UserDatabaseTable'), 
                               'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$_POST['EMAIL']."')"
                              );
@@ -69,7 +69,7 @@ else{
     $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
                               
     // set the new password
-    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".sha1( $newPW )."'", 
+    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".crypt( $newPW, $data['uid'] )."'",  // the UID is used as salt
                         $cfg->get('UserDatabaseTable'), 
                         $cfg->get('UserDBField_uid')."='".$data[ $cfg->get('UserDBField_uid') ]."'"
                        );

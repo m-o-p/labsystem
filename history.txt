@@ -38,7 +38,13 @@ Feature Requests:
        - Setup new course
        
      - Install
-     
+
+2011-12-12
+-------------------
+  /include/classes/DBInterfaceUser.inc
+  /php/uaMyPWSave.php
+  /php/uaUnPwRemind.php
+    Passwords are stored with the UID as salt now.
      
 2011-12-12
 -------------------

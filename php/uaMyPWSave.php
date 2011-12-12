@@ -63,10 +63,10 @@ else{ // save new PW
                                 $cfg->get('UserDatabaseUserName'), 
                                 $cfg->get('UserDatabasePassWord'), 
                                 $cfg->get('UserDatabaseName'));
-                                
-    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".sha1( $_POST['NEWPW'] )."'", 
+    $accordingUID = ( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  );                
+    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".crypt( $_POST['NEWPW'], $accordingUID )."'", // the UID is used as salt
                         $cfg->get('UserDatabaseTable'), 
-                        $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
+                        $cfg->get('UserDBField_uid')."='".$accordingUID."'"
                        );
     // note
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
