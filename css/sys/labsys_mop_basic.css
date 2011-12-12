@@ -32,7 +32,14 @@ body {
 input, textarea, fieldset { /* round edges on the buttons and inputs */
                       border-radius: 0.3em;
       }
-
+/* Break long lines: */
+pre {
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
 a {                   text-decoration:none; color: #0065BD;}
 a:hover {             text-decoration:underline; color: #0065BD;}
 

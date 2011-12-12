@@ -251,7 +251,12 @@ class LiElement extends Element{
                                                   htmlentities( $this->userAnswer ).
                                                   "</textarea>\n";
                          else if ( $this->userAnswer != "" ) return "<div class=\"labsys_mop_textarea\">".
-                                                                    returnHTML( $this->userAnswer ).
+                                                                    ( $this->userAnswer[0] == '[' ? // formatted?
+                                                                    returnHTML( $this->userAnswer )
+                                                                    :
+                                                                    '<pre style="width: 100%; border: 0; padding: 0; margin: 0; background-color: transparent; display: inline;">'.
+                                                                    htmlspecialchars( $this->userAnswer ).
+                                                                    '</pre>' ).
                                                                     "</div>\n";
                               else return "";
   }
@@ -440,27 +445,36 @@ class LiElement extends Element{
       $ret .= $this->showCredits( $isInCorrection );
 
     // button
-      if ( $usr->isOfKind( IS_CORRECTOR ) )
-        if ( !$this->isClosed ) ; 
-        else if ( $isInCorrection ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
+      if ( $usr->isOfKind( IS_CORRECTOR ) ){
+        // corrector:
+        if ( !$this->isClosed ){ ; }
+        elseif ( $isInCorrection ){ $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                    "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
                                             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
                                                    "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
-                               else if ( !isset( $_POST['FULLADDRESS'] ) )  $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                                                           "value=\"".$lng->get("correct")."\" onclick='isDirty=false;'>\n";
-                                    else ; // another is opened yet
-      else if ( $this->isClosed ) ;
-           else  if ( $isGettingAnswered ) $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                          "value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
-                                                   "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
-                                                          "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
-                                      else if ( !$this->lockIsSetTo )
-                                           $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                          "value=\"".$lng->get("giveAnswer")."\">\n";
-                                           else // lock is set and is not set to this
-                                           $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"image\" ".
-                                                          "src=\"../syspix/button_lock_closed_red_7x10.gif\" width=\"7\" height=\"10\" name=\"forceReLock\" value=\"1\" alt=\"".$lng->get("LockSetButForce").' '.$this->lockIsSetTo."\">\r\n";
-                                                // here the users gets indicated that another question is locked, so clicking on the red lock forces acquiring from another question.
+                                   }
+        elseif ( !isset( $_POST['FULLADDRESS'] ) ){  $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
+                                                                   "value=\"".$lng->get("correct")."\" onclick='isDirty=false;'>\n";
+                                                  }
+        else{ ; }// another is opened yet
+      } else {
+        // user
+        if ( $this->isClosed ){ ; }
+        elseif ( $isGettingAnswered ){ $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
+                                                      "value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
+                                               "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
+                                                      "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
+                                       }
+        elseif ( !$this->lockIsSetTo ){
+                                         $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
+                                                        "value=\"".$lng->get("giveAnswer")."\">\n";
+                                       }
+        else {// lock is set and is not set to this
+                                 $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"image\" ".
+                                                "src=\"../syspix/button_lock_closed_red_7x10.gif\" width=\"7\" height=\"10\" name=\"forceReLock\" value=\"1\" alt=\"".$lng->get("LockSetButForce").' '.$this->lockIsSetTo."\">\r\n";
+                                      // here the users gets indicated that another question is locked, so clicking on the red lock forces acquiring from another question.
+              }
+      }
               
             
       $ret .= "</FORM>\n".
@@ -541,7 +555,7 @@ class LiElement extends Element{
                                    '<!-- /example solution -->'."\r\n".
                                    "</div>\n" : ''
                        ).
-             ( $this->hasFileUpload && ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) || $usr->isOfKind( IS_CONTENT_EDITOR ) ) ? $this->showFileUpload() : ''). // show Upload for editors. Others see it in showAnswer.
+             ( $this->hasFileUpload && !$usr->isSeeingSomeonesData() /* contains upload already... */ && ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) || $usr->isOfKind( IS_CONTENT_EDITOR ) ) ? $this->showFileUpload() : ''). // show Upload for editors. Others see it in showAnswer.
                         
            // answer + eventually comment + credits
              $answers.

@@ -119,7 +119,7 @@ function parseHTML( &$object ){
   else // assume it is plain text
 //    $object = preg_replace('/ ([\w\s])/', '&nbsp;\\1', nl2br( htmlspecialchars( $object ) ) );
 //    $object = nl2br( htmlspecialchars( $object ) );
-    $object = preg_replace('/  /', '&nbsp; ',
+    $object = str_replace(array('  ', "\t"), array('&nbsp; ', '&nbsp; &nbsp; '),
                            nl2br( htmlspecialchars( $object ) )
               );
 }

@@ -38,8 +38,18 @@ Feature Requests:
        - Setup new course
        
      - Install
-   
-2011-12-03
+2011-12-11
+-------------------
+  /css/sys/labsys_mop_basic.css
+    Added formatting rule for pre to break long lines.
+  /include/classes/elements/LiElement.inc
+    Clearified some if statements in showAnswerData. May have been a problem for the lock.
+    Changed display of answer in using <pre> when unformatted to keep tabs and spaces.
+  /include/helper.inc
+    Added formatting for tabs in returnHTML.
+
+
+2011-12-11
 -------------------
   Thanks to Andrey Uzunov for questioning the lock's behaviour.
   /include/classes/elements/LiElement.inc
@@ -62,7 +72,7 @@ Feature Requests:
     - XSS problem with </textarea><strong>foo</strong> when editing input...
       Thanks Leon Winter for pointing this out!
 
-2011-12-02
+2011-12-10
 -------------------
   Thanks to Andrey Uzunov for suggesting the cancel feature.
   /include/classes/elements/LiElement.inc
