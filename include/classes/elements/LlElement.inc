@@ -714,10 +714,12 @@ class LlElement extends Element{
     echo('ePub to '.
           '[l-Element] Title: '.$this->title.'<br>'.
           '[l-Element] Authors: '.$this->authors.'<br>'.
-          '[l-Element] Abstract: '.$this->comment.
-          "[l-Element] <!-- start of collection entity --><div class=\"labsys_mop_c_inner_coll_entity\">\n".
+          '[l-Element] Abstract: '.$this->comment.'<br>'.
+          '[l-Element] Language: '.$lng->get('Content-Language')
+          // maybe create the TOC on the fly? At each C element...
+          //"[l-Element] <!-- start of collection entity --><div class=\"labsys_mop_c_inner_coll_entity\">\n".
           //$this->showTOC( $fullAddress, $extParagraph ). // we need a ePub Version here.
-          "<!-- stop of collection entity --></div>\n"
+          //"<!-- stop of collection entity --></div>\n"
          );
     // The content.
     echo( '<hr><hr>prelab<hr><hr><br>' );
