@@ -701,6 +701,7 @@ class LlElement extends Element{
   */
   function showEPub( $fullAddress, $extParagraph ){
     global $lng;
+    /*
     // Uses Grandt PHPePUB (https://github.com/Grandt/PHPePub)
     $pluginFile = '../plugins/Grandt-PHPePub/EPub.php';
     if (!file_exists( $pluginFile )){
@@ -708,6 +709,7 @@ class LlElement extends Element{
           exit;
          }
     include_once( $pluginFile );
+    */
     // The meta information of the ePub.
     
     // The title page.
