@@ -53,6 +53,9 @@ Feature Requests:
   /include/classes/elements/LmElement.inc
   /include/classes/elements/LpElement.inc
     Started adding ePub support. Can be accesses via adding .epub to the address (e.g. l1.epub).
+    
+  /include/menu.inc
+    Changed the https link to work with subdirectories. (Replaces /view by /login now.)
 
 
 2011-12-12
