@@ -381,7 +381,7 @@ class LmElement extends Element{
     
     parseHTML( $this->question ); // Process [HTML].
 
-    echo ('[m-element] question:'.htmlentities( $this->question ).'<br>');
+    echo ('[m-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
     
     // The answers using the current permutation array
     for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers

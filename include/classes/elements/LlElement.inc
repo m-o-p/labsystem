@@ -712,7 +712,7 @@ class LlElement extends Element{
     
     // The title page.
     echo('ePub to '.
-          '[l-Element] Title: '.$this->title.'<br>'.
+          '[l-Element '.$fullAddress.'] Title: '.$this->title.'<br>'.
           '[l-Element] Authors: '.$this->authors.'<br>'.
           '[l-Element] Abstract: '.$this->comment.'<br>'.
           '[l-Element] Language: '.$lng->get('Content-Language')

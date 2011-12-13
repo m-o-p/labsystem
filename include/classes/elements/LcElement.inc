@@ -213,7 +213,7 @@ class LcElement extends Element{
     $visibleArray = $this->getMyVisibleElements();
 
     // Show the title in the ePub = subsection
-    echo( '[c-Element] subsection title: '.$this->title.'<br>' );
+    echo( '[c-Element '.$fullAddress.'] subsection title: '.$this->title.'<br>' );
        
     foreach( $visibleArray as $value ){
        $id = $value{0};

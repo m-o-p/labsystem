@@ -170,4 +170,44 @@ function createNew( $elementID ){
   $newIdx = $GLOBALS[ $elementIDsmall.'DBI' ]->setData( $newElement, true ); // insert the new element in the DB and get the new idx back
   return $newIdx;
 }
+
+/**
+* Code from http://www.tipsntutorials.com/tips/PHP/41
+*
+* Removes all HTML from the given content.
+*
+* @param HTMLcontent The HTML string.
+* @return String The content without HTML.
+*/
+function html2txt( $HTMLcontent ){
+  $search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript 
+                   "'<[/!]*?[^<>]*?>'si",          // Strip out HTML tags 
+                   "'([rn])[s]+'",                // Strip out white space 
+                   "'&(quot|#34);'i",                // Replace HTML entities 
+                   "'&(amp|#38);'i", 
+                   "'&(lt|#60);'i", 
+                   "'&(gt|#62);'i", 
+                   "'&(nbsp|#160);'i", 
+                   "'&(iexcl|#161);'i", 
+                   "'&(cent|#162);'i", 
+                   "'&(pound|#163);'i", 
+                   "'&(copy|#169);'i", 
+                   "'&#(d+);'e");                    // evaluate as php 
+  
+  $replace = array ("", 
+                   "", 
+                   "\1", 
+                   "\"", 
+                   "&", 
+                   "<", 
+                   ">", 
+                   " ", 
+                   chr(161), 
+                   chr(162), 
+                   chr(163), 
+                   chr(169), 
+                   "chr(\1)"); 
+  
+  return preg_replace($search, $replace, $HTMLcontent);
+}
 ?>

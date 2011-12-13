@@ -152,7 +152,7 @@ class BCElement extends LcElement{
    // ePub
     elseif ( $last == "epub" ){
                                 // tell the ePub to create a new chapter
-                                echo( '[C-Element] tell the ePub to create a new chapter "'.$this->title.'"<br>' );
+                                echo( '[C-Element '.$parentAddr.$me.'] tell the ePub to create a new chapter "'.$this->title.'"<br>' );
                                 $this->showEPub( $parentAddr.$me, $extParagraph ); // called in the LcElement
                                 return;
                                }

@@ -116,7 +116,7 @@ class LpElement extends Element{
     $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
     
-    echo ('[p-element] '.htmlentities($this->contents).'<br>');
+    echo ('[p-element '.$fullAddress.'] '.htmlentities( $this->contents ).'<br>' );
   }
 
 // The next functions are used for the element's edit page. *************************************************

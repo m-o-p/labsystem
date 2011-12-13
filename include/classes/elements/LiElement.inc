@@ -580,7 +580,7 @@ class LiElement extends Element{
     }
         
     parseHTML( $this->question );
-    echo ('[i-element] question:'.htmlentities( $this->question ).'<br>');
+    echo ('[i-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
   }
   
 // The next functions are used for the element's edit page. *************************************************
