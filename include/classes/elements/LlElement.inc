@@ -693,6 +693,43 @@ class LlElement extends Element{
   }
   
   /**
+  * Produces the ePub version of the lab.
+  * Called via show?address="l[idx].ePub"
+  *
+  * @param $fullAddress       The element's full address (p.e. C42.l23)
+  * @param $extParagraph      The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  */
+  function showEPub( $fullAddress, $extParagraph ){
+    global $lng;
+    // Uses Grandt PHPePUB (https://github.com/Grandt/PHPePub)
+    $pluginFile = '../plugins/Grandt-PHPePub/EPub.php';
+    if (!file_exists( $pluginFile )){
+          trigger_error( 'ePub Plugin "'.$pluginFile.'" missing.', E_USER_ERROR );
+          exit;
+         }
+    include_once( $pluginFile );
+    // The meta information of the ePub.
+    
+    // The title page.
+    echo('ePub to '.
+          '[l-Element] Title: '.$this->title.'<br>'.
+          '[l-Element] Authors: '.$this->authors.'<br>'.
+          '[l-Element] Abstract: '.$this->comment.
+          "[l-Element] <!-- start of collection entity --><div class=\"labsys_mop_c_inner_coll_entity\">\n".
+          //$this->showTOC( $fullAddress, $extParagraph ). // we need a ePub Version here.
+          "<!-- stop of collection entity --></div>\n"
+         );
+    // The content.
+    echo( '<hr><hr>prelab<hr><hr><br>' );
+    if ( $this->preLabIsVisible2Me )
+      $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx.".epub", ( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
+    echo( '<hr><hr>lab<hr><hr><br>' );
+    if ( $this->labIsVisible2Me )
+      $this->lab->show( $fullAddress.".C".$this->labCollectionIdx.".epub", ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
+    exit;
+  }
+  
+  /**
   * Shows the members lab status.
   *
   * @return string  The labstatus' html code.
@@ -850,7 +887,10 @@ class LlElement extends Element{
     
    // index
     if     ( $last == "" )   $myRetVal .= $this->showTOC( $parentAddr.$me, $extParagraph );
-   // all preLab questions    
+   // ePub
+    elseif ( $last == "epub" &&
+             $this->isVisible() )             $this->showEPub( $parentAddr.$me, $extParagraph );
+   // all preLab questions
     elseif ( $last == "allPrelabQ" &&
              $scndLast == $me &&
              $this->preLabIsVisible2Me )      $myRetVal .= $this->showAllPrelabMultipleChoices( "l".$this->idx );

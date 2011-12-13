@@ -313,7 +313,7 @@ class LmElement extends Element{
       exit;
     }
 
-    if ($this->question == "") return "'()";
+    if ($this->question == ""){ return "'()"; exit; }
     
     
     parseHTML( $this->question ); // Process [HTML].
@@ -360,6 +360,34 @@ class LmElement extends Element{
            "</div>\n".
            EM::viewBottomMultipleChoice( $this, $fullAddress ).
            "</div>";
+  }
+  
+  
+  /**
+  * Produces the ePub version of this element.
+  * Called by LcElement.inc
+  *
+  * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
+  * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  */
+  function showEPub( $fullAddress, $paragraph="" ){
+    global $usr, $lng, $url;
+    if (  !$this->isVisible() ){ /* not enough rights->no content */
+      return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
+      exit;
+    }
+
+    if ($this->question == ""){ echo "'()"; exit; }
+    
+    parseHTML( $this->question ); // Process [HTML].
+
+    echo ('[m-element] question:'.htmlentities( $this->question ).'<br>');
+    
+    // The answers using the current permutation array
+    for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
+      parseHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
+      echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ $this->displayPermutation[$i] ] ).'<br>' );
+    }
   }
   
   

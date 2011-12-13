@@ -148,6 +148,14 @@ class BCElement extends LcElement{
                                         "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>".
                                         $this->getTOC( $fullAddress, $extParagraph ).
                                         "</div>";
+                                        
+   // ePub
+    elseif ( $last == "epub" ){
+                                // tell the ePub to create a new chapter
+                                echo( '[C-Element] tell the ePub to create a new chapter "'.$this->title.'"<br>' );
+                                $this->showEPub( $parentAddr.$me, $extParagraph ); // called in the LcElement
+                                return;
+                               }
 
    // show allOnOne
     elseif ( ($last == 'all') &&

@@ -8,6 +8,7 @@ Feature Requests:
  
  - Test new config files
  - Fields in setup adden!
+ - Check why login after setup new system does not work.
  
  - Add Markdown help as module or as standard...
  
@@ -38,6 +39,21 @@ Feature Requests:
        - Setup new course
        
      - Install
+     
+
+2011-12-13
+-------------------
+  /setup/index.php
+    Changed the password generation mechanism to the new crypt with salt.
+
+  /include/classes/elements/BCElement.inc
+  /include/classes/elements/LcElement.inc
+  /include/classes/elements/LiElement.inc
+  /include/classes/elements/LlElement.inc
+  /include/classes/elements/LmElement.inc
+  /include/classes/elements/LpElement.inc
+    Started adding ePub support. Can be accesses via adding .epub to the address (e.g. l1.epub).
+
 
 2011-12-12
 -------------------

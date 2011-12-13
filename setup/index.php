@@ -210,12 +210,12 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                  `desiredTeamPartner` varchar(255) NOT NULL,
                  `reasonToParticipate` text NOT NULL,
                  '.$cfg->get("UserDBField_uid").' char(32) NOT NULL UNIQUE,
-                 `registerFor` varchar(255) NOT NULL
+                 `registerFor` varchar(255) NOT NULL,
                  '.$cfg->get("User_courseID").' tinyint(1) NOT NULL default \'1\',
                  `labsys_mop_last_change` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                  `_unassigned` tinyint(1) NOT NULL,
                  PRIMARY KEY  ( '.$cfg->get("UserDBField_username").' ),
-                 UNIQUE KEY `'.$cfg->get("UserDBField_uid").'` (`'.$cfg->get("UserDBField_uid").'`)
+                 UNIQUE KEY (`'.$cfg->get("UserDBField_uid").'`), 
                  INDEX( '.$cfg->get("UserDBField_username").' )
                  )';
        $usrDB->query($query);
@@ -236,7 +236,7 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                    '.$cfg->get("User_courseID").'
                    ) VALUES (
                    \''.$cfg->get("RightsAdminUsername").'\',
-                   sha1( \'admin\' ),
+                   '.crypt( 'admin', md5( $cfg->get("RightsAdminUsername") ) ).',
                    \'admin\',
                    \'Ms/ Mr\',
                    \'root@localhost\',
@@ -278,7 +278,7 @@ $query = 'INSERT IGNORE INTO '.$cfg->get("UserDatabaseTable").'
          '.$cfg->get("User_courseID").'
          ) VALUES (
          \''.$cfg->get("RightsAdminUsername").'\',
-         sha1( \'admin\' ),
+         '.crypt( 'admin', md5( $cfg->get("RightsAdminUsername") ) ).',
          \'admin '.$cfg->get("User_courseID").'\',
          \'Ms/ Mr\',
          \'root@localhost\',

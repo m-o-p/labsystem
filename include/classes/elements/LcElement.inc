@@ -201,6 +201,41 @@ class LcElement extends Element{
    
     return $myRetVal;
   }
+  
+  /**
+  * Produces the ePub version of this element.
+  * Called by LlElement.inc
+  *
+  * @param $fullAddress       The element's full address (p.e. C42.l23)
+  * @param $extParagraph      The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  */
+  function showEPub( $fullAddress, $extParagraph ){
+    $visibleArray = $this->getMyVisibleElements();
+
+    // Show the title in the ePub = subsection
+    echo( '[c-Element] subsection title: '.$this->title.'<br>' );
+       
+    foreach( $visibleArray as $value ){
+       $id = $value{0};
+       $num = substr( $value, 1 );
+
+      // only enumerate if shown separately (otherwhise each m element etc. has a number...).
+       if ( $id == "i" || $id == "m"// so the i and m elements get numbered
+                         ) $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
+                      else $paragraph = "";
+
+       require( "../php/getDBIbyID.inc" );
+       $element = $DBI->getData2idx( $num, true, $this->isInLab );
+
+       echo('<hr>');
+      // show the element
+       if ( strtoupper($id) == 'C' ){
+         $element->show( $fullAddress.'.'.$id.$num.'.epub', $paragraph );
+       }else{ // call directly the show ePub method of non collections
+         $element->showEPub( $fullAddress.'.'.$id.$num, $paragraph );
+       }
+    }
+  }
 
   /**
   * Generates a page with all the collection's elements of a special type (given by $typePrefix ).
@@ -267,6 +302,12 @@ class LcElement extends Element{
                             $this->getFormattedStructureString().
                             $this->showStructure( $parentAddr.$me, $extParagraph ).
                             "</div>";
+                            
+   // ePub
+    elseif ( $last == "epub" ){
+                                $this->showEPub( $parentAddr.$me, $extParagraph );
+                                return;
+                               }
 
    // all of Type $last
     elseif ($scndLast == 'allType' ) 

@@ -565,6 +565,24 @@ class LiElement extends Element{
            "</div>";
   }
   
+  /**
+  * Produces the ePub version of this element.
+  * Called by LcElement.inc
+  *
+  * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
+  * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  */
+  function showEPub( $fullAddress, $paragraph="" ){
+    global $usr, $lng, $pge, $url;
+    if (  !$this->isVisible() ){ // not enough rights->no content
+      echo( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>" );
+      exit;
+    }
+        
+    parseHTML( $this->question );
+    echo ('[i-element] question:'.htmlentities( $this->question ).'<br>');
+  }
+  
 // The next functions are used for the element's edit page. *************************************************
 
   /**

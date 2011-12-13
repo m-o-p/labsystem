@@ -96,6 +96,28 @@ class LpElement extends Element{
            EM::viewBottomPage( $this, $fullAddress );
   }
   
+  /**
+  * Produces the ePub version of this element.
+  * Called by LcElement.inc
+  *
+  * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
+  * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  */
+  function showEPub( $fullAddress, $paragraph="" ){
+    global $usr, $lng;
+    if (  !$this->isVisible() ){              // not enough rights->no content
+      return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
+      exit;
+    }
+
+    if ($this->contents == ""){ echo( "'()" ); exit; }  // is empty
+    
+    // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
+    $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
+    parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
+    
+    echo ('[p-element] '.htmlentities($this->contents).'<br>');
+  }
 
 // The next functions are used for the element's edit page. *************************************************
 
