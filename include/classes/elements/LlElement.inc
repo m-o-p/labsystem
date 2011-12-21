@@ -701,6 +701,7 @@ class LlElement extends Element{
   */
   function showEPub( $fullAddress, $extParagraph ){
     global $lng;
+    include_once(INCLUDE_DIR . '/../plugins/LSE/Exporter.php');
     /*
     // Uses Grandt PHPePUB (https://github.com/Grandt/PHPePub)
     $pluginFile = '../plugins/Grandt-PHPePub/EPub.php';
@@ -713,6 +714,15 @@ class LlElement extends Element{
     // The meta information of the ePub.
     
     // The title page.
+    $epubExporter = LSE_Exporter::getInstance();
+    $epubExporter->save('l', $fullAddress, '', array(
+        'title'   => $this->title,
+        'authors' => $this->authors,
+        'comment' => $this->comment,
+        'lang'    => $lng->get('Content-Language'),
+    ));
+    
+    /*
     echo('ePub to '.
           '[l-Element '.$fullAddress.'] Title: '.$this->title.'<br>'.
           '[l-Element] Authors: '.$this->authors.'<br>'.
@@ -725,11 +735,16 @@ class LlElement extends Element{
          );
     // The content.
     echo( '<hr><hr>prelab<hr><hr><br>' );
+    */
     if ( $this->preLabIsVisible2Me )
       $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx.".epub", ( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
-    echo( '<hr><hr>lab<hr><hr><br>' );
+    // echo( '<hr><hr>lab<hr><hr><br>' );
     if ( $this->labIsVisible2Me )
       $this->lab->show( $fullAddress.".C".$this->labCollectionIdx.".epub", ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
+    
+    $epubExporter->render();
+//    var_dump(htmlentities($epubExporter->render()));
+    // var_dump($epubExporter->render());
     exit;
   }
   

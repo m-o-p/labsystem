@@ -39,12 +39,12 @@ This serves two purposes:
 
 How does the lock work now?
 Suppose we have computer A and B. 
-Both load the same question sheet so both see the "give answer…" buttons.
+Both load the same question sheet so both see the "give answerï¿½" buttons.
 
 Suppose A opens a question.
 The lock is set to that question now.
 As A and B are working independently, B wants to open another question.
-B clicks on "give answer…" of a question.
+B clicks on "give answerï¿½" of a question.
 The system notices that B clicked on the button that was only visible since the view of A and B was inconsistent and just reloads the page on B.
 B sees now red locks (as A) on all non open questions and the question A opened is open at B now too.
 Of course B only sees the last saved answer of the question A answered so there might be no answer visible even though A wrote already something (but did not save).
@@ -580,7 +580,14 @@ class LiElement extends Element{
     }
         
     parseHTML( $this->question );
-    echo ('[i-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
+    
+    $epubExporter = LSE_Exporter::getInstance();
+    $epubExporter->save('Li', 
+        $fullAddress, 
+        htmlentities( $this->question )
+    );
+    
+    // echo ('[i-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
   }
   
 // The next functions are used for the element's edit page. *************************************************

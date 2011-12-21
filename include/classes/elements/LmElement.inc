@@ -381,13 +381,26 @@ class LmElement extends Element{
     
     parseHTML( $this->question ); // Process [HTML].
 
-    echo ('[m-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
+    $epubExporter = LSE_Exporter::getInstance();
+    $answerArray = array();
+    
+    //echo ('[m-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
     
     // The answers using the current permutation array
     for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
       parseHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
-      echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ $this->displayPermutation[$i] ] ).'<br>' );
+      $answerArray[] = $this->answerArray[ $this->displayPermutation[$i] ] ;
+      // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ $this->displayPermutation[$i] ] ).'<br>' );
     }
+    
+    $epubExporter->save('Lm', 
+        $fullAddress, 
+        '', 
+        array(
+            'question'   => $this->question,
+            'answerArray' => $answerArray,
+        )
+    );
   }
   
   

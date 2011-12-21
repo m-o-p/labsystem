@@ -116,7 +116,17 @@ class LpElement extends Element{
     $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
     
-    echo ('[p-element '.$fullAddress.'] '.htmlentities( $this->contents ).'<br>' );
+    $epubExporter = LSE_Exporter::getInstance();
+    $epubExporter->save('Lp', 
+        $fullAddress, 
+//        htmlentities( $this->contents ),
+        $this->contents, 
+        array(
+            'title'   => $this->title,
+        )
+    );
+    
+    // echo ('[p-element '.$fullAddress.'] '.htmlentities( $this->contents ).'<br>' );
   }
 
 // The next functions are used for the element's edit page. *************************************************

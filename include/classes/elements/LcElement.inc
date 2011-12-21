@@ -212,28 +212,32 @@ class LcElement extends Element{
   function showEPub( $fullAddress, $extParagraph ){
     $visibleArray = $this->getMyVisibleElements();
 
+    $epubExporter = LSE_Exporter::getInstance();
+    $epubExporter->save('Lc', $fullAddress, '', array(
+        'title'   => $this->title,
+    ));
     // Show the title in the ePub = subsection
-    echo( '[c-Element '.$fullAddress.'] subsection title: '.$this->title.'<br>' );
+    // echo( '[c-Element '.$fullAddress.'] subsection title: '.$this->title.'<br>' );
        
     foreach( $visibleArray as $value ){
-       $id = $value{0};
-       $num = substr( $value, 1 );
-
-      // only enumerate if shown separately (otherwhise each m element etc. has a number...).
-       if ( $id == "i" || $id == "m"// so the i and m elements get numbered
+        $id = $value{0};
+        $num = substr( $value, 1 );
+        
+        // only enumerate if shown separately (otherwhise each m element etc. has a number...).
+        if ( $id == "i" || $id == "m"// so the i and m elements get numbered
                          ) $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
                       else $paragraph = "";
+        
+        require( "../php/getDBIbyID.inc" );
+        $element = $DBI->getData2idx( $num, true, $this->isInLab );
 
-       require( "../php/getDBIbyID.inc" );
-       $element = $DBI->getData2idx( $num, true, $this->isInLab );
-
-       echo('<hr>');
-      // show the element
-       if ( strtoupper($id) == 'C' ){
+        // echo('<hr>');
+        // show the element
+        if ( strtoupper($id) == 'C' ){
          $element->show( $fullAddress.'.'.$id.$num.'.epub', $paragraph );
-       }else{ // call directly the show ePub method of non collections
+        }else{ // call directly the show ePub method of non collections
          $element->showEPub( $fullAddress.'.'.$id.$num, $paragraph );
-       }
+        }
     }
   }
 

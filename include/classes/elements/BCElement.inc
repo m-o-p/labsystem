@@ -150,12 +150,16 @@ class BCElement extends LcElement{
                                         "</div>";
                                         
    // ePub
-    elseif ( $last == "epub" ){
-                                // tell the ePub to create a new chapter
-                                echo( '[C-Element '.$parentAddr.$me.'] tell the ePub to create a new chapter "'.$this->title.'"<br>' );
-                                $this->showEPub( $parentAddr.$me, $extParagraph ); // called in the LcElement
-                                return;
-                               }
+    elseif ( $last == "epub" ) {
+        // $epubExporter = LSE_Exporter::getInstance();
+        // $epubExporter->save('BC', $parentAddr.$me, '', array(
+        //    'title'   => $this->title,
+        //));
+        // tell the ePub to create a new chapter
+        // echo( '[C-Element '.$parentAddr.$me.'] tell the ePub to create a new chapter "'.$this->title.'"<br>' );
+        $this->showEPub( $parentAddr.$me, $extParagraph ); // called in the LcElement
+        return;
+    }
 
    // show allOnOne
     elseif ( ($last == 'all') &&
