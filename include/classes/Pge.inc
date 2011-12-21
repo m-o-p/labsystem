@@ -106,14 +106,11 @@ class Pge extends LpElement{
   }
   
   /**
-  * This function is called to display the contents. It gets called in ../include/page_layout.inc.
-  * This function overrides the one from LpElement.
+  * Replaces the constants with the values.
+  * @param String The content the constants should be replaced in.
   */
-  function show(){
+  function replaceConstants( &$text ){
     global $url, $usr, $lng;
-    if ( !$this->isVisible() ) // not enough rights->no content
-      $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
-              
     // Some replacements must be set here since they may not be correct before.
     $counter=0;
     foreach ( $this->replaceValue as $key => $value ){
@@ -123,10 +120,24 @@ class Pge extends LpElement{
       if ( $counter == 3 ) break;
     }
 
-    echo( str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
-                       array_merge( $this->replaceValue, $this->replaceValue ), 
-                       $this->contents ) 
-                       );
+    $text = ( str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
+                           array_merge( $this->replaceValue, $this->replaceValue ), 
+                           $text ) 
+                           );
+  }
+  
+  /**
+  * This function is called to display the contents. It gets called in ../include/page_layout.inc.
+  * This function overrides the one from LpElement.
+  */
+  function show(){
+    global $lng;
+    if ( !$this->isVisible() ) // not enough rights->no content
+      $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
+              
+    // Some replacements must be set here since they may not be correct before.
+    $this->replaceConstants($this->contents);
+    echo( $this->contents );
   }
   
   /**

@@ -106,6 +106,19 @@ class EB{ /* ElementButtons */
   }
   
   /**
+  * This button links to the epub of the element. It is used in l-elements.
+  *
+  * @param $address  The element's address.
+  *
+  * @return          The button's html-code.
+  */
+  function link2epub( $address ){
+    global $lng;
+    return EB::mkLink( "../pages/view.php?address=".$address.".epub&amp;__LINKQUERY__",
+                       "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" );
+  }
+  
+  /**
   * This button links to "view the element".
   *
   * @param $address  The element's address.

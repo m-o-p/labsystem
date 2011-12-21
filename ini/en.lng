@@ -426,6 +426,7 @@ TxtNotConfigUA      = "This page can only be viewed if loaded with config=userad
 explainLink2        = "Link to the element with added __LINKQUERY__"
 explainView         = "User's view of the element..."
 explainEdit         = "Edit this element..."
+explainLink2epub    = "Here you can download the ePub version of the lab..."
 explainPrint        = "Print view (all on one page)..."
 explainCreateNew    = "Create a new element of this type..."
 explainManageElmnts = "Manage elements..."

@@ -131,6 +131,7 @@ class EM{ /* ElementMenues */
             EB::edit( $fullAddress ).
             EB::createNew( $elShortcut ).
             EB::delete( $fullAddress ).
+            EB::link2epub( $fullAddress ).
             EB::printView( $fullAddress.".all" ).
             EB::manageElements().
             EB::history( $lng->get($elShortcut."Number").$eL->idx.":<hr>".$eL->history, $fullAddress ).

@@ -371,7 +371,7 @@ class LmElement extends Element{
   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   */
   function showEPub( $fullAddress, $paragraph="" ){
-    global $usr, $lng, $url;
+    global $usr, $lng, $url, $pge;
     if (  !$this->isVisible() ){ /* not enough rights->no content */
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
@@ -380,6 +380,7 @@ class LmElement extends Element{
     if ($this->question == ""){ echo "'()"; exit; }
     
     parseHTML( $this->question ); // Process [HTML].
+    $pge->replaceConstants( $this->question ); // Process custon fields
 
     $epubExporter = LSE_Exporter::getInstance();
     $answerArray = array();
@@ -389,6 +390,7 @@ class LmElement extends Element{
     // The answers using the current permutation array
     for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
       parseHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
+      //$pge->replaceConstants( $this->answerArray[ $this->displayPermutation[$i] ] ); // Process custon fields
       $answerArray[] = $this->answerArray[ $this->displayPermutation[$i] ] ;
       // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ $this->displayPermutation[$i] ] ).'<br>' );
     }

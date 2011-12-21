@@ -62,8 +62,8 @@ class LSE_Decorator
             . "</div>"
             . "%2\$s\n"
             . "</body></html>";
-        
-        $content = sprintf($contentTemplate, $element->getTitle(), $content, $element->getId(), $element->getAuthors(),
+        $content = sprintf($contentTemplate, $element->getTitle(), $content, $element->getId(), 
+            utf8_encode($element->getAuthors()),
             $element->getComment());
 //        var_dump($content); exit(0);
         return $content;
@@ -101,7 +101,7 @@ class LSE_Decorator
             . "<div class='input_textarea'></div>"
             . "</div></div>\n";
         return sprintf($template, $element->getId(), htmlentities($element->getOption('title')), 
-            $element->getContent());
+            LSE_Util::filterPTag($element->getContent()));
     }
     
     public function decorateLowM($content, $element)
@@ -112,17 +112,18 @@ class LSE_Decorator
             . "%s"
             . "<div class='input_mul_text'>%s</div>"
             . "</div>\n";
-        $answerTemplate = "<li><img src='../syspix/epub_symbol_multiple-choice-square.png'/>%s</li>\n";
+        $answerTemplate = "<li>[ ] %s</li>\n";
         $answer = '';
         foreach ($element->getOption('answerArray') as $oneAnswer) {
 //            var_dump($answer);
             $answer .= sprintf($answerTemplate, $oneAnswer);
         }
         if ( $answer != '' ) {
-            $answer = "<ol>$answer</ol>";
+            $answer = "<ul>$answer</ul>";
         }
         
         
-        return sprintf($template, $element->getId(), $element->getOption('question'), $answer);
+        return sprintf($template, $element->getId(), LSE_Util::filterPTag($element->getOption('question')), 
+            LSE_Util::filterPTag($answer));
     }
 }

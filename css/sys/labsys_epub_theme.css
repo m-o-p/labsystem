@@ -43,7 +43,16 @@ div#titlepage {
 }
 
 img.input_mul, img.input_txt {
-    display: block;
+    display: inline;
+    float: right;
+    padding: 5px;
+    padding-left: 1em;
+    font-size: 200%;
+    color: #FF0000;
+}
+
+ul .ul_input_mul_answer{
+    list-style-image: url("../syspix/epub_symbol_multiple-choice-square.png")
 }
 
 div.input_textarea {

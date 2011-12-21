@@ -40,6 +40,10 @@ class LSE_Util
     
     public static function filterPTag($string)
     {
+        $string = utf8_encode($string);
+        $string = preg_replace_callback('/(href[\s]*=[\s]*")(\.\.\/.*)"/', 
+            array('LSE_Util', 'relativeToAbsoluteURI'), $string); 
+            
         $domDoc = new DOMDocument();
         $domDoc->loadHTML($string);
         
@@ -55,5 +59,28 @@ class LSE_Util
         }
     
         return $innerHTML;
+    }
+    
+    public static function getFullURI()
+    {
+        $pageURL = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https://" : "http://";
+        if ($_SERVER["SERVER_PORT"] != "80") {
+            $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+        } 
+        else {
+            $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+        }
+        return $pageURL;
+    }
+    
+    public static function relativeToAbsoluteURI( $matches, $baseUrl = NULL )
+    {
+        if ( $baseUrl == NULL ) {
+            $baseUrl = self::getFullURI();
+        }
+        $relativeUrl = $matches[2];
+        require_once('LSE/includes/url_to_absolute.php');
+        $absoluteUrl =  url_to_absolute( $baseUrl, $relativeUrl );
+        return $matches[1] . $absoluteUrl . '"';
     }
 }

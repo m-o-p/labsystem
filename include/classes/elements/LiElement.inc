@@ -580,11 +580,12 @@ class LiElement extends Element{
     }
         
     parseHTML( $this->question );
+    $pge->replaceConstants( $this->question ); // Process custon fields
     
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Li', 
         $fullAddress, 
-        htmlentities( $this->question )
+        $this->question
     );
     
     // echo ('[i-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');

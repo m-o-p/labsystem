@@ -104,7 +104,7 @@ class LpElement extends Element{
   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   */
   function showEPub( $fullAddress, $paragraph="" ){
-    global $usr, $lng;
+    global $usr, $lng, $pge;
     if (  !$this->isVisible() ){              // not enough rights->no content
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
@@ -114,7 +114,8 @@ class LpElement extends Element{
     
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
-    parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
+    parseHTML( $this->contents );              // Process [HTML]. (../include/helper.inc).
+    $pge->replaceConstants( $this->contents ); // Process custon fields
     
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Lp', 
