@@ -74,6 +74,7 @@ mysql_select_db("mydb", $db);
 
 Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     */
+    if ( !$this->link ) { trigger_error( $host.' unreachable with given credentials!' , E_USER_ERROR ); exit; };
     $this->dataBase = $dataBase;
     return $this->link;
   }

@@ -35,6 +35,11 @@ $pge->title        = $lng->get("titleMyRightsPge");
 $pge->matchingMenu = $lng->get("MnuEntryMyRights");
 $pge->visibleFor   = IS_USER;
 
+if ( !$pge->isVisible() ){ // directly show warning and close.
+  require( $cfg->get("SystemPageLayoutFile") );
+  exit;
+}
+
 // title
   $pge->put( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );
 
@@ -64,7 +69,7 @@ $pge->put( "</div>\n".
            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".            
            "</FORM>"
           );
-  
+
 // show!
   require( $cfg->get("SystemPageLayoutFile") );
 ?>

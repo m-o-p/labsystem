@@ -33,6 +33,11 @@ $pge->title        = $lng->get("titleUaMyPW");
 $pge->matchingMenu = $lng->get("MnuEntryUaMyPW");
 $pge->visibleFor   = IS_USER;
 
+if ( !$pge->isVisible() ){ // directly show warning and close.
+  require( $cfg->get("SystemPageLayoutFile") );
+  exit;
+}
+
   if ( substr( $url->get('config'), -9 ) != 'useradmin' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotConfigUA")."\n</div>" );
   else{ // showing password fields
      // title

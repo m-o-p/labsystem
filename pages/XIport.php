@@ -36,6 +36,11 @@ $pge->title       = $lng->get( strtolower($id)."ManageTitle" );
 $pge->matchingMenu= $lng->get( "MnuEntryXIport" );
 $pge->visibleFor  = IS_CONTENT_EDITOR;
 
+if ( !$pge->isVisible() ){ // directly show warning and close.
+  require( $cfg->get("SystemPageLayoutFile") );
+  exit;
+}
+
 $pge->put( EM::manageTop( $id ) );
 $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 

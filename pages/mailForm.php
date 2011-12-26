@@ -32,6 +32,11 @@ $pge->title       = $lng->get("titleSendMail");
 $pge->matchingMenu= "send mail";
 $pge->visibleFor  = IS_USER;
 
+if ( !$pge->isVisible() ){ // directly show warning and close.
+  require( $cfg->get("SystemPageLayoutFile") );
+  exit;
+}
+
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 $uDBI = new DBInterfaceUser();
 

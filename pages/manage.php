@@ -35,6 +35,11 @@ $pge->matchingMenu= $lng->get( strtolower($id)."ManageMnuEntry" );
 $pge->visibleFor  = IS_CONTENT_EDITOR;
 if ( $id=="s" ) $pge->visibleFor  = IS_SCHEDULER; // schedules are an exception
 
+if ( !$pge->isVisible() ){ // directly show warning and close.
+  require( $cfg->get("SystemPageLayoutFile") );
+  exit;
+}
+
 $pge->put( EM::manageTop( $id ) );
 $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 

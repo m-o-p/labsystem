@@ -36,6 +36,11 @@ $pge->title       = $file2edit;
 $pge->matchingMenu= $matchingMenu;
 $pge->visibleFor  = $userRestriction;
 
+if ( !$pge->isVisible() ){ // directly show warning and close.
+  require( $cfg->get("SystemPageLayoutFile") );
+  exit;
+}
+
 $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n".
           ' <FORM class="labsys_mop_std_form" NAME="fileEdit" METHOD="POST" ACTION="'.$url->link2("../php/saveFile.php").'">'."\n".
           '   <input type="hidden" name="FILENAME" value="'.$file2edit.'">'."\n".

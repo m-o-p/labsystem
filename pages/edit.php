@@ -42,6 +42,11 @@ $pge->matchingMenu = $element->getMatchingMenu();
 $pge->visibleFor   = IS_CONTENT_EDITOR;
 if ( $id == "s" ) $pge->visibleFor   = IS_SCHEDULER;
 
+if ( !$pge->isVisible() ){ // directly show warning and close.
+  require( $cfg->get("SystemPageLayoutFile") );
+  exit;
+}
+
 $pge->put( $element->showEdit( $url->get("address") ) );
 makeLogEntry( 'edit', 'open', $url->get("address") );
   

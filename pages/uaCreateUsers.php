@@ -33,6 +33,11 @@ $pge->title        = $lng->get("titleUaCreateUsr");
 $pge->matchingMenu = $lng->get("MnuEntryUaCreateUsr");
 $pge->visibleFor   = IS_DB_USER_ADMIN;
 
+if ( !$pge->isVisible() ){ // directly show warning and close.
+  require( $cfg->get("SystemPageLayoutFile") );
+  exit;
+}
+
   if ( substr( $url->get('config'), -9 ) != 'useradmin' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotConfigUA")."\n</div>" );
   else{ // showing
   // title

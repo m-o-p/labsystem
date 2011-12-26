@@ -137,6 +137,7 @@ class EM{ /* ElementMenues */
             EB::history( $lng->get($elShortcut."Number").$eL->idx.":<hr>".$eL->history, $fullAddress ).
             "</div>\n";
     else return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
+                EB::link2epub( $fullAddress ).
                 EB::printView( $fullAddress.".all" ).
                 "</div>\n";
   }

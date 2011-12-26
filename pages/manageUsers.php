@@ -42,6 +42,11 @@ $pge->title       = $lng->get("TitleUserRightsPage");
 $pge->matchingMenu= $lng->get( "MnuEntryUserRights" );
 $pge->visibleFor  = IS_USER_RIGHTS_EDITOR;
 
+if ( !$pge->isVisible() ){ // directly show warning and close.
+  require( $cfg->get("SystemPageLayoutFile") );
+  exit;
+}
+
 $pge->put( EM::userManageTop() );
 
 $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");

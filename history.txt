@@ -46,6 +46,31 @@ Feature Requests:
      - Install
      
 
+2011-12-26
+-------------------
+  Thanks Leon Winter for pointing me on the following issues!
+  
+  /include/classes/DBConnection.inc
+    Added error message and script exit when DB cannot be connected.
+
+  /include/configuration.inc
+    Changed some error messages.
+    
+  /pages/myRights.php
+  /pages/edit.php
+  /pages/export_functions.php
+  /pages/mailForm.php
+  /pages/manage.php
+  /pages/manageUsers.php
+  /pages/myRights.php
+  /pages/pgeStdFileEdit.inc
+  /pages/uaCreateUsers.php
+  /pages/uaManageUsers.php
+  /pages/uaMyData.php
+  /pages/uaMyPW.php
+  /pages/XIport.php
+    Changed the behaviour of the page so that it throws directly an error when not visible.
+
 2011-12-13
 -------------------
   /setup/index.php
