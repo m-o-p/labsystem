@@ -73,6 +73,8 @@ if ( $GLOBALS['url']->available("config") )
   $configFile = "../ini/config_".$configPrefix.$GLOBALS['url']->get("config").".ini";
 else
   $configFile = "../ini/config_demo.ini";
+  
+$currentConfig = $configFile;
 
 $configData = array('include' => $configFile);
 while ( $configData['include'] != '' ){

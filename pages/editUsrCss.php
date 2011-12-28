@@ -25,14 +25,16 @@
 *
 * @module     ../pages/editMenu.php
 * @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
+* @copyright  Marc-Oliver Pahl 2011
+* @version    1.1
 */
 require( "../include/init.inc" );
 
 $file2edit        = $cfg->get("UserStyleSheet");
 $userRestriction  = IS_CONTENT_EDITOR;
 $matchingMenu     = $lng->get( "MnuEntryStyleSheet" ); /* must be the same as in the menu file fo rhighlighting! */
+$filePrefix       = "" ; // for the IS_CONFIG_EDITOR in the useradmin configuration.
+                         // Only files with this prefix will be editable.
 
 require( "pgeStdFileEdit.inc" );
 

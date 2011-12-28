@@ -102,6 +102,10 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
                                              $myMenu->spacer().
                                              $myMenu->entry( $lng->get( "MnuEntryXIport" ), "../pages/XIport.php" );
                            }
+  if ( ($key == $lng->get( 'MnuTitleEdit' )) && $usr->isOfKind( IS_CONFIG_EDITOR ) && ( substr( $url->get('config'), -9 ) == 'useradmin' )){
+                            $possibleMenu .= $myMenu->spacer().
+                                             $myMenu->entry( $lng->get( "MnuEntryEditConfig" ), "../pages/editConfig.php" );
+                           }
 
   // Parse the submenu:
   foreach ( $value as $key_ => $value_ ){ // Parse the section and make the menu entries

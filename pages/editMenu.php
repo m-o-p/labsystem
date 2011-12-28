@@ -30,7 +30,9 @@ require( "../include/init.inc" );
 
 $file2edit        = $cfg->get("SystemResourcePath").$cfg->get("SystemMenuFile");
 $userRestriction  = IS_CONTENT_EDITOR;
-$matchingMenu     = "edit menu"; /* must be the same as in the menu file fo rhighlighting! */
+$matchingMenu     = $lng->get( "MnuEntryEditMenu" ); /* must be the same as in the menu file fo rhighlighting! */
+$filePrefix       = "menu_" ; // for the IS_CONFIG_EDITOR in the useradmin configuration.
+                              // Only files with this prefix will be editable.
 
 require( "pgeStdFileEdit.inc" );
 

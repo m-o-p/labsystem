@@ -1,22 +1,23 @@
 <?php
-/**
- *  labsystem.m-o-p.de - 
- *                  the web based eLearning tool for practical exercises
- *  Copyright (C) 2010  Marc-Oliver Pahl
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+    labsystem.m-o-p.de - 
+                    the web based eLearning tool for practical exercises
+    Copyright (C) 2010  Marc-Oliver Pahl
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 /**
 * Defines the constants for the user roles.
 * These constants are essential for the user rights.
@@ -28,13 +29,17 @@
 *    - config file default values
 *    - menu
 *
-* Adding further user roles can't cause any problems.
-*
-* @module     ../ini/lab_user_roles.inc
-* @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
+* Adding further user roles does not cause troubles where the
+* numeric constant is not defined as the query returns false then.
+* Duplicate differen meanings (e.g. 1024 = A in system alpha and 
+* 1024 = B in system beta will cause trouble as the system works 
+* only on the numerical constants!
 */
+
+/* All values in here are shown as setable properties on the user rights page.
+ * If you want to have less values use another roles file.
+ * see user_roles and user_roles_useradmin for an example.
+ */
 
 /*
 *  ***********************************************************************
@@ -74,6 +79,8 @@ A user can have different roles: (each represented by a bit [ 2 ^= 0x0010, 4 ^= 
 
   - example_solution_viewer */ define ( "IS_EX_SOLUTION_VIEWER", "256" );
 /*    is able to view the example solutions
+
+-------------- above lab base system -------------------------------------
 
   For administrative tasks you have to provide:
                         */ define ( "MAX_USER_ROLE", IS_EX_SOLUTION_VIEWER );

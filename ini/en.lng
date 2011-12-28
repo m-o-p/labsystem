@@ -82,6 +82,7 @@ Explain_UR_64       = "is able to make schedules"                           ; IS
 Explain_UR_128      = "is able to correct the closed labs"                  ; IS_CORRECTOR
 Explain_UR_256      = "is able to view the example solutions"               ; IS_EX_SOLUTION_VIEWER
 Explain_UR_512      = "is able to administrate users at the uai"            ; IS_DB_USER_ADMIN (only necessary if you use the uai)
+Explain_UR_1024      = "is able to edit and create {config, css, menu} files in the uai" ; IS_CONFIG_EDITOR (only necessary if you edit configs in the uai)
 
 
 ;; page titles ****************************************************************************************
@@ -151,6 +152,7 @@ MnuEntryElements    = "elements"
 MnuEntryStyleSheet  = "edit css"
 MnuEntryXIport      = "import | export"
 MnuEntryEditMenu    = "edit menu"
+MnuEntryEditConfig  = "edit config"
 
 ;; sysinfos ******************************************************************************************
 DataHasBeenSaved    = "The data has been saved."
@@ -260,6 +262,10 @@ reasonToParticipate = "For which reason do you think you are the right one to pa
 placesLeft          = "places left"
 intendedDegree      = "Which program are you currently in? (Bachelor, Master, Diploma, ...)"
 
+; editConfig.php
+setupLinkNote       = "If you created a new config the following link may be useful as it may point to the config that belongs to the currently open config.<br>The link works only for configs on this host2config-vhost if you use host2config.<br>For other hosts you must copy the prefix in the link's config accordingly or log on to the respective host2config-vhost."
+fileSelectNote      = "You are able to edit all files of this kind and save new ones.<br>To open a file select it from the select above.<br>To save a new file change the file name left to the save button below the textfield."
+
 ;; names for the order by selector ********************************************************************
 restrictTo          = "Restrict to "
 orderBy             = "Order by "
@@ -366,6 +372,7 @@ visibleAftr1stSched = "will be visible <b>after</b> the first schedule..."
 
 ;; buttons ********************************************************************************************
 save                = "save"          ;; Text of any save button
+load                = "load"
 cancel              = "cancel"
 
 ; sendMail.php
@@ -482,6 +489,7 @@ VisibleOnlyColl     = "The Element is only visible inside a collection."  ;; app
 ;; confirm page
 confirmDelete       = "Do you really want to delete this element?"  ;; Appears in the delete confirmation dialog.
 yesIconfirm         = "Yes, Iam sure, do it!"
+confirmSaveAs       = "Really save as"
   
 ;; uaUnPwRemind.php
 uaUnPwRemSubject    = "Username/ Password reminder from __SYSTEMTITLE__" ;; Subject of the reminding mail

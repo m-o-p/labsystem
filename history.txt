@@ -45,7 +45,25 @@ Feature Requests:
        
      - Install
      
+2011-12-27
+-------------------
+  /ini/{en,de}.lng
+    New string "load", "Explain_UR_1024", "MnuEntryEditConfig", "confirmSaveAs", "setupLinkNote", "fileSelectNote"
+  /ini/db_user_admin_roles.inc
+    Defined new role "IS_CONFIG_EDITOR". This user can save new config files and edit all config files.
+    
+  /ini/default_user_roles.inc -> user_roles.inc
+  /ini/db_user_admin_roles.inc -> user_roles_useradmin.inc
+    Renamed and annotated for clean-up reasons.
 
+  /pages/editUsrCss.php
+    New edit for configs that is shown for IS_CONFIG_EDITOR only. (ONLY works in USERADMIN instance!)
+  /pages/pgeStdFileEdit.inc
+  /php/saveFile.php
+    Added select and saveAs functionality for IS_CONFIG_EDITOR users. (ONLY works in USERADMIN instance!)
+
+    
+    
 2011-12-26
 -------------------
   Thanks Leon Winter for pointing me on the following issues!

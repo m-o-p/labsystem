@@ -29,13 +29,17 @@
 *    - config file default values
 *    - menu
 *
-* Adding further user roles can't cause any problems.
-*
-* @module     ../ini/lab_user_roles.inc
-* @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
+* Adding further user roles does not cause troubles where the
+* numeric constant is not defined as the query returns false then.
+* Duplicate differen meanings (e.g. 1024 = A in system alpha and 
+* 1024 = B in system beta will cause trouble as the system works 
+* only on the numerical constants!
 */
+
+/* All values in here are shown as setable properties on the user rights page.
+ * If you want to have less values use another roles file.
+ * see user_roles and user_roles_useradmin for an example.
+ */
 
 /*
 *  ***********************************************************************
@@ -81,9 +85,13 @@ A user can have different roles: (each represented by a bit [ 2 ^= 0x0010, 4 ^= 
   - db_user_administrator */ define ( "IS_DB_USER_ADMIN", "512" );
 /*    if you use the db based user authentication this user can administrate those
       users.
+      
+   - config_file_editor */define ( "IS_CONFIG_EDITOR", 1024 );
+/*    this user can edit all the config files and create new ones. On all file edits
+      selectors become visible.
 
   For administrative tasks you have to provide:
-                        */ define ( "MAX_USER_ROLE", IS_DB_USER_ADMIN );
+                        */ define ( "MAX_USER_ROLE", IS_CONFIG_EDITOR );
 /*                         Is used on iterations (p.e. 0..MAX_USER_ROLE).
   
   Since these are bit-values you can use the bit operators:
