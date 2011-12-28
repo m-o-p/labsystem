@@ -263,8 +263,8 @@ placesLeft          = "places left"
 intendedDegree      = "Which program are you currently in? (Bachelor, Master, Diploma, ...)"
 
 ; editConfig.php
-setupLinkNote       = "If you created a new config the following link may be useful as it may point to the config that belongs to the currently open config.<br>The link works only for configs on this host2config-vhost if you use host2config.<br>For other hosts you must copy the prefix in the link's config accordingly or log on to the respective host2config-vhost."
-fileSelectNote      = "You are able to edit all files of this kind and save new ones.<br>To open a file select it from the select above.<br>To save a new file change the file name left to the save button below the textfield."
+setupLinkNote       = "If you created a new config the following link may be useful as it points to the config that belongs to the currently open config."
+fileSelectNote      = "You are able to edit all files of this kind and save new ones.<br>To open a file select it from the select above. To save a new file change the file name left to the save button below the textfield."
 
 ;; names for the order by selector ********************************************************************
 restrictTo          = "Restrict to "

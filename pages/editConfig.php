@@ -26,8 +26,9 @@ require( "../include/init.inc" );
 $file2edit        = $currentConfig;
 $userRestriction  = IS_CONFIG_EDITOR;
 $matchingMenu     = $lng->get( "MnuEntryEditConfig" ); /* must be the same as in the menu file fo rhighlighting! */
-$filePrefix       = "config_" ; // for the IS_CONFIG_EDITOR in the useradmin configuration.
-                              // Only files with this prefix will be editable.
+$filePrefix       = "config_".$configPrefix; // for the IS_CONFIG_EDITOR in the useradmin configuration.
+                                             // Only files with this prefix will be editable.
+                                             // $configPrefix comes from configuration.inc
 
 if ( $usr->isOfKind($userRestriction) ){ 
 // The pge is inheriting from Element which is always 
@@ -41,8 +42,7 @@ if ( $usr->isOfKind($userRestriction) ){
   // by loading the host respectively...
   $currentlyOpenConfiguration = substr( $file2edit, 
                                        ($tempStart=strpos( $file2edit, $filePrefix )+
-                                                   strlen( $filePrefix )+
-                                                   ((strpos( $file2edit, $configPrefix ) === false) ? 0 : strlen( $configPrefix /* from configuration.inc */))
+                                                   strlen( $filePrefix )
                                         ), strrpos( $file2edit, '.' )-$tempStart );
   $pge->put( "<div class=\"labsys_mop_note\">\n".
              $lng->get( 'setupLinkNote' ).

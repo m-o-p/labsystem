@@ -263,8 +263,8 @@ placesLeft          = "Pl&auml;tze frei"
 intendedDegree      = "Welches ist Ihr angestrebter n&auml;chster Abschluss? (Bachelor, Master, Diplom, ...)"
 
 ; editConfig.php
-setupLinkNote       = "Wenn Sie eine neue Konfiguration gespeichert haben, k&ouml;nnte der folgende Link interessant sein.<br>Er zeigt auf das Setup zur aktuell angezeigten Konfiguration, falls sich diese auf demselben host2config-vhost befindet.<br>Falls sie sich auf einem anderen host2config-vhost befindet m&uuml;ssen Sie entweder die URL &auml;ndern oder sich auf dem entsprechenden host2config-vhost einloggen."
-fileSelectNote      = "Sie k&ouml;nnen alle Dateien dieses Typs editieren und neue erstellen.<br>Um eine andere Datei zu &ouml;ffnen w&auml;hlen Sie diese aus der Box oben aus.<br>Um eine neue Datei zu speichern, &auml;ndern Sie den Dateinamen neben dem Speichern Knopf unten und speichern Sie."
+setupLinkNote       = "Wenn Sie eine neue Konfiguration gespeichert haben, m&ouml;chten Sie vielleicht das Setup dazu aufrufen. klicken Sie dazu einfach auf den folgenden Link."
+fileSelectNote      = "Sie k&ouml;nnen alle Dateien dieses Typs editieren und neue erstellen.<br>Um eine andere Datei zu &ouml;ffnen w&auml;hlen Sie diese aus der Box oben aus. Um eine neue Datei zu speichern, &auml;ndern Sie den Dateinamen neben dem Speichern Knopf unten und speichern Sie."
 
 ;; names for the order by selector ********************************************************************
 restrictTo          = "beschr&auml;nkt auf "
