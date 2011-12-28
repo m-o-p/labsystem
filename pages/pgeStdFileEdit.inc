@@ -66,11 +66,22 @@ if ($editAllAvailableFiles) {
     $fileName = substr( $file2edit, $posLastSlash+1 );
   }
   
+  $results = array();
+  $selectedEntry = '';
   while (false !== ($entry = $dir->read())) { 
         if ( !is_dir( $entry ) && 
              ( substr( $entry, 0, strlen($filePrefix) ) == $filePrefix ) && // check for prefix
              ( substr( $entry, -1*strlen($fileExtension) ) == $fileExtension ) // check for extension
-            ){ $selectOptions .= ( '<option'.( $entry==$fileName ? ' selected="selected"' : '' ).'>'.substr( $entry, strlen($filePrefix), strlen( $entry ) - strlen($fileExtension) - strlen($filePrefix) )."</option>\r\n" ); }
+            ){ 
+                $temp = substr( $entry, strlen($filePrefix), strlen( $entry ) - strlen($fileExtension) - strlen($filePrefix) );
+                if ($entry==$fileName) $selectedEntry = $temp;
+                $results[] = $temp;
+              }
+  }
+  
+  natsort( $results );
+  foreach ( $results as $value ){
+    $selectOptions .= ( '<option'.( $value==$selectedEntry ? ' selected="selected"' : '' ).'>'.$value."</option>\r\n" );
   }
 }
 

@@ -51,7 +51,9 @@ Feature Requests:
   /ini/{en,de}.lng
     Now you can only edit configurations of the currently active host2config-vhost.
     This is much less error prone.
-  
+  /pages/pgeStdFileEdit.inc
+    File names get naturally sorted now.
+    
 2011-12-27
 -------------------
   /ini/{en,de}.lng
