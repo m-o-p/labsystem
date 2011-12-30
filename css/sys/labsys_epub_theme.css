@@ -1,7 +1,7 @@
 @namespace h "http://www.w3.org/1999/xhtml";
 body {
-    padding:0pt; 
-    margin: 0pt;
+    padding:5pt; 
+    margin: 5pt;
     font-size: 1em;
 }
 
@@ -43,24 +43,48 @@ div#titlepage {
 }
 
 img.input_mul, img.input_txt {
-    display: inline;
-    float: right;
-    padding: 5px;
-    padding-left: 1em;
-    font-size: 200%;
-    color: #FF0000;
-}
-
-ul .ul_input_mul_answer{
-    list-style-image: url("../syspix/epub_symbol_multiple-choice-square.png")
+    display: block;
 }
 
 div.input_textarea {
     height: 80px;
-    border: 1px solid #999;
+    /* border: 1px solid #999; */
 }
 
-.input_mul_text img {
-    height: 23px;
-    width: 23px;
+.parentLowL {
+    page-break-before: always;
+}
+
+.parentLowL + .parentBigC {
+	page-break-before: avoid;
+}
+
+.parentBigC {
+    page-break-before: always;
+}
+
+pre {
+    font-size: .8em;
+}
+
+/* hack to prevent elements inside multiple choice questions breaking */
+table, .donotbreak {
+    page-break-inside: avoid;
+}
+
+table *, .donotbreak * {
+    page-break-before: avoid;
+    page-break-after: avoid;
+}
+
+.lowI {
+    background-color: #FFF0DF; border: solid 1px #555555; padding: 0 1em 1em;
+}
+
+.lowM {
+    background-color: #eeffee; border: solid 1px #555555; padding: 0 1em 1em;
+}
+
+.lowM li > p {
+    display: inline;
 }

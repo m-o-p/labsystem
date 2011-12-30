@@ -4,20 +4,15 @@ This file contains the history of labsystem.m-o-p.de.
 
 Feature Requests:
 -------------------
- - Save on fileEdit
  - Picture Upload on lab page
    - in every element
    - upload dir fixed (import dir?)
  
- - Edit page for new semesters config
- 
  - Test new config files
  - Fields in setup adden!
- - Check why login after setup new system does not work.
+ - Check why login after setup new system does not work with admin user.
  
  - Add Markdown help as module or as standard...
- 
- - Captcha/ Check on registraton page
  
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
    - Maybe in page sorter?
@@ -30,6 +25,7 @@ Feature Requests:
        - Work with CSS
      
      - Work as a student
+       - initial registration
        - Team
        - Barriers
      - The Lock mechanism
