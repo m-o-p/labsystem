@@ -1,0 +1,29 @@
+<?php 
+/**
+ * @file ViewFile for Book
+ * 
+ * Available variables
+ */
+$title   = $this->title;
+$id      = $this->id;
+$content = $this->content;
+$author  = $this->author;
+$comment = $this->comment;
+print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../css/sys/labsys_epub_theme.css" />
+<title><?php print $title ?></title>
+</head>
+<body>
+<div id='titlepage'>
+    <h1 id='<?php print $id ?>' class='part-title'><?php print $title?></h1>
+    <h3> *** </h3>
+    <h3 class='author'> <?php print $author ?> </h3>
+    <div><?php print $comment ?></div>
+</div>
+<?php print $content ?>
+</body></html>

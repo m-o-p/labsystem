@@ -16,7 +16,7 @@ body {
     /** text-align: justify **/
 }
     
-pre {
+pre, table {
     font-size: .95em; 
 }
 
@@ -78,13 +78,17 @@ table *, .donotbreak * {
 }
 
 .lowI {
-    background-color: #FFF0DF; border: solid 1px #555555; padding: 0 1em 1em;
+    background-color: #FFeeee; border: solid 1px #aa9999; padding: 0 1em 0 1em; margin-bottom: 1em; border-radius: 0.3em; font-family: sans-serif; font-size: 0.8em;
 }
 
 .lowM {
-    background-color: #eeffee; border: solid 1px #555555; padding: 0 1em 1em;
+    background-color: #eeffee; border: solid 1px #99aa99; padding: 0 1em 0 1em; margin-bottom: 1em; border-radius: 0.3em; font-family: sans-serif; font-size: 0.8em;
 }
 
 .lowM li > p {
     display: inline;
+}
+
+.lowM ul {
+    list-style-type: circle;
 }

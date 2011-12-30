@@ -1,0 +1,11 @@
+<?php
+// Available Variables
+$id       = $this->id;
+$question = $this->question;
+?>
+<div class='section donotbreak lowI' id='<?php print $id ?>'>
+    <div class='collection_content'>
+        <?php print LSE_Util::filterPTag($question) ?>
+        <div class='input_textarea'></div>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+<?php
+// Available Variables
+$id       = $this->id;
+$question = $this->question;
+$answers  = $this->answers;
+?>
+<div class='collection_content donotbreak lowM' id='<?php print $id ?>'>
+    <?php print LSE_Util::filterPTag($question) ?> 
+    <div class='input_mul_text'>
+    <?php if (is_array($answers) && count($answers)): ?>
+        <ul>
+        <?php foreach ($answers as $answer): ?>
+            <li><?php print LSE_Util::filterPTag($answer) ?></li>
+        <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+    </div>
+</div>
