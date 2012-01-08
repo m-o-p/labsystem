@@ -150,7 +150,8 @@ class BCElement extends LcElement{
                                         "</div>";
                                         
    // ePub
-    elseif ( $last == "epub" ) {
+    elseif ( ($last == 'epub') &&
+             ($scndLast == $me) ) {
         // $epubExporter = LSE_Exporter::getInstance();
         // $epubExporter->save('BC', $parentAddr.$me, '', array(
         //    'title'   => $this->title,
@@ -201,6 +202,22 @@ class BCElement extends LcElement{
             EM::viewBottomCollection( $this, $parentAddr.$me, $prevEl, $nextEl, $topEl ); 
   }
   
+  /**
+  * Produces the ePub version of this element.
+  * Called by LlElement.inc
+  *
+  * @param $fullAddress       The element's full address (p.e. C42.l23)
+  * @param $extParagraph      The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  */
+  function showEPub( $fullAddress, $extParagraph ){
+
+    $epubExporter = LSE_Exporter::getInstance();
+    $epubExporter->save('BC', $fullAddress, $this->getTOC( $fullAddress, $extParagraph ), array(
+        'title'   =>  ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title,
+    ));
+
+    $this->showEpubifiedChildren( $fullAddress, ( $extParagraph != "" ?  $extParagraph : '' ) );
+  }
   
   /**
   * Returns the html-code of this element's menu.

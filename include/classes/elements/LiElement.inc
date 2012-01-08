@@ -585,7 +585,7 @@ class LiElement extends Element{
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Li', 
         $fullAddress, 
-        $this->question
+        ( ($paragraph!="") ?  $paragraph.". "  : '' ).$this->question
     );
     
     // echo ('[i-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');

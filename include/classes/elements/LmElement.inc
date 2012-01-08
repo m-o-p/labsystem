@@ -399,7 +399,7 @@ class LmElement extends Element{
         $fullAddress, 
         '', 
         array(
-            'question'   => $this->question,
+            'question'   => ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->question,
             'answerArray' => $answerArray,
         )
     );

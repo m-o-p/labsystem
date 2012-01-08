@@ -205,7 +205,7 @@ class LlDBInterfaceUidStatus {
   */
   function getAllUidDataALLLabs( $uid ){
   // SELECT *, schedules.start FROM `lab_uid_status` LEFT JOIN `schedules` ON lab_uid_status.l_idx = schedules.num WHERE `uid` = "$uid" ORDER BY schedules.start, lab_uid_status.l_idx ASC
-    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable.'  LEFT JOIN `schedules` ON lab_uid_status.l_idx = schedules.num', "`uid`='".$uid."' && `l_idx` != 1", "schedules.start, lab_uid_status.l_idx ASC" );
+    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable.' LEFT JOIN `schedules` ON lab_uid_status.l_idx = schedules.num', "`uid`='".$uid."' && `l_idx` != 1 GROUP BY lab_uid_status.l_idx", "schedules.start, lab_uid_status.l_idx ASC" );
   }
   
   /**

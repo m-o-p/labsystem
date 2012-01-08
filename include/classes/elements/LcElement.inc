@@ -210,22 +210,30 @@ class LcElement extends Element{
   * @param $extParagraph      The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   */
   function showEPub( $fullAddress, $extParagraph ){
-    $visibleArray = $this->getMyVisibleElements();
-
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Lc', $fullAddress, '', array(
-        'title'   => $this->title,
+        'title'   => ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title,
     ));
     // Show the title in the ePub = subsection
     // echo( '[c-Element '.$fullAddress.'] subsection title: '.$this->title.'<br>' );
-       
+
+    $this->showEpubifiedChildren( $fullAddress, $extParagraph );
+  }
+  
+  /**
+  * Generates the ePub output for the children.
+  *
+  * @param $fullAddress       The element's full address (p.e. C42.l23)
+  * @param $extParagraph      The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  */
+  function showEpubifiedChildren( $fullAddress, $extParagraph ){
+    $visibleArray = $this->getMyVisibleElements();       
     foreach( $visibleArray as $value ){
         $id = $value{0};
         $num = substr( $value, 1 );
         
         // only enumerate if shown separately (otherwhise each m element etc. has a number...).
-        if ( $id == "i" || $id == "m"// so the i and m elements get numbered
-                         ) $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
+        if ( $id != "p" ) $paragraph = ( $extParagraph != "" ?  $extParagraph.'.'  : '' ).$this->getParagraph( $value );
                       else $paragraph = "";
         
         require( "../php/getDBIbyID.inc" );

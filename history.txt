@@ -41,6 +41,19 @@ Feature Requests:
        
      - Install
      
+2012-01-08
+-------------------
+  /include/classes/elements/LlDBInterfaceUidStatus.inc
+    Corrected the getAllUidDataALLLabs query to query labs with multiple schedules only once.
+    Thank you Leon Winter for the hint! (Problem was introduced some weeks ago by adding the sorting...)
+  /include/classes/elements/BCElement.inc
+  /include/classes/elements/LcElement.inc
+  /include/classes/elements/LiElement.inc
+  /include/classes/elements/LlElement.inc
+  /include/classes/elements/LmElement.inc
+    Added enumeration to the elements.
+    Added TOC export to the BC elements.
+     
 2011-12-28
 -------------------
   /pages/editConfig.php
