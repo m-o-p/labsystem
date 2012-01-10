@@ -45,6 +45,11 @@ class LSE_Element
     {
         $this->options = $options;
     }
+    
+    public function addOption($key, $value)
+    {
+        $this->options[$key] = $value;
+    }
 
     public function getOption($name)
     {
@@ -92,7 +97,7 @@ class LSE_Element
      */
     public function addElement(LSE_Element $element)
     {
-        $this->elements[] = $element;
+        $this->elements[$element->getId()] = $element;
     }
     
     /**

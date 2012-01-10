@@ -114,14 +114,15 @@ function parseHTML( &$object ){
   if ( (substr( $object, 0, 4 ) == '[MD]') && file_exists( '../plugins/phpMarkDown/markdown.php' ) && include_once( '../plugins/phpMarkDown/markdown.php' ) ){ //phpMarkDown http://michelf.com/projects/php-markdown/
     $object = Markdown( $GLOBALS['pge']->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
   }
-  else if ( substr( $object, 0, 6 ) == '[HTML]' ) // HTML
+  else if ( substr( $object, 0, 6 ) == '[HTML]' ){ // HTML
     $object = substr( $object, 6 ); // just remove [HTML]
-  else // assume it is plain text
+  }else{ // assume it is plain text
 //    $object = preg_replace('/ ([\w\s])/', '&nbsp;\\1', nl2br( htmlspecialchars( $object ) ) );
 //    $object = nl2br( htmlspecialchars( $object ) );
     $object = str_replace(array('  ', "\t"), array('&nbsp; ', '&nbsp; &nbsp; '),
-                           nl2br( htmlspecialchars( $object ) )
+                           nl2br( htmlentities( $object ) )
               );
+  }
 }
 
 function tidyHTML( &$string ){

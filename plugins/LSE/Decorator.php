@@ -50,42 +50,65 @@ class LSE_Decorator
             'title'   => $element->getTitle(),
             'content' => $content,
             'id'      => $element->getId(),
-            'author'  => utf8_encode($element->getAuthors()),
+            'author'  => $element->getAuthors(),
             'comment' => $element->getComment(),
+            'toc'     => $element->getOption('toc'),
+            'userStyleSheetPath' => $element->getUserStyleSheetPath(),
         );
         $oView->assign($vars);
         return $oView->render(LSE_ROOT . "/templates/decorators/book.phtml", true);
     }
     
-    public function decorateBigC($content, $element)
+    public function decorateBigC($childContent, $element)
     {
-        
-        $template = "<h3 class='bigC section' id='%s'>%s</h3>\n";
-        return sprintf($template, $element->getId(), htmlentities($element->getOption('title')));
-        // Do nothing since we will have this element in Lc as well
+        $oView = new SPT_View();
+        $vars = array(
+            'title'        => $element->getOption('title'),
+            'childContent' => $childContent,
+            'content'      => $element->getContent(),
+            'id'           => $element->getId(),
+        );
+        $oView->assign($vars);
+        return $oView->render(LSE_ROOT . "/templates/decorators/BigC.phtml", true);
     }
     
+    /**
+     * @todo strange we also receive BigC in LowC
+     */
     public function decorateLowC($content, $element)
     {
-        $class = 'lowC section';
-        if ( LSE_Util::checkParentType($element->getId(), "C")) {
-            $class .= " parentBigC";
+        $includePageBreak = false;
+        $isParentBigC = LSE_Util::checkParentType($element->getId(), "C");
+        $selfType = LSE_Util::getTypeFromId($element->getId());
+        if ($isParentBigC && $selfType == 'c') {
+            $includePageBreak = true;
         }
-        elseif ( LSE_Util::checkParentType($element->getId(), "l")) {
-            $class .= " parentLowL"; 
-        }
-        $template = "<h3 class='$class' id='%s'>%s</h3>\n";
-        return sprintf($template, $element->getId(), htmlentities($element->getOption('title')));
+        
+        $oView = new SPT_View();
+        $vars = array(
+            'title'            => $element->getOption('title'),
+            'content'          => $content,
+            'id'               => $element->getId(),
+            'includePageBreak' => $includePageBreak,
+        );
+        $oView->assign($vars);
+        return $oView->render(LSE_ROOT . "/templates/decorators/LowC.phtml", true);
     }
     
     public function decorateLowP($content, $element)
     {
-        $class = 'lowC collection_content';
-        if ( LSE_Util::checkParentType($element->getId(), "C")) {
-            $class .= ' parentBigC';
+        $includePageBreak = false;
+        if ( LSE_Util::checkParentType($element->getId(), "C") ) {
+            $includePageBreak = true;
         }
-        $template = "<div class='$class' id='%s'>%s</div>\n";
-        return sprintf($template, $element->getId(), LSE_Util::filterPTag($element->getContent()));
+        $oView = new SPT_View();
+        $vars = array(
+            'content'          => $element->getContent(),
+            'id'               => $element->getId(),
+            'includePageBreak' => $includePageBreak,
+        );
+        $oView->assign($vars);
+        return $oView->render(LSE_ROOT . "/templates/decorators/LowP.phtml", true);
     }
     
     public function decorateLowI($content, $element)

@@ -75,7 +75,19 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       // import elements
         foreach ($labElementArray as $value=>$newID){
           $nextElement = $GLOBALS[ $newID[0]."DBI" ]->getData2idx( substr($newID, 1) ); // load existing empty DB object
-          $nextElement->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/'.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt') );
+          
+          $importBaseDir = $cfg->get('exportImportDir').$subDir.'/';
+          $importDataDirectory = 'data';
+          $importFileName = '/'.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt';
+          switch( $value[0] ){
+              // i and m can be stored with and without solutions.
+            case 'i':
+            case 'm':
+              $importDataDirectory = EXPORT_DATA_DIR_PUBLIC; // default: take them from the public directory without solutions
+              if ( file_exists($importBaseDir.EXPORT_DATA_DIR_PRIVATE.$importFileName) ){ $importDataDirectory = EXPORT_DATA_DIR_PRIVATE; }// if the version with solutions exists: take it!
+            default:
+              $nextElement->initFromSerialized( file_get_contents( $importBaseDir.$importDataDirectory.$importFileName ) ); // init the next element
+          }
           
           processElement( $nextElement, $labElementArray, 1, true );
           
@@ -166,6 +178,8 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         fileWrite( 'images/readme.txt', 'In this directory the images are stored.', $GLOBALS['exportUID'] );
         fileWrite( 'files/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
         fileWrite( 'data/readme.txt', 'In this directory the serialized database data files are stored.', $GLOBALS['exportUID'] );
+        fileWrite( EXPORT_DATA_DIR_PRIVATE.'/readme_im.txt', 'In this directory the serialized i, m elements are stored WITH solutions. If you do not want to distribute them remove this directory.', $GLOBALS['exportUID'] );
+        fileWrite( EXPORT_DATA_DIR_PUBLIC.'/readme_im.txt', 'In this directory the serialized i, m elements are stored WITHOUT solutions. This version is used if the directory '.EXPORT_DATA_DIR_PRIVATE.' is not available.', $GLOBALS['exportUID'] );
         fileWrite( 'css/readme.txt', 'In this directory the style sheets for the preview and the user_styles.css for import are stored.', $GLOBALS['exportUID'] );
         
     // get the HTML PREVIEW

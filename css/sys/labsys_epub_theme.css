@@ -1,21 +1,14 @@
 @namespace h "http://www.w3.org/1999/xhtml";
+
+/**
+ * Base style
+ */
 body {
     padding:5pt; 
     margin: 5pt;
     font-size: 1em;
 }
 
-.content {
-    display: block;
-    font-size: .9em;
-    margin-bottom: 0;
-    margin-left: 5pt;
-    margin-right: 5pt;
-    margin-top: 0;
-    page-break-before: always;
-    /** text-align: justify **/
-}
-    
 pre, table {
     font-size: .95em; 
 }
@@ -38,10 +31,6 @@ input.answer {
     
 }
 
-div#titlepage {
-    page-break-after: always;
-}
-
 img.input_mul, img.input_txt {
     display: block;
 }
@@ -49,18 +38,6 @@ img.input_mul, img.input_txt {
 div.input_textarea {
     height: 80px;
     /* border: 1px solid #999; */
-}
-
-.parentLowL {
-    page-break-before: always;
-}
-
-.parentLowL + .parentBigC {
-	page-break-before: avoid;
-}
-
-.parentBigC {
-    page-break-before: always;
 }
 
 pre {
@@ -91,4 +68,20 @@ table *, .donotbreak * {
 
 .lowM ul {
     list-style-type: circle;
+}
+
+/**
+ * Styles for main headings
+ */
+h1 { font-size: 2em; }
+h2 { font-size: 1.58em; }
+h3 { font-size: 1.2em; }
+
+/**
+ * Styles for markdown headings, they should be smaller than h3
+ */
+.collection_content h1, .collection_content h2, .collection_content h3 { font-size: 1.17em; }
+
+.pageBreakAfter {
+    page-break-after: always;
 }

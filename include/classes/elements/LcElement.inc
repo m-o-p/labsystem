@@ -212,7 +212,7 @@ class LcElement extends Element{
   function showEPub( $fullAddress, $extParagraph ){
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Lc', $fullAddress, '', array(
-        'title'   => ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title,
+        'title'   => returnHTML( ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title ),
     ));
     // Show the title in the ePub = subsection
     // echo( '[c-Element '.$fullAddress.'] subsection title: '.$this->title.'<br>' );

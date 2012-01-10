@@ -123,7 +123,7 @@ class LpElement extends Element{
 //        htmlentities( $this->contents ),
         $this->contents, 
         array(
-            'title'   => $this->title,
+            'title'   => returnHTML( $this->title ),
         )
     );
     

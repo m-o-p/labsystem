@@ -15,6 +15,14 @@ set_include_path(implode(PATH_SEPARATOR, array(
  */
 define('LSE_PATH_LABSYSTEM', getcwd());
 define('LSE_ROOT', dirname(__FILE__));
+
+/**
+ * If LSE_DEBUG is true, it prints the html to the browser instead sending epub file.
+ * Enter description here ...
+ * @var unknown_type
+ */
+define('LSE_DEBUG', false);
+
 include_once('LSE/EPub.php');
 
 /**

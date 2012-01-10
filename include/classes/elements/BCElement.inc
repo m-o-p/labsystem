@@ -69,7 +69,7 @@ class BCElement extends LcElement{
         
         if ( $element ){ $myRetVal .= "<div class=\"labsys_mop_C_TOC_entry\">".
                                       "<a href=\"".$url->link2( "../pages/view.php?address=".$fullAddress.".".$value )."\">".
-                                      ( $paragraph != "" ?  $paragraph.". "  : '' ).$element->title.
+                                      returnHTML( ( $paragraph != "" ?  $paragraph.". "  : '' ).$element->title ).
                                       "</a></div>\n";
                         // call the C elements getTOC to get the submenu
                          if ( $id == "C" ) $myRetVal .= $element->getTOC( $fullAddress.".".$value, $paragraph );
@@ -210,10 +210,9 @@ class BCElement extends LcElement{
   * @param $extParagraph      The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   */
   function showEPub( $fullAddress, $extParagraph ){
-
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('BC', $fullAddress, $this->getTOC( $fullAddress, $extParagraph ), array(
-        'title'   =>  ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title,
+        'title'   =>  returnHTML( ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title ),
     ));
 
     $this->showEpubifiedChildren( $fullAddress, ( $extParagraph != "" ?  $extParagraph : '' ) );

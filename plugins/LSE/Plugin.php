@@ -68,9 +68,15 @@ class LSE_Plugin extends EPub
                 // added by Bibek Shrestha
                 // temporary hack, should use other classes as necessary
                 // each array element has id, ChapterName
-                //                print_r($this->buildExtraNavString($extraNav['graph'], $extraNav['elementTable']));
-                $startx = 1;
-                $this->ncx_navmap = $this->buildExtraNavString($extraNav['graph'], $extraNav['elementTable'], $startx, $fileName);
+                // print_r($this->buildExtraNavString($extraNav['graph'], $extraNav['elementTable']));
+                $startx = 1; // toc already takes first position
+                /*
+                $this->ncx_navmap = "<navPoint id='tableOfcontents' playOrder='1'>\n" . 
+                    "<navLabel><text>Table Of Contents</text></navLabel>\n" . 
+                    "<content src='$fileName#tableOfContents'/>\n" . 
+                    "</navPoint>\n";
+                // */
+                $this->ncx_navmap .= $this->buildExtraNavString($extraNav['graph'], $extraNav['elementTable'], $startx, $fileName);
             }
         
         } else 
@@ -122,7 +128,10 @@ class LSE_Plugin extends EPub
             $elementLabel = $elementTable[$id][1];
             $childOutput = $this->buildExtraNavString($element, $elementTable, $startId, $fileName);
             
-            $output .= sprintf($outputTemplate, $elementId, $elementStartId, htmlentities($elementLabel), $elementId, $childOutput);
+            // @todo same problem here, string "PasteBin & Feedback" was received at some point
+            $output .= sprintf($outputTemplate, $elementId, $elementStartId, 
+                LSE_Util::filterPTag(htmlspecialchars($elementLabel, ENT_COMPAT, 'UTF-8', false))
+                , $elementId, $childOutput);
         }
         
         return $output;

@@ -26,6 +26,11 @@
  * @version    2.0
  */
 
+// this directory is for the i, m elements WITH solutions
+define('EXPORT_DATA_DIR_PRIVATE', 'data/withSolutions');
+// this directory is for the i, m elements WITHOUT solutions
+define('EXPORT_DATA_DIR_PUBLIC', 'data'); // important for indexing!
+
 ////////////////////////////// called externally /////////////////////////////////////////
 /**
  * Creates the mapping array out of the array containing the existing element indices as values.
@@ -82,9 +87,20 @@ function createIdImportMappingInitDB( $labFolder ){
  */
 function persistElement( &$element, $labUID, $isImport=false ){
   if (!$isImport) { // EXPORT
-  	$fileName = 'data/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
-  	fileWrite( $fileName, $element->getSerialized(), $labUID );
-  
+    $fileName = 'data/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // default dir
+    switch( $element->elementId ){
+      case 'i':
+      case 'm':
+        $fileName = EXPORT_DATA_DIR_PRIVATE.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
+        fileWrite( $fileName, $element->getSerialized(), $labUID ); // save full version
+        // clear sensitive data        
+        if ($element->elementId == 'i') $element->exampleSolution = 'Here will be the example solution in the full data set.';
+        if ($element->elementId == 'm') $element->answerExplanation = 'Here will be the answer explanation in the full data set.';
+        $fileName = EXPORT_DATA_DIR_PUBLIC.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // save "public" version.
+      default:
+        fileWrite( $fileName, $element->getSerialized(), $labUID );
+    }
+     
   	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
   	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
   	htmlentities($element->title).

@@ -700,7 +700,7 @@ class LlElement extends Element{
   * @param $extParagraph      The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   */
   function showEPub( $fullAddress, $extParagraph ){
-    global $lng;
+    global $lng, $cfg;
     include_once(INCLUDE_DIR . '/../plugins/LSE/Exporter.php');
     /*
     // Uses Grandt PHPePUB (https://github.com/Grandt/PHPePub)
@@ -716,10 +716,14 @@ class LlElement extends Element{
     // The title page.
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('l', $fullAddress, '', array(
-        'title'   => $this->title,
-        'authors' => $this->authors,
-        'comment' => $this->comment,
-        'lang'    => $lng->get('Content-Language'),
+        'title'   => returnHTML( $this->title ),
+        'authors' => returnHTML( $this->authors ),
+        'comment' => returnHTML( $this->comment ),
+        'lang'    => $lng->get('Content-Language')
+    // pass the user style sheet to be included in the epub
+    // it contains the user defined styles.
+        // 'userStyleSheetPath' => $cfg->get("UserStyleSheet")
+    // Problem: user's might not write proper epub styles... thus better ignore
     ));
     
     /*

@@ -46,6 +46,8 @@ class LSE_Epub implements LSE_Engine
             $element->setLang( $options['lang'] );
             $element->setComment( $options['comment'] );
             $element->setId( $id );
+            if ( isset($options['userStyleSheetPath']) )
+                $element->setUserStyleSheetPath( $options['userStyleSheetPath'] );
             
             $this->book = $element;
         }
@@ -68,14 +70,25 @@ class LSE_Epub implements LSE_Engine
         $graph = $this->book->buildGraph(array("l", "C"));
         $elementTable = $this->book->getElementTable(array("l", "C"));
         
+//        print_r($elementTable); exit(0);
+        $firstElement = each($graph);
+        $graph[ $firstElement['key'] ] = array_merge( array('toc' => array()), $firstElement['value']);
+        $elementTable['toc'] = array('toc', 'Table of Contents');
         $epub = $this->getEpub();
-        $epub->addChapter($this->book->getTitle(), 'Chapter1', $output, false, EPub::EXTERNAL_REF_ADD, 
-            '',
-            array('graph' => $graph, 'elementTable' => $elementTable)
-        );
-        $epub->finalize();
-        $bookTitle = str_replace(' ', '_', strtolower($this->book->getTitle()));
-        $epub->sendBook($bookTitle);
+        if (LSE_DEBUG) {
+            print $output;
+        }
+        else {
+            $epub->addChapter($this->book->getTitle(), 'Chapter1', $output, false, EPub::EXTERNAL_REF_ADD, 
+                '',
+                array('graph' => $graph, 'elementTable' => $elementTable)
+            );
+            $epub->finalize();
+            $bookTitle = str_replace(' ', '_', strtolower($this->book->getTitle()));
+            // bookTitle is usually htmlencoded, so decode this first
+            $bookTitle = LSE_Util::filterPTag($bookTitle);
+            $epub->sendBook($bookTitle);
+        }
         return NULL;
     }
     
@@ -84,11 +97,16 @@ class LSE_Epub implements LSE_Engine
         require_once('LSE/Plugin.php');
         $book = new LSE_Plugin();
         
-        $book->setTitle($this->book->getTitle());
+        $title = LSE_Util::filterPTag($this->book->getTitle());
+//        $title = $this->book->getTitle();
+        $author = LSE_Util::filterPTag($this->book->getAuthors());
+//        $author = $this->book->getAuthors();
+        
+        $book->setTitle($title);
         $book->setIdentifier("http://ilab.net.in.tum.de/", EPub::IDENTIFIER_URI); // Could also be the ISBN number, prefered for published books, or a UUID.
         $book->setLanguage("en"); // Not needed, but included for the example, Language is mandatory, but EPub defaults to "en". Use RFC3066 Language codes, such as "en", "da", "fr" etc.
         $book->setDescription("This is a brief description\nA test ePub book as an example of building a book in PHP");
-        $book->setAuthor($this->book->getAuthors(), $this->book->getAuthors()); 
+        $book->setAuthor($author, $author); 
         $book->setPublisher("Technische Universität München", "http://ilab.net.in.tum.de/"); // I hope this is a non existant address :) 
         $book->setDate(time()); // Strictly not needed as the book date defaults to time().
         $book->setRights("Copyright and licence information specific for the book."); // As this is generated, this _could_ contain the name or licence information of the user who purchased the book, if needed. If this is used that way, the identifier must also be made unique for the book.

@@ -41,6 +41,36 @@ Feature Requests:
        
      - Install
      
+2012-01-10
+-------------------
+  /css/sys/labsys_epub_theme.css
+  /plugins/LSE/Book.php
+  /plugins/LSE/Decorator.php
+  /plugins/LSE/Element.php
+  /plugins/LSE/EPub.php
+  /plugins/LSE/Exporter.php
+  /plugins/LSE/Plugin.php
+  /plugins/LSE/templates/decorators/book.phtml
+  /plugins/LSE/templates/decorators/lowI.phtml
+  /plugins/LSE/templates/decorators/lowM.phtml
+  /plugins/LSE/Util.php
+  /include/classes/elements/BCElement.inc
+  /include/classes/elements/LcElement.inc
+  /include/classes/elements/LlElement.inc
+  /include/classes/elements/LpElement.inc
+    *Bibek Shrestha* and I did some improvements on the ePub export.
+  /include/helper.inc
+    I fixed an issue with htmlspecialchars instead of htmlentities in non HTML and non MD elements.
+    (Relevant for export with Umlaute.)
+  /include/XIlib.inc
+  /pages/XIport.php
+    The export exports the solutions of i and m files now into the subfolder 
+    "data/withSolutions". If this folder is present, the i and m elements are 
+    taken from this folder. If it is not present the versions from "data/"
+    are taken. They do not contain the solutions.
+    If you want to give preview to a lab just delete the "withSolutions/"
+    folder before distributing.
+     
 2012-01-08
 -------------------
   /include/classes/elements/LlDBInterfaceUidStatus.inc
