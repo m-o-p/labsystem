@@ -59,8 +59,16 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
                                                  $myMenu->spacer().
                                                  $myMenu->entry( $lng->get( "MnuEntrySendMail" ), "../pages/mailForm.php" );
                               else
-                                $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?  'https://'.$_SERVER[ 'SERVER_NAME' ].str_replace( '/view', '/login', $_SERVER["REQUEST_URI"] ) :  '../pages/login.php' ) ).
-                                                 $myMenu->entry( $lng->get("MnuEntryRegister"), "/?address=register" ); // you can also put another config in the url here (/register.php?config=useradmin)
+                                $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?  
+                                                                  'https://'.$_SERVER[ 'SERVER_NAME' ].preg_replace_callback( '#(\S*pages\/)[^\?]*(\?\S*)#',
+                                                                                                                                create_function(
+                                                                                                                                    '$matches',
+                                                                                                                                    'return $matches[1]."login.php".$matches[2];'
+                                                                                                                                ), 
+                                                                                                                             $_SERVER["REQUEST_URI"]
+                                                                                                                             ) :
+                                                                  '../pages/login.php' ) ).
+                                                 $myMenu->entry( $lng->get("MnuEntryRegister"), "../?address=register" ); // you can also put another config in the url here (/register.php?config=useradmin)
                                                                                                                         // The advantage is that all registrations count to the same system...
                                                                                                                         // Othrwhise they only count to your current instance.
                                                                                                                         // Do not forget to edit the /index.php to redirect address=register to thre you want

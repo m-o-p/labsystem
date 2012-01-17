@@ -41,6 +41,11 @@ Feature Requests:
        
      - Install
      
+2012-01-17
+-------------------
+  /include/menu.inc
+    Fixed link issue for login and register pages. It works now also in sub directories.
+    
 2012-01-10
 -------------------
   /css/sys/labsys_epub_theme.css
