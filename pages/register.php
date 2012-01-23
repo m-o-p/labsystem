@@ -135,22 +135,35 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
         srand((double)microtime()*1000000);
         $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
         
+        // switch to the user for successfull field replacement.
+        $usr->uid         = md5( $_POST['EMAIL'].uniqid( rand() ) );
+        $usr->userName    = $_POST['EMAIL'];
+        $usr->foreName    = $_POST['FORENAME'];
+        $usr->surName     = $_POST['NAME'];
+        $usr->mailAddress = $_POST['EMAIL'];
+        
         $userDBC->mkInsert( $customFields.
                             'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\', '.
                             '_unassigned=1, '.
-                            $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $_POST['EMAIL'] )."', ".
-                            $cfg->get('UserDBField_name')."='".$userDBC->escapeString( $_POST['NAME'] )."', ".
-                            $cfg->get('UserDBField_forename')."='".$userDBC->escapeString( $_POST['FORENAME'] )."', ".
+                            $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $usr->userName )."', ".
+                            $cfg->get('UserDBField_name')."='".$userDBC->escapeString( $usr->surName )."', ".
+                            $cfg->get('UserDBField_forename')."='".$userDBC->escapeString( $usr->foreName )."', ".
                             $cfg->get('UserDBField_password')."='".sha1( $newPW )."', ".
-                            $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $_POST['EMAIL'] )."', ".
-                            $cfg->get('UserDBField_uid')."='".md5( $_POST['EMAIL'].uniqid( rand() ) )."', ".
+                            $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $usr->mailAddress )."', ".
+                            $cfg->get('UserDBField_uid')."='".$userDBC->escapeString( $usr->uid )."', ".
                             $UA_CourseID.'=1',
                             $cfg->get('UserDatabaseTable') );
-                            
+
     // new user... send password mail
+    // Load mail element from pages:
+    $mailPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidPasswordMail'));
+    // replace constants using new user data from above:
+    $pge->replaceConstants($mailPage->title);
+    $pge->replaceConstants($mailPage->contents);
+    
     mail( $_POST['EMAIL'],
-         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.str_replace( $pge->replaceKey, $pge->replaceValue, $lng->get('uaUnPwRemSubject') )/* )*/, 
-         str_replace( $pge->replaceKey, $pge->replaceValue,  eval( 'return "'.$lng->get('uaUnPwRemMailText').'";' ) )."\r\n\r\n".
+         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/, 
+         $mailPage->contents."\r\n\r\n".
          $lng->get('userName').': '.$_POST['EMAIL']."\r\n".
          $lng->get('passWord').': '.$newPW."\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
@@ -162,12 +175,23 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
    }
    if ( $lng->get('thankYouForRegisteringNote') != '' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get('thankYouForRegisteringNote')."</div>\n" );
    
-   if ( $cfg->doesExist('thankYouForRegisteringNote') && ($cfg->get('registerNote') != '') ) $pge->put( "<div class=\"labsys_mop_note\">\n".$cfg->get('thankYouForRegisteringNote')."</div>\n" );
+   if ( $cfg->doesExist('PidAfterRegistrationPage') ){
+   	$afterRegistrationPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidAfterRegistrationPage'));
+   	$pge->title = $afterRegistrationPage->title;
+   	parseHTML($afterRegistrationPage->contents);
+   	$pge->put( "<div class=\"labsys_mop_note\">\n".$afterRegistrationPage->contents."</div>\n" );
+   }
    
     // send after register mail
+   // Load mail element from pages:
+   $mailPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidRegistrationMail'));
+   // replace constants using new user data from above:
+   $pge->replaceConstants($mailPage->title);
+   $pge->replaceConstants($mailPage->contents);
+   
     mail( $_POST['EMAIL'],
-         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.str_replace( $pge->replaceKey, $pge->replaceValue, $cfg->get('afterRegisterMailSubject') )/* )*/, 
-         str_replace( $pge->replaceKey, $pge->replaceValue,  eval( 'return "'.$cfg->get('afterRegisterMailText').'";' ) )."\r\n\r\n".
+         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/, 
+         $mailPage->contents."\r\n\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
          "\r\n",
          "From: ".$cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].">\r\n".
@@ -181,7 +205,12 @@ else{ // no data posted or errors found
      if ( $lng->get("registerNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("registerNote")."</div>\n" );
      
      // In this note may be specific information for this course thus it is bound to the cfg.
-     if ( $cfg->doesExist("registerNote") && ($cfg->get("registerNote") != '') ) $pge->put( "<div class=\"labsys_mop_note\">\n".$cfg->get("registerNote")."</div>\n" );
+     if ( $cfg->doesExist("PidRegistrationPage") ){
+     	$registrationPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidRegistrationPage'));
+     	$pge->title = $registrationPage->title;
+     	parseHTML($registrationPage->contents);
+     	$pge->put( "<div class=\"labsys_mop_note\">\n".$registrationPage->contents."</div>\n" );
+     }
                    
      // query ALL column names
      $result = $userDBC->query( "SHOW COLUMNS FROM ".$cfg->get('UserDatabaseTable') ); // Attention: Breaks abstraction!

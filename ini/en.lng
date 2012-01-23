@@ -223,8 +223,6 @@ parseErrNumNotEx    = "<<<ERROR<<<: [id][num] [num] ELEMENT WITH NUM NOT EXISTIN
 ; login.php
 TxtLogInPage        = "This is the login page. If you are a participant of the <i>__SYSTEMTITLE__</i>, you can log in here..."
 NoteLogInPage       = "<b>You forgot your password and/ or your username?</b><br />You want to change your data?<br /><br />&nbsp;No problem, just follow the <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>link</a>..."
-NoteNotLicensed     = "This copy of the labsystem is <b>unlicensed</b>. So there exists the following <b>superuser</b>:"
-NoteLicensed        = "This copy of the labsystem is licensed:"
 
 ; manageUsers.php
 NoteUserRightsPage  = "<b>Other settings</b> might be done at the <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>user administration page</a>...<br />If you move your mouse cursor over the <b>black arrows</b> you get an <b>explanation</b> of the checkbox on its left.<br /><b>Changes to your account</b> will take effect if you activate them in &quot;my rights&quot; or if you log out and in again."
@@ -252,7 +250,8 @@ uaMyDataNote        = "Here you can change your personal data.<br />Provide a <b
 uaMyPwNote          = "Here you can change your password."
 uaUnPwRemNote       = "As member you can receive a mail with your login <b>username</b> and a <b>new password</b> from this page.<br />Just enter the mailaddress you provided to the system."
 uaManageUsrNote     = "You can edit the user's by clicking on them. (You have to be able to correct for that!).<br />You can change the subsciptions to the courses here."
-uaCreateUsrNote     = "You can create the users her by entering a <b>list of mailaddresses (ONE per line!)</b> in the field below.<br />The users will get the mailadress as username and a generated password. For the subscribed courses they will get its ini-file default rights assigned by the course-portal.<br />Since the data is not mailed to them and their dataset is incomplete they are supposed to <b>request username and password from the reminder page</b> and to change/ enter their data after that."
+uaCreateUsrNote     = "You can create the users her by entering a <b>list of mailaddresses (ONE per line!)</b> in the field below.<br />The users will get the mailadress as username and a generated password.<br />Since the data is not mailed to them and their dataset is incomplete they are supposed to <b>request username and password from the reminder page</b> and to change/ enter their data after that.<br/>Normally the <b>self registration over register.php</b> should be the method of choice as it directly fills all data."
+uaNewUsrsSubscript  = "The new users will have these subscriptions."
 
 ; register.php
 registerNote        = "Please fill out the fields below to register for the course."
@@ -490,11 +489,6 @@ VisibleOnlyColl     = "The Element is only visible inside a collection."  ;; app
 confirmDelete       = "Do you really want to delete this element?"  ;; Appears in the delete confirmation dialog.
 yesIconfirm         = "Yes, Iam sure, do it!"
 confirmSaveAs       = "Really save as"
-  
-;; uaUnPwRemind.php
-uaUnPwRemSubject    = "Username/ Password reminder from __SYSTEMTITLE__" ;; Subject of the reminding mail
-uaUnPwRemMailText   = "Hello,\r\nsomeone requested a reminding mail with a new password for you account at the __SYSTEMTITLE__.\r\n\r\nFrom now on you can only logon with this new password.\r\nYou can change the password as well as your username on the website..."
-uaNewUsrsSubscript  = "The new users will have these subscriptions."
 
 ;; setup ******************************************************************************************
 fieldName           = "directory" ; for legend in setup

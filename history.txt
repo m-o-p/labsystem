@@ -40,7 +40,32 @@ Feature Requests:
        - Setup new course
        
      - Install
-     
+
+2012-01-17
+-------------------
+  /ini/configBase/
+    Formatted, cleaned, and commented the configBase files.
+  /include/classes/UserInterface_proto.inc
+    Fixed paranthesis...
+  /php/uaUnPwRemind.php (<- PidPasswordMail)
+  /pages/register.php (<- PidRegistrationPage, PidAfterRegistrationPage, PidRegistrationMail)
+    Changed the registration pages and all system generated emails to be generated from
+    content out of the DBs and not the config files.
+    The config files only link to the page indices now.
+  /setup/
+    Added the pages for the above in the setup.
+    Also added the overview page explaining these files.
+  /ini/menu_en_useradmin.inc
+    Added a link for the IS_CONFIG_EDITOR editor to the overview of the data above page in the menu.
+  /ini/{de,en}.lng
+    Removed mail texts that are not used anymore.
+  /include/classes/elements/LcElement.inc
+  /include/classes/elements/LlElement.inc
+  /include/classes/elements/LpElement.inc
+    Changed that the title can contain unreplaced constants now as well.
+  /include/page_layout.inc
+    Added code to parse the title for constants to replace.
+
 2012-01-17
 -------------------
   /include/menu.inc

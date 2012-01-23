@@ -130,7 +130,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     ');
 ?>
     
-    <TITLE><?php echo( $pge->title ); ?> [<?php echo( $usr->userName."@" ); $cfg->say("SystemTitle"); ?>]</TITLE>
+    <TITLE><?php $pge->replaceConstants( $pge->title ); echo( $pge->title ); ?> [<?php echo( $usr->userName."@" ); $cfg->say("SystemTitle"); ?>]</TITLE>
   </HEAD>
   
   <BODY onbeforeunload="return dirtyWarning();">

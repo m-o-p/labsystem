@@ -62,16 +62,7 @@ class Pge extends LpElement{
                                 "avod1ubo72",         
                                 "ugud9eka32",       
                                 "udan1obo94" );
-    $this->replaceValue = Array( "!_LINKQUERY_!", 
-                                 "!_PAGETITLE_!", 
-                                 $cfg->get("SystemTitle"),  
-                                 $usr->foreName, 
-                                 $usr->surName, 
-                                 $usr->userName, 
-                                 "WillBeReplacedByElsShow",  
-                                 urlencode( $_SERVER['REQUEST_URI'] ),
-                                 $cfg->get("Link2UserAdminInterface") );
-                               /* __LINKQUERY__ will be replaced at last, when showing */
+    $this->replaceValue = "";
   }
   
   /**
@@ -110,7 +101,19 @@ class Pge extends LpElement{
   * @param String The content the constants should be replaced in.
   */
   function replaceConstants( &$text ){
-    global $url, $usr, $lng;
+    global $url, $usr, $lng, $cfg;
+    // initialize replacements on first use:
+    if($this->replaceValue==""){
+    	$this->replaceValue = Array( "!_LINKQUERY_!",
+    	                             "!_PAGETITLE_!", 
+    	                             $cfg->get("SystemTitle"),
+    	                             $usr->foreName,
+    	                             $usr->surName,
+    	                             $usr->userName,
+    	                             "WillBeReplacedByElsShow",
+    	                             urlencode( $_SERVER['REQUEST_URI'] ),
+    	                             $cfg->get("Link2UserAdminInterface") );
+    }
     // Some replacements must be set here since they may not be correct before.
     $counter=0;
     foreach ( $this->replaceValue as $key => $value ){

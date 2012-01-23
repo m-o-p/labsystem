@@ -223,8 +223,6 @@ parseErrNumNotEx    = "<<<ERROR<<<: [id][num] [num] das ELEMENT mit diesr Nummer
 ; login.php
 TxtLogInPage        = "Als Teilnehmer des <i>__SYSTEMTITLE__</i> kann man sich hier einloggen..."
 NoteLogInPage       = "<b>Benutzername und/ oder Passwort vergessen?</b><br />- sollen ge&auml;ndert werden?<br /><br />&nbsp;Kein Problem, einfach dem <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>Link</a> folgen..."
-NoteNotLicensed     = "Dieses labsystem ist <b>nicht lizensiert</b>. Deshalb existiert der folgende <b>SuperUser</b>-Zugang:"
-NoteLicensed        = "Dieses labsystem ist lizensiert:"
 
 ; manageUsers.php
 NoteUserRightsPage  = "<b>Weitere Einstellungen</b> k&ouml;nnen in der <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>Benutzerverwaltung</a>...<br>Wenn Sie den Mauszeiger &uuml;ber die <b>schwarzen Pfeile</b> rechts neben den K&auml;sten bewegen erhalten sie eine <b>Erkl&auml;rung</b> zum Feld.<br /><b>&Auml;nderungen an einem (auch Ihrem) Account werden erst durch erneutes Einloggen oder einen &Auml;nderung auf der meineRechte-Seite wirksam!"
@@ -252,7 +250,8 @@ uaMyDataNote        = "Hier k&ouml;nnen Sie Ihre pers&ouml;nlichen Daten &auml;n
 uaMyPwNote          = "Hier k&ouml;nnen Sie Ihr Passwort &auml;ndern."
 uaUnPwRemNote       = "Wenn Sie ein registrierter Benutzer sind, k&ouml;nnen Sie sich von dieser Seite Ihren <b>Benutzernamen und Ihr Passwort an Ihre Mailadresse</b> zuschicken lassen. <br />Geben Sie dazu bitte in das Feld die Mailadresse ein, die Sie im System hinterlegt haben."
 uaManageUsrNote     = "Um die Benutzerdaten zu &auml;ndern, auf die Benutzer klicken. (Sie m&uuml;ssen Korrektor sein!).<br />Die Zuordnungen zu den Kursen k&ouml;nnen auf dieser Seite vorgenommen werden."
-uaCreateUsrNote     = "Sie k&ouml;nnen Benutzer anlegen, indem Sie eine mit Liste von <b>Emailadressen</b> in das Feld eintragen (<b>Eine pro Zeile!</b>).<br />Die Benutzer werden dann mit Emailadresse als Benutzernamen und einem generierten Passwort angelegt und bekommen initial die in der Kurskonfiguration festgelegten Default-Rechte.<br />Beides k&ouml;nnen sie auf der Passwort und/ oder Benutzernamenvergessen-Seite anfordern und dann dort auch &auml;ndern. Das hat den Seiteneffekt, dass die unvollst&auml;ndigen Benutzerdaten vervollst&auml;ndigt werden m&uuml;ssen zum Speichern..."
+uaCreateUsrNote     = "Sie k&ouml;nnen Benutzer anlegen, indem Sie eine mit Liste von <b>Emailadressen</b> in das Feld eintragen (<b>Eine pro Zeile!</b>).<br />Die Benutzer werden dann mit Emailadresse als Benutzernamen und einem generierten Passwort angelegt.<br />Beides k&ouml;nnen sie auf der Passwort und/ oder Benutzernamenvergessen-Seite anfordern und dann dort auch &auml;ndern. Das hat den Seiteneffekt, dass die unvollst&auml;ndigen Benutzerdaten vervollst&auml;ndigt werden m&uuml;ssen zum Speichern...<br/>Meistens ist die <b>Selbstregistrierung &uuml;ber register.php</b> das geeignetere Mittel, um Teilnehmer hinzu zu f&uuml;gen. Dort werden gleich alle Stammdaten vom Teilnehmer abgefragt."
+uaNewUsrsSubscript  = "Die neu angelegten Benutzer werden diesen Kursen zugeordnet."
 
 ; register.php
 registerNote        = "Please fill out the fields below to register for the course."
@@ -491,11 +490,6 @@ VisibleOnlyColl     = "Das Element ist nur in einer Collection sichtbar."  ;; ap
 confirmDelete       = "Wollen Sie dieses Element wirklich l&ouml;schen?"  ;; Appears in the delete confirmation dialog.
 yesIconfirm         = "Ja, ich bin mir sicher!"
 confirmSaveAs       = "Wollen Sie wirklich speichern unter"
-  
-;; uaUnPwRemind.php
-uaUnPwRemSubject    = "Benutzername/ Passwort Erinnerung von __SYSTEMTITLE__" ;; Subject of the reminding mail
-uaUnPwRemMailText   = "Hallo,\r\njemand hat eine Erinnerungsmail mit einem neuen Passwort f&uuml;r Ihren Zugang zum  __SYSTEMTITLE__ angefordert.\r\n\r\nSie k&ouml;nnen sich nur noch mit Ihrem neuen Passwort einloggen.\r\Benutzernamen und Passwort k&ouml;nnen Sie auf der Webseite &auml;ndern..."
-uaNewUsrsSubscript  = "Die neu angelegten Benutzer werden diesen Kursen zugeordnet."
 
 ;; setup ******************************************************************************************
 fieldName           = "Verzeichnis" ; Legende im Setup

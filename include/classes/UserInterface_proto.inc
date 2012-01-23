@@ -89,7 +89,6 @@ class DBInterfaceUser
                     "uid"      => $resArray["uid"],
                     "userName" => $resArray["username"] );
     }
-  }
   
 
   var $queryResult;
@@ -99,7 +98,7 @@ class DBInterfaceUser
   * @param $asc        Should the datasets be in ascending order?
   */
   function getAllData( $orderBy="", $asc=true ){
-    $this->queryResult = $yourData
+    $this->queryResult = $yourData;
   }
   
   /**

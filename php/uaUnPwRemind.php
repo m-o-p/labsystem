@@ -74,24 +74,37 @@ else{
                         $cfg->get('UserDBField_uid')."='".$data[ $cfg->get('UserDBField_uid') ]."'"
                        );
     
-    // for replacing constants like system title:
-    //   str_replace( $pge->replaceKey, $pge->replaceValue,  )
-    
     // send the reminding mail
-    mail( $_POST['EMAIL'],
-         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.str_replace( $pge->replaceKey, $pge->replaceValue, $lng->get('uaUnPwRemSubject') )/* )*/, 
-         str_replace( $pge->replaceKey, $pge->replaceValue,  eval( 'return "'.$lng->get('uaUnPwRemMailText').'";' ) )."\r\n\r\n".
+    // switch to the user for successfull field replacement.
+    $usr->userRights &= IS_CORRECTOR; // only correctors can load user data...
+    $requestingUsr = $usr->getUserInformation($data[ $cfg->get('UserDBField_uid') ]);
+    $usr->userName    = $requestingUsr['userName'];
+    $usr->foreName    = $requestingUsr['foreName'];
+    $usr->surName     = $requestingUsr['name'];
+    $usr->mailAddress = $_POST['EMAIL'];
+    
+    // Load mail element from pages:
+    $mailPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidPasswordMail'));
+    // replace constants using new user data from above:
+    $pge->replaceConstants($mailPage->title);
+    $pge->replaceConstants($mailPage->contents);
+    
+    $senderAddr = $cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].'>';
+    
+    mail( $usr->mailAddress,
+         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/, 
+         $mailPage->contents."\r\n\r\n".
          $lng->get('userName').': '.$data[ $cfg->get('UserDBField_username') ]."\r\n".
          $lng->get('passWord').': '.$newPW."\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
          "\r\n",
-         "From: ".$cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].">\r\n".
+         "From: ".$senderAddr."\r\n".
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
   }
 
-  $url->put( "sysinfo=".$lng->get('MailHasBeenSent').' '.htmlentities( $_POST['EMAIL'] )/*.' '.$newPW*/ );
+  $url->put( "sysinfo=".$lng->get('MailHasBeenSent').' '.htmlentities( $senderAddr )/*.' '.$newPW*/ );
 }
 
 // redirect

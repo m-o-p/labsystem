@@ -151,7 +151,7 @@ class LpElement extends Element{
             
           // title input
             "<label for=\"title\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputTitle")."</label>".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"title\" name=\"TITLE\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->title."\" onchange='isDirty=true'>\n".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"title\" name=\"TITLE\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".returnEditable( $this->title )."\" onchange='isDirty=true'>\n".
 
           // content input
             "<label for=\"contents\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputContents")." ".$lng->get("inputContentsHtml")."</label>\n".
