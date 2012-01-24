@@ -492,3 +492,6 @@ confirmSaveAs       = "Really save as"
 
 ;; setup ******************************************************************************************
 fieldName           = "directory" ; for legend in setup
+
+;; ePub ******************************************************************************************
+overview            = "Chapter Overview"  ;; Will be put into the table of contents and link to the TOC of the chapter
