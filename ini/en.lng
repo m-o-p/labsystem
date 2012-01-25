@@ -260,6 +260,8 @@ desiredTeamPartner  = "Do you already know with whom you want to be on a team? H
 reasonToParticipate = "For which reason do you think you are the right one to participate in the course? (Just provide one short sentence.)"
 placesLeft          = "places left"
 intendedDegree      = "Which program are you currently in? (Bachelor, Master, Diploma, ...)"
+registerIPprefixViolationNote = "You can only register from within the university network. Either connect from a university network or use the VPN."
+                                      ; This text is shown for users who's IP does not match the registerIPprefix.
 
 ; editConfig.php
 setupLinkNote       = "If you created a new config the following link may be useful as it points to the config that belongs to the currently open config."
@@ -493,5 +495,5 @@ confirmSaveAs       = "Really save as"
 ;; setup ******************************************************************************************
 fieldName           = "directory" ; for legend in setup
 
-;; ePub ******************************************************************************************
+;; ePub *******************************************************************************************
 overview            = "Chapter Overview"  ;; Will be put into the table of contents and link to the TOC of the chapter

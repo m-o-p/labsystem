@@ -260,6 +260,8 @@ desiredTeamPartner  = "Falls Sie bereits wissen, mit wem Sie ein Team bilden m&o
 reasonToParticipate = "Bitte nennen Sie uns einen Grund, warum Sie denken, besonders geeignet f&uuml;r den Kurs zu sein."
 placesLeft          = "Pl&auml;tze frei"
 intendedDegree      = "Welches ist Ihr angestrebter n&auml;chster Abschluss? (Bachelor, Master, Diplom, ...)"
+registerIPprefixViolationNote = "You can only register from within the university network. Either connect from a university network or use the VPN."
+                                      ; This text is shown for users who's IP does not match the registerIPprefix.
 
 ; editConfig.php
 setupLinkNote       = "Wenn Sie eine neue Konfiguration gespeichert haben, m&ouml;chten Sie vielleicht das Setup dazu aufrufen. klicken Sie dazu einfach auf den folgenden Link."

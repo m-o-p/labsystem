@@ -118,10 +118,17 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
         else $customFields .= $key."=CONCAT( '".$userDBC->escapeString( $value )." | ', ".$key.' ), ';
       }
 
+  // switch to the user for successfull field replacement.
+    $usr->uid         = md5( $_POST['EMAIL'].uniqid( rand() ) );
+    $usr->userName    = $_POST['EMAIL'];
+    $usr->foreName    = $_POST['FORENAME'];
+    $usr->surName     = $_POST['NAME'];
+    $usr->mailAddress = $_POST['EMAIL'];
+        
   // Is this email already registered?
    $result = $userDBC->mkSelect( "*", 
                                  $cfg->get('UserDatabaseTable'), 
-                                 'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $_POST['EMAIL'] )."')" 
+                                 'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $usr->mailAddress )."')" 
                                 );
    if ($userDBC->datasetsIn( $result ) > 0) // yes => just update the interest
     $userDBC->mkUpdate( $customFields.
@@ -134,13 +141,6 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
     // generate new Password:
         srand((double)microtime()*1000000);
         $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
-        
-        // switch to the user for successfull field replacement.
-        $usr->uid         = md5( $_POST['EMAIL'].uniqid( rand() ) );
-        $usr->userName    = $_POST['EMAIL'];
-        $usr->foreName    = $_POST['FORENAME'];
-        $usr->surName     = $_POST['NAME'];
-        $usr->mailAddress = $_POST['EMAIL'];
         
         $userDBC->mkInsert( $customFields.
                             'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\', '.
@@ -224,7 +224,7 @@ else{ // no data posted or errors found
 
      $pge->put( 
      // Warning when IP prefix not matched
-                ( !$canRegister & $cfg->doesExist('registerIPprefixViolationNote') ? "<div class=\"labsys_mop_note\" style=\"color: #ff5555;\">\n".$cfg->get('registerIPprefixViolationNote').' ['.$_SERVER['REMOTE_ADDR'].']'."</div>\n" : '' ).
+                ( !$canRegister & $lng->doesExist('registerIPprefixViolationNote') ? "<div class=\"labsys_mop_note\" style=\"color: #ff5555;\">\n".$cfg->lng('registerIPprefixViolationNote').' ['.$_SERVER['REMOTE_ADDR'].']'."</div>\n" : '' ).
      // surName
                 '<label for="surName" class="labsys_mop_input_field_label_top">'.$lng->get('surName').'</label>'."\n".
                 '<input'.( $canRegister ? '' : ' disabled="disabled"' ).' tabindex="'.$pge->nextTab++.'" type="text" id="surName" name="NAME" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['NAME'] ) ? $_POST['NAME'] : $lng->get('surName') ).'" onchange="isDirty=true">'."\n".

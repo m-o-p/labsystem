@@ -104,8 +104,8 @@ class Pge extends LpElement{
     global $url, $usr, $lng, $cfg;
     // initialize replacements on first use:
     if($this->replaceValue==""){
-    	$this->replaceValue = Array( "!_LINKQUERY_!",
-    	                             "!_PAGETITLE_!", 
+    	$this->replaceValue = Array( $url->get("newQueryString"),
+    	                             $this->title, 
     	                             $cfg->get("SystemTitle"),
     	                             $usr->foreName,
     	                             $usr->surName,
@@ -113,14 +113,6 @@ class Pge extends LpElement{
     	                             "WillBeReplacedByElsShow",
     	                             urlencode( $_SERVER['REQUEST_URI'] ),
     	                             $cfg->get("Link2UserAdminInterface") );
-    }
-    // Some replacements must be set here since they may not be correct before.
-    $counter=0;
-    foreach ( $this->replaceValue as $key => $value ){
-      $counter++;
-      if ( $counter == 1 ) $this->replaceValue[$key] = $url->get("newQueryString");
-      if ( $counter == 2 ) $this->replaceValue[$key] = $this->title;
-      if ( $counter == 3 ) break;
     }
 
     $text = ( str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
