@@ -40,6 +40,16 @@ Feature Requests:
        - Setup new course
        
      - Install
+     
+2012-01-28
+-------------------
+  /ini/config_demo.ini
+    Fixed a link to defaultRegister.ini.
+  /setup/index.php
+    Added \' to the setup string for the admin password.
+    
+  Thanks to Rudolf koopmann for reporting these issues!
+     
 2012-01-25
 -------------------
   /setup/sql_new_ddb_pages_tbl.sql

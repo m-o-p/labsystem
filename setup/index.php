@@ -236,7 +236,7 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                    '.$cfg->get("User_courseID").'
                    ) VALUES (
                    \''.$cfg->get("RightsAdminUsername").'\',
-                   '.crypt( 'admin', md5( $cfg->get("RightsAdminUsername") ) ).',
+                   \''.crypt( 'admin', md5( $cfg->get("RightsAdminUsername") ) ).'\',
                    \'admin\',
                    \'Ms/ Mr\',
                    \'root@localhost\',
@@ -278,7 +278,7 @@ $query = 'INSERT IGNORE INTO '.$cfg->get("UserDatabaseTable").'
          '.$cfg->get("User_courseID").'
          ) VALUES (
          \''.$cfg->get("RightsAdminUsername").'\',
-         '.crypt( 'admin', md5( $cfg->get("RightsAdminUsername") ) ).',
+         \''.crypt( 'admin', md5( $cfg->get("RightsAdminUsername") ) ).'\',
          \'admin '.$cfg->get("User_courseID").'\',
          \'Ms/ Mr\',
          \'root@localhost\',
