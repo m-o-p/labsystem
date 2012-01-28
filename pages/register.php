@@ -224,7 +224,7 @@ else{ // no data posted or errors found
 
      $pge->put( 
      // Warning when IP prefix not matched
-                ( !$canRegister & $lng->doesExist('registerIPprefixViolationNote') ? "<div class=\"labsys_mop_note\" style=\"color: #ff5555;\">\n".$cfg->lng('registerIPprefixViolationNote').' ['.$_SERVER['REMOTE_ADDR'].']'."</div>\n" : '' ).
+                ( !$canRegister & $lng->doesExist('registerIPprefixViolationNote') ? "<div class=\"labsys_mop_note\" style=\"color: #ff5555;\">\n".$lng->get('registerIPprefixViolationNote').' ['.$_SERVER['REMOTE_ADDR'].']'."</div>\n" : '' ).
      // surName
                 '<label for="surName" class="labsys_mop_input_field_label_top">'.$lng->get('surName').'</label>'."\n".
                 '<input'.( $canRegister ? '' : ' disabled="disabled"' ).' tabindex="'.$pge->nextTab++.'" type="text" id="surName" name="NAME" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['NAME'] ) ? $_POST['NAME'] : $lng->get('surName') ).'" onchange="isDirty=true">'."\n".
