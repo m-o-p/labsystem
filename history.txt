@@ -38,9 +38,17 @@ Feature Requests:
        - Grading
        - Registration! (bound to IP range...)
        - Setup new course
+       - Setting up new mail and info pages (in the useradmin...)
        
      - Install
-     
+       - host2config
+       - Ini files
+2012-01-29
+-------------------
+  /setup/sql_new_ddb_pages_tbl.sql
+    Fixed an issue with a comma. Thanks Rudi.
+
+
 2012-01-28
 -------------------
   /ini/config_demo.ini
