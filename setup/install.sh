@@ -52,10 +52,10 @@ echo ""
 
 # Prompts for the value of field $1 in file $2 (hidden if $3 = -s)
 setDataBaseField(){
-  wholeLine="$(sed -rn "s/(^\s*$1\s*=\s*\"\S+\").*$/\1/p" $2)"
+  wholeLine="$(sed -rn "s/(^\s*$1\s*=\s*\"\S*\").*$/\1/p" $2)"
   if [ -n "$wholeLine" ]
   then
-    value=`echo "$wholeLine" | sed -rn "s/.*\"(\S+)\".*$/\1/p"`
+    value=`echo "$wholeLine" | sed -rn "s/.*\"(\S*)\".*$/\1/p"`
     echo -n "[$?] Please provide your $1 (enter for \"$value\"): "
 
     read $3 newValue
