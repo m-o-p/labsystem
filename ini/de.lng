@@ -59,7 +59,7 @@ cManageNote         = ""
 lManageNote         = ""
 sManageNote         = ""
 showScheduleNote    = "Sie finden die <a href=\"../pages/accessableLabs.php?__LINKQUERY__\">Modulbeschreibungen hier</a>."
-AccessableLabsNote  = "Sie finden den <a href=\"../pages/view.php?address=s1&amp;__LINKQUERY__\">Zeitplan hier</a>." ; appears on top of the accessableLab.php page.
+AccessableLabsNote  = "Sie finden den <a href=\"../pages/view.php?address=s1&__LINKQUERY__\">Zeitplan hier</a>." ; appears on top of the accessableLab.php page.
 
 ;; These note will appear on top of the export_import_lab page
 lExportImportNote   = "" ;- empty note -
@@ -82,7 +82,7 @@ Explain_UR_64       = "kann Schedules machen."                              ; IS
 Explain_UR_128      = "kann geschlossene Labs korrigieren."                 ; IS_CORRECTOR
 Explain_UR_256      = "sieht die Musterl&ouml;sungen."                      ; IS_EX_SOLUTION_VIEWER
 Explain_UR_512      = "kann Benutzer im UAI administrieren."                ; IS_DB_USER_ADMIN (only necessary if you use the uai)
-Explain_UR_1024      = "kann alle {config, css, menu} Dateien editieren und erstellen im UAI." ; IS_CONFIG_EDITOR (only necessary if you edit configs in the uai)
+Explain_UR_1024     = "kann alle config, css, menu Dateien editieren und erstellen im UAI." ; IS_CONFIG_EDITOR (only necessary if you edit configs in the uai)
 
 
 ;; page titles ****************************************************************************************
