@@ -575,8 +575,10 @@ fileNote( 'importPictureDir','php rw, www r' );
 fileNote( 'importFilesDir',  'php rw, www r' );
 echo( '</pre>' );
 
-echo( 'You may issue the following commands under Linux (as admin):'."\r\n" );
-echo( '<pre>'.$toDoChown.'</pre>' );
+if ($toDoChown!=''){
+  echo( 'You may issue the following commands under Linux (as admin):'."\r\n".
+        '<pre>'.$toDoChown.'</pre>' );
+}
 
 // Upload limit
 $max_upload = (int)(ini_get('upload_max_filesize'));
