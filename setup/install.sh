@@ -10,7 +10,7 @@ echo "Press Enter to continue..."
 read -s
 clear
 
-echo""
+echo ""
 echo "---------------------------------------------------------------------------"
 echo ">>>> Step 1: The session information is stored file based."
 echo "(Where do you want to store the session information?                      )"
@@ -28,12 +28,13 @@ setConstant(){
   then 
     search="$(sed -rn "s:(^\s*define\('$1'\s*,\s*'\S*'.*)$:\1:p" $2)"
     replace="$(sed -rn "s:(^\s*define\('$1'\s*,\s*')\S*('.*)$:\1$newValue\2:p" $2)"
-echo "Search: $search"
-echo "Replace: $replace"
     sed -i "s:$search:$replace:" $2
   fi
 }
 
+echo "In this path the session info is stored."
+echo "The directory you give must be php writable e.g. \"[your web dir]/sessiondata\""
+echo ""
 setConstant SESSION_DATA_SAVE_PATH ../include/php_session_management.inc
 
 echo""
