@@ -21,7 +21,7 @@
  /**
   * If no config is given this config is loaded:
   */
-  define("DEFAULT_CONFIG", 'demo');
+  define('DEFAULT_CONFIG', 'demo');
   
 /**
  * This script forwards to the startpage.
