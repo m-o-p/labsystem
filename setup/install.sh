@@ -12,7 +12,7 @@ clear
 
 echo ""
 echo "---------------------------------------------------------------------------"
-echo ">>>> Step 1: The session information is stored file based."
+echo ">>>> Step 0: The session information is stored file based."
 echo "(Where do you want to store the session information?                      )"
 echo "(This directory has to be writable by PHP.                                )"
 echo ""
@@ -36,6 +36,8 @@ echo "In this path the session info is stored."
 echo "The directory you give must be php writable e.g. \"[your web dir]/sessiondata\""
 echo ""
 setConstant SESSION_DATA_SAVE_PATH ../include/php_session_management.inc
+clear
+
 
 echo""
 echo "---------------------------------------------------------------------------"
@@ -97,6 +99,16 @@ echo "|  The user database contains the users data (like user names, names, pass
 echo "--------------------------------------------------------------------------------"
 echo ""
 setDataBase UserDatabase
+
+echo ""
+echo "The useradministration will use its own data and working database."
+echo "They are set in \"ini/config_useradmin.ini\"".
+echo "They override the settings you set above."
+echo "You may change more values than the ones listed directly in the file."
+echo "Per default the settings you configured above are taken."
+echo ""
+setDataBaseField DataDatabaseName ../ini/config_useradmin.ini
+setDataBaseField WorkingDatabaseName ../ini/config_useradmin.ini
 
 echo ""
 echo "Step 1/4 is done. Press Enter to continue..."
