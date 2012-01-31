@@ -21,7 +21,7 @@
  /**
   * If no config is given this config is loaded:
   */
-  $STANDARD_INDEX = 'demo';
+  define("DEFAULT_CONFIG", 'demo');
   
 /**
  * This script forwards to the startpage.
@@ -32,7 +32,7 @@
                                              // needed to get parameters from the url ($url->get, ->available)
  
   if ( $GLOBALS['url']->available('config') ) $config = $GLOBALS['url']->get('config'); // config provided
-   else $config = $STANDARD_INDEX; // use as default config: e.g. course32 here or &config=course23 in the URL -> config_course23.ini
+   else $config = DEFAULT_CONFIG; // use as default config: e.g. course32 here or &config=course23 in the URL -> config_course23.ini
 
   if ( $GLOBALS['url']->available('address') ) $address = $GLOBALS['url']->get('address'); // address provided
    else $address = 'p3'; // use this (startpage is 3) as defaul value

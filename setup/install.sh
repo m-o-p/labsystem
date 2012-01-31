@@ -16,7 +16,23 @@ echo ">>>> Step 1: The session information is stored file based."
 echo "(Where do you want to store the session information?                      )"
 echo "(This directory has to be writable by PHP.                                )"
 echo ""
-setDataBaseField() $sess_save_path ../include/php_session_management.inc
+
+# Prompts for the value of constant $1 in file $2
+setConstant(){
+  value="$(sed -rn "s/\s*\"$1\"\s*=\s*\'(\S+)\'.*$/\1/p" $2)"
+  echo -n "Please provide your $1 (enter for \"$value\"): "
+
+  read newValue
+
+  if [ -n "$newValue" ]
+  then 
+    search="$(sed -rn "s/(\s*\"$1\"\s*=\s*\'\S*\'.*)$/\1/p" $2)"
+    replace="$(sed -rn "s/(\s*\"$1\"\s*=\s*\')\S*(\'.*)$/\1$newValue\2/p" $2)"
+    sed -i "s/$search/$replace/" $2
+  fi
+}
+
+setConstant() \$sess_save_path ../include/php_session_management.inc
 
 echo""
 echo "---------------------------------------------------------------------------"
