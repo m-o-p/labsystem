@@ -184,6 +184,7 @@ ownDirectoryByConfigVar(){
 ownDirectory() {
   echo "$2 (configured in ini field $1)"
   mkdir -p $2
+  cp ../ini/.htaccess $2
   chown -R $WWWUID $2
 }
 
