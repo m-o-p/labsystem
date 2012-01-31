@@ -43,6 +43,14 @@ Feature Requests:
      - Install
        - host2config
        - Ini files
+
+2012-01-30
+-------------------
+  /setup/install.sh
+    Added shell script for initial setup.
+  /index.php
+    Added $STANDARD_INDEX as starting point if no config is given.
+
 2012-01-29
 -------------------
   /setup/sql_new_ddb_pages_tbl.sql

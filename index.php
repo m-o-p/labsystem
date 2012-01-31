@@ -18,6 +18,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ /**
+  * If no config is given this config is loaded:
+  */
+  $STANDARD_INDEX = 'demo';
+  
 /**
  * This script forwards to the startpage.
  * Put the default configuration (the one that appears when no "config=" 
@@ -27,7 +32,7 @@
                                              // needed to get parameters from the url ($url->get, ->available)
  
   if ( $GLOBALS['url']->available('config') ) $config = $GLOBALS['url']->get('config'); // config provided
-   else $config = 'demo'; // use as default config: e.g. config_course23.ini -> &config=course23
+   else $config = $STANDARD_INDEX; // use as default config: e.g. course32 here or &config=course23 in the URL -> config_course23.ini
 
   if ( $GLOBALS['url']->available('address') ) $address = $GLOBALS['url']->get('address'); // address provided
    else $address = 'p3'; // use this (startpage is 3) as defaul value
