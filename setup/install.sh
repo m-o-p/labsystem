@@ -15,6 +15,7 @@ echo "--------------------------------------------------------------------------
 echo ">>>> Step 0: The session information is stored file based."
 echo "(Where do you want to store the session information?                      )"
 echo "(This directory has to be writable by PHP.                                )"
+echo "(Make sure it is NOT ACCESSABLE via http(s)!!!                            )"
 echo ""
 
 # Prompts for the value of constant $1 in file $2
@@ -29,6 +30,7 @@ setConstant(){
     search="$(sed -rn "s:(^\s*define\('$1'\s*,\s*'\S*'.*)$:\1:p" $2)"
     replace="$(sed -rn "s:(^\s*define\('$1'\s*,\s*')\S*('.*)$:\1$newValue\2:p" $2)"
     sed -i "s:$search:$replace:" $2
+    session_data_save_path="$newValue"
   fi
 }
 
@@ -187,6 +189,12 @@ ownDirectory() {
 
 for x in UploadDirectory exportImportDir importPictureDir importFilesDir SystemResourcePath; do ownDirectoryByConfigVar "$x"; done
 ownDirectory css ../css/
+
+# Session data path given? Create it...
+if [ -n "$session_data_save_path" ]
+then
+  ownDirectory sessionDataSavePath $session_data_save_path
+fi
 
 echo ""
 echo "Step 4/4 is done. Press Enter to continue..."
