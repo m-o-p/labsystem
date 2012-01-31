@@ -27,8 +27,8 @@
 * The session.io module must be included in php otherwhise it says "session_set_save_handler()" not found!
 */
 
-$sess_save_path = "/tmp"; // without "/" at end
-//$sess_save_path = "[your web dir]/sessiondata"; // without "/" at end
+define("SESSION_DATA_SAVE_PATH", '/tmp'); // In this path the session info is stored.
+// You may set it to something like "[your web dir]/sessiondata"; // without "/" at end
 
 /**
 * This cannot be put inside the config file as that gets loaded later.
