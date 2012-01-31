@@ -1,3 +1,3 @@
 <?php
-  header ('Location: setup/setup.php?config=useradmin');
+  header ('Location: setup?config=useradmin');
 ?>

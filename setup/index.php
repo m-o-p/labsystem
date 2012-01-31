@@ -517,8 +517,7 @@ function checkDirectoryWritable( $configFieldName ){
       echo('<span style="color: #77ff77;">o.k.</span>');
     }else{
       echo('<span style="color: #ff7777;">failed!</span>');
-      $toDoChown .= 'mkdir '.$directory."\r\n".
-                    'chown -R '.getmygid().' '.$directory."\r\n";
+      $toDoChown .= 'mkdir '.$directory."\r\n";
     }
     echo('<br>');
   }else{
