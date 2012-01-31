@@ -52,26 +52,32 @@ echo ""
 
 # Prompts for the value of field $1 in file $2 (hidden if $3 = -s)
 setDataBaseField(){
-  value="$(sed -rn "s/\s*$1\s*=\s*\"(\S+)\".*$/\1/p" $2)"
-  echo -n "Please provide your $1 (enter for \"$value\"): "
-
-  read $3 newValue
-  # Password with silent input? -> Add a CR
-  if [ "$3" == "-s" ]
+  wholeLine="$(sed -rn "s/(^\s*$1\s*=\s*\"\S+\").*$/\1/p" $2)"
+  if [ -n "$wholeLine" ]
   then
-    echo ""
-  fi
-  if [ -n "$newValue" ]
-  then 
-    search="$(sed -rn "s/(\s*$1\s*=\s*\"\S*\".*)$/\1/p" $2)"
-    replace="$(sed -rn "s/(\s*$1\s*=\s*\")\S*(\".*)$/\1$newValue\2/p" $2)"
-    sed -i "s/$search/$replace/" $2
+    value=`echo "$wholeLine" | sed -rn "s/.*\"(\S+)\".*$/\1/p"`
+    echo -n "[$?] Please provide your $1 (enter for \"$value\"): "
+
+    read $3 newValue
+    # Password with silent input? -> Add a CR
+    if [ "$3" == "-s" ]
+    then
+      echo ""
+    fi
+    if [ -n "$newValue" ]
+    then 
+      replace=`echo "$wholeLine" | sed -rn "s/(\s*$1\s*=\s*\")\S*(\").*$/\1%USERINPUT%\2/p"`
+      replace=`echo "$replace" | sed "s/%USERINPUT%/$newValue/"`
+echo "search: $wholeLine"
+echo "replac: $replace"
+      sed -i "s/$wholeLine/$replace/" $2
+    fi
   fi
 }
 
 setDataBase(){
-  for x in Name Host UserName; do setDataBaseField "$1$x" ../ini/configBase/defaultDatabases.ini; done
-  setDataBaseField $1PassWord ../ini/configBase/defaultDatabases.ini -s
+  for x in Name Host UserName; do setDataBaseField "$1$x" $2; done
+  setDataBaseField $1PassWord $2 -s
 }
 
 # make backup as file will be overwritten
@@ -82,7 +88,7 @@ echo "| Working Database:"
 echo "|  The working database contains the user answer, rights, etc."
 echo "--------------------------------------------------------------------------------"
 echo ""
-setDataBase WorkingDatabase
+setDataBase WorkingDatabase ../ini/configBase/defaultDatabases.ini
 
 echo ""
 echo "--------------------------------------------------------------------------------"
@@ -90,7 +96,7 @@ echo "| Data Database:"
 echo "|  The data database contains the lectures."                                        
 echo "--------------------------------------------------------------------------------"                                                                       
 echo ""
-setDataBase DataDatabase
+setDataBase DataDatabase ../ini/configBase/defaultDatabases.ini
 
 echo ""
 echo "--------------------------------------------------------------------------------"
@@ -98,7 +104,7 @@ echo "| User Database:"
 echo "|  The user database contains the users data (like user names, names, passwords)."                                                                                                               
 echo "--------------------------------------------------------------------------------"
 echo ""
-setDataBase UserDatabase
+setDataBase UserDatabase ../ini/configBase/defaultDatabases.ini
 
 echo ""
 echo "The useradministration will use its own data and working database."
@@ -107,8 +113,18 @@ echo "They override the settings you set above."
 echo "You may change more values than the ones listed directly in the file."
 echo "Per default the settings you configured above are taken."
 echo ""
-setDataBaseField DataDatabaseName ../ini/config_useradmin.ini
-setDataBaseField WorkingDatabaseName ../ini/config_useradmin.ini
+# fields that are not available will not be shown:
+setDataBase DataDatabase ../ini/config_useradmin.ini
+setDataBase WorkingDatabase ../ini/config_useradmin.ini
+
+echo ""
+echo "There may also be overrides for ../ini/config_demo.ini..."
+echo "If so, they are shown now:"
+echo ""
+# fields that are not available will not be shown:
+setDataBase DataDatabase ../ini/config_demo.ini
+setDataBase WorkingDatabase ../ini/config_demo.ini
+
 
 echo ""
 echo "Step 1/4 is done. Press Enter to continue..."
@@ -169,7 +185,7 @@ echo ""
 echo "---------------------------------------------------------------------------"
 echo ">>>> All Done." 
 echo ""
-echo "You are done now. Please browse to http://[yourHostNameAndPathToTheLabsystem]/setup?config=useradmin next."
+echo "You are done now. Please browse to http://[yourHostNameAndPathToTheLabsystem]/install.php next."
 echo ""
 echo "Enjoy the system!"
 echo ""
