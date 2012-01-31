@@ -56,7 +56,12 @@ setDataBaseField(){
   if [ -n "$wholeLine" ]
   then
     value=`echo "$wholeLine" | sed -rn "s/.*\"(\S*)\".*$/\1/p"`
-    echo -n "[$?] Please provide your $1 (enter for \"$value\"): "
+    echo -n "[$?] Please provide your $1"
+    if [[ -z "$value" || "$3" != "-s" ]]
+    then
+      echo -n " (enter for \"$value\")"
+    fi
+    echo -n ": "
 
     read $3 newValue
     # Password with silent input? -> Add a CR
@@ -64,12 +69,10 @@ setDataBaseField(){
     then
       echo ""
     fi
-    if [ -n "$newValue" ]
+    if [[ -n "$newValue" || "$3" == "-s" ]]
     then 
       replace=`echo "$wholeLine" | sed -rn "s/(\s*$1\s*=\s*\")\S*(\").*$/\1%USERINPUT%\2/p"`
       replace=`echo "$replace" | sed "s/%USERINPUT%/$newValue/"`
-echo "search: $wholeLine"
-echo "replac: $replace"
       sed -i "s/$wholeLine/$replace/" $2
     fi
   fi
@@ -156,6 +159,14 @@ WWWPID="$(netstat -lpnt | sed -rn 's,^tcp6?\s+\w+\s+\w+\s+\S+:80\s+\S+\s+\w+\s+(
 
 WWWUID="$(sed -rn 's/^Uid:\s+\w+\s+(\w+)\s+\w+\s+\w+\s*$/\1/p' /proc/$WWWPID/status)"
 echo "Uid of service on port 80: $WWWUID"
+echo ""
+
+echo -n "Which UID.GID doe you want to set for the php writable directories? (enter for $WWWUID): "
+read newValue
+if [ -n "$newValue" ]
+then
+  WWWUID="$newValue"
+fi
 
 echo ""
 echo "---------------------------------------------------------------------------"
@@ -163,7 +174,7 @@ echo ">>>> Step 4: We set some directories to be writable by php."
 echo "(Files in these directories will be edited or created from within the php.)"
 echo ""
 
-echo "Changing the ownership of directories to the www-user..."
+echo "Changing the ownership of directories to the www-user ($WWWUID) ..."
 ownDirectoryByConfigVar(){
   ownDirectory $1 "$(sed -rn "s/\s*$1\s*=\s*\"(\S+)\".*$/\1/p" ../ini/configBase/defaultSystemLayout.ini)"
 }

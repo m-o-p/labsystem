@@ -504,16 +504,16 @@ say_toptitle( 'Checking directories...' ); /***********************************/
 * Checks if a directory is writable and returns o.k. or failed.
 * To do so it creates the subfolder "/test23r2" and deletes it if successful.
 */
-$toDoChown = "" // Collects the Linux commands that could be issued as root to set the permissions.
+$toDoChown = ""; // Collects the Linux commands that could be issued as root to set the permissions.
 function checkDirectoryWritable( $configFieldName ){
-  global $cfg;
+  global $cfg, $toDoChown;
   $directory = ( substr( $cfg->get($configFieldName), -1, 1 ) == '/' ? 
                     $cfg->get($configFieldName) : // is already a directory...
                     dirname($cfg->get($configFieldName)) ); // is not...
   echo( '<br><br><span style="color: #ffff99">['.$configFieldName.': '.$directory.']</span> ' );
   if (!file_exists($directory)){
     echo('not existing. Creating it... ');
-    if (mkdir($directory, 0755, true){
+    if (mkdir($directory, 0755, true)){
       echo('<span style="color: #77ff77;">o.k.</span>');
     }else{
       echo('<span style="color: #ff7777;">failed!</span>');
@@ -523,10 +523,10 @@ function checkDirectoryWritable( $configFieldName ){
     echo('<br>');
   }else{
     echo('exists. Testing subfolder... Creating... ');
-    if (mkdir($directory.'/test23r2', 0755, true){
+    if (mkdir($directory.'/test23r2', 0755, true)){
       echo('<span style="color: #77ff77;">o.k.</span> Deleting... '.(rmdir($directory.'/test23r2/') ? 
                                                                        '<span style="color: #77ff77;">o.k.</span>' : 
-                                                                       '<span style="color: #ff7777;">failed!</span>' );
+                                                                       '<span style="color: #ff7777;">failed!</span>' ));
     }else{
       echo('<span style="color: #ff7777;">failed!</span>');
       $toDoChown .= 'chown -R '.getmygid().' '.$directory."\r\n";
