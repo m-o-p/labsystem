@@ -73,6 +73,8 @@ Feature Requests:
     PHP uses file based session data management per default now so the own implementation is not needed anymore.
   /php/uaMyPWSave.php
     Changed log entry code. (Was usuing unavailable field.
+  /include/page_layout.inc
+    htmlspecialchars_decode to remove html escapes from alert.
 
     
 2012-01-30
