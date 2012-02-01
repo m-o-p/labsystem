@@ -190,6 +190,7 @@ ownDirectory() {
 
 for x in UploadDirectory exportImportDir importPictureDir importFilesDir SystemResourcePath; do ownDirectoryByConfigVar "$x"; done
 ownDirectory css ../css/
+rm ../css/.htaccess
 
 # Session data path given? Create it...
 if [ -n "$session_data_save_path" ]
