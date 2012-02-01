@@ -568,7 +568,7 @@ echo( '<pre><span style="color: #888888">' );
 fileNote( 'fieldName', 'access policy</span>' );
 fileNote( 'UploadDirectory', 'php rw, www <span style="color: #ff5555">deny</span>' );
 fileNote( 'exportImportDir', 'php rw, www <span style="color: #ff5555">deny</span>' );
-fileNote( 'SystemResourcePath', 'php r , www <span style="color: #ff5555">deny</span>' );
+fileNote( 'SystemResourcePath', 'php rw , www <span style="color: #ff5555">deny</span>' );
 fileNote( 'SystemMenuFile',  'php rw, www <span style="color: #ff5555">deny</span>' );
 fileNote( 'UserStyleSheet',  'php rw, www r' );
 fileNote( 'importPictureDir','php rw, www r' );
