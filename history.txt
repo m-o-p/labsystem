@@ -22,7 +22,17 @@ Feature Requests:
    - Videos
      - Work as an author
        - Create course
+         - For demo: Draw on sheet -> realize online
+       - tidy for html and css
        - Work with CSS
+       - Different types:
+         - Markdown
+         - HTML
+         - Text
+       - Multiple Choice
+       - Input
+     - Export/ Import
+     - Upload tool
      
      - Work as a student
        - initial registration
@@ -36,14 +46,32 @@ Feature Requests:
        
      - Work as a course manager
        - Grading
+         - set bar colors up (defaultCourseBehaviour.inc)
        - Registration! (bound to IP range...)
+         - Adding a new field (table, lng)
+         - Editing Mails, Info pages
+         - Moving fields:
+           ALTER TABLE user MODIFY desiredTeamPartner VARCHAR( 255 ) AFTER reasonToParticipate;
        - Setup new course
+         - Inline editor
        - Setting up new mail and info pages (in the useradmin...)
        
      - Install
+       - svn co https://labsystem.svn.sourceforge.net/svnroot/labsystem .
+       - cd setup
+       - bash install.sh
        - host2config
        - Ini files
+       - URL install aufrufen
+         - Passwort &auml;ndern!
 
+2012-02-01
+-------------------
+  /include/php_session_management.inc
+    Removed.
+  /include/session.inc
+    PHP uses file based session data management per default now so the own implementation is not needed anymore.
+    
 2012-01-30
 -------------------
   /setup/install.sh

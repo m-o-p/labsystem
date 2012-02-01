@@ -36,7 +36,8 @@ if ( $GLOBALS['url']->available("config") ) session_name ( $url->get("config") )
    because some settings (p.e. seeingUID for correcting) might not exist in the other config's DBs...
  */
 
-require( INCLUDE_DIR."/php_session_management.inc"); /** store the session variables in the table instead of a cookie or url */
+// per default file based session management is enabled with current phps...
+// require( INCLUDE_DIR."/php_session_management.inc"); /** store the session variables in the table instead of a cookie or url */
 
 if ( isset( $NEWSESSION ) ) {
   $url->put("inside=true");
