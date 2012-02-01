@@ -163,7 +163,7 @@ WWWUID="$(sed -rn 's/^Uid:\s+\w+\s+(\w+)\s+\w+\s+\w+\s*$/\1/p' /proc/$WWWPID/sta
 echo "Uid of service on port 80: $WWWUID"
 echo ""
 
-echo -n "Which UID.GID doe you want to set for the php writable directories? (enter for $WWWUID): "
+echo -n "Which UID.GID do you want to set for the php writable directories? (enter for $WWWUID): "
 read newValue
 if [ -n "$newValue" ]
 then
