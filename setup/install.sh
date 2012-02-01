@@ -18,27 +18,27 @@ echo "(This directory has to be writable by PHP.                                
 echo "(Make sure it is NOT ACCESSABLE via http(s)!!!                            )"
 echo ""
 
-# Prompts for the value of constant $1 in file $2
-setConstant(){
-  value="$(sed -rn "s:^\s*define\('$1'\s*,\s*'(\S+)'.*$:\1:p" $2)"
-  echo -n "Please provide your $1 (enter for \"$value\"): "
-
-  read newValue
-
-  if [ -n "$newValue" ]
-  then 
-    search="$(sed -rn "s:(^\s*define\('$1'\s*,\s*'\S*'.*)$:\1:p" $2)"
-    replace="$(sed -rn "s:(^\s*define\('$1'\s*,\s*')\S*('.*)$:\1$newValue\2:p" $2)"
-    sed -i "s:$search:$replace:" $2
-    session_data_save_path="$newValue"
-  fi
-}
-
-echo "In this path the session info is stored."
-echo "The directory you give must be php writable e.g. \"[your web dir]/sessiondata\""
-echo ""
-setConstant SESSION_DATA_SAVE_PATH ../include/php_session_management.inc
-clear
+## Prompts for the value of constant $1 in file $2
+#setConstant(){
+#  value="$(sed -rn "s:^\s*define\('$1'\s*,\s*'(\S+)'.*$:\1:p" $2)"
+#  echo -n "Please provide your $1 (enter for \"$value\"): "
+#
+#  read newValue
+#
+#  if [ -n "$newValue" ]
+#  then 
+#    search="$(sed -rn "s:(^\s*define\('$1'\s*,\s*'\S*'.*)$:\1:p" $2)"
+#    replace="$(sed -rn "s:(^\s*define\('$1'\s*,\s*')\S*('.*)$:\1$newValue\2:p" $2)"
+#    sed -i "s:$search:$replace:" $2
+#    session_data_save_path="$newValue"
+#  fi
+#}
+#
+#echo "In this path the session info is stored."
+#echo "The directory you give must be php writable e.g. \"[your web dir]/sessiondata\""
+#echo ""
+#setConstant SESSION_DATA_SAVE_PATH ../include/php_session_management.inc
+#clear
 
 
 echo""
