@@ -28,7 +28,8 @@ echo ""
 #  if [ -n "$newValue" ]
 #  then 
 #    search="$(sed -rn "s:(^\s*define\('$1'\s*,\s*'\S*'.*)$:\1:p" $2)"
-#    replace="$(sed -rn "s:(^\s*define\('$1'\s*,\s*')\S*('.*)$:\1$newValue\2:p" $2)"
+## $(printf '%q' $(printf '%q' $newValue)) evaluates all variables allowing "'$ in $newValue
+#    replace="$(sed -rn "s:(^\s*define\('$1'\s*,\s*')\S*('.*)$:\1$(printf '%q' $(printf '%q' $newValue))\2:p" $2)"
 #    sed -i "s:$search:$replace:" $2
 #    session_data_save_path="$newValue"
 #  fi
@@ -73,9 +74,8 @@ setDataBaseField(){
     fi
     if [[ -n "$newValue" || "$3" == "-s" ]]
     then 
-      replace=`echo "$wholeLine" | sed -rn "s/(\s*$1\s*=\s*\")\S*(\").*$/\1%USERINPUT%\2/p"`
-      replace=`echo "$replace" | sed "s/%USERINPUT%/$newValue/"`
-      sed -i "s/$wholeLine/$replace/" $2
+      replace=`echo "$wholeLine" | sed -rn "s&(\s*$1\s*=\s*\")\S*(\").*&\1$(printf '%q' $(printf '%q' $newValue))\2&p"`
+      sed -i "s&$wholeLine&$replace&" $2
     fi
   fi
 }
