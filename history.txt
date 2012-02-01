@@ -71,6 +71,9 @@ Feature Requests:
     Removed.
   /include/session.inc
     PHP uses file based session data management per default now so the own implementation is not needed anymore.
+  /php/uaMyPWSave.php
+    Changed log entry code. (Was usuing unavailable field.
+
     
 2012-01-30
 -------------------

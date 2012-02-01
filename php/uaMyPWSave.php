@@ -70,7 +70,7 @@ else{ // save new PW
                        );
     // note
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
-    makeLogEntry( 'useradmin', 'saved password of '.$_POST['USERNAME'] );
+    makeLogEntry( 'useradmin', 'saved password of '.$accordingUID );
 }
 
 // redirect
