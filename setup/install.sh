@@ -10,14 +10,14 @@ echo "Press Enter to continue..."
 read -s
 clear
 
-echo ""
-echo "---------------------------------------------------------------------------"
-echo ">>>> Step 0: The session information is stored file based."
-echo "(Where do you want to store the session information?                      )"
-echo "(This directory has to be writable by PHP.                                )"
-echo "(Make sure it is NOT ACCESSABLE via http(s)!!!                            )"
-echo ""
-
+#echo ""
+#echo "---------------------------------------------------------------------------"
+#echo ">>>> Step 0: The session information is stored file based."
+#echo "(Where do you want to store the session information?                      )"
+#echo "(This directory has to be writable by PHP.                                )"
+#echo "(Make sure it is NOT ACCESSABLE via http(s)!!!                            )"
+#echo ""
+#
 ## Prompts for the value of constant $1 in file $2
 #setConstant(){
 #  value="$(sed -rn "s:^\s*define\('$1'\s*,\s*'(\S+)'.*$:\1:p" $2)"
