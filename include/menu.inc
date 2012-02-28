@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -30,10 +30,10 @@
 
 /* The size of the table is affected by the presence of the "nomenu" in the url.
  * If you only change it in the stylesheet you are safe...
- * page_layout.inc also sets the size! 
+ * page_layout.inc also sets the size!
  */
 require_once( INCLUDE_DIR."/classes/Menu.inc" );
- 
+
 echo("<div class=\"labsys_mop_menu\"><ul>\n");
 
 $myMenu = new Menu( "labsys_mop_menuEntry", "on", "off", "hover", "title", "spacer" ); // So you could easy create menus based on other stylesheet entries.
@@ -43,7 +43,7 @@ $mainMenuIni = parse_ini_file( $cfg->get("SystemResourcePath").$cfg->get("System
 foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
   $hasTitle = false; // -> $this::doTitle();
   $possibleMenu = "";
-  
+
   // "[sys_login]" starts with
   // - the login/ -out
   //   - myRights
@@ -51,7 +51,7 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
   //   - sendMail
   if ( $key == "sys_login" ){
                               $key = $usr->userName;
-                              if ( $usr->isLoggedIn() ) 
+                              if ( $usr->isLoggedIn() )
                                 $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogOut" ), "../php/logout.php" ).
                                                  $myMenu->entry( $lng->get( "MnuEntryMyRights" ), "../pages/myRights.php" ).
                                                  $myMenu->entry( $lng->get( "MnuEntryMyStatistics" ), "../pages/view.php?address=l1.ALLlabStatus" ).
@@ -59,12 +59,12 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
                                                  $myMenu->spacer().
                                                  $myMenu->entry( $lng->get( "MnuEntrySendMail" ), "../pages/mailForm.php" );
                               else
-                                $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?  
+                                $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?
                                                                   'https://'.$_SERVER[ 'SERVER_NAME' ].preg_replace_callback( '#(\S*pages\/)[^\?]*(\?\S*)#',
                                                                                                                                 create_function(
                                                                                                                                     '$matches',
                                                                                                                                     'return $matches[1]."login.php".$matches[2];'
-                                                                                                                                ), 
+                                                                                                                                ),
                                                                                                                              $_SERVER["REQUEST_URI"]
                                                                                                                              ) :
                                                                   '../pages/login.php' ) ).
@@ -74,14 +74,14 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
                                                                                                                         // Do not forget to edit the /index.php to redirect address=register to thre you want
                              }
 
-  // this "magic menu" lists all labs acessable to the user                          
-  if ( $key == 'accessable_labs' ){
+  // this "magic menu" lists all labs acessable to the user
+  if ( $key == 'accessible_labs' ){
     $key = $cfg->get('SystemTitle');
     if ( !is_array($value) ) $value = array( '' );
 
   // Overview page
-    $value[ $lng->get('MnuEntryCourseContent') ] = '../pages/accessableLabs.php';
-    
+    $value[ $lng->get('MnuEntryCourseContent') ] = '../pages/accessibleLabs.php';
+
   // Labs that are visible without a schedule
     //SELECT `idx` FROM `labs` WHERE `visible_before_first_sched`=1
     $lDBI->queryResult = $lDBI->myDBC->mkSelect( 'idx', $lDBI->myTable, "idx!=1 && `visible_before_first_sched`=1" );
@@ -96,7 +96,7 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
       if (  !in_array( '!l'.$nextData['num'], $value ) ) // do not add twice...
         array_push( $value, '!l'.$nextData['num'] );
     }
-    
+
     array_push( $value, '' ); // spacer
     $value[$lng->get( "MnuEntrySchedule" )]="../pages/view.php?address=s1"; // schedule
   }
@@ -123,22 +123,22 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
           $id = $value_{1};
           require( "../php/getDBIbyID.inc" ); /* -> $DBI */
           $element = $DBI->getMenuData2idx( substr( $value_, 2) );
-          if ( $element && $element->isVisible() ) $possibleMenu .=  $element->getMenu( substr( $value_, 1 ), 
-                                                                                        $myMenu, "", 
-                                                                                        isset( $GLOBALS["firstFinal"] ) && 
+          if ( $element && $element->isVisible() ) $possibleMenu .=  $element->getMenu( substr( $value_, 1 ),
+                                                                                        $myMenu, "",
+                                                                                        isset( $GLOBALS["firstFinal"] ) &&
                                                                                         ( $GLOBALS["firstFinal"] == substr( $value_, 1 ) ) ); /* I am the current top element viewed and so I should unfold */
           continue; // no more processing here -> continue with next
       }
       if ( !$usr->isOfKind( substr($value_, $posBang+1) ) ) continue; // the entry is restricted and the user has not the necessary rights
       $value_ = substr( $value_, 0, $posBang ); // remove all beginning from "!"
     }
-        
+
     if ( $value_ == "" ){
       if ( $possibleMenu != "" ) // show spacer only if there is at least one entry above
         $possibleMenu .= $myMenu->spacer();
     }else $possibleMenu .= $myMenu->entry( $key_, $value_ ); // show the menu entry
   }
-  
+
   if ( $possibleMenu != "" ) echo( $myMenu->title( $key ).$possibleMenu.$myMenu->spacer() ); // Only show the title if there is something inside the section.
 }
 echo("\t</ul></div>\n");
