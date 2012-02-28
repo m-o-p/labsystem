@@ -69,6 +69,10 @@ Feature Requests:
 -------------------
   /pages/accessableLabs.php
     Prepared the accessable labs for ePub creation.
+    Renamed the misspelled file to accessIbleLabs.php.
+    Added code for the preface.
+  /ini/config_*.ini
+    Added prefixID as variable to set the prefix for the ePub.
     
 2012-02-01
 -------------------
