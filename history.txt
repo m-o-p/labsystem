@@ -67,6 +67,11 @@ Feature Requests:
 
 2012-02-01
 -------------------
+  /pages/accessableLabs.php
+    Prepared the accessable labs for ePub creation.
+    
+2012-02-01
+-------------------
   /include/php_session_management.inc
     Removed.
   /include/session.inc

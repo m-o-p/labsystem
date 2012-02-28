@@ -30,14 +30,24 @@ require( "../include/init.inc" );
 
 $pge->matchingMenu = $lng->get('MnuEntryCourseContent');
 $pge->title        = $cfg->get('SystemTitle').' '.$lng->get('MnuEntryCourseContent');
+$returnEpub = $url->available( 'ePub' );
 
   // head (create new)
-     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) ) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".EB::link2Url( '../pages/accessableLabs.php' )."</div>\n" );
+     if ( !$returnEpub && $usr->isOfKind( IS_CONTENT_EDITOR ) ) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".
+           EB::mkLink(  $url->link2( '../pages/accessableLabs.php?ePub=ePub' ),
+                        "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" ).
+           EB::link2Url( '../pages/accessableLabs.php' )."</div>\n" );
+     if ($returnEpub){
+       echo("initializing ePub<br>");
+       //TODO: Call functions to tell ePub export that multiple labs come now.
+       echo("Adding foreword page...<br>");
+       //TODO: Add forword.
+     }
   // title
-     $pge->put( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );
+     if (!$returnEpub){$pge->put( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );}
      
   // note
-     if ( $lng->get("AccessableLabsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("AccessableLabsNote")."</div>\n" ); 
+     if ( !$returnEpub && $lng->get("AccessableLabsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("AccessableLabsNote")."</div>\n" ); 
 
      $accessableLabs = array();
      $alreadyAdded = array(); // for not adding dups...
@@ -59,9 +69,15 @@ $pge->title        = $cfg->get('SystemTitle').' '.$lng->get('MnuEntryCourseConte
 
      $counter = 0;
      $charCounter = 97;
-     $pge->put('<table align="center" width="80%" cellspacing="10">');
-     foreach ( $accessableLabs as $value )
-       $pge->put('
+     if (!$returnEpub){$pge->put('<table align="center" width="80%" cellspacing="10">');}
+     foreach ( $accessableLabs as $value ){
+       if ($returnEpub){
+         $extParagraph = (string)( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ );
+         echo( $extParagraph.' '.$value->title.' ('.$value->elementId.$value->idx.')<br>');
+         //echo( $value->showTOC( $value->elementId.$value->idx, $extParagraph ) );
+         // to be done: $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ) );
+       }else{
+         $pge->put('
 <tr>
   <td width="75" class="labIndexNumber">
 '.( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ).'
@@ -70,8 +86,13 @@ $pge->title        = $cfg->get('SystemTitle').' '.$lng->get('MnuEntryCourseConte
     <b><a href="../pages/view.php?address=l'.$value->idx.'&amp;__LINKQUERY__" target="_top">'.$value->title.'</a></b> - '.$value->comment.'
     </td>
   </tr>
-      ');
-     $pge->put('</table>');
+'        );
+       }
+     }
+     if (!$returnEpub){$pge->put('</table>');}
   
-require( $cfg->get("SystemPageLayoutFile") );
+if (!$returnEpub){require( $cfg->get("SystemPageLayoutFile") );}
+else{
+  echo("creating ePub");
+}
 ?>
