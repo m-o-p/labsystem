@@ -31,10 +31,10 @@ $pge->title        = $cfg->get('SystemTitle').' '.$lng->get('MnuEntryCourseConte
 $returnEpub        = $url->available( 'ePub' );
 
 // head (create new)
-if ( !$returnEpub && $usr->isOfKind( IS_CONTENT_EDITOR ) ) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".
+if ( !$returnEpub ) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".
 EB::mkLink(  $url->link2( '../pages/accessibleLabs.php?ePub=ePub' ),
                         "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" ).
-EB::link2Url( '../pages/accessibleLabs.php' )."</div>\n" );
+($usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::link2Url( '../pages/accessibleLabs.php' ) : '')."</div>\n" );
 if ($returnEpub){
   echo("initializing ePub<br>");
   //TODO: Call functions to tell ePub export that multiple labs come now.
