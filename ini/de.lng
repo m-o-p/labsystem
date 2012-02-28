@@ -58,8 +58,8 @@ iManageNote         = ""
 cManageNote         = "" 
 lManageNote         = ""
 sManageNote         = ""
-showScheduleNote    = "Sie finden die <a href=\"../pages/accessableLabs.php?__LINKQUERY__\">Modulbeschreibungen hier</a>."
-AccessableLabsNote  = "Sie finden den <a href=../pages/view.php?address=s1&amp;__LINKQUERY__>Zeitplan hier</a>." ; appears on top of the accessableLab.php page.
+showScheduleNote    = "Sie finden die <a href=\"../pages/accessibleLabs.php?__LINKQUERY__\">Modulbeschreibungen hier</a>."
+AccessibleLabsNote  = "Sie finden den <a href=../pages/view.php?address=s1&amp;__LINKQUERY__>Zeitplan hier</a>." ; appears on top of the accessibleLab.php page.
 
 ;; These note will appear on top of the export_import_lab page
 lExportImportNote   = "" ;- empty note -

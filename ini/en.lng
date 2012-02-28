@@ -58,8 +58,8 @@ iManageNote         = ""
 cManageNote         = "" 
 lManageNote         = ""
 sManageNote         = ""
-showScheduleNote    = "You can find the <a href=\"../pages/accessableLabs.php?__LINKQUERY__\">module descriptions here</a>."
-AccessableLabsNote  = "You can find the <a href=../pages/view.php?address=s1&amp;__LINKQUERY__>schedule here</a>." ; appears on top of the accessableLab.php page.
+showScheduleNote    = "You can find the <a href=\"../pages/accessibleLabs.php?__LINKQUERY__\">module descriptions here</a>."
+AccessibleLabsNote  = "You can find the <a href=../pages/view.php?address=s1&amp;__LINKQUERY__>schedule here</a>." ; appears on top of the accessibleLab.php page.
 
 ;; These note will appear on top of the export_import_lab page
 lExportImportNote   = "" ;- empty note -
@@ -239,7 +239,7 @@ toReOpenTheLab      = "to reOpen this lab..."
 toCloseTheLab       = "to close this lab... To become able to reOpen a lab you have to make a schedule first!"
 
 labCloseNote        = "If you click this button all your <b>answers will be closed</b>. You can not answer anymore but we can start to correct."
-prelabCheckNote     = "If you click this button all your <b>answers above will be corrected</b>. Only if all prelab questions are answered correctly (row turns green) by all teammates (or you had too much attempts) the lab will get accessable.<br />The total amount of answering attempts is: "
+prelabCheckNote     = "If you click this button all your <b>answers above will be corrected</b>. Only if all prelab questions are answered correctly (row turns green) by all teammates (or you had too much attempts) the lab will get accessible.<br />The total amount of answering attempts is: "
 prelabStatusNote    = "Below you find a list of all members that finished the prelab. The list is <b>ordered by</b> the <b>time</b> the user <b>finished</b> the prelab."
 
 uniqueIDnote        = "This Identifier is used when you export the lab. It must be unique for each lab as it is used to check the lab into the svn. It is a good idea to use a prefix for your institution followed by an ID for this ly like TUM-ILAB1-BASICS. Note: if you change this ID and export the module it will be exported under the new ID that has no relation to the old ID."

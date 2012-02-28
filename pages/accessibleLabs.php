@@ -21,10 +21,8 @@
 /**
 * Edit page for the main menu ini-file.
 *
-* @module     ../pages/accessableLabs.php
+* @module     ../pages/accessibleLabs.php
 * @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2011
-* @version    1.0
 */
 require( "../include/init.inc" );
 
@@ -34,9 +32,9 @@ $returnEpub = $url->available( 'ePub' );
 
   // head (create new)
      if ( !$returnEpub && $usr->isOfKind( IS_CONTENT_EDITOR ) ) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".
-           EB::mkLink(  $url->link2( '../pages/accessableLabs.php?ePub=ePub' ),
+           EB::mkLink(  $url->link2( '../pages/accessibleLabs.php?ePub=ePub' ),
                         "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" ).
-           EB::link2Url( '../pages/accessableLabs.php' )."</div>\n" );
+           EB::link2Url( '../pages/accessibleLabs.php' )."</div>\n" );
      if ($returnEpub){
        echo("initializing ePub<br>");
        //TODO: Call functions to tell ePub export that multiple labs come now.
@@ -47,15 +45,15 @@ $returnEpub = $url->available( 'ePub' );
      if (!$returnEpub){$pge->put( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );}
      
   // note
-     if ( !$returnEpub && $lng->get("AccessableLabsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("AccessableLabsNote")."</div>\n" ); 
+     if ( !$returnEpub && $lng->get("AccessibleLabsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("AccessibleLabsNote")."</div>\n" ); 
 
-     $accessableLabs = array();
+     $accessibleLabs = array();
      $alreadyAdded = array(); // for not adding dups...
   // Labs that are visible without a schedule
     //SELECT `idx` FROM `labs` WHERE `visible_before_first_sched`=1
     $lDBI->queryResult = $lDBI->myDBC->mkSelect( '*', $lDBI->myTable, "idx!=1 && `visible_before_first_sched`=1" );
     while( $nextElement=$lDBI->getNextData() ){
-      $accessableLabs[] = $nextElement;
+      $accessibleLabs[] = $nextElement;
       $alreadyAdded[] = $nextElement->idx;
     }
 
@@ -64,13 +62,13 @@ $returnEpub = $url->available( 'ePub' );
     $sDBI->queryResult = $sDBI->myDBC->mkSelect( 'num', $sDBI->myTable, 'idx!=1', '`start`', 'num' );
     while( $nextData=mysql_fetch_array($sDBI->queryResult) ){
       if (  !in_array( $nextData['num'], $alreadyAdded ) && ($nextLab = $lDBI->getData2idx( $nextData['num'] )) ) // do not add twice...
-        $accessableLabs[] = $nextLab;
+        $accessibleLabs[] = $nextLab;
     }
 
      $counter = 0;
      $charCounter = 97;
      if (!$returnEpub){$pge->put('<table align="center" width="80%" cellspacing="10">');}
-     foreach ( $accessableLabs as $value ){
+     foreach ( $accessibleLabs as $value ){
        if ($returnEpub){
          $extParagraph = (string)( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ );
          echo( $extParagraph.' '.$value->title.' ('.$value->elementId.$value->idx.')<br>');
