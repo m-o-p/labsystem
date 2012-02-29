@@ -82,6 +82,11 @@ foreach ( $mainMenuIni as $key => &$value ){ // Iteration over the menu entries.
   // Overview page
     $value[ $lng->get('MnuEntryCourseContent') ] = '../pages/accessibleLabs.php';
 
+  // Possibly preface
+    if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
+      array_push( $value, '!'.$cfg->get('prefaceID') );
+    }
+
   // Labs that are visible without a schedule
     //SELECT `idx` FROM `labs` WHERE `visible_before_first_sched`=1
     $lDBI->queryResult = $lDBI->myDBC->mkSelect( 'idx', $lDBI->myTable, "idx!=1 && `visible_before_first_sched`=1" );

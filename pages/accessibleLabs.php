@@ -31,24 +31,14 @@ $pge->title        = $cfg->get('SystemTitle').' '.$lng->get('MnuEntryCourseConte
 $returnEpub        = $url->available( 'ePub' );
 
 // head (create new)
-if ( !$returnEpub ) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".
+if ( !$returnEpub && $usr->isOfKind( IS_USER )) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".
+($usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::link2Url( '../pages/accessibleLabs.php' ) : '').
 EB::mkLink(  $url->link2( '../pages/accessibleLabs.php?ePub=ePub' ),
-                        "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" ).
-($usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::link2Url( '../pages/accessibleLabs.php' ) : '')."</div>\n" );
+                        "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" )
+."</div>\n" );
 if ($returnEpub){
   echo("initializing ePub<br>");
   //TODO: Call functions to tell ePub export that multiple labs come now.
-  if ($cfg->doesExist('prefaceID')){
-    $prefaceID = $cfg->get('prefaceID');
-    $id = $prefaceID{0}; $num = substr( $prefaceID, 1);
-    require( "../php/getDBIbyID.inc" ); /* -> $DBI */
-    if ( !$preface = $DBI->getData2idx( $num ) ){
-      trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
-      exit;
-    }
-    echo("Adding foreword page $num: ".$preface->title."<br>");
-    //TODO: Add forword to ePub: $preface->showEPub( $prefaceID, '' );
-  }
 }
 // title
 if (!$returnEpub){
@@ -81,6 +71,32 @@ $charCounter = 97;
 if (!$returnEpub){
   $pge->put('<table align="center" width="80%" cellspacing="10">');
 }
+
+// possibly preface
+if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
+  $prefaceID = $cfg->get('prefaceID');
+  $id = $prefaceID{0}; $num = substr( $prefaceID, 1);
+  require( "../php/getDBIbyID.inc" ); /* -> $DBI */
+  if ( !$preface = $DBI->getData2idx( $num ) ){
+    trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
+    exit;
+  }
+  if ($returnEpub){
+    echo("Adding foreword page $num: ".$preface->title."<br>");
+    //TODO: Add forword to ePub: $preface->showEPub( $prefaceID, '' );
+  }else{
+    $pge->put('
+    <tr>
+      <td width="75" class="labIndexNumber">
+      </td>
+      <td class="labIndexText">
+        <i><a href="../pages/view.php?address='.$prefaceID.'&amp;__LINKQUERY__" target="_top">'.$preface->title.'</a></i>
+        </td>
+      </tr>
+    ');
+  }
+}
+
 foreach ( $accessibleLabs as $value ){
   if ($returnEpub){
     $extParagraph = (string)( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ );
