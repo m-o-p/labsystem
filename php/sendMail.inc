@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -19,12 +19,10 @@
  */
 
 /**
-* Called by ../pages/mailform.php to send a mail.
+* Called via require by ../pages/mailform.php to send a mail.
 *
-* @module     ../php/sendMail.php
+* @module     ../php/sendMail.inc
 * @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
 *
 * @param $_POST['POSSIBLE_RECVR'] Index of the highest MAIL2 possible.
 * @param $_POST['MAIL2_?']        The mail receiver's address.
@@ -34,14 +32,13 @@
 * If you look at the code you will find out that the script mails to anyone in
 * $_POST['MAIL2_'.$i]. So you can indeed mail to anyone if you manipulate these
 * fields.
-* I think thats toleratable since your user accounts mailaddress, name and account name get added anyway 
+* I think thats toleratable since your user accounts mailaddress, name and account name get added anyway
 * and so you will probably be identified...
 */
-require( "../include/init.inc" );
 
-if ( !( isset($_POST['SESSION_ID']) && 
-          ($_POST['SESSION_ID'] != "") && 
-          ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */   
+if ( !( isset($_POST['SESSION_ID']) &&
+          ($_POST['SESSION_ID'] != "") &&
+          ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */
        ){
           trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
           exit;
@@ -57,7 +54,7 @@ function encodeMailconform( $text ){
                       array( 'ae', 'Ae', 'oe', 'Oe', 'ue', 'Ue', '3' ),
                       $text );
 }
-       
+
 // format '"'  NAME  '"'  ' '  '<'  ADDRESS  '>'
   $mailFrom = '"'.$usr->foreName.' '.$usr->surName.'" <'.$usr->mailAddress.'>';
 
@@ -65,9 +62,9 @@ $i = 0;
 
 $mailto = "";
 if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) )
-  while( ++$i <= $_POST['POSSIBLE_RECVR'] ) if ( isset( $_POST['MAIL2_'.$i] ) ) 
+  while( ++$i <= $_POST['POSSIBLE_RECVR'] ) if ( isset( $_POST['MAIL2_'.$i] ) )
     $mailto .= ", ".$_POST['MAIL2_'.$i];
-  
+
 $mailto = substr( $mailto, 2 );
 
 /* User gets a copy? */
@@ -81,7 +78,7 @@ $sendViaBCC = isset( $_POST['MAIL_VIA_BCC'] ) && $_POST['MAIL_VIA_BCC'] == '1';
 if ( $mailto == "" ) $url->put( "sysalert=".$lng->get("NoReceiver") );
 else{
     mail( encodeMailconform( ( $sendViaBCC ?  $mailFrom :  $mailto  ) ), // Bcc? -> mail to sender
-          encodeMailconform( '['.$cfg->get("SystemTitle").'] '.$_POST['SUBJECT'] ), 
+          encodeMailconform( '['.$cfg->get("SystemTitle").'] '.$_POST['SUBJECT'] ),
           encodeMailconform( str_replace( "\r\n", "\n", $_POST['MAILTEXT']).
                              eval( 'return "'.$cfg->get('mailFooter').'";' ) ). // complicated? Well have to process /r/n and so on...
                              "\r\n",
@@ -92,9 +89,7 @@ else{
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
 
     makeLogEntry( 'system', 'mail sent' );
-    
+
     $url->put( "sysinfo=".$lng->get("MailHasBeenSent")." ".$mailFrom );
 }
-
-header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
 ?>

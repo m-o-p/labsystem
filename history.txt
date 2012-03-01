@@ -65,7 +65,14 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
-2012-02-01
+2012-03-01
+-------------------
+  /pages/mailForm.php
+  /php/sendMail.php -> /php/sendMail.inc
+    Changed the mailForm so that it keeps the message content when sending.
+    This is very helpful when one wants to send information with slight changes to several users (like marks).
+
+2012-02-29
 -------------------
   /pages/accessableLabs.php
     Prepared the accessable labs for ePub creation.
