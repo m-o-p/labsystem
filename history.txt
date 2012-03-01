@@ -71,6 +71,7 @@ Feature Requests:
   /php/sendMail.php -> /php/sendMail.inc
     Changed the mailForm so that it keeps the message content when sending.
     This is very helpful when one wants to send information with slight changes to several users (like marks).
+    utf8 mailing is possible now allowing German Umlaute for instance.
 
 2012-02-29
 -------------------
