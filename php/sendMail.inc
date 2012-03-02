@@ -50,7 +50,7 @@ if ( !( isset($_POST['SESSION_ID']) &&
  * This could be improved...
  */
 function encodeMailconform( $text ){
-  return utf8_encode($text);
+  return utf8_encode(str_replace( array( "\r\n", '\r\n', '\r', '\n' ), "\r\n", $text) );
 }
 
 // format '"'  NAME  '"'  ' '  '<'  ADDRESS  '>'
@@ -77,12 +77,10 @@ if ( $mailto == "" ) $url->put( "sysalert=".$lng->get("NoReceiver") );
 else{
   mail( encodeMailconform( ( $sendViaBCC ?  $mailFrom :  $mailto  ) ), // Bcc? -> mail to sender
   encodeMailconform( '['.$cfg->get("SystemTitle").'] '.$_POST['SUBJECT'] ),
-  encodeMailconform( str_replace( "\r\n", "\n", $_POST['MAILTEXT']).
-  eval( 'return "'.$cfg->get('mailFooter').'";' ) ). // complicated? Well have to process /r/n and so on...
+  encodeMailconform( $_POST['MAILTEXT'].$cfg->get('mailFooter') ). // complicated? Well have to process /r/n and so on...
                              "\r\n",
                              "From: ".encodeMailconform( $mailFrom )."\r\n".
                              encodeMailconform( ( $sendViaBCC ?  'Bcc: '.$mailto :  'Cc: '.$myAddr4Copy  ) )."\r\n". // Bcc? -> receivers
-         "Content-type: text/html; charset=utf-8\r\n".
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
