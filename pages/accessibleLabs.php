@@ -39,6 +39,12 @@ EB::mkLink(  $url->link2( '../pages/accessibleLabs.php?ePub=ePub' ),
 if ($returnEpub){
   echo("initializing ePub<br>");
   //TODO: Call functions to tell ePub export that multiple labs come now.
+  if ($cfg->available('courseLogo') && ($cfg->get('courseLogo') != '')){
+    echo("Creating title page using this logo: "+"<img src=\"../"+$cfg->get('courseLogo')+"\" />");
+    echo("Rendering the title in using: http://php.net/manual/en/function.imagettftext.php");
+  } else {
+    echo("Not creating any special title page.");
+  }
 }
 // title
 if (!$returnEpub){
