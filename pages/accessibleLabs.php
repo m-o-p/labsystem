@@ -25,6 +25,7 @@
  * @author     Marc-Oliver Pahl
  */
 require( "../include/init.inc" );
+require_once(INCLUDE_DIR . '/../plugins/LSE/Exporter.php');
 
 $pge->matchingMenu = $lng->get('MnuEntryCourseContent');
 $pge->title        = $cfg->get('SystemTitle').' '.$lng->get('MnuEntryCourseContent');
@@ -37,13 +38,19 @@ EB::mkLink(  $url->link2( '../pages/accessibleLabs.php?ePub=ePub' ),
                         "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" )
 ."</div>\n" );
 if ($returnEpub){
-  echo("initializing ePub<br>");
+  // echo("initializing ePub<br>");
   //TODO: Call functions to tell ePub export that multiple labs come now.
-  if ($cfg->available('courseLogo') && ($cfg->get('courseLogo') != '')){
-    echo("Creating title page using this logo: "+"<img src=\"../"+$cfg->get('courseLogo')+"\" />");
-    echo("Rendering the title in using: http://php.net/manual/en/function.imagettftext.php");
-  } else {
-    echo("Not creating any special title page.");
+  $epubExporter = LSE_Exporter::getInstance();
+  $epubConfig = array(
+    'title'   => 'iLab2',
+    'authors' => 'Multiple Authors',
+    'lang'    => $lng->get('Content-Language'),
+    'isMultiChapterEnabled' => TRUE,
+  );
+  if ($cfg->available('courseLogo') && ($cfg->get('courseLogo') != '')) {
+    $epubConfig['coverImage'] = '../' . $cfg->get('courseLogo');
+    // echo("Creating title page using this logo: " . "<img src=\"../" . $cfg->get('courseLogo') . "\" />");
+    // echo("Rendering the title in using: http://php.net/manual/en/function.imagettftext.php");
   }
 }
 // title
@@ -88,8 +95,10 @@ if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
     exit;
   }
   if ($returnEpub){
-    echo("Adding foreword page $num: ".$preface->title."<br>");
+    // echo("Adding foreword page $num: ".$preface->title."<br>");
     //TODO: Add forword to ePub: $preface->showEPub( $prefaceID, '' );
+    //TODO: Fix how preface is rendered
+    $epubConfig['preface'] = $preface->show( $prefaceID );
   }else{
     $pge->put('
     <tr>
@@ -106,9 +115,10 @@ if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
 foreach ( $accessibleLabs as $value ){
   if ($returnEpub){
     $extParagraph = (string)( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ );
-    echo( $extParagraph.' '.$value->title.' ('.$value->elementId.$value->idx.')<br>');
+    // echo( $extParagraph.' '.$value->title.' ('.$value->elementId.$value->idx.')<br>');
     //echo( $value->showTOC( $value->elementId.$value->idx, $extParagraph ) );
-    // to be done: $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ) );
+    //TODO: $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ) );
+    $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ));
   }else{
     $pge->put('
 <tr>
@@ -130,6 +140,8 @@ if (!$returnEpub){
   require( $cfg->get("SystemPageLayoutFile") );
 }
 else{
-  echo("creating ePub");
+  $epubExporter->setOptions($epubConfig);
+  $epubExporter->render();
+  // echo("creating ePub");
 }
 ?>

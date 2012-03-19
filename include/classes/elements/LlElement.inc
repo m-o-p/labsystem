@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -25,8 +25,6 @@
 *
 * @module     ../include/classes/elements/LiElement.inc
 * @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
 */
 require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 
@@ -40,31 +38,31 @@ class LlElement extends Element{
 
   var $prelabCollectionIdx;   // Index of the prelab collection.
   var $labCollectionIdx;      // Index of the lab collection.
-  
+
   var $noPrelab;              // Is there a prelab? (idx != 1)
   var $noLab;                 // Is there a lab? (idx != 1)
-  
+
   var $visibleBefore1stSched; // Will the element be visible before the first schedule?
   var $visibleDuringSched;    // Will the element be visible while it is on schedule?
   var $visibleAfter1stSched;  // Will the element be visible after the first schedule?
-  
+
   var $usDBI;                 // UidStatusDataBaseInterface.
   var $preLabIsFinished;      // usDBI.Has the user finished the prelab?
   var $preLabAllTeamFinished; // usDBI.Have all Teammembers finished the prelab?
   var $labIsClosed;           // usDBI.Is the lab closed?
   var $labIsCorrected;        // usDBI.Is the lab corrected
-  
+
   var $isBefore1stSched;      // Is currently before 1st schedule.
   var $isInSched;             // Is currently inside a schedule.
   var $isAfter1stSched;       // Is currently after 1st schedule.
-    
+
   var $preLab;                // Instance of prelab collection.
   var $preLabIsVisible2Me;    // Is $prelab visible to me?
   var $lab;                   // Instance of lab collection.
   var $labIsVisible2Me;       // Is $lab visible to me?
-  
+
   var $userIsViewing;         // is a user or a corrector or example solution viewer watching?
-  
+
   /**
   * The constructor.
   *
@@ -82,14 +80,14 @@ class LlElement extends Element{
   * @param $visibleOnlyInCollection   Is the element visible only inside a collection.
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
-  */ 
+  */
   function LlElement( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
     global $CDBI, $usr, $sDBI, $cfg;
     $this->elementId                = "l";
-    
+
     $this->idx                      = $idx;
     $this->uniqueID                 = $uniqueID;
-    
+
     $this->title                    = $title;
     $this->authors                  = $authors;
     $this->comment                  = $comment;
@@ -105,40 +103,40 @@ class LlElement extends Element{
     // no prelab or no lab?
     $this->noPrelab                 = ($this->prelabCollectionIdx == 1);
     $this->noLab                    = ($this->labCollectionIdx == 1);
-        
+
     // data from status database $usDBI
     $this->usDBI                    = new LlDBInterfaceUidStatus( $this->idx );
 
-    if ( $usr->isSeeingSomeonesData() && 
+    if ( $usr->isSeeingSomeonesData() &&
          ( $usr->theSeeingUid() != "all" ) ) $permissions = $this->usDBI->getData4( $usr->theSeeingUid() ); // load user's data
                                         else $permissions = $this->usDBI->getData4( $usr->uid ); // own data
-                                        
+
     $this->preLabIsFinished         = $permissions['preLabFinished'];
     $this->preLabAllTeammFinished   = $permissions['preLabAllTeammFinished'];
     $this->labIsClosed              = $permissions['labClosed'];
     $this->labIsCorrected           = $permissions['labCorrected'];
-    
+
     $this->userIsViewing            = !($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ); // is a user viewing or a corrector or example solution viewer watching?
 
     if ($this->noPrelab && !$this->preLabIsFinished && $this->userIsViewing) $this->createPrelabFinishedStatus( $usr->currentTeam );
     if ($this->noPrelab) $this->preLabIsFinished = $this->preLabAllTeammFinished = true;
-    
+
     // get current schedule information
     $scheduleData = LsElement::getVisibility( "l", $this->idx );
     $this->isBefore1stSched = $scheduleData["isBefore1stSched"];
     $this->isInSched        = $scheduleData["isInSched"];
     $this->isAfter1stSched  = $scheduleData["isAfter1stSched"];
-    
+
     $visiblePerSchedule             = LsElement::visiblePerSchedule( "l", $this->idx, $this->visibleBefore1stSched, $this->visibleDuringSched, $this->visibleAfter1stSched );
-    
+
     if ( $visiblePerSchedule || !$this->userIsViewing ){
       $this->preLab                   = $CDBI->getData2idx( $this->prelabCollectionIdx, true, true );
       $this->preLabIsVisible2Me       = $this->preLab && $this->preLab->isVisible() && !$this->noPrelab;
-      if ( $this->userIsViewing && 
+      if ( $this->userIsViewing &&
           !$this->preLabIsVisible2Me &&
           !$this->preLabAllTeammFinished ) $this->lab = false; // not visible
                                       else $this->lab = $CDBI->getData2idx( $this->labCollectionIdx, true, true );
-        
+
       $this->labIsVisible2Me          = ( $this->preLabAllTeammFinished || // normal user's chance
                                           !$this->userIsViewing
                                          ) && $this->lab && $this->lab->isVisible() && !$this->noLab;
@@ -152,24 +150,24 @@ class LlElement extends Element{
            $this->isAfter1stSched && !$this->isInSched &&
            ($permissions['currentTeam'] != '') // is there a record for this lab?
           ) $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
-          
+
     }else{ // time consuming loading is not necessary since it is not visible anyway...
       $this->preLab                   = false;
       $this->preLabIsVisible2Me       = false;
       $this->lab                      = false;
       $this->labIsVisible2Me          = false;
     }
-    
+
     $this->IamVisible               = $usr->isOfKind( IS_USER ) && // makes no sense for not logged in users!
                                       ( $this->preLabIsVisible2Me || $this->labIsVisible2Me ) && // is anything visible?
                                       ( !$this->userIsViewing || $visiblePerSchedule ) &&  // is it visible by a schedule?
                                       ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) ); // in collection restriction fulfilled?
     $this->serializationArray       = array( 'idx', 'uniqueID', 'title', 'authors', 'comment', 'prelabCollectionIdx', 'labCollectionIdx', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'visibleOnlyInCollection', 'history' );  // see Element.inc for details
   }
-  
+
 // The next functions are used for the element's view page. *************************************************
 
-// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - - 
+// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - -
   /**
   * Shows the lab's TableOfContents.
   *
@@ -190,7 +188,7 @@ class LlElement extends Element{
     if ( $this->labIsVisible2Me ) $myRet .= $this->lab->show( $fullAddress.".C".$this->labCollectionIdx, ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
     return $myRet;
   }
-  
+
   /**
   * Displays all multiple choice questions of the prelab and (if not done) the check button.
   *
@@ -209,13 +207,13 @@ class LlElement extends Element{
                     "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n". // to check whether the call is valid
                     "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
                     "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
-                     "value=\"".$lng->get("checkPrelab")."\">\n".  
+                     "value=\"".$lng->get("checkPrelab")."\">\n".
                     "</FORM>\n".
                     ( $lng->get("prelabCheckNote") != "" ? "<div class=\"labsys_mop_note\">\n".$lng->get("prelabCheckNote").$cfg->get("MCAnsweringAttempts")."</div>\n" : '');
 
     return $myRetVal;
   }
-  
+
   /**
   * Displays all inputs of the lab and (if not closed) the check button.
   *
@@ -226,11 +224,11 @@ class LlElement extends Element{
   */
   function showAllLabInputs( $fullAddress, $extParagraph="" ){
     global $lng, $pge, $url, $cfg, $usr;
-    
+
     $observedUID = $usr->uid;
     if ( $usr->isSeeingSomeonesData() && ( $usr->theSeeingUid() != "all" ) )
       $observedUID = $usr->theSeeingUid();
-       
+
     $myRetVal  = "";
     if ( $this->labIsClosed ) $myRetVal .= $this->labStatusUID( $observedUID )."<div>&nbsp;</div>\n";
 
@@ -243,15 +241,15 @@ class LlElement extends Element{
                     "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".   // to check whether the call is valid
                     "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
                     "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
-                           "value=\"".$lng->get("closeLab")."\">\n".  
+                           "value=\"".$lng->get("closeLab")."\">\n".
                     "</FORM>\n".
                     ( $lng->get("labCloseNote")!="" ? "<div class=\"labsys_mop_note\">\n".$lng->get("labCloseNote")."</div>\n" : '');
 
-   // The following is a slightly modified ( add amount of questions and their possibleCredits) of LcElement::showAllElementsOfType();   
-    $parameter = Array( 'addr' => $fullAddress.".C".$this->labCollectionIdx, 
-                        'paragraph' => $extParagraph, 
-                        'myRetVal' => '', 
-                        'count' => 0, 
+   // The following is a slightly modified ( add amount of questions and their possibleCredits) of LcElement::showAllElementsOfType();
+    $parameter = Array( 'addr' => $fullAddress.".C".$this->labCollectionIdx,
+                        'paragraph' => $extParagraph,
+                        'myRetVal' => '',
+                        'count' => 0,
                         'sumPossibleCredits' => 0,
                         'alreadyInSum' => Array() ); // some inputs might be more than one time inside the collection...
                                                      // p.e. I use an input for data that are reshown on a later page for comparison
@@ -269,32 +267,32 @@ class LlElement extends Element{
     }elseif ( (\$element->elementId == 'c') || (\$element->elementId == 'C') ){
       // recursion
       \$newParam = Array( 'addr' => \$elementAddr,
-                          'paragraph' => \$elParagraph, 
-                          'myRetVal' => '', 
-                          'count' => 0, 
+                          'paragraph' => \$elParagraph,
+                          'myRetVal' => '',
+                          'count' => 0,
                           'sumPossibleCredits' => 0,
                           'alreadyInSum' => \$parameter['alreadyInSum'] ); // no double count
       \$element->extMap( \$functionCode, \$newParam );
       \$parameter['alreadyInSum'] = \$newParam['alreadyInSum'];
       \$parameter['count'] += \$newParam['count'];
       \$parameter['sumPossibleCredits'] += \$newParam['sumPossibleCredits'];
-      if ( \$newParam['myRetVal'] != '' ) 
+      if ( \$newParam['myRetVal'] != '' )
         \$parameter['myRetVal'] .=  \"<div class=\\\"labsys_mop_contentArea\\\">\\n\".
                                     // header inclusive link to the enclosing element (this)
                                     '<div class=\"labsys_mop_h2\">'.( \$elParagraph != '' ?  \$elParagraph.'. '  : '' ).\$element->title.' '.EB::link2Element( \$elementAddr ).\"</div>\\n\".
                                     \"</div>\\n\".
                                     \$newParam['myRetVal'];
     }";
-    
+
     $this->lab->extMap( $functionCode, $parameter );
-    
+
     return "<div class=\"labsys_mop_l_all_inputs_stats\">\n".
            "[".$parameter['count']." ".$lng->get("inputs")."; ".$parameter['sumPossibleCredits']." ".$lng->get("Credits")."]".
            "</div>\n".
            $myRetVal.
            $parameter['myRetVal'];
   }
-  
+
   /**
   * Returns the html representation of the lab all user's status table.
   *
@@ -304,14 +302,14 @@ class LlElement extends Element{
   */
   function labStatusTable( $orderBy="" ){
     global $pge, $lng, $usr;
-    
+
     $sortArray = $this->usDBI->sortableByArray();
     require( "../pages/sorter.inc" ); // -> $asc, $orderBy
     $this->usDBI->getAllData( $orderBy, $asc );
-    
+
     return $sorter.$this->showTableResults( $this->labIsCorrected || $usr->isOfKind( IS_CORRECTOR ) );
   }
-  
+
   /**
   * Returns the html representation of one user's status table (row) for this lab.
   *
@@ -324,7 +322,7 @@ class LlElement extends Element{
 
     return $this->showTableResults();
   }
-  
+
   /**
   * Returns the html representation of one user's status table for ALL labs.
   *
@@ -335,10 +333,10 @@ class LlElement extends Element{
   */
   function labStatusUIDALLLabs( $uid, $compact=false ){
     $this->usDBI->getAllUidDataALLLabs( $uid );
-    
+
     return $this->showTableResults( true, $compact );
   }
-   
+
   /**
   * Called by showTableResults to show the percentage bar below the percent in the last row.
   * The percentage is shown via bar length and color
@@ -351,7 +349,7 @@ class LlElement extends Element{
   */
   function percentBar( $percentage, $percentageFailed ){
     // $p2 = $percentage - $percentageFailed mapped on [0..1] for coloring.
-    // The color varies from #ff0000 ( $p2 =   0% ) (red) 
+    // The color varies from #ff0000 ( $p2 =   0% ) (red)
     //                  over #ffff99 ( $p2 =  50% ) (yellow)
     //                    to #00ff00 ( $p2 = 100% ) (green)
     $p2 = ( $percentage - $percentageFailed )/
@@ -366,14 +364,14 @@ class LlElement extends Element{
       $moveRed   = $move-256;
       $moveGreen = 255;
     }
-    
+
     $color = substr( '0'.dechex( 255-$moveRed ), -2 ).substr( '0'.dechex( $moveGreen ), -2 ).'00';
-    
+
     return "<div class=\"labsys_mop_l_status_percentBarDiv\">".
            "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; width: ".round($percentage*100)."%\"></img>".
            "</div>\n";
   }
-  
+
   /**
   * Called by the methods above. Creates the table based on the last $this->usDBI->getAllData query.
   *
@@ -384,9 +382,9 @@ class LlElement extends Element{
   */
   function showTableResults( $showSummation=false, $onlySummation=false ){
     global $usr, $lng, $url, $pge, $cfg, $lDBI;
-    
+
    // The different learning units might are given only by index.
-   // So for the human being I put the name (besides the index that 
+   // So for the human being I put the name (besides the index that
    // appears at the link (first row #)).
    // Since it has to be queried from the DB I cache the values for
    // later use (on demand not precaching for performance).
@@ -394,15 +392,15 @@ class LlElement extends Element{
    // The additional row will only be displayed for new labs.
     $lastLabIndex = -1;
 
-   // to output one's name only once (summary page) 
+   // to output one's name only once (summary page)
     $previousMembersname = "";
-    
+
     if ($onlySummation) $showSummation=true;
-    
+
     $myRetVal  = "";
     if ( $lng->get("labStatusNote") != "" )
       $myRetVal .= "<div class=\"labsys_mop_note\">\n".$lng->get("labStatusNote")."</div>\n";
-   
+
    // 8 rows; if changed change below at the lab's name row!
     $myRetVal .= "<table class=\"labsys_mop_l_status_table\">\n".
                  "<tr class=\"labsys_mop_l_status_table_row_light\">".
@@ -415,41 +413,41 @@ class LlElement extends Element{
                      "<td class=\"labsys_mop_l_status_table_cell_lab_corr\"></td>".
                      "<td class=\"labsys_mop_l_status_table_cell_lab_credits\"><i>i</i>-".$lng->get( 'Credits' )."</td>".
                  "</tr>";
-    
+
     if ( $usr->isOfKind(IS_USER_RIGHTS_EDITOR) ) // user->team mapping possible
       require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
     $i = 0;
    // If $showSummation is set the credits are summed up and a row is added at the table's bottom with that summary.
     if ( $showSummation ){
-      $sumGivenCreditsPreLab = 0; 
+      $sumGivenCreditsPreLab = 0;
       $sumPossibleCreditsPreLab = 0;
       $summandsPreLab = 0;
-      
-      $sumGivenCreditsLab = 0; 
+
+      $sumGivenCreditsLab = 0;
       $sumPossibleCreditsLab = 0;
       $summandsLab = 0;
     }
-    
-    
+
+
     while( $labStatus = $this->usDBI->getNextData() ){
       if ( $showSummation ){
         if ( $labStatus['preLabFinished'] &&
              ($labStatus['preLabPossibleCredits'] > 0)
             ){
-                              $sumGivenCreditsPreLab += $labStatus['preLabGivenCredits']; 
+                              $sumGivenCreditsPreLab += $labStatus['preLabGivenCredits'];
                               $sumPossibleCreditsPreLab += $labStatus['preLabPossibleCredits'];
                               $summandsPreLab++;
         }
         if ( $labStatus['labCorrected'] &&
              ($labStatus['labPossibleCredits'] > 0)
             ){
-                              $sumGivenCreditsLab += $labStatus['labGivenCredits']; 
+                              $sumGivenCreditsLab += $labStatus['labGivenCredits'];
                               $sumPossibleCreditsLab += $labStatus['labPossibleCredits'];
                               $summandsLab++;
               }
         }
-      
+
       if (!$onlySummation){ // onlyShowSummation
        // Get lab's human readible name:
         $labName = '';
@@ -462,9 +460,9 @@ class LlElement extends Element{
           }
             $labName = '<span class="labsys_mop_grayed"> &nbsp;'.$labNameCache[ $labStatus['lIdx'] ].'</span>';
         }
-        
+
         $userData = $usr->getUserInformation( $labStatus['uid'] );
-        
+
         $myRetVal .= "<tr class=\"labsys_mop_l_status_table_row_".( ++$i%2 == 0 ?  "light" :  "dark"  )."\">".
                      "<td class=\"labsys_mop_l_status_table_cell_number\">".
                         '<a href="'.$url->link2( '../pages/view.php?address=l'.$labStatus['lIdx'] ).'">'.$i.'</a>'.
@@ -493,7 +491,7 @@ class LlElement extends Element{
                      $labName."\n";
 
         $previousMembersname = $userData["name"].", ".$userData["foreName"]; // to output one's name only once (summary page)
-        
+
        // show which are corrected
         if ( $labStatus['labClosed'] && !$labStatus['labCorrected'] && ($labStatus['whichCorrected'] != "") &&
              ( ($labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR ) )
@@ -507,12 +505,12 @@ class LlElement extends Element{
           }
           $myRetVal .= "</div>\n";
         }
-  
+
         $myRetVal .= "</td>".
-                     
+
                   // prelab credits and percentage bar
                      "<td class=\"labsys_mop_l_status_table_cell_lab_prelab_credits\">";
-                      if (  ( ($labStatus['preLabFinished'] && $labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR) ) && 
+                      if (  ( ($labStatus['preLabFinished'] && $labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR) ) &&
                             $labStatus['preLabPossibleCredits'] > 0
                            ){
                               $percentage = $labStatus['preLabGivenCredits']/$labStatus['preLabPossibleCredits'];
@@ -528,30 +526,30 @@ class LlElement extends Element{
                      ( $labStatus['preLabAllTeammFinished'] ?  "yes" :  "no"  ).
                      "_15x12.gif\" border=\"0\" title=\"".$lng->get("exAllowedToAnswer")."\">".
                      "</td>".
-                     
+
                      "<td class=\"labsys_mop_l_status_table_cell_lab_closed\">".
                   // reopen lab
-                     ( $open = ($usr->isOfKind( IS_CORRECTOR ) && 
+                     ( $open = ($usr->isOfKind( IS_CORRECTOR ) &&
                                          ( $labStatus['lIdx'] == $this->idx ) && // functionality only available for the current lab
-                                         $labStatus['labClosed'] && 
+                                         $labStatus['labClosed'] &&
                                          $this->isInSched
                                         ) ?
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reOpenAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">" 
+                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reOpenAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
                                         : '' ).
                   // close lab
-                     ( !$open && ($open = ($usr->isOfKind( IS_CORRECTOR ) && 
+                     ( !$open && ($open = ($usr->isOfKind( IS_CORRECTOR ) &&
                                                     ( $labStatus['lIdx'] == $this->idx ) && // functionality only available for the current lab
-                                                    !$labStatus['labClosed'] /* && 
+                                                    !$labStatus['labClosed'] /* &&
                                                     !$this->isInSched always allow closing */)
                                                    ) ?
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=closeAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">" 
+                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=closeAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
                                                    : '' ).
                      " <img src=\"../syspix/button_lock_".
                      ( $labStatus['labClosed'] ?  "closed" :  "open"  ).
                      "_13x12.gif\" border=\"0\" title=\"".$lng->get("exLabClosed")."\">".
                      ( $open ? "</a>" : '' ).
                      "</td>".
-                     
+
                   // is corrected?
                      "<td class=\"labsys_mop_l_status_table_cell_lab_corr\">".
                      " <img src=\"../syspix/labCorrected_".
@@ -562,15 +560,15 @@ class LlElement extends Element{
                   // credits and percentage bar
                      "<td class=\"labsys_mop_l_status_table_cell_lab_credits\">";
 
-                     if ( ( ($labStatus['labCorrected'] && $labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR) ) && 
-                          $labStatus['labPossibleCredits'] != 0 
-                         ){ 
+                     if ( ( ($labStatus['labCorrected'] && $labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR) ) &&
+                          $labStatus['labPossibleCredits'] != 0
+                         ){
                             $percentage = $labStatus['labGivenCredits']/$labStatus['labPossibleCredits'];
                             $myRetVal .= round($percentage*100, 0)."%\n".
                                          $this->percentBar( $percentage, $cfg->get("percentageFailedLab") ).
                                          '<span class="labsys_mop_grayed">'.$labStatus['labGivenCredits']."/ ".$labStatus['labPossibleCredits']."</span>\n";
                           }
-                          
+
                      $myRetVal .= "</td></tr>";
      } // /onlyShowSummation
      else $usersTeam = $labStatus['currentTeam'];
@@ -580,21 +578,21 @@ class LlElement extends Element{
       $myRetVal .=  "<tr class=\"labsys_mop_l_status_table_row_summary\">".
                      "<td class=\"labsys_mop_l_status_table_cell_number\"></td>".
                      "<td class=\"labsys_mop_l_status_table_cell_team\">";
-      if ( $onlySummation && isset( $usersTeam ) ) $myRetVal .= $usersTeam; 
+      if ( $onlySummation && isset( $usersTeam ) ) $myRetVal .= $usersTeam;
 /* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( ( isset($usersTeam) ? $usersTeam : '' )."\t" );
       $myRetVal .=  "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_name\">";
-                     
+
     // add entry to correct all users
-    if( $usr->isOfKind( IS_CORRECTOR ) && 
+    if( $usr->isOfKind( IS_CORRECTOR ) &&
         ( !$usr->isSeeingSomeonesData() || ( $usr->theSeeingUid() != "all" ) ) )
       $myRetVal .=      "<a href=\"".$url->link2("../php/executeOnLab.php?address=l".$this->idx."&function=setSeeingUID&param=".urlencode( '"all"' )."&redirectTo=".urlencode($_SERVER['REQUEST_URI']))."\">". //urlencode("../pages/view.php?address=l".$this->idx.".labStatus")
                         $lng->get("showAllUsersAnswers").
                         "</a>";
-                        
+
       $myRetVal .=   "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_lab_prelab_credits\">";
-      if ( isset( $sumPossibleCreditsPreLab ) && 
+      if ( isset( $sumPossibleCreditsPreLab ) &&
            ($sumPossibleCreditsPreLab > 0) &&
            ( ($summandsPreLab > 3) || $onlySummation ) // otherwise you see the points of one user...
           ){
@@ -612,7 +610,7 @@ class LlElement extends Element{
                      "<td class=\"labsys_mop_l_status_table_cell_lab_closed\"></td>".
                      "<td class=\"labsys_mop_l_status_table_cell_lab_corr\"></td>".
                      "<td class=\"labsys_mop_l_status_table_cell_lab_credits\">";
-      if ( isset( $sumPossibleCreditsLab ) && 
+      if ( isset( $sumPossibleCreditsLab ) &&
            ($sumPossibleCreditsLab > 0) &&
            ( ($summandsLab > 3) || $onlySummation ) // otherwise you see the points of one user...
           ){
@@ -628,12 +626,12 @@ class LlElement extends Element{
 
       $myRetVal .=   "</td></tr>\n";
     }
-    
+
     $myRetVal .= "</table>\n";
 
     return $myRetVal;
   }
-  
+
   /**
   * Returns the legend to the TableResults.
   *
@@ -656,7 +654,7 @@ class LlElement extends Element{
                      ( $this->isInSched ?  $lng->get("toReOpenTheLab") :  $lng->get("toCloseTheLab" ) ).
                    "</div>\n";
     }
-    
+
    // explain user->team mapping possible
     if ( $usr->isOfKind(IS_USER_RIGHTS_EDITOR) ){
         $myRetVal .= "<div class=\"labsys_mop_note\">\n".
@@ -664,24 +662,24 @@ class LlElement extends Element{
                        $lng->get("reMapIconExplain").
                      "</div>\n";
     }
-                      
+
    // Legend
     $myRetVal .= "<h4>".$lng->get("legend")."</h4>\n".
-    
+
                  "<div class=\"labsys_mop_note\">\n".
                  "<img src=\"../syspix/prelabFin_no_15x12.gif\" border=\"0\" title=\"".$lng->get("exAllowedToAnswer")."\">: ".
                  $lng->get("prelabAllnoFExplain")."<br>\n".
                  "<img src=\"../syspix/prelabFin_yes_15x12.gif\" border=\"0\" title=\"".$lng->get("exAllowedToAnswer")."\">: ".
                  $lng->get("prelabAllFinExplain")."<br>\n".
                  "</div>\n".
-                 
+
                  "<div class=\"labsys_mop_note\">\n".
                  "<img src=\"../syspix/button_lock_open_13x12.gif\" border=\"0\" title=\"".$lng->get("exLabClosed")."\">: ".
                  $lng->get("labOpenExplain")."<br>\n".
                  "<img src=\"../syspix/button_lock_closed_13x12.gif\" border=\"0\" title=\"".$lng->get("exLabClosed")."\">: ".
                  $lng->get("labClosedExplain")."<br>\n".
                  "</div>\n".
-                 
+
                  "<div class=\"labsys_mop_note\">\n".
                  "<img src=\"../syspix/labCorrected_no_12x12.gif\" border=\"0\" title=\"".$lng->get("exLabCorrected")."\">: ".
                  $lng->get("labNoCorrExplain")."<br>\n".
@@ -691,7 +689,7 @@ class LlElement extends Element{
 
     return $myRetVal;
   }
-  
+
   /**
   * Produces the ePub version of the lab.
   * Called via show?address="l[idx].ePub"
@@ -712,7 +710,7 @@ class LlElement extends Element{
     include_once( $pluginFile );
     */
     // The meta information of the ePub.
-    
+
     // The title page.
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('l', $fullAddress, '', array(
@@ -725,7 +723,7 @@ class LlElement extends Element{
         // 'userStyleSheetPath' => $cfg->get("UserStyleSheet")
     // Problem: user's might not write proper epub styles... thus better ignore
     ));
-    
+
     /*
     echo('ePub to '.
           '[l-Element '.$fullAddress.'] Title: '.$this->title.'<br>'.
@@ -745,13 +743,13 @@ class LlElement extends Element{
     // echo( '<hr><hr>lab<hr><hr><br>' );
     if ( $this->labIsVisible2Me )
       $this->lab->show( $fullAddress.".C".$this->labCollectionIdx.".epub", ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
-    
+
     $epubExporter->render();
 //    var_dump(htmlentities($epubExporter->render()));
     // var_dump($epubExporter->render());
     exit;
   }
-  
+
   /**
   * Shows the members lab status.
   *
@@ -762,21 +760,21 @@ class LlElement extends Element{
 
     // The status table
     $myRetVal = $this->labStatusTable( "" );
-    
+
     // link to all lab's status
     $myRetVal .= "<div class=\"labsys_mop_note\">".
                  "<a href=\"".$url->link2( "../pages/view.php?address=l".$this->idx.".ALLlabStatus" )."\">".$lng->get("statusOfAllLabs")."</a>".
                  "</div>";
-                 
-    
+
+
    // if seeing someone "stop seeing" button
-    if( $usr->isSeeingSomeonesData() ) 
+    if( $usr->isSeeingSomeonesData() )
       $myRetVal .=  "<div class=\"labsys_mop_button_fullwidth\">\n".
                     "<a href=\"".$url->link2("../php/executeOnLab.php?address=l".$this->idx."&function=setSeeingUID&param=".urlencode( '""' )."&redirectTo=".urlencode("../pages/view.php?address=l".$this->idx.".labStatus"))."\">".
                     $lng->get("stopSeeingData").
                     "</a>".
                     "</div>\n";
-   
+
    // update/ reCalculate button
     if ( $usr->isOfKind( IS_CORRECTOR ) )
       $myRetVal .= "<FORM class=\"labsys_mop_std_form\" NAME=\"reFresh\" METHOD=\"POST\" ACTION=\"".
@@ -786,17 +784,17 @@ class LlElement extends Element{
                       "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
                       "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"updateStatus()\">\n".
-                      "<input tabindex=\"".$pge->nextTab++."\" 
-                               type=\"submit\" 
-                               class=\"labsys_mop_button_fullwidth\" 
-                               value=\"".$lng->get("updateStatus")."\">\n".  
+                      "<input tabindex=\"".$pge->nextTab++."\"
+                               type=\"submit\"
+                               class=\"labsys_mop_button_fullwidth\"
+                               value=\"".$lng->get("updateStatus")."\">\n".
                       "</FORM>\n";
-                      
+
     $myRetVal .= $this->getTableResultsLegend();
-                      
+
     return $myRetVal;
   }
-  
+
   /**
   * Shows the members lab status.
   *
@@ -807,18 +805,18 @@ class LlElement extends Element{
     global $lng, $pge, $usr, $cfg, $url;
 
     $myRetVal = "";
-    
+
    // additional note
     if ( $lng->get("NoteStatusALLLabs") != "" )
       $myRetVal .= "<div class=\"labsys_mop_note\">\n".$lng->get("NoteStatusALLLabs")."</div>\n";
-      
+
    // link to switch mode to compact (no detailed points of each labs).
     $myRetVal .= "<div class=\"labsys_mop_note\">\n".
                  '<a href="'.$url->link2( '../pages/view.php?address=l'.$this->idx.'.ALLlabStatus'.( !$compact ?  'Compact' : '' ) ).'">'.
                  $lng->get('SwitchTo').' '.( $compact ?  $lng->get('StandardView') :  $lng->get('CompactView' ) ).
                  '</a>'.( $compact && $usr->isSeeingSomeonesData() && ($usr->theSeeingUid() == 'all') ? ' | <a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address').'&exportCSV=true' ).'">exportCSV.txt</a>' : '' ).
                  "</div>\n";
-      
+
     $observedUID = $usr->uid;
     if ( $usr->isSeeingSomeonesData() ) $observedUID = $usr->theSeeingUid();
 
@@ -844,18 +842,18 @@ class LlElement extends Element{
 
               /* sorting */ require( "../pages/sorter.inc" );
                             $myRetVal .= $sorter;
-            
+
               /* Since the data have two sources, the external users and the internal user rights db
                  we have to distinguish! */
-              if ( ( $orderBy == $cfg->get("UserDBField_name") ) || 
-                   ( $orderBy == $cfg->get("UserDBField_forename") ) || 
+              if ( ( $orderBy == $cfg->get("UserDBField_name") ) ||
+                   ( $orderBy == $cfg->get("UserDBField_forename") ) ||
                    ( $orderBy == $cfg->get("UserDBField_username") ) ){
                       /* $uDBI is the source */
-                      $uidDBI = new DBInterfaceUser(); 
+                      $uidDBI = new DBInterfaceUser();
                       $hasName = true;
               }else{
                       /* $urDBI is source */
-                      $uidDBI = new DBInterfaceUserRights();  
+                      $uidDBI = new DBInterfaceUserRights();
                       $hasName = false;
               }
 
@@ -872,14 +870,14 @@ class LlElement extends Element{
                 $myRetVal .= $this->labStatusUIDALLLabs( $userData["uid"], $compact )."<div>&nbsp;</div>\n";
               }
     }
-    
+
     $myRetVal .= $this->getTableResultsLegend();
 /* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) exit;
     return $myRetVal;
   }
 
-// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-  
+// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   /**
   * Returns the element's HTML-representation in the way the VIEWER should see it.
   *
@@ -888,10 +886,10 @@ class LlElement extends Element{
   * @param $extParagraph    The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   *
   * @return string          The html code of the element's view view.
-  */ 
+  */
   function show( $fullAddress, $extParagraph="" ){
     global $usr, $lng, $pge, $url, $cfg;
-    if (  !$this->isVisible() && 
+    if (  !$this->isVisible() &&
           !(substr($fullAddress, strrpos($fullAddress, '.')+1, strrpos($fullAddress, '.')+13) == 'ALLlabStatus') // the Labstatus should always be visible
          ){ /* not enough rights->no content */
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
@@ -907,7 +905,7 @@ class LlElement extends Element{
     if ( count( $myAddrArray ) > 1 ) $scndLast  = $myAddrArray[ count( $myAddrArray )-2 ]; else $scndLast = "";
 
     $myRetVal = "";
-    
+
    // index
     if     ( $last == "" )   $myRetVal .= $this->showTOC( $parentAddr.$me, $extParagraph );
    // ePub
@@ -934,7 +932,7 @@ class LlElement extends Element{
              $scndLast == $me ) {
                                               $myRetVal .= $this->showStatusALLLabs();
                                               $this->title = $lng->get('MnuEntryMyStatistics');
-                                              
+
                                  }
    // ALL lab's status compact
     elseif ( $last == "ALLlabStatusCompact" &&
@@ -944,7 +942,7 @@ class LlElement extends Element{
                                  }
    // all visible contents of the lab on one page
     elseif ( $last == "all" &&
-             $scndLast == $me ){          
+             $scndLast == $me ){
                                               $myRetVal .= "<!-- start of collection entity --><div class=\"labsys_mop_c_inner_coll_entity\">\n".
                                                            $this->showTOC( $parentAddr.$me, $extParagraph ).
                                                            "<!-- stop of collection entity --></div>\n";
@@ -954,25 +952,25 @@ class LlElement extends Element{
                                               $myRetVal .= $this->lab->show( $parentAddr.$me.".C".$this->labCollectionIdx.".all", ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
                                             $_GET['address'] = $parentAddr.$me;
                               }
-                                              
+
    // preLab
-    elseif ( $this->preLabIsVisible2Me && 
-             ($first == "C".$this->prelabCollectionIdx) ) 
+    elseif ( $this->preLabIsVisible2Me &&
+             ($first == "C".$this->prelabCollectionIdx) )
                                               $myRetVal .= $this->preLab->show( $fullAddress, ( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
-   // lab                                  
-    elseif ( $this->labIsVisible2Me && 
-             ($first == "C".$this->labCollectionIdx) ) 
+   // lab
+    elseif ( $this->labIsVisible2Me &&
+             ($first == "C".$this->labCollectionIdx) )
                                               $myRetVal .= $this->lab->show( $fullAddress, ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab") :  $extParagraph  ) );
-                                              
+
     else { return "l".$this->idx.": ".$lng->get("elNotFoundVisible")." (".$fullAddress.") "; exit; }
-        
+
     return EM::viewTopLab( $this, $parentAddr.$me ).
            "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>\n".
            ( ($this->authors != '') ? '<div class="labsys_mop_l_authors">'.returnHTML($this->authors).'</div>' : '' ).
            $myRetVal.
            EM::viewBottomLab( $this, $parentAddr.$me );
   }
-  
+
   /**
   * Shows the lab's Menu.
   *
@@ -983,22 +981,22 @@ class LlElement extends Element{
   * @param $unfold            Should the submenu-entries be visible or just the title-row?
   *
   * @return                   The html code of the menu.
-  * 
+  *
   * This function is non-recursive.
   */
   function getMenu( $linkFullAddress, &$menu2Populate, $prefix="", $unfold=false ){
     global $lng, $url;
-    
+
     if (!$this->isVisible()) return;
-    
+
     $fullAddress = $url->get('address'); // to determine if active
-    
+
     // lab's menu entry
     if ( !$unfold )
       $ret = $menu2Populate->entry( $prefix.$this->getMatchingMenu(), "../pages/view.php?address=".$linkFullAddress, ($linkFullAddress == $fullAddress) );
     else{
       $ret = $menu2Populate->startSubmenu( $prefix.$this->getMatchingMenu(), "../pages/view.php?address=".$linkFullAddress, ($linkFullAddress == $fullAddress) );
-    
+
    // Address splitting.
     $parentAddr = $fullAddress;
     $this->splitAddress( $parentAddr, $myAddrArray );
@@ -1006,15 +1004,15 @@ class LlElement extends Element{
     if ( count( $myAddrArray ) > 1 ) $first     = $myAddrArray[1]; else $first = "";
     if ( count( $myAddrArray ) > 1 ) $last      = $myAddrArray[ count( $myAddrArray )-1 ]; else $last = "";
     if ( count( $myAddrArray ) > 1 ) $scndLast  = $myAddrArray[ count( $myAddrArray )-2 ]; else $scndLast = "";
-     
+
      // prelab's menu
       if ($this->preLabIsVisible2Me){
         // Is the menu active and should unfold?
         $unfold = ($first == "C".$this->prelabCollectionIdx) ||
                   ($last == "allPrelabQ" );
-                  
-        $ret .= $this->preLab->getMenu( $linkFullAddress.".C".$this->prelabCollectionIdx, 
-                                        $menu2Populate, 
+
+        $ret .= $this->preLab->getMenu( $linkFullAddress.".C".$this->prelabCollectionIdx,
+                                        $menu2Populate,
                                         $lng->get("lPrefixPreLab"),
                                         $unfold ); // unfold if active
        // additional menus
@@ -1023,34 +1021,34 @@ class LlElement extends Element{
                                                   $lng->get("mnuEntryPrelabFin") :
                                                   $lng->get("mnuEntryPrelab2Fin")
                                        ),
-                                       "../pages/view.php?address=".$linkFullAddress.".allPrelabQ", 
+                                       "../pages/view.php?address=".$linkFullAddress.".allPrelabQ",
                                        ( $last == "allPrelabQ" ) );
-                                       
+
        if ( $unfold ){ // unfold if active
          // prelab status
-          $ret .= $menu2Populate->entry( $lng->get("mnuEntryPreLabStats"), 
-                                         "../pages/view.php?address=".$linkFullAddress.".labStatus&orderBy=".urlencode( $lng->get("orderPrelabFin") ), 
+          $ret .= $menu2Populate->entry( $lng->get("mnuEntryPreLabStats"),
+                                         "../pages/view.php?address=".$linkFullAddress.".labStatus&orderBy=".urlencode( $lng->get("orderPrelabFin") ),
                                          ( $last == "labStatus" ) );
         }
       }
-      
+
      // lab's menu
       if ($this->labIsVisible2Me){
         // Is the menu active and should unfold?
         $unfold = ($first == "C".$this->labCollectionIdx) ||
                   ($last == "allLabQ" );
 
-        $ret .= $this->lab->getMenu( $linkFullAddress.".C".$this->labCollectionIdx, 
-                                     $menu2Populate, 
+        $ret .= $this->lab->getMenu( $linkFullAddress.".C".$this->labCollectionIdx,
+                                     $menu2Populate,
                                      $lng->get("lPrefixLab"),
                                      $unfold );
        // additional menus
        // close lab/ all lab questions
         $ret .= $menu2Populate->entry( ( $this->labIsClosed || !$this->userIsViewing ?
-                                                  $lng->get("mnuEntryLabFin") : 
+                                                  $lng->get("mnuEntryLabFin") :
                                                   $lng->get("mnuEntryLab2Fin")
                                        ),
-                                       "../pages/view.php?address=".$linkFullAddress.".allLabQ", 
+                                       "../pages/view.php?address=".$linkFullAddress.".allLabQ",
                                        ( $last == "allLabQ" ) );
        if ( $unfold ){ // unfold if active
 
@@ -1058,15 +1056,15 @@ class LlElement extends Element{
      }
          // lab status
           $ret .= $menu2Populate->entry( $lng->get("mnuEntryLabStatus"),
-                                         "../pages/view.php?address=".$linkFullAddress.".labStatus", 
+                                         "../pages/view.php?address=".$linkFullAddress.".labStatus",
                                          ( $last == "labStatus" ) );
        // /submenu
     $ret .= $menu2Populate->stopSubmenu();
     }
     return $ret;
   }
-  
-  
+
+
 // The next functions are used for the element's edit page. *************************************************
 
   /**
@@ -1075,10 +1073,10 @@ class LlElement extends Element{
   * @param $_GET["saveAsNew"] If $_GET["saveAsNew"] is set the save as new checkbox on the edit page should be set
   * @param $fullAddress       The element's full address (p.e. C23.c42.p13)
   * @return string            The html code of the element's edit view.
-  */  
+  */
   function showEdit( $fullAddress ){
     global $lng, $url, $pge, $cfg;
-    
+
     // dropdown list for collections:
     $dropDownOptionsPreLab = '<option value="0">0: '.$lng->get( 'explainCreateNew' ).'</option>';
     $dropDownOptionsLab    = '<option value="0">0: '.$lng->get( 'explainCreateNew' ).'</option>';
@@ -1094,7 +1092,7 @@ class LlElement extends Element{
                                 ( ($element->idx == $this->labCollectionIdx) ?  " selected=\"selected\"" : '' ).
                                 ">".$element->idx.": ".( ($element->idx == 1) ?  '-' :  $element->title )."</option>\n";
     }
-    
+
      return EM::editTopLab( $this, $fullAddress ).
             "<FORM class=\"labsys_mop_std_form\" NAME=\"labEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l")."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
@@ -1102,7 +1100,7 @@ class LlElement extends Element{
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
             "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php^
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n". /* index of saved el. will be added on save.php! */
-            
+
            // title
             "<label for=\"title\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputTitle")."</label>".
             "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"title\" name=\"TITLE\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".returnEditable( $this->title )."\" onchange='isDirty=true'>\n".
@@ -1113,30 +1111,30 @@ class LlElement extends Element{
               $dropDownOptionsPreLab.
               "</select>".
             "</fieldset>\n".
-            
+
            // lab selector
             "<fieldset><legend>".$lng->get("inputLab")."</legend>\n".
               "<select tabindex=\"".$pge->nextTab++."\" name=\"LAB\" size=\"1\" class=\"labsys_mop_input\" onchange='isDirty=true'>\n".
               $dropDownOptionsLab.
               "</select>".
             "</fieldset>\n".
-            
+
            // meta data
-            "<fieldset><legend>".$lng->get("metaData")."</legend>\n".            
+            "<fieldset><legend>".$lng->get("metaData")."</legend>\n".
               // authors
               "<label for=\"authors\" class=\"labsys_mop_input_field_label_top\">".$lng->get('authors')."</label>".
               "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"authors\" name=\"AUTHORS\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".$this->authors."\" onchange='isDirty=true'>\n".
-                            
+
               // abstract
               "<label for=\"comment\" class=\"labsys_mop_input_field_label_top\">".$lng->get('abstract')."<br>\n".$lng->get('abstractNote')."</label>".
               "<textarea tabindex=\"".$pge->nextTab++."\" id=\"comment\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultLCommentRows")."\" onchange='isDirty=true'>".
               returnEditable( $this->comment ).    // Process [HTML]. (../include/helper.inc).
-              "</textarea>\n".             
+              "</textarea>\n".
             "</fieldset>\n".
-                                             
+
            // save
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
-           
+
            // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
               "<label for=\"mM\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputMatchingMnu")."</label>".
@@ -1173,7 +1171,7 @@ class LlElement extends Element{
             "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( $GLOBALS['url']->available("saveAsNew") || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' )." onchange='isDirty=true'>".
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
-            
+
            // export/ import
             "<fieldset><legend>".$lng->get("exportImport")."</legend>\n".
               // unique ID
@@ -1183,7 +1181,7 @@ class LlElement extends Element{
               "\" onchange='isDirty=true'>\n".
             "</fieldset>\n".
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".            
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
 
             "</FORM>\n".
             '<script language="JavaScript" type="text/javascript">
@@ -1193,31 +1191,31 @@ class LlElement extends Element{
             </script>'.
             EM::editBottomLab( $this, $fullAddress );
   }
-  
+
   /**
   * Used to save the edited element.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */  
+  */
   /*static*/ function save(){
     global $lDBI, $url, $lng, $usr;
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO']) || 
-         !isset($_POST['FULLADDRESS']) || 
-         !isset($_POST['UNIQUEID']) || 
-         !isset($_POST['TITLE']) || 
-         !isset($_POST['AUTHORS']) || 
-         !isset($_POST['COMMENT']) || 
-         !isset($_POST['PRELAB']) || 
-         !isset($_POST['LAB'])     
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO']) ||
+         !isset($_POST['FULLADDRESS']) ||
+         !isset($_POST['UNIQUEID']) ||
+         !isset($_POST['TITLE']) ||
+         !isset($_POST['AUTHORS']) ||
+         !isset($_POST['COMMENT']) ||
+         !isset($_POST['PRELAB']) ||
+         !isset($_POST['LAB'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-       
+
     // Validity (session ID) is checked by the calling script yet.
-    
+
     // only content editors are allowed to save
     if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
                                                   trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
@@ -1230,16 +1228,16 @@ class LlElement extends Element{
 
     if ( $_POST['PRELAB'] == 0 ) $_POST['PRELAB'] = createNew( 'C' ); // create a new collection
     if ( $_POST['LAB'] == 0 ) $_POST['LAB'] = createNew( 'C' ); // create a new collection
-    
+
     $newLab = new LlElement(  $_POST['IDX'],
                               $_POST['UNIQUEID'],
-                              $_POST['TITLE'], 
+                              $_POST['TITLE'],
                               $_POST['AUTHORS'],
-                              $_POST['COMMENT'], 
+                              $_POST['COMMENT'],
                               $_POST['PRELAB'],
                               $_POST['LAB'],
-                              $_POST['MATCHINGMENU'], 
-                              ( isset( $_POST["VISIBLE_BEFORE_FIRST_SCHED"] ) && $_POST["VISIBLE_BEFORE_FIRST_SCHED"] == 1 ), 
+                              $_POST['MATCHINGMENU'],
+                              ( isset( $_POST["VISIBLE_BEFORE_FIRST_SCHED"] ) && $_POST["VISIBLE_BEFORE_FIRST_SCHED"] == 1 ),
                               ( isset( $_POST["VISIBLE_DURING_SCHED"] ) && $_POST["VISIBLE_DURING_SCHED"] == 1 ),
                               ( isset( $_POST["VISIBLE_AFTER_FIRST_SCHED"] ) && $_POST["VISIBLE_AFTER_FIRST_SCHED"] == 1 ),
                               ( $_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1" ),
@@ -1255,14 +1253,14 @@ class LlElement extends Element{
                                       $lDBI->setData( $newLab );
                                       $url->put( "address=".$_POST['FULLADDRESS'] );
     }
-    
+
     // some user information
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("lNumber")." ".$newLab->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
+
 // The next functions are used for the element's manage page. ***********************************************
 
   /**
@@ -1271,20 +1269,20 @@ class LlElement extends Element{
   */
   function showPropertyLegend(){ /* Shows the legend to the property rows */
     global $lng, $pge;
-    
+
     $lgnd = "<div class=\"labsys_mop_".$this->elementId."_row\">\n".
             "<div class=\"labsys_mop_h3\">".$lng->get("legend")."</div>\n".
            // visible only inside a collection?
             "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend1_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" checked=\"checked\">".
             infoArrow( $lng->get("visAlways") ).
             $lng->get("visAlways")."<br />\n".
-            
+
             "<input type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled=\"disabled\">".
             infoArrow( $lng->get("visAlways"), true ).
             "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" checked=\"checked\">".
             infoArrow( $lng->get("visOnlyInColl") ).
             $lng->get("visOnlyInColl")."<br />\n".
-            
+
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled=\"disabled\">".
             infoArrow( $lng->get("visAlways"), true ).
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" disabled=\"disabled\">".
@@ -1293,7 +1291,7 @@ class LlElement extends Element{
             "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend3_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\" checked=\"checked\">".
             infoArrow( $lng->get("visibleBef1stSched") ).
             $lng->get("visibleBef1stSched")."<br />\n".
-            
+
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled=\"disabled\">".
             infoArrow( $lng->get("visAlways"), true ).
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" disabled=\"disabled\">".
@@ -1305,7 +1303,7 @@ class LlElement extends Element{
             "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend4_VISIBLE_DURING_SCHED\" value=\"1\" checked=\"checked\">".
             infoArrow( $lng->get("visibleDuringSched") ).
             $lng->get("visibleDuringSched")."<br />\n".
-            
+
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled=\"disabled\">".
             infoArrow( $lng->get("visAlways"), true ).
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" disabled=\"disabled\">".
@@ -1321,7 +1319,7 @@ class LlElement extends Element{
             "</div>\n";
     return $lgnd;
   }
-  
+
   /**
   * This function is called to display the element's properties.
   * @param $prefix    If given this is put before the element's title (p.e. 1.2.3 title).
@@ -1330,7 +1328,7 @@ class LlElement extends Element{
   */
   function getPropertyRow( $prefix, $disabled=false ){
     global $pge, $lng;
-    
+
     return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visAlways"), $disabled ).
               "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
@@ -1348,7 +1346,7 @@ class LlElement extends Element{
             " ".
               $this->title;
   }
-  
+
   /**
   * This function is called to display the elements export data on the import_export-page /pages/import_export_labs.php.
   * @param $prefix    If given this is put before the element's title (p.e. 1.2.3 title).
@@ -1358,7 +1356,7 @@ class LlElement extends Element{
   */
   function getExportImportRow( $prefix, $isExport=true, $disabled=false ){
     global $pge, $lng;
-    
+
     if ( $isExport )
       return    "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"EXPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export"> '.
@@ -1368,7 +1366,7 @@ class LlElement extends Element{
               "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" ".( !$disabled ?  "name=\"".$this->idx."\" "  : '' )."value=\"IMPORT\"".( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'> ".
               $prefix.$this->title;
   }
-  
+
 // The next functions are adfditional functions of the element. *********************************************
   /**
   * Called by USER (so $this->labIsClosed etc. are set correctly) to check if his prelab answers are correct.
@@ -1383,15 +1381,15 @@ class LlElement extends Element{
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-       
+
     // Validity (session ID) is checked by the calling script yet.
-    
+
     if( $this->preLabIsVisible2Me && !$this->preLabIsFinished ){
    // Are all multiple choice questions answered (->LmElement)?
     $parameter = Array( 'allPreLabAnswered' => true,
                         'givenCredits' => 0,
                         'possibleCredits' => 0 );
-    
+
     $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
                               "\$element->loadUserData4( '".$usr->uid."' ); ".
                               "if ( \$parameter[ 'allPreLabAnswered' ] &= \$element->checkUserAnswer() ){ ". // check the answer (if not closed this adds an attempt!).
@@ -1401,7 +1399,7 @@ class LlElement extends Element{
                             "}".
                             "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
                             $parameter );
-                            
+
       makeLogEntry( 'l', 'prelab checked '.( $parameter[ 'allPreLabAnswered' ] ? '(right)' : '(wrong)' ), $this->idx );
 
       if( $parameter[ 'allPreLabAnswered' ] ){
@@ -1425,7 +1423,7 @@ class LlElement extends Element{
          // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
           require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
           $urDBI = new DBInterfaceUserRights();
-          
+
           $urDBI->getAllData( "", true, "`currentTeam` = '".$usr->currentTeam."' && `uid` != '".$usr->uid."'" ); // Only check others.
           $preLabAllTeammatesFin = true;
           while ( ($dataArray = $urDBI->getNextData()) ){
@@ -1433,13 +1431,13 @@ class LlElement extends Element{
             $permissions  = $this->usDBI->getData4( $uid );
             $preLabAllTeammatesFin &= $permissions['preLabFinished'];
           }
-          
-          if ( $preLabAllTeammatesFin ){ // all have finished so 
+
+          if ( $preLabAllTeammatesFin ){ // all have finished so
             // update their prelab status
             $this->usDBI->setPrelabFinished( $usr->currentTeam );
-            
+
             makeLogEntry( 'l', 'prelab finished team '.$usr->currentTeam, $this->idx );
-            
+
             if ( $this->noLab ) // If we have no lab it gets closed when all teammembers finished the prelab
               $this->usDBI->closeLab( $usr->currentTeam, $lng->get("labClosed") );
 
@@ -1448,7 +1446,7 @@ class LlElement extends Element{
             // his $usr->currentTeam on entering the question.
             // The mapping can be renewed/ changed by user editors on the labstate page.
             $this->usDBI->getAllTeamData( $usr->currentTeam );
-            while( $labStatusData = $this->usDBI->getNextData() ) 
+            while( $labStatusData = $this->usDBI->getNextData() )
               $this->mapAllLabInputs( $labStatusData["uid"], $labStatusData["currentTeam"] );
           }
       }
@@ -1457,9 +1455,9 @@ class LlElement extends Element{
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
+
   /**
-  * Called if no prelab is present to create the status table entries for 
+  * Called if no prelab is present to create the status table entries for
   * all teammembers of the current users.
   * Otherwise that would be done by finishing the prelab...
   *
@@ -1478,7 +1476,7 @@ class LlElement extends Element{
             $this->usDBI->setData4( $uid, $teamNumber, true, 0, 0, true, false, false, "", 0, 0, $lng->get("userReMapped")." (".$teamNumber.")" );
           }
   }
-  
+
   /**
   * Called by ../php/executeOnLab.php.
   * Acquires the lock not taking care of any existing locks.
@@ -1488,14 +1486,14 @@ class LlElement extends Element{
   */
   function forceLockOn( $i_idx, $fullAddress ){
     global $url;
-    
+
     $element = $GLOBALS[ 'iDBI' ]->getData2idx( $i_idx );
     $element->acquireLock4( $fullAddress );
-    
+
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
   }
-  
+
   /**
   * Closes all lab inputs. The function below has this function's name
   * because it gets called via url...
@@ -1521,7 +1519,7 @@ class LlElement extends Element{
     if ( !$labStatus['labClosed'] ) // Status changed?
       $this->usDBI->closeLab( $team, $lng->get("labClosed") );
   }
-  
+
   /**
   * Called by ../php/executeOnLab.php.
   * Closes all inputs in $lab and changes the status in $usDBI.
@@ -1533,11 +1531,11 @@ class LlElement extends Element{
     $this->reallyCloseAllLabInputs( $team );
 
     makeLogEntry( 'l', 'all inputs closed for team '.$team, $this->idx );
-    
+
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
   }
-  
+
   /**
   * Called by user to close all lab answers (ablility to correct then).
   */
@@ -1550,7 +1548,7 @@ class LlElement extends Element{
         }
 
     // Validity (session ID) is checked by the calling script yet.
-    
+
     if ( !$this->labIsVisible2Me ){
                                     trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
                                     exit;
@@ -1560,7 +1558,7 @@ class LlElement extends Element{
 
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
+
   /**
   * Called by ../php/executeOnLab.php.
   * ReOpens all inputs in $lab and changes the status in $usDBI.
@@ -1569,17 +1567,17 @@ class LlElement extends Element{
   */
   function reOpenAllLabInputs( $team ){
     global $usr, $lng, $url;
-    
+
    // reOpen all lab inputs
     $dummy = false;
     $this->lab->extMap( "if ( \$element->elementId == 'i' ) \$element->reOpenInput( ".$team." );". // reOpen the input.
                         "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
                         $dummy );
-                            
+
     $this->usDBI->reOpenLab( $team, $lng->get("labReOpened") );
-    
+
     makeLogEntry( 'l', 'all inputs reopened for team '.$team, $this->idx );
-    
+
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
   }
@@ -1599,14 +1597,14 @@ class LlElement extends Element{
     $this->lab->extMap( "if ( \$element->elementId == 'i' ) \$element->mapInput( '".$uid."', '".$team."' );". // reMap UID->Team.
                         "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
                         $dummy );
-   
+
     $labStatus = $this->usDBI->getData4( $uid );
     if ( $labStatus['labClosed'] ) // if the lab is closed the input has to be closed too.
       $this->reallyCloseAllLabInputs( $labStatus['currentTeam'] );
-      
+
     makeLogEntry( 'l', 'all inputs remapped for team '.$team, $this->idx );
   }
-  
+
   /**
   * Called by ../php/executeOnLab.php.
   * Remaps all inputs and the status record for this lab and the given user ($uid) to $team.
@@ -1618,7 +1616,7 @@ class LlElement extends Element{
     global $lng, $url;
     // update all input assignments
     $this->mapAllLabInputs( $uid, $team );
-    
+
     // update the status record
     $labStatus = $this->usDBI->getData4( $uid );
     if ( $labStatus["currentTeam"] != $team ) // changes?
@@ -1634,7 +1632,7 @@ class LlElement extends Element{
                               $labStatus['labGivenCredits'],        // $givenCredits
                               $labStatus['labPossibleCredits'],     // $possibleCredits
                               $lng->get("userReMapped")." (".$team.")" );          // $history
-    
+
     // recheck the prelab... as new team
     $_POST['REDIRECTTO'] = $url->get('redirectTo');
     $_POST['IDX'] = $this->idx;
@@ -1642,7 +1640,7 @@ class LlElement extends Element{
     // One could also display the page here but that way it is left to the normal mechanism...
     //header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
   }
-  
+
   /**
   * Called by ../php/executeOnLab.php.
   * Sets the observed $uid (for correctors);
@@ -1656,7 +1654,7 @@ class LlElement extends Element{
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
   }
-  
+
   /**
   * ReCalculates the user's
   *  - given points
@@ -1667,8 +1665,8 @@ class LlElement extends Element{
 
     // If you encounter problems with the statistic or want to recalculate it you have
     // to perform both following steps
-    
-   
+
+
     // create StatusEntry for Teams
 //    for ($teamNumber=1; $teamNumber<9; $teamNumber++)
 //      $this->createPrelabFinishedStatus( $teamNumber );
@@ -1676,18 +1674,18 @@ class LlElement extends Element{
 
     // calculate prelab stats for EXISTING entries
     $this->updateStatus2();
-  
-    
+
+
     global $url, $lng, $usr;
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO'])     
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-      
+
     // Validity (session ID) is checked by the calling script yet.
-   
+
     $is2bClosed = $this->isAfter1stSched && !$this->isInSched; // should the lab be closed?
 
 // 1) compute everything on the inputs
@@ -1705,7 +1703,7 @@ class LlElement extends Element{
     $parameter = array_flip( $parameter );
 
    // fill with empty containers
-    foreach ( array_keys($parameter) as $val ) 
+    foreach ( array_keys($parameter) as $val )
       if ( $val != 'alreadyInSum' ) $parameter[$val] = Array( 'areAllClosed' => true,
                                                               'areAllCorrected' => true,
                                                               'correctedString' => "",
@@ -1716,7 +1714,7 @@ class LlElement extends Element{
                                           // p.e. I use an input for data that are reshown on a later page for comparison
 
    // check all lab inputs and close them if necessary
-      $this->lab->extMap( "if ( (\$element->elementId == 'i') && !(in_array( \$element->idx, \$parameter['alreadyInSum'] )) ){ 
+      $this->lab->extMap( "if ( (\$element->elementId == 'i') && !(in_array( \$element->idx, \$parameter['alreadyInSum'] )) ){
                               array_push( \$parameter['alreadyInSum'], \$element->idx ); // no double count
                               foreach( \$parameter as \$mKey => \$mValue ){
                                 if ( \$mKey == 'alreadyInSum' ) continue; // jump over
@@ -1741,39 +1739,39 @@ class LlElement extends Element{
              ($labStatus['labCorrected']       != $parameter[$labStatus['currentTeam']]['areAllCorrected']) ||
              ($labStatus['labGivenCredits']    != $parameter[$labStatus['currentTeam']]['sumGivenCredits']) ||
              ($labStatus['labPossibleCredits'] != $parameter[$labStatus['currentTeam']]['sumPossibleCredits']) ||
-             (!$labStatus['labCorrected'] && 
+             (!$labStatus['labCorrected'] &&
                  ($labStatus['whichCorrected'] != $parameter[$labStatus['currentTeam']]['correctedString'])
              )
             ) // yes -> save them.
-              $this->usDBI->setData4( $labStatus['uid'], 
-                                      $teamJustChecked = $labStatus['currentTeam'], 
-                                      true, 
+              $this->usDBI->setData4( $labStatus['uid'],
+                                      $teamJustChecked = $labStatus['currentTeam'],
+                                      true,
                                       $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
                                       $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
-                                      true, 
-                                      $parameter[$labStatus['currentTeam']]['areAllClosed'], 
-                                      $parameter[$labStatus['currentTeam']]['areAllCorrected'], 
+                                      true,
+                                      $parameter[$labStatus['currentTeam']]['areAllClosed'],
+                                      $parameter[$labStatus['currentTeam']]['areAllCorrected'],
                                       ( $labStatus['labCorrected'] ? '' : $parameter[$labStatus['currentTeam']]['correctedString']),
-                                      $parameter[$labStatus['currentTeam']]['sumGivenCredits'], 
+                                      $parameter[$labStatus['currentTeam']]['sumGivenCredits'],
                                       $parameter[$labStatus['currentTeam']]['sumPossibleCredits'],
                                       $lng->get("statusUpdated") ); // create my dataset
     }
 
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
+
   function updateStatus2(){
     /* calculates the Prelab points for EXISTING entries! */
     global $url, $lng, $usr;
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO'])     
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-      
+
     // Validity (session ID) is checked by the calling script yet.
-   
+
     $is2bClosed = $this->isAfter1stSched && !$this->isInSched; // should the lab be closed?
 
     // iterate over EXISTING statistics
@@ -1784,7 +1782,7 @@ class LlElement extends Element{
     $parameter2 = Array( 'allPreLabAnswered' => true,
                         'givenCredits' => 0,
                         'possibleCredits' => 0 );
-    
+
 
     if ( true )// echo('processing '.$labStatus['uid'].'<br />');
       $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
@@ -1803,16 +1801,16 @@ class LlElement extends Element{
        // changes?
         if ( true// $labStatus['preLabPossibleCredits'] == 0
             ) // yes -> save them.
-              $this->usDBI->setData4( $labStatus['uid'], 
-                                      $labStatus['currentTeam'], 
-                                      $labStatus['preLabFinished'], 
+              $this->usDBI->setData4( $labStatus['uid'],
+                                      $labStatus['currentTeam'],
+                                      $labStatus['preLabFinished'],
                                      $parameter2['givenCredits'], // $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
                                      $parameter2['possibleCredits'], // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
-                                      $labStatus['preLabAllTeammFinished'], 
-                                      $labStatus['labClosed'], 
-                                      $labStatus['labCorrected'], 
+                                      $labStatus['preLabAllTeammFinished'],
+                                      $labStatus['labClosed'],
+                                      $labStatus['labCorrected'],
                                       $labStatus['whichCorrected'],
-                                      $labStatus['labGivenCredits'], 
+                                      $labStatus['labGivenCredits'],
                                       $labStatus['labPossibleCredits'],
                                       $lng->get("statusUpdated") ); // create my dataset
     }
