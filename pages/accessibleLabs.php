@@ -42,13 +42,13 @@ if ($returnEpub){
   //TODO: Call functions to tell ePub export that multiple labs come now.
   $epubExporter = LSE_Exporter::getInstance();
   $epubConfig = array(
-    'title'   => 'iLab2',
+    'title'   => $cfg->get('SystemTitle'),
     'authors' => 'Multiple Authors',
     'lang'    => $lng->get('Content-Language'),
     'isMultiChapterEnabled' => TRUE,
   );
-  if ($cfg->available('courseLogo') && ($cfg->get('courseLogo') != '')) {
-    $epubConfig['coverImage'] = '../' . $cfg->get('courseLogo');
+  if ($cfg->doesExist('courseLogo') && ($cfg->get('courseLogo') != '')) {
+    $epubConfig['coverImage'] = $cfg->get('courseLogo');
     // echo("Creating title page using this logo: " . "<img src=\"../" . $cfg->get('courseLogo') . "\" />");
     // echo("Rendering the title in using: http://php.net/manual/en/function.imagettftext.php");
   }
@@ -98,7 +98,7 @@ if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
     // echo("Adding foreword page $num: ".$preface->title."<br>");
     //TODO: Add forword to ePub: $preface->showEPub( $prefaceID, '' );
     //TODO: Fix how preface is rendered
-    $epubConfig['preface'] = $preface->show( $prefaceID );
+    $epubConfig['preface'] = $preface->getePubContents();
   }else{
     $pge->put('
     <tr>
@@ -114,11 +114,11 @@ if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
 
 foreach ( $accessibleLabs as $value ){
   if ($returnEpub){
-    $extParagraph = (string)( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ );
+    $extParagraph = (string)( $value->visibleBefore1stSched ? chr ($charCounter) : $counter );
     // echo( $extParagraph.' '.$value->title.' ('.$value->elementId.$value->idx.')<br>');
     //echo( $value->showTOC( $value->elementId.$value->idx, $extParagraph ) );
     //TODO: $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ) );
-    $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ));
+    $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ).'');
   }else{
     $pge->put('
 <tr>

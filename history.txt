@@ -65,6 +65,17 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2012-03-26
+-------------------
+  /include/classes/elements/BCElement.inc
+  /include/classes/elements/LcElement.inc
+  /include/classes/elements/LlElement.inc
+  /include/classes/elements/LpElement.inc
+  /ini/config_demo.ini
+  /ini/config_useradmin.ini
+  /pages/accessibleLabs.php
+    Several changes concerning the Export of all labs as ePub.
+
 2012-03-01
 -------------------
   /pages/mailForm.php

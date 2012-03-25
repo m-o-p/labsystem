@@ -24,7 +24,6 @@
 * This element consists of two collections and some visibility logic.
 *
 * @module     ../include/classes/elements/LiElement.inc
-* @author     Marc-Oliver Pahl
 */
 require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 
@@ -697,32 +696,26 @@ class LlElement extends Element{
   * @param $fullAddress       The element's full address (p.e. C42.l23)
   * @param $extParagraph      The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   */
-  function showEPub( $fullAddress, $extParagraph ){
-    global $lng, $cfg;
+  function showEPub( $fullAddress, $extParagraph, $render = false ){
+    global $lng, $cfg, $url;
     include_once(INCLUDE_DIR . '/../plugins/LSE/Exporter.php');
-    /*
-    // Uses Grandt PHPePUB (https://github.com/Grandt/PHPePub)
-    $pluginFile = '../plugins/Grandt-PHPePub/EPub.php';
-    if (!file_exists( $pluginFile )){
-          trigger_error( 'ePub Plugin "'.$pluginFile.'" missing.', E_USER_ERROR );
-          exit;
-         }
-    include_once( $pluginFile );
-    */
-    // The meta information of the ePub.
 
     // The title page.
     $epubExporter = LSE_Exporter::getInstance();
-    $epubExporter->save('l', $fullAddress, '', array(
-        'title'   => returnHTML( $this->title ),
+    $epubConfig = array(
+        'title'   => returnHTML( ( $extParagraph != "" ?  $extParagraph.'. '  : '' ).$this->title ),
         'authors' => returnHTML( $this->authors ),
         'comment' => returnHTML( $this->comment ),
-        'lang'    => $lng->get('Content-Language')
-    // pass the user style sheet to be included in the epub
-    // it contains the user defined styles.
-        // 'userStyleSheetPath' => $cfg->get("UserStyleSheet")
-    // Problem: user's might not write proper epub styles... thus better ignore
-    ));
+        'lang'    => $lng->get('Content-Language'),
+        // pass the user style sheet to be included in the epub
+        // it contains the user defined styles.
+            // 'userStyleSheetPath' => $cfg->get("UserStyleSheet")
+        // Problem: user's might not write proper epub styles... thus better ignore
+    );
+    if ($url->available('courseLogo') && ($cfg->get('courseLogo') != '')) {
+        $epubConfig['coverImage'] = '../' . $cfg->get('courseLogo');
+    }
+    $epubExporter->save('Ll', $fullAddress, '', $epubConfig);
 
     /*
     echo('ePub to '.
@@ -739,15 +732,16 @@ class LlElement extends Element{
     echo( '<hr><hr>prelab<hr><hr><br>' );
     */
     if ( $this->preLabIsVisible2Me )
-      $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx.".epub", ( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
+      $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx.".epub", '' ); //( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
     // echo( '<hr><hr>lab<hr><hr><br>' );
     if ( $this->labIsVisible2Me )
-      $this->lab->show( $fullAddress.".C".$this->labCollectionIdx.".epub", ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
+      $this->lab->show( $fullAddress.".C".$this->labCollectionIdx.".epub", '' ); //( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
 
-    $epubExporter->render();
-//    var_dump(htmlentities($epubExporter->render()));
-    // var_dump($epubExporter->render());
-    exit;
+    if ($render) {
+        $epubExporter->setOptions($epubConfig);
+        $epubExporter->render();
+        exit();
+    }
   }
 
   /**
@@ -910,7 +904,7 @@ class LlElement extends Element{
     if     ( $last == "" )   $myRetVal .= $this->showTOC( $parentAddr.$me, $extParagraph );
    // ePub
     elseif ( $last == "epub" &&
-             $this->isVisible() )             $this->showEPub( $parentAddr.$me, $extParagraph );
+             $this->isVisible() )             $this->showEPub( $parentAddr.$me, $extParagraph, true );
    // all preLab questions
     elseif ( $last == "allPrelabQ" &&
              $scndLast == $me &&

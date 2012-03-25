@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -44,7 +44,7 @@ class BCElement extends LcElement{
 
 // The next functions are used for the element's view page. *************************************************
 
-// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - - 
+// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - -
   /**
   * Returns the Table Of Contents.
   *
@@ -58,7 +58,7 @@ class BCElement extends LcElement{
 
     $structureArray = $this->getMyVisibleElements();
 
-    $myRetVal = "<!-- start of group --><div class=\"labsys_mop_C_TOC_group\">\n"; 
+    $myRetVal = "<!-- start of group --><div class=\"labsys_mop_C_TOC_group\">\n";
 
     foreach( $structureArray as $value ){
         $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
@@ -66,7 +66,7 @@ class BCElement extends LcElement{
        // show the element
         $id = $value{0}; $num = substr( $value, 1 );
         $element = $GLOBALS[ $id."DBI" ]->getMenuData2idx( $num, true, $this->isInLab );
-        
+
         if ( $element ){ $myRetVal .= "<div class=\"labsys_mop_C_TOC_entry\">".
                                       "<a href=\"".$url->link2( "../pages/view.php?address=".$fullAddress.".".$value )."\">".
                                       returnHTML( ( $paragraph != "" ?  $paragraph.". "  : '' ).$element->title ).
@@ -92,7 +92,7 @@ class BCElement extends LcElement{
   function getLinks( $relativeAddress, &$prevEl, &$nextEl ){
    // The structure with all C elements unfolded:
     $menuStructure = explode( " ", $this->buildStructure( true, false ) );
-    
+
     $found = ($relativeAddress == "");
     $current = false;
     $parentArray = Array(); // This stack holds the las parent addresses
@@ -103,22 +103,22 @@ class BCElement extends LcElement{
       if ($value{0} == "*") continue;
       if ($value == "("){ array_push( $parentArray, $nextEl ); continue; }
       if ($value == ")"){ array_pop( $parentArray ); continue; }
-      
+
       if ( count($parentArray) > 0 ) $parent = $parentArray[ count($parentArray)-1 ];
                                 else $parent = "";
 
       $nextEl = ( $parent != "" ?  $parent."."  : '' ).$value;
-      
+
       if ( $found ) break;
-      
+
       if ( $nextEl == $relativeAddress ) $found=true;
                                    else $prevEl = $nextEl;
     }
-    
+
     if ( $nextEl == $relativeAddress ) $nextEl = false; // Happens if we are at the last element (no break but foreach breaks).
   }
-  
-// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /**
   * Returns the element's HTML-representation in the way the VIEWER should see it.
@@ -128,12 +128,12 @@ class BCElement extends LcElement{
   * @param $hideNavigation  If set the navigation arrows are hidden (useful for collection inside collection).
   *
   * @return string          The html code of the element's view view.
-  */ 
+  */
   function show( $fullAddress, $extParagraph="", $hideNavigation=false ){
     global $lng, $cDBI, $usr, $url;
 
     if ( !$this->isVisible() ){ return $this->notFoundVisibleNote( $fullAddress ); exit; }
-    
+
    // Address splitting.
     $parentAddr = $fullAddress;
     $this->splitAddress( $parentAddr, $myAddrArray );
@@ -148,7 +148,7 @@ class BCElement extends LcElement{
                                         "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>".
                                         $this->getTOC( $fullAddress, $extParagraph ).
                                         "</div>";
-                                        
+
    // ePub
     elseif ( ($last == 'epub') &&
              ($scndLast == $me) ) {
@@ -186,22 +186,22 @@ class BCElement extends LcElement{
 
    // the links for the arrows
     $prevEl = $nextEl = $topEl = false;
-    if ( !$hideNavigation ){ 
+    if ( !$hideNavigation ){
                              $relAddr = implode( ".", array_slice ( $myAddrArray, 1 ) );
                              $this->getLinks( substr( stristr( $url->get('address'), $me ), strlen( $me )+1 ), // trim the address to be correct even if the adress was rewritten (e.g.: l7.C84.C184.c188.p195 -> l7.C84.C184.c188)
-                                              $prevEl, 
-                                              $nextEl 
+                                              $prevEl,
+                                              $nextEl
                                              );
                              $topEl  = $parentAddr.$me;
                              if ( $prevEl ) $prevEl = $parentAddr.$me.".".$prevEl;
                              if ( $nextEl ) $nextEl = $parentAddr.$me.".".$nextEl;
                             }
-    
+
     return  EM::viewTopCollection( $this, $parentAddr.$me, $prevEl, $nextEl, $topEl ).
             $myRetVal.
-            EM::viewBottomCollection( $this, $parentAddr.$me, $prevEl, $nextEl, $topEl ); 
+            EM::viewBottomCollection( $this, $parentAddr.$me, $prevEl, $nextEl, $topEl );
   }
-  
+
   /**
   * Produces the ePub version of this element.
   * Called by LlElement.inc
@@ -215,9 +215,9 @@ class BCElement extends LcElement{
         'title'   =>  returnHTML( ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title ),
     ));
 
-    $this->showEpubifiedChildren( $fullAddress, ( $extParagraph != "" ?  $extParagraph : '' ) );
+    $this->showEpubifiedChildren( $fullAddress, ( $extParagraph != "" ?  $extParagraph : '' ), true );
   }
-  
+
   /**
   * Returns the html-code of this element's menu.
   *
@@ -231,35 +231,35 @@ class BCElement extends LcElement{
   function getMenu( $fullAddress, &$menu2Populate, $extParagraph="", $unfold=false ){
     global $lng, $url;
     if ( !$this->isVisible() ) return "";
-    
+
     if ( isset( $GLOBALS["firstFinal"] ) && ($GLOBALS["firstFinal"] == "C".$this->idx) ) $unfold = true;
-    
+
     if ( !$unfold )
       $retVal = $menu2Populate->entry( ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, ($url->get('address') == $fullAddress) );
     else{
       $retVal = $menu2Populate->startSubmenu( ( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, ($url->get('address') == $fullAddress) );
     /** parse the submenu entries **/
       $structureArray = $this->getMyVisibleElements();
-  
+
       foreach( $structureArray as $value ){
           $linkAddr = $fullAddress.".".$value;
           $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
           $isActive = ( $linkAddr == substr( $url->get('address'), 0, strlen( $linkAddr ) ) );
-          
+
          // show the element's menu entry
           $id = $value{0}; $num = substr( $value, 1 );
           $element = $GLOBALS[ $id."DBI" ]->getMenuData2idx( $num, true, $this->isInLab );
           if ( !$element ) $retVal .= $menu2Populate->entry( $value." ".$lng->get("doesNotExist"), "../pages/view.php?address=".$linkAddr );
-                      else $retVal .= $element->getMenu(  $linkAddr, 
-                                                          $menu2Populate, 
-                                                          $paragraph, 
+                      else $retVal .= $element->getMenu(  $linkAddr,
+                                                          $menu2Populate,
+                                                          $paragraph,
                                                           $isActive
                                                         );
       }
     /** +++ **/
       $retVal .= $menu2Populate->stopSubmenu();
     }
-    
+
     return $retVal;
   }
 }

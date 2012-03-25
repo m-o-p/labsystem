@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -35,7 +35,7 @@ require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 class LpElement extends Element{
   var $contents;    // The html code the page contains.
   var $visibleFor;  // Visibility constraints.
-  
+
   /**
   * The constructor.
   *
@@ -58,10 +58,10 @@ class LpElement extends Element{
     $this->visibleFor               = $visibleFor;
     $this->visibleOnlyInCollection  = $visibleOnlyInCollection;
     $this->history                  = $history;
-    
+
     $this->IamVisible               = ( ($this->visibleFor == "0") || $usr->isOfKind( $this->visibleFor ) )
                                       && ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) );
-                                      
+
     $this->serializationArray       = array( 'idx', 'title', 'contents', 'matchingMenu', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
   }
 
@@ -83,19 +83,19 @@ class LpElement extends Element{
     }
 
     if ($this->contents == "") return "'()";  // is empty
-    
+
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
-    
+
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
-    
+
     return EM::viewTopPage( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">".
            "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
            $this->contents."</div>".
            EM::viewBottomPage( $this, $fullAddress );
   }
-  
+
   /**
   * Produces the ePub version of this element.
   * Called by LcElement.inc
@@ -104,30 +104,37 @@ class LpElement extends Element{
   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   */
   function showEPub( $fullAddress, $paragraph="" ){
-    global $usr, $lng, $pge;
+    global $usr, $lng;
     if (  !$this->isVisible() ){              // not enough rights->no content
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
     }
 
-    if ($this->contents == ""){ echo( "'()" ); exit; }  // is empty
-    
-    // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
-    $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
-    parseHTML( $this->contents );              // Process [HTML]. (../include/helper.inc).
-    $pge->replaceConstants( $this->contents ); // Process custon fields
-    
     $epubExporter = LSE_Exporter::getInstance();
-    $epubExporter->save('Lp', 
-        $fullAddress, 
+    $epubExporter->save('Lp',
+        $fullAddress,
 //        htmlentities( $this->contents ),
-        $this->contents, 
+        $this->getePubContents( $paragraph ),
         array(
             'title'   => returnHTML( $this->title ),
         )
     );
-    
+
     // echo ('[p-element '.$fullAddress.'] '.htmlentities( $this->contents ).'<br>' );
+  }
+
+  function getePubContents( $paragraph="" ){
+    global $pge;
+    if ($this->contents == ""){
+      $this->contents == "'()";
+    }  // is empty
+
+    // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
+    $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
+    parseHTML( $this->contents );              // Process [HTML]. (../include/helper.inc).
+    $pge->replaceConstants( $this->contents ); // Process custon fields
+
+    return $this->contents;
   }
 
 // The next functions are used for the element's edit page. *************************************************
@@ -138,7 +145,7 @@ class LpElement extends Element{
   * @param $_GET["saveAsNew"] If $_GET["saveAsNew"] is set the save as new checkbox on the edit page should be set
   * @param $fullAddress       The element's full address (p.e. C23.c42.p13)
   * @return string            The html code of the element's edit view.
-  */ 
+  */
   function showEdit( $fullAddress ){
     global $lng, $url, $pge, $cfg;
      return EM::editTopPage( $this, $fullAddress ).
@@ -148,7 +155,7 @@ class LpElement extends Element{
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n".  // index of saved el. will be added on save.php!
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
             "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
-            
+
           // title input
             "<label for=\"title\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputTitle")."</label>".
             "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"title\" name=\"TITLE\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".returnEditable( $this->title )."\" onchange='isDirty=true'>\n".
@@ -192,7 +199,7 @@ class LpElement extends Element{
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".            
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
 
             "</FORM>\n".
             '<script language="JavaScript" type="text/javascript">
@@ -202,50 +209,50 @@ class LpElement extends Element{
             </script>'.
             EM::editBottomPage( $this, $fullAddress );
   }
-  
+
   /**
   * Used to save the edited element.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */  
+  */
   /*static*/ function save(){
     global $pDBI, $url, $lng, $usr;
-    
+
     // check for all necessary values posted
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO']) || 
-         !isset($_POST['FULLADDRESS']) || 
-         !isset($_POST['TITLE']) || 
-         !isset($_POST['CONTENTS']) || 
-         !isset($_POST['MATCHINGMENU'])     
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO']) ||
+         !isset($_POST['FULLADDRESS']) ||
+         !isset($_POST['TITLE']) ||
+         !isset($_POST['CONTENTS']) ||
+         !isset($_POST['MATCHINGMENU'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-       
+
     // Validity (session ID) is checked by the calling script yet.
-    
+
     // only content editors are allowed to save
     if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
                                                   trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
                                                   exit;
                                                 }
-    
+
     // compute user rights:
     $userRights=0;
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1) if ( isset( $_POST[ "UR_".$i] ) ) $userRights += $_POST["UR_".$i];
-    
+
     // create a new element with the given values
     $newPage = new LpElement( $_POST['IDX'],
-                                $_POST['TITLE'], 
-                                $_POST['CONTENTS'], 
-                                $_POST['MATCHINGMENU'], 
-                                $userRights, 
+                                $_POST['TITLE'],
+                                $_POST['CONTENTS'],
+                                $_POST['MATCHINGMENU'],
+                                $userRights,
                                 ($_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1"),
                                 ""
                                );
-                               
+
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newPage->idx = $pDBI->setData( $newPage, true );
@@ -255,15 +262,15 @@ class LpElement extends Element{
                                       $pDBI->setData( $newPage );
                                       $url->put( "address=".$_POST['FULLADDRESS'] );  // the address remains
     }
-    
+
     // some user information
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("pNumber")." ".$newPage->idx );
-      
+
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
-  
+
+
 // The next functions are used for the element's manage page. ***********************************************
 
   /**
@@ -279,25 +286,25 @@ class LpElement extends Element{
             "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" checked=\"checked\">".
                 infoArrow( $lng->get("visAlways") ).
                 $lng->get("visAlways")."<br>\n".
-               
+
              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled>".
                 infoArrow( $lng->get("visAlways"), false ).
                 "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" checked=\"checked\">".
                 infoArrow( $lng->get("visOnlyInColl") ).
                 $lng->get("visOnlyInColl")."<br>\n";
-                
+
     // user rights
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1){
       $lgnd .= "<input type=\"radio\" disabled>".infoArrow( $lng->get("visAlways"), true )."<input type=\"radio\" disabled>".infoArrow( $lng->get("visOnlyInColl"), true )." | ";
       for ($j=1; $j<$i; $j=$j<<1) $lgnd .= '<input type="checkbox" disabled>'.infoArrow( $lng->get("Explain_UR_".$j), true )/* ."\n" saves space! */;
-      $lgnd .= rightsBox( "legend_".$i, $i, $i )." ".$lng->get("Explain_UR_".$i)."<br>\n";    
+      $lgnd .= rightsBox( "legend_".$i, $i, $i )." ".$lng->get("Explain_UR_".$i)."<br>\n";
     }
-    
+
     $lgnd .= "</div>\n";
-    
+
     return $lgnd;
   }
-  
+
   /**
   * This function is called to display the element's properties.
   * @param $prefix    If given this is put before the element's title (p.e. 1.2.3 title).
@@ -306,7 +313,7 @@ class LpElement extends Element{
   */
   function getPropertyRow( $prefix, $disabled=false ){
     global $pge, $lng, $cfg;
-    return  
+    return
               "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visAlways"), $disabled ).
               "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
