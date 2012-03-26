@@ -1,0 +1,41 @@
+<?php 
+/**
+ * @file ViewFile for Book
+ * 
+ * Available variables
+ */
+$title   = LSE_Util::filterPTag($this->title);   // Title of the book
+$id      = $this->id;      // The id of the book
+$content = $this->content; // The content of the book, no filtering assuming the content is already filtered.
+$author  = LSE_Util::filterPTag($this->author);  // The Author names
+$comment = LSE_Util::filterPTag($this->comment); // Comment for the book
+// @todo debug why filterPTag throws an error for table of contents (probably because the links do not exist)
+//$toc     = LSE_Util::filterPTag(htmlspecialchars($this->toc, ENT_COMPAT, 'UTF-8', false));
+$toc     = $this->toc;
+$userStyleSheetPath = $this->userStyleSheetPath;
+
+print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../css/sys/labsys_epub_theme.css" />
+<?php if ($userStyleSheetPath):?>
+<link rel="stylesheet" type="text/css" href="<?php print $userStyleSheetPath ?>" />
+<?php endif; ?>
+<title><?php print $title ?></title>
+</head>
+<body>
+<div id='titlepage' class='pageBreakAfter'>
+    <h1 id='<?php print $id ?>' class='part-title'><?php print $title?></h1>
+    <hr/>
+    <h3 class='author'> <?php print $author ?> </h3>
+    <div><?php print $comment ?></div>
+</div>
+<div class='pageBreakAfter'>
+    <h3 id='toc'>Table Of contents</h3>
+    <?php print $toc ?> 
+</div>
+<?php print $content ?> 
+</body></html>

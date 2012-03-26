@@ -1,0 +1,17 @@
+<?php
+// Available Variables
+$id               = $this->id;
+// @todo debug why we have PasteBin & Feedback here instead of &amp;
+$title            = LSE_Util::filterPTag(htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false));
+$content          = $this->content;
+$includePageBreak = $this->includePageBreak;
+?>
+<!-- Start LowC : <?php print $id?> -->
+<h3 id='<?php print $id ?>' class='LowC'>
+    <?php print $title ?>
+</h3>
+<?php print $content ?> 
+<?php if ($includePageBreak): ?>
+    <div class='pageBreakAfter'></div>
+<?php endif; ?>
+<!-- End LowC : <?php print $id?> -->

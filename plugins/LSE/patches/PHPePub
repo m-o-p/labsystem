@@ -1,0 +1,113 @@
+From 91d3733b253c7f6a1c1efd788adc5589cce27496 Mon Sep 17 00:00:00 2001
+From: Bibek Shrestha <bibek@yipl.com.np>
+Date: Wed, 28 Dec 2011 23:54:13 +0100
+Subject: [PATCH] Necessary changes to be compatible with Labsystem
+
+---
+ EPub.php |   74 +++++++++++++++++++++++++++++++-------------------------------
+ Zip.php  |    1 +
+ 2 files changed, 38 insertions(+), 37 deletions(-)
+
+diff --git a/EPub.php b/EPub.php
+index 0aae31d..da41e3d 100644
+--- a/EPub.php
++++ b/EPub.php
+@@ -35,46 +35,46 @@ class EPub {
+ 	public $maxImageWidth = 768;
+ 	public $maxImageHeight = 1024;
+ 
+-	private $splitDefaultSize = 250000;
+-
+-	private $zip;
+-
+-	private $title = "";
+-	private $language = "en";
+-	private $identifier = "";
+-	private $identifierType = "";
+-	private $description = "";
+-	private $author = "";
+-	private $authorSortKey = "";
+-	private $publisherName = "";
+-	private $publisherURL = "";
+-	private $date = 0;
+-	private $rights = "";
+-	private $subject = "";
+-	private $coverage = "";
+-	private $relation = "";
+-	private $sourceURL = "";
+-
+-	private $chapterCount = 0;
+-	private $opf_manifest = "";
+-	private $opf_spine = "";
+-	private $ncx_navmap = "";
+-	private $opf = "";
+-	private $ncx = "";
+-	private $isFinalized = FALSE;
+-	private $isCoverImageSet = FALSE;
+-
+-	private $fileList = array();
+-
+-	private $dateformat = 'Y-m-d\TH:i:s.000000P'; // ISO 8601 long
+-	private $dateformatShort = 'Y-m-d'; // short date format to placate ePubChecker.
+-	private $headerDateFormat = "D, d M Y H:i:s T";
++	protected $splitDefaultSize = 250000;
++
++	protected $zip;
++
++	protected $title = "";
++	protected $language = "en";
++	protected $identifier = "";
++	protected $identifierType = "";
++	protected $description = "";
++	protected $author = "";
++	protected $authorSortKey = "";
++	protected $publisherName = "";
++	protected $publisherURL = "";
++	protected $date = 0;
++	protected $rights = "";
++	protected $subject = "";
++	protected $coverage = "";
++	protected $relation = "";
++	protected $sourceURL = "";
++
++	protected $chapterCount = 0;
++	protected $opf_manifest = "";
++	protected $opf_spine = "";
++	protected $ncx_navmap = "";
++	protected $opf = "";
++	protected $ncx = "";
++	protected $isFinalized = FALSE;
++	protected $isCoverImageSet = FALSE;
++
++	protected $fileList = array();
++
++	protected $dateformat = 'Y-m-d\TH:i:s.000000P'; // ISO 8601 long
++	protected $dateformatShort = 'Y-m-d'; // short date format to placate ePubChecker.
++	protected $headerDateFormat = "D, d M Y H:i:s T";
+ 
+ 	protected $isGdInstalled;
+-	private $docRoot = NULL;
++	protected $docRoot = NULL;
+ 	
+-	private $EPubMark = TRUE;
+-	private $generator = "";
++	protected $EPubMark = TRUE;
++	protected $generator = "";
+ 
+ 	/**
+ 	 * Class constructor.
+diff --git a/Zip.php b/Zip.php
+index bfbd8f6..673619c 100644
+--- a/Zip.php
++++ b/Zip.php
+@@ -44,6 +44,7 @@ class Zip {
+ 	private $streamFile = NULL;
+ 	private $streamData = NULL;
+ 	private $streamFileLength = 0;
++	private $addExtraField = NULL;
+ 
+ 	/**
+ 	 * Constructor.
+-- 
+1.7.8.1
+

@@ -1,0 +1,11 @@
+<?php
+// Available Variables
+$id               = $this->id;
+$content          = LSE_Util::filterPTag($this->content);
+$includePageBreak = $this->includePageBreak;
+?>
+<!-- Start LowP : <?php print $id?> -->
+<div id='<?php print $id ?>' class='LowP collection_content<? print ($includePageBreak)?" pageBreakAfter":"" ?>'>
+    <?php print $content ?>
+</div>
+<!-- End LowP : <?php print $id?> -->

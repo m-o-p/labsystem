@@ -1,0 +1,23 @@
+<?php
+// Available Variables
+$id       = $this->id;
+$question = LSE_Util::filterPTag($this->question);
+$answers  = $this->answers; 
+foreach ($answers as $key => $answer) {
+    $answers[$key] = LSE_Util::filterPTag($answer);
+}
+?>
+<!-- Start LowM : <?php print $id?> -->
+<div class='collection_content donotbreak lowM' id='<?php print $id ?>'>
+    <?php print $question ?> 
+    <div class='input_mul_text'>
+    <?php if (is_array($answers) && count($answers)): ?>
+        <ul>
+        <?php foreach ($answers as $answer): ?>
+            <li><?php print $answer ?></li>
+        <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+    </div>
+</div>
+<!-- End LowM : <?php print $id?> -->
