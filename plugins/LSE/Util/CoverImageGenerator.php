@@ -63,8 +63,6 @@ class LSE_Util_CoverImageGenerator
         $im = imagecreatetruecolor($imgWidth, $imgHeight);
         
         // Create some colors
-        $white = imagecolorallocate($im, 255, 255, 255);
-        $grey = imagecolorallocate($im, 128, 128, 128);
         $lightGrey = imagecolorallocate($im, 245, 245, 245);
         $black = imagecolorallocate($im, 0, 0, 0);
         $labsysBlue = imagecolorallocate($im, 70, 130, 180);
@@ -85,7 +83,7 @@ class LSE_Util_CoverImageGenerator
         $imageBBleft   = $spaceLeft+$textSpacePadding;
         $imageBBbottom = $imgHeight-$textSpacePadding;
         $imageBBright  = $imgWidth-$spaceRight;
-        $imageBBwidth  = $imageBBright-$imageBBleft;
+        $imageBBwidth  = $imageBBright-$imageBBleft-$textSpacePadding;
         $imageBBheight = $imageBBbottom-$imageBBtop;
         
         // Load existing image
@@ -111,16 +109,17 @@ class LSE_Util_CoverImageGenerator
           $desHeight = $imageBBheight;
         }
         
-        //imagecopyresized($im, $srcImg, 0, 0, 0, 0, $imgWidth, $imgHeight, $srcImgSize[0], $srcImgSize[1]);
+        // Place the title page image centered inside the BB under the text
         imagecopyresized($im, $srcImg, $imageBBleft+($imageBBwidth-$desWidth)/2, $imageBBtop+($imageBBheight-$desHeight)/2, 0, 0, $desWidth, $desHeight, $srcImgSize[0], $srcImgSize[1]);
         imagedestroy( $srcImg );
         
-        // place the logo centered on the left
+        // place the labsys logo on top left
         imagecopyresized($im, $logoLeftImg, 0.5*($spaceLeft-$logoLeftWidth), 0, 0, 0, $logoLeftWidth, $logoLeftHeight, $logoLeftWidth, $logoLeftHeight);
         imagedestroy( $logoLeftImg );
         
-        // Add the text
+        // Add the title text
         imagettftext($im, $fontSizeTitle, 0, $spaceLeft+$textSpacePadding, $fontSizeTitle+$textSpacePadding, $black, $font, $text);
+        // Add the date on the right
         imagettftext($im, $fontSizeDate, -90, $imgWidth-30, ($imgHeight-$dateBBwidth)/2, $lightGrey, $font, $dateText);
         
         // Using imagepng() results in clearer text compared with imagejpeg()

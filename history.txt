@@ -64,7 +64,11 @@ Feature Requests:
        - Ini files
        - URL install aufrufen
          - Passwort &auml;ndern!
-
+2012-04-07
+-------------------
+  /plugins/LSE/Util/CoverImageGenerator.php
+    Created the cover page.
+         
 2012-03-26
 -------------------
   /include/classes/elements/BCElement.inc
