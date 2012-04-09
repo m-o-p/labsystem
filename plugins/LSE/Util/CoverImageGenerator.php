@@ -37,10 +37,16 @@ class LSE_Util_CoverImageGenerator
      */
     public function generate()
     {
-        $imgWidth  = 590;
-        $imgHeight = 750;
-        $fontSize  = 68;
-        $font      = '../plugins/LSE/Util/arial.ttf';
+        $imgWidth     = 590;
+        $imgHeight    = 750;
+        
+        $fontSizeLeft = 68;
+        $spaceLeft    = $fontSizeLeft+50;
+        $fontSizeRight= 26;
+        $spaceRight   = $fontSizeRight+20;
+        
+        
+        $font         = '../plugins/LSE/Util/VIPER_NORA.ttf';        
         
         // Create the image
         $im = imagecreatetruecolor($imgWidth, $imgHeight);
@@ -48,15 +54,26 @@ class LSE_Util_CoverImageGenerator
         // Create some colors
         $white = imagecolorallocate($im, 255, 255, 255);
         $grey = imagecolorallocate($im, 128, 128, 128);
+        $lightGrey = imagecolorallocate($im, 200, 200, 200);
         $black = imagecolorallocate($im, 0, 0, 0);
-        imagefilledrectangle($im, 0, 0, $imgWidth - 1, $imgHeight - 1, $white);
+        imagefilledrectangle($im, $spaceLeft, 0, $imgWidth - 1, $imgHeight - 1, $lightGrey);
+        
+        imagefilledrectangle($im, 0, 0, $spaceLeft-1, $imgHeight - 1, $black);
         
         // Load existing image
         $srcFilename = $this->_srcImagePath;
         $srcImgSize = getimagesize($srcFilename);
         //echo( $srcFilename );
         $srcImg = imagecreatefromstring(file_get_contents($srcFilename));
-        imagecopyresized($im, $srcImg, 0, 0, 0, 0, $imgWidth, $imgHeight, $srcImgSize[0], $srcImgSize[1]);
+        
+        // Put the image on the cover
+        // It should be 90% width:
+        $desWidth = $imgWidth-$spaceLeft-$spaceRight;
+        $desHeight = $imgHeight; //$desWidth/$srcImgSize[0]*$srcImgSize[1];
+        $desSpaceTop = 0;
+        $desSpaceLeft = $spaceLeft;
+        //imagecopyresized($im, $srcImg, 0, 0, 0, 0, $imgWidth, $imgHeight, $srcImgSize[0], $srcImgSize[1]);
+        imagecopyresized($im, $srcImg, $desSpaceLeft, $desSpaceTop, 0, 0, $desWidth, $desHeight, $srcImgSize[0], $srcImgSize[1]);
         
         // The text to draw
         $text = $this->_text;
@@ -65,10 +82,12 @@ class LSE_Util_CoverImageGenerator
         
         
         // Add some shadow to the text
-        imagettftext($im, $fontSize, 0, 14, 84, $white, $font, $text);
+        //imagettftext($im, $fontSize, 90, 84, 734, $grey, $font, $text);
         
         // Add the text
-        imagettftext($im, $fontSize, 0, 10, 80, $black, $font, $text);
+        imagettftext($im, $fontSizeLeft, 90, 85, 730, $white, $font, $text);
+        
+        imagettftext($im, $fontSizeRight, -90, $imgWidth-30, $desSpaceTop, $black, $font, date( 'r' ));
         
         // Using imagepng() results in clearer text compared with imagejpeg()
         imagepng($im, $this->_dstImagePath);
