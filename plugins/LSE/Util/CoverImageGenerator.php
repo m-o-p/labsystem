@@ -39,14 +39,25 @@ class LSE_Util_CoverImageGenerator
     {
         $imgWidth     = 590;
         $imgHeight    = 750;
+        $font         = '../plugins/LSE/Util/VIPER_NORA.ttf';
         
-        $fontSizeLeft = 68;
-        $spaceLeft    = $fontSizeLeft+50;
-        $fontSizeRight= 26;
-        $spaceRight   = $fontSizeRight+20;
+        // Load Logo for the area on the left
+        $logoLeftFilename = '../syspix/labsyslogo_443x40.gif';
+        $logoLeftImgSize  = getimagesize($logoLeftFilename);
+        $logoLeftImg      = imagecreatefromstring(file_get_contents($logoLeftFilename));
+        $logoLeftImg      = imagerotate( $logoLeftImg, 90, 0 );
+        $logoLeftWidth    = $logoLeftImgSize[1];
+        $logoLeftHeight   = $logoLeftImgSize[0];
         
+        $fontSizeTitle = 68;
+        $spaceLeft     = $logoLeftWidth;
+        $fontSizeDate  = 26;
+        $textSpacePadding = 10;
         
-        $font         = '../plugins/LSE/Util/VIPER_NORA.ttf';        
+        $dateText      = date('r');
+        $dateBB        = imageftbbox($fontSizeDate, 0, $font, $dateText);
+        $spaceRight    = $dateBB[3]+$fontSizeDate+$textSpacePadding;
+        $dateBBwidth   = $dateBB[4]-$dateBB[6];   
         
         // Create the image
         $im = imagecreatetruecolor($imgWidth, $imgHeight);
@@ -54,40 +65,63 @@ class LSE_Util_CoverImageGenerator
         // Create some colors
         $white = imagecolorallocate($im, 255, 255, 255);
         $grey = imagecolorallocate($im, 128, 128, 128);
-        $lightGrey = imagecolorallocate($im, 200, 200, 200);
+        $lightGrey = imagecolorallocate($im, 245, 245, 245);
         $black = imagecolorallocate($im, 0, 0, 0);
+        $labsysBlue = imagecolorallocate($im, 70, 130, 180);
+        $labsysOrange = imagecolorallocate($im, 233, 150, 122);
+
+        // Fill boxes
         imagefilledrectangle($im, $spaceLeft, 0, $imgWidth - 1, $imgHeight - 1, $lightGrey);
+        imagefilledrectangle($im, 0, 0, $spaceLeft-1, $imgHeight - 1, $labsysBlue);
+        imagefilledrectangle($im, $imgWidth-$spaceRight+1, 0, $imgWidth - 1, $imgHeight - 1, $labsysOrange);
         
-        imagefilledrectangle($im, 0, 0, $spaceLeft-1, $imgHeight - 1, $black);
+        // The text to draw
+        $text = $this->_text;
+        $text = wordwrap($text, 8, "\n");
+        $textbbox = imageftbbox($fontSizeTitle, 0, $font, $text);
+        
+        // Calculate maximum space for image
+        $imageBBtop    = 2*$textSpacePadding+$textbbox[3]+$fontSizeTitle;
+        $imageBBleft   = $spaceLeft+$textSpacePadding;
+        $imageBBbottom = $imgHeight-$textSpacePadding;
+        $imageBBright  = $imgWidth-$spaceRight;
+        $imageBBwidth  = $imageBBright-$imageBBleft;
+        $imageBBheight = $imageBBbottom-$imageBBtop;
         
         // Load existing image
         $srcFilename = $this->_srcImagePath;
         $srcImgSize = getimagesize($srcFilename);
-        //echo( $srcFilename );
         $srcImg = imagecreatefromstring(file_get_contents($srcFilename));
         
-        // Put the image on the cover
-        // It should be 90% width:
-        $desWidth = $imgWidth-$spaceLeft-$spaceRight;
-        $desHeight = $imgHeight; //$desWidth/$srcImgSize[0]*$srcImgSize[1];
-        $desSpaceTop = 0;
-        $desSpaceLeft = $spaceLeft;
+        // Calculate the destination dimensions
+        
+        $desWidth  = $srcImgSize[0];
+        $desHeight = $srcImgSize[1];
+        if ( $desWidth > $imageBBwidth ){
+          // image too wide -> resize height accordingly
+          $desHeight = $imageBBwidth/$desWidth*$desHeight;
+          // set width to maximum
+          $desWidth  = $imageBBwidth;
+        }
+        
+        if ( $desHeight > $imageBBheight ){
+          // image too high -> resize width accordingly
+          $desWidth  = $imageBBheight/$desHeight*$desWidth;
+          // set height to maximum
+          $desHeight = $imageBBheight;
+        }
+        
         //imagecopyresized($im, $srcImg, 0, 0, 0, 0, $imgWidth, $imgHeight, $srcImgSize[0], $srcImgSize[1]);
-        imagecopyresized($im, $srcImg, $desSpaceLeft, $desSpaceTop, 0, 0, $desWidth, $desHeight, $srcImgSize[0], $srcImgSize[1]);
+        imagecopyresized($im, $srcImg, $imageBBleft+($imageBBwidth-$desWidth)/2, $imageBBtop+($imageBBheight-$desHeight)/2, 0, 0, $desWidth, $desHeight, $srcImgSize[0], $srcImgSize[1]);
+        imagedestroy( $srcImg );
         
-        // The text to draw
-        $text = $this->_text;
-        $text = str_replace(" ", "\n", $text);
-        // Replace path by your own font path
-        
-        
-        // Add some shadow to the text
-        //imagettftext($im, $fontSize, 90, 84, 734, $grey, $font, $text);
+        // place the logo centered on the left
+        imagecopyresized($im, $logoLeftImg, 0.5*($spaceLeft-$logoLeftWidth), 0, 0, 0, $logoLeftWidth, $logoLeftHeight, $logoLeftWidth, $logoLeftHeight);
+        imagedestroy( $logoLeftImg );
         
         // Add the text
-        imagettftext($im, $fontSizeLeft, 90, 85, 730, $white, $font, $text);
-        
-        imagettftext($im, $fontSizeRight, -90, $imgWidth-30, $desSpaceTop, $black, $font, date( 'r' ));
+        imagettftext($im, $fontSizeTitle, 0, $spaceLeft+$textSpacePadding, $fontSizeTitle+$textSpacePadding, $black, $font, $text);
+        imagettftext($im, $fontSizeDate, -90, $imgWidth-30, ($imgHeight-$dateBBwidth)/2, $lightGrey, $font, $dateText);
         
         // Using imagepng() results in clearer text compared with imagejpeg()
         imagepng($im, $this->_dstImagePath);
