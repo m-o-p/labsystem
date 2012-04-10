@@ -59,7 +59,7 @@ if (!$returnEpub){
 }
 
 // note
-if ( !$returnEpub && $lng->get("AccessibleLabsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("AccessibleLabsNote")."</div>\n" );
+if ( !$returnEpub && $lng->doesExist("AccessibleLabsNote") && $lng->get("AccessibleLabsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("AccessibleLabsNote")."</div>\n" );
 
 $accessibleLabs = array();
 $alreadyAdded = array(); // for not adding dups...
@@ -106,8 +106,8 @@ if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
       </td>
       <td class="labIndexText">
         <i><a href="../pages/view.php?address='.$prefaceID.'&amp;__LINKQUERY__" target="_top">'.$preface->title.'</a></i>
-        </td>
-      </tr>
+      </td>
+    </tr>
     ');
   }
 }
@@ -133,6 +133,21 @@ foreach ( $accessibleLabs as $value ){
   }
 }
 if (!$returnEpub){
+  $pge->put('
+    <tr>
+      <td width="75" class="labIndexNumber">
+      </td>
+      <td class="labIndexText">
+        <a href="'.$url->link2( '../pages/accessibleLabs.php?ePub=ePub' ).'">
+        
+        <img src="'.$url->link2( '../pages/getEPubCover.php' ).'" height="100" style="float: left; padding-right: 1em;" />
+        '.( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'
+        <div style="clear: left;"></div>
+        
+        </a>
+      </td>
+    </tr>
+  ');
   $pge->put('</table>');
 }
 

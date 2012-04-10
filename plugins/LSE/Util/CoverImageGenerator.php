@@ -75,7 +75,7 @@ class LSE_Util_CoverImageGenerator
         
         // The text to draw
         $text = $this->_text;
-        $text = wordwrap($text, 8, "\n");
+        $text = wordwrap($text, 10, "\n");
         $textbbox = imageftbbox($fontSizeTitle, 0, $font, $text);
         
         // Calculate maximum space for image

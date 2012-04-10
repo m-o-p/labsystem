@@ -435,7 +435,7 @@ TxtNotConfigUA      = "Diese Seite kann nur mit config=useradmin betrachtet werd
 explainLink2        = "Link zu diesem Element mit angeh&auml;ngtem __LINKQUERY__"
 explainView         = "Die Benutzeransicht des Elements..."
 explainEdit         = "Editieren..."
-explainLink2epub    = "ePub Version des Labs herunterladen..."
+explainLink2epub    = "Aktuelle ePub Version des Labs herunterladen. Das ePub beinhaltet immer alle aktuell zugreifbaren Labinhalte."
 explainPrint        = "Druckansicht (alles auf einer Seite)..."
 explainCreateNew    = "Neues Element dieses Typs erstellen..."
 explainManageElmnts = "Elemente verwalten..."

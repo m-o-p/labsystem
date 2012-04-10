@@ -30,7 +30,7 @@ class LSE_Renderer_MultiChapter implements LSE_Renderer_Interface
         if ( $coverImage ) {
             $ig = new LSE_Util_CoverImageGenerator();
             $srcPath = $coverImage;
-            $dstPath = tempnam('/tmp', 'LSE_CoverImage_');
+            $dstPath = tempnam(sys_get_temp_dir(), 'LSE_CoverImage_');
             $text    = $this->_engine->getBook()->getTitle();
             $ig->setSrcImagePath($srcPath);
             $ig->setDstImagePath($dstPath);
