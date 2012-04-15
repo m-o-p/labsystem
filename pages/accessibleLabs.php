@@ -25,11 +25,21 @@
  * @author     Marc-Oliver Pahl
  */
 require( "../include/init.inc" );
-require_once(INCLUDE_DIR . '/../plugins/LSE/Exporter.php');
 
 $pge->matchingMenu = $lng->get('MnuEntryCourseContent');
 $pge->title        = $cfg->get('SystemTitle').' '.$lng->get('MnuEntryCourseContent');
 $returnEpub        = $url->available( 'ePub' );
+
+if ($returnEpub){
+  $pge->visibleFor  = IS_USER;
+  if (!$usr->isOfKind( $pge->visibleFor )){
+    // not logged in but requesting ePub -> show login
+    require( $cfg->get("SystemPageLayoutFile") );
+    exit;
+  } else {
+    require_once(INCLUDE_DIR . '/../plugins/LSE/Exporter.php');
+  }
+}
 
 // head (create new)
 if ( !$returnEpub && $usr->isOfKind( IS_USER )) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".
@@ -139,11 +149,11 @@ if (!$returnEpub){
       </td>
       <td class="labIndexText">
         <a href="'.$url->link2( '../pages/accessibleLabs.php?ePub=ePub' ).'">
-        
+
         <img src="'.$url->link2( '../pages/getEPubCover.php' ).'" height="100" style="float: left; padding-right: 1em;" />
         '.( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'
         <div style="clear: left;"></div>
-        
+
         </a>
       </td>
     </tr>

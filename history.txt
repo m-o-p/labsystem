@@ -65,6 +65,19 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
          
+2012-04-15
+-------------------
+  Fixed things in the LSE plugin for ePub export.
+  /include/classes/ElementUser.inc
+    Fixed a security issue when checking for non-existent user roles (is_numeric check added).
+    
+  /pages/accessibleLabs.php
+    Fixed that the Login page is called when someone is not logged in and wants to load the ePub.
+  /pages/editConfig.php
+    Nothing?
+  
+
+editConfig.php
 2012-04-10
 -------------------
   /pages/accessibleLabs.php

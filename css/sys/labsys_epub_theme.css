@@ -89,9 +89,42 @@ h3 { font-size: 1.2em; }
 .capterCoverNumber {
     font-size: 5em;
     display: block;
-    color: 00212d;
+    color: #d4d4d4;
 }
 
 .bigPageGapAbove {
-    padding-top: 70%;
+    padding-top: 3em;
+}
+
+/**
+ * Used on title pages for collections inside a lab.
+ */
+.bigCinside-title{
+	padding: 0.5em;
+	padding-top: 2em;
+	padding-bottom: 0.5em;
+	background-color: #4682B4; /* labsystem_blue */
+	color: #ffffff;
+}
+
+/**
+ * Used for the title on the title page of a (pre-)lab.
+ */
+.bigCpreLab-title{
+	padding: 0.5em;
+	padding-top: 2em;
+	padding-bottom: 0.5em;
+	background-color: #E99678; /* labsystem_orange */
+	color: #ffffff;
+}
+
+hr{
+	color: #d4d4d4;
+	size: 1px;	
+}
+
+.author{
+	text-align: right;
+	font-size: 0.7em;
+	color: #d4d4d4;
 }

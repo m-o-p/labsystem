@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -39,7 +39,7 @@ class ElementUser {
   var $userRights;
   var $mailAddress;
   var $history;
-  
+
   function ElementUser( $uid, $userName, $foreName, $surName, $currentTeam, $userRights, $mailAddress, $history ){
     $this->uid                      = $uid;
     $this->userName                 = $userName;
@@ -50,7 +50,7 @@ class ElementUser {
     $this->mailAddress              = $mailAddress;
     $this->history                  = $history;
   }
-  
+
   /**
   * Checks if the $usr->userRights or $ownRole are fulfilled.
   * @param $role          The bitmask (role) to check for.
@@ -58,8 +58,8 @@ class ElementUser {
   * @return BOOL          True, if the rights are fulfilled false otherwise.
   */
   function isOfKind( $role, $ownRole="" ){
-    if ( $role == "0" ) { // too riscious to return true here (the user_roles might not be included) 0 must be checked explicitly
-                            trigger_error( "ElementUser::isOfKind: checked for 0", E_USER_WARNING ); 
+    if ( !is_numeric($role) || ($role == 0) ) { // too riscious to return true here (the user_roles might not be included) 0 must be checked explicitly
+                            trigger_error( $role.": ElementUser::isOfKind: checked for 0", E_USER_WARNING );
                             return false;
                         }
     if ($ownRole == "") $ownRole = $this->userRights;
@@ -82,7 +82,7 @@ class ElementUser {
             EB::history( $this->surName.", ".$this->foreName.":<br>\n".$this->history, "p1", true )."\n".
             "</div>\n";
   }
-  
+
   /**
   * Shows the legend of the property rows (for manageUsers).
   * @return               The html code of the legend.
@@ -92,12 +92,12 @@ class ElementUser {
     $lgnd = "<div class=\"labsys_mop_u_row\">\n".
             "<div class=\"labsys_mop_h3\">".$lng->get("legend")."</div>\n";
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1){
-      for ($j=1; $j<$i; $j=$j<<1) 
+      for ($j=1; $j<$i; $j=$j<<1)
         $lgnd .= '<input type="checkbox" disabled>'.infoArrow( '', true )/* ."\n" saves space! */;
       $lgnd .= rightsBox( "legend_".$i, $i, $i )." ".$lng->get("Explain_UR_".$i)."<br>\n";
     }
     // team
-    for ($j=1; $j<=MAX_USER_ROLE; $j=$j<<1) 
+    for ($j=1; $j<=MAX_USER_ROLE; $j=$j<<1)
       $lgnd .= '<input type="checkbox" disabled>'.infoArrow( '', true )/* ."\n" saves space! */;
     $lgnd .= "<input type=\"text\" name=\"legend\" tabindex=\"".$pge->nextTab++."\" class=\"labsys_mop_input_team\" value=\"".$lng->get("team")."\"><br>\n";
     $lgnd .= "</div>\n";

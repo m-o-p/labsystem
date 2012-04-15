@@ -1,19 +1,25 @@
 <?php
+// BigCWrapper wraps either Prelab or Labs or collections of pages inside one of them.
+// It creates a title page followed by the table of contents of this collection.
+
 // Available Variables
-// BigCWrapper wraps either Prelab or Labs or collections of pages intide a part
 $id           = $this->id;
 $title        = LSE_Util::filterPTag(htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false));
 $childContent = $this->childContent;
 $content      = $this->content;
+
+// is this BigC a subchapter (next level to l, e.g. l1.C3, or not, e.g. l1.C3.C4).
+// For subchapters a page breack will occur after the headline.
+$isSubChapter = substr_count( $id, '.' ) <= 1;
 
 // $content contains the navigation for following section
 $content = preg_replace('#(.*href=").*address=(.*)(".*)#', '${1}#${2}${3}', $content);
 ?>
 <!-- Start BigC : <?php print $id?> -->
 <div class="BigC BigCWrapper">
-    <h3 id='<?php print $id ?>' class="bigPageGapAbove"><?php print $title ?></h3>
-    <hr/>
-    <div class='pageBreakAfter'></div>
+    <div class="bigPageGapAbove"></div>
+    <h3 id='<?php print $id ?>' class='<?php echo( $isSubChapter ? 'bigCpreLab-title' : 'bigCinside-title'); ?>'><?php print $title ?></h3>
+    <?php if ($isSubChapter) { echo("<div class='pageBreakAfter'></div>"); }?>
     <?php if (!LSE_Util::checkParentType($id, 'l')): ?>
     <?php print $content ?>
     <div class='pageBreakAfter'></div>
