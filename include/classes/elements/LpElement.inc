@@ -116,7 +116,7 @@ class LpElement extends Element{
 //        htmlentities( $this->contents ),
         $this->getePubContents( $paragraph ),
         array(
-            'title'   => returnHTML( $this->title ),
+            'title'   => returnHTML( ( $paragraph != "" ?  $paragraph.'. '  : '' ).$this->title ),
         )
     );
 

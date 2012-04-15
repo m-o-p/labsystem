@@ -1,4 +1,4 @@
-@namespace h "http://www.w3.org/1999/xhtml";
+@namespace "http://www.w3.org/1999/xhtml";
 
 /**
  * Base style
@@ -84,4 +84,14 @@ h3 { font-size: 1.2em; }
 
 .pageBreakAfter {
     page-break-after: always;
+}
+
+.capterCoverNumber {
+    font-size: 5em;
+    display: block;
+    color: 00212d;
+}
+
+.bigPageGapAbove {
+    padding-top: 70%;
 }

@@ -1,18 +1,21 @@
 <?php
 // Available Variables
+// BigCWrapper wraps either Prelab or Labs or collections of pages intide a part
 $id           = $this->id;
 $title        = LSE_Util::filterPTag(htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false));
 $childContent = $this->childContent;
-$content      = $this->content; 
+$content      = $this->content;
 
 // $content contains the navigation for following section
 $content = preg_replace('#(.*href=").*address=(.*)(".*)#', '${1}#${2}${3}', $content);
 ?>
 <!-- Start BigC : <?php print $id?> -->
 <div class="BigC BigCWrapper">
-    <h3 id='<?php print $id ?>'><?php print $title ?></h3>
+    <h3 id='<?php print $id ?>' class="bigPageGapAbove"><?php print $title ?></h3>
+    <hr/>
+    <div class='pageBreakAfter'></div>
     <?php if (!LSE_Util::checkParentType($id, 'l')): ?>
-    <?php print $content ?> 
+    <?php print $content ?>
     <div class='pageBreakAfter'></div>
     <?php endif; ?>
     <?php print $childContent ?>
