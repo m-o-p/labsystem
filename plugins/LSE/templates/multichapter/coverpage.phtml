@@ -1,0 +1,16 @@
+<?php
+// Available variables
+$imagePath = $this->imagePath;
+$book = $this->book;
+?>
+<html>
+<head>
+  <title>Cover Page</title>
+</head>
+<body id='preface'>
+  <div class="pageBreakAfter"><img src="<?php print $imagePath ?>"/></div>
+  <?php if ($book->getOption('imprint')): ?>
+  <div><?php print $book->getOption('imprint')?></div>
+  <?php endif; ?>
+</body>
+</html>
