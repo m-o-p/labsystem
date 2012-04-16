@@ -719,8 +719,19 @@ class LlElement extends Element{
             // 'userStyleSheetPath' => $cfg->get("UserStyleSheet")
         // Problem: user's might not write proper epub styles... thus better ignore
     );
-    if ($url->available('courseLogo') && ($cfg->get('courseLogo') != '')) {
-        $epubConfig['coverImage'] = '../' . $cfg->get('courseLogo');
+    $epubConfig['coverImage'] = ( $cfg->doesExist('courseLogo') && ($cfg->get('courseLogo') != '') ? $cfg->get('courseLogo') : '../syspix/labsyslogo_443x40.gif' );
+    // imprint:
+    if ($cfg->doesExist('imprintID') && $cfg->get('imprintID')!=''){
+      $imprintID = $cfg->get('imprintID');
+      $id = $imprintID{0}; $num = substr( $imprintID, 1);
+      require( "../php/getDBIbyID.inc" ); /* -> $DBI */
+      if ( !$imprint = $DBI->getData2idx( $num ) ){
+        trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
+        exit;
+      }
+      $epubConfig['imprint'] = $imprint->getePubContents();
+    } else {
+      $epubConfig['imprint'] = $cfg->get('SystemTitle')."<br />\n".date( $lng->get("DateFormat") )."<br />\nAll rights reserved.";
     }
     $epubExporter->save('Ll', $fullAddress, '', $epubConfig);
 
