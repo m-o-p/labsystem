@@ -128,3 +128,9 @@ hr{
 	font-size: 0.7em;
 	color: #d4d4d4;
 }
+
+.coverInside{
+	vertical-align:middle;
+	text-align: center;
+	page-break-after: always;
+}
