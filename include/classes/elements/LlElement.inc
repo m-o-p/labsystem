@@ -719,6 +719,8 @@ class LlElement extends Element{
             // 'userStyleSheetPath' => $cfg->get("UserStyleSheet")
         // Problem: user's might not write proper epub styles... thus better ignore
     );
+    
+    // cover:
     $epubConfig['coverImage'] = ( $cfg->doesExist('courseLogo') && ($cfg->get('courseLogo') != '') ? $cfg->get('courseLogo') : '../syspix/labsyslogo_443x40.gif' );
     // imprint:
     if ($cfg->doesExist('imprintID') && $cfg->get('imprintID')!=''){
@@ -733,6 +735,7 @@ class LlElement extends Element{
     } else {
       $epubConfig['imprint'] = $cfg->get('SystemTitle')."<br />\n".date( $lng->get("DateFormat") )."<br />\nAll rights reserved.";
     }
+    
     $epubExporter->save('Ll', $fullAddress, '', $epubConfig);
 
     /*
