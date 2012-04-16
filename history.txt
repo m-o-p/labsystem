@@ -78,6 +78,12 @@ Feature Requests:
     MultiChapter.php
     coverpage.phtml
   Some Updates for the ePub.
+  
+  /include/classes/ElementButtons.inc
+  /include/classes/elements/LlElement.inc
+  /pages/accessibleLabs.php
+    Added a new variable to the config "allowEpubDownload". Only if available and set to "1" the ePub downloads work and are offered.
+  
 
 2012-04-15
 -------------------

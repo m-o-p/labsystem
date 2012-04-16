@@ -28,7 +28,8 @@ require( "../include/init.inc" );
 
 $pge->matchingMenu = $lng->get('MnuEntryCourseContent');
 $pge->title        = $cfg->get('SystemTitle').' '.$lng->get('MnuEntryCourseContent');
-$returnEpub        = $url->available( 'ePub' );
+$allowEpub         = $cfg->doesExist('allowEpubDownload') && ($cfg->get('allowEpubDownload') == "1");
+$returnEpub        = $url->available( 'ePub' ) && $allowEpub;
 
 if ($returnEpub){
   $pge->visibleFor  = IS_USER;
@@ -44,9 +45,9 @@ if ($returnEpub){
 // head (create new)
 if ( !$returnEpub && $usr->isOfKind( IS_USER )) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".
 ($usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::link2Url( '../pages/accessibleLabs.php' ) : '').
-EB::mkLink(  $url->link2( '../pages/accessibleLabs.php?ePub=ePub' ),
-                        "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" )
-."</div>\n" );
+($allowEpub ? EB::mkLink(  $url->link2( '../pages/accessibleLabs.php?ePub=ePub' ),
+                                        "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" )
+              : '' )."</div>\n" );
 if ($returnEpub){
   // echo("initializing ePub<br>");
   //TODO: Call functions to tell ePub export that multiple labs come now.
@@ -148,7 +149,7 @@ foreach ( $accessibleLabs as $value ){
 ');
   }
 }
-if (!$returnEpub && $usr->isOfKind( IS_USER )){
+if (!$returnEpub && $allowEpub && $usr->isOfKind( IS_USER )){
   $pge->put('
     <tr>
       <td width="75" class="labIndexNumber">

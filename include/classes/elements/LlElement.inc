@@ -698,6 +698,13 @@ class LlElement extends Element{
   */
   function showEPub( $fullAddress, $extParagraph, $render = false ){
     global $lng, $cfg, $url;
+
+    $allowEpub         = $cfg->doesExist('allowEpubDownload') && ($cfg->get('allowEpubDownload') == "1");
+    if (!$allowEpub){
+      exit;
+    }
+
+
     include_once(INCLUDE_DIR . '/../plugins/LSE/Exporter.php');
 
     // The title page.

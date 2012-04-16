@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -32,7 +32,7 @@
 * @version    1.0
 */
 class EB{ /* ElementButtons */
-  
+
   /**
   * This method is only called internally and returns the link.
   *
@@ -45,7 +45,7 @@ class EB{ /* ElementButtons */
     global $pge;
     return "\t<a tabindex=\"".$pge->nextTab++."\" href=\"".$link."\">".$img."</a>\n";
   }
-  
+
   /**
   * This method is only called internally and returns a hidden div with the link in a textbox for copying.
   *
@@ -74,7 +74,7 @@ class EB{ /* ElementButtons */
            "\n</div>"
            ;
   }
-   
+
   /**
   * This button contains the url of the given element with all necessary values for integrating it on a page.
   * So you can copy the elements address and paste it into a page element.
@@ -89,7 +89,7 @@ class EB{ /* ElementButtons */
                             "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
                             '<input type="text" style="width: 100%" value="&lt;a href=&quot;../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__&quot;&gt;Link to '.$address.'&lt;/a&gt;" onClick="this.select();">' );
   }
-  
+
   /**
   * Creates the link button linking to the given $link-url. Adds __LINKQUERY__
   *
@@ -104,7 +104,7 @@ class EB{ /* ElementButtons */
                             "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
                             '<input type="text" style="width: 100%" value="&lt;a href=&quot;'.$link.'&quot;&gt;Text&lt;/a&gt;" onClick="this.select();">' );
   }
-  
+
   /**
   * This button links to the epub of the element. It is used in l-elements.
   *
@@ -113,11 +113,15 @@ class EB{ /* ElementButtons */
   * @return          The button's html-code.
   */
   function link2epub( $address ){
-    global $lng;
+    global $lng, $cfg;
+    // Do not show the button if ePubs are not allowed.
+    $allowEpub = $cfg->doesExist('allowEpubDownload') && ($cfg->get('allowEpubDownload') == "1");
+    if (!$allowEpub){ return '';}
+
     return EB::mkLink( "../pages/view.php?address=".$address.".epub&amp;__LINKQUERY__",
                        "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" );
   }
-  
+
   /**
   * This button links to "view the element".
   *
@@ -143,7 +147,7 @@ class EB{ /* ElementButtons */
     $link = $url->link2( "../pages/edit.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get("explainEdit")."\">" );
   }
-  
+
   /**
   * This button links to "print view (all on one)".
   *
@@ -156,7 +160,7 @@ class EB{ /* ElementButtons */
     $link = $url->link2( "../pages/view.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_print_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view\" title=\"".$lng->get("explainPrint")."\">" );
   }
-  
+
   /**
   * This button links to "create a new element of this type".
   *
@@ -168,8 +172,8 @@ class EB{ /* ElementButtons */
     global $lng, $url;
     $link = $url->link2( "../pages/edit.php?address=".$elementID."1&amp;saveAsNew=true" );
     return EB::mkLink( $link, "<img src=\"../syspix/button_new_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"new\" title=\"".$lng->get("explainCreateNew")."\">" );
-  }  
-  
+  }
+
   /**
   * This button links to the elements' manage page.
   *
@@ -206,8 +210,8 @@ class EB{ /* ElementButtons */
     global $lng, $url;
     $link = $url->link2( "../pages/view.php?address=".$address.".structure" );
     return EB::mkLink( $link, "<img src=\"../syspix/button_view_structure_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view_structure\" title=\"".$lng->get("explainViewStructure")."\">" );
-  }  
-  
+  }
+
   /**
   * This button links to the element's history (normally via hidden layer by mouseclick).
   *
@@ -225,9 +229,9 @@ class EB{ /* ElementButtons */
   */
   function history ( $history, $address, $sendAsAddHist=false ){
     global $pge, $lng, $url, $cfg;
-    
+
     if ($url->available( 'hideHistory' )) return ''; // temporarily handy for HTML diffs...
-    
+
     // Shortening for Link (no stylesheet+JavaScript enabled)
     $shrtHistURL = "";
     if ( $sendAsAddHist ){
@@ -236,7 +240,7 @@ class EB{ /* ElementButtons */
                                else $shrtHistURL = $history;
       $shrtHistURL = urlencode( nl2br( $shrtHistURL ) );
     }
-    
+
     // shorten History to $cfg->get( 'defHistLns' ) Lines?
     if ( $url->available( 'fullHistory' ) || !$cfg->doesExist( 'limitHistLns2' ) )
         $maxLines = false;
@@ -245,16 +249,16 @@ class EB{ /* ElementButtons */
 
     if ( $maxLines ) $historyLines = explode( "\n", $history, $maxLines+1 );
                 else $historyLines = explode( "\n", $history );
-    
+
     $historyText = '';
     if ( $maxLines && (count( $historyLines ) == $maxLines+1) )
          $isLimited = 1; else $isLimited = 0;
-    for ( $i=0; $i < count( $historyLines ) - $isLimited; $i++ ) 
+    for ( $i=0; $i < count( $historyLines ) - $isLimited; $i++ )
       $historyText .= $historyLines[$i].'<br>'."\n";
 
-    if ( $isLimited ) 
+    if ( $isLimited )
       $historyText .= '<a href="'.$_SERVER['REQUEST_URI'].'&amp;fullHistory='.$address.'#history_'.$address.'">[...]</a>'."\n";
-    
+
     return " <a tabindex=\"".$pge->nextTab++."\" name=\"history_".$address."\" href=\"".
                 $url->link2("../pages/history.php?address=".$address.( $sendAsAddHist ?  "&amp;history=".$shrtHistURL : '' ) ).
                 "\"".
@@ -273,7 +277,7 @@ class EB{ /* ElementButtons */
            "\n</div>"
            ;
   }
-  
+
   /**
   * This button is used for navigation inside a collection.
   * Link to the next page.
@@ -287,7 +291,7 @@ class EB{ /* ElementButtons */
     $link = $url->link2( "../pages/view.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_previous_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"previous\" title=\"".$lng->get("explainPrev")."\">" );
   }
-  
+
   /**
   * This button is used for navigation inside a collection.
   * Link to the previous page.
