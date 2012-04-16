@@ -57,10 +57,19 @@ if ($returnEpub){
     'lang'    => $lng->get('Content-Language'),
     'isMultiChapterEnabled' => TRUE,
   );
-  if ($cfg->doesExist('courseLogo') && ($cfg->get('courseLogo') != '')) {
-    $epubConfig['coverImage'] = $cfg->get('courseLogo');
-    // echo("Creating title page using this logo: " . "<img src=\"../" . $cfg->get('courseLogo') . "\" />");
-    // echo("Rendering the title in using: http://php.net/manual/en/function.imagettftext.php");
+  $epubConfig['coverImage'] = ( $cfg->doesExist('courseLogo') && ($cfg->get('courseLogo') != '') ? $cfg->get('courseLogo') : '../syspix/labsyslogo_443x40.gif' );
+  // imprint:
+  if ($cfg->doesExist('imprintID') && $cfg->get('imprintID')!=''){
+    $imprintID = $cfg->get('imprintID');
+    $id = $imprintID{0}; $num = substr( $imprintID, 1);
+    require( "../php/getDBIbyID.inc" ); /* -> $DBI */
+    if ( !$imprint = $DBI->getData2idx( $num ) ){
+      trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
+      exit;
+    }
+    $epubConfig['imprint'] = $imprint->getePubContents();
+  } else {
+    $epubConfig['imprint'] = $cfg->get('SystemTitle')."<br />\n".date( $lng->get("DateFormat") )."<br />\nAll rights reserved.";
   }
 }
 // title
@@ -105,9 +114,6 @@ if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
     exit;
   }
   if ($returnEpub){
-    // echo("Adding foreword page $num: ".$preface->title."<br>");
-    //TODO: Add forword to ePub: $preface->showEPub( $prefaceID, '' );
-    //TODO: Fix how preface is rendered
     $epubConfig['preface'] = $preface->getePubContents();
   }else{
     $pge->put('
@@ -142,7 +148,7 @@ foreach ( $accessibleLabs as $value ){
 ');
   }
 }
-if (!$returnEpub){
+if (!$returnEpub && $usr->isOfKind( IS_USER )){
   $pge->put('
     <tr>
       <td width="75" class="labIndexNumber">
@@ -158,10 +164,10 @@ if (!$returnEpub){
       </td>
     </tr>
   ');
-  $pge->put('</table>');
 }
 
 if (!$returnEpub){
+  $pge->put('</table>');
   require( $cfg->get("SystemPageLayoutFile") );
 }
 else{

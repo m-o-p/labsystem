@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -44,27 +44,29 @@ class Pge extends LpElement{
   function Pge(){
     global $cfg, $usr;
     $this->LpElement( 0, "?untitled page!", "", "", 0, false, "" );
-    $this->replaceKey   = Array( "__LINKQUERY__", 
-                                 "__PAGETITLE__", 
-                                 "__SYSTEMTITLE__",         
-                                 "__FORENAME__", 
-                                 "__NAME__",    
-                                 "__USERNAME__", 
-                                 "__ELEMENTTITLE__",         
-                                 "__CURRENT_URL__",       
-                                 "__LINK2ADMIN_USER_INTERFACE__" );
-    $this->sanitizedKey   = Array( "awob6ope69", 
-                                "uhuk8afa95", 
-                                "uvur2awu94",         
-                                "onot5oka70", 
-                                "elid5upe10",    
-                                "anus9iri39", 
-                                "avod1ubo72",         
-                                "ugud9eka32",       
-                                "udan1obo94" );
+    $this->replaceKey   = Array( "__LINKQUERY__",
+                                 "__PAGETITLE__",
+                                 "__SYSTEMTITLE__",
+                                 "__FORENAME__",
+                                 "__NAME__",
+                                 "__USERNAME__",
+                                 "__ELEMENTTITLE__",
+                                 "__CURRENT_URL__",
+                                 "__LINK2ADMIN_USER_INTERFACE__",
+                                 "__CURRENT_TIMESTAMP__" );
+    $this->sanitizedKey   = Array( "awob6ope69",
+                                "uhuk8afa95",
+                                "uvur2awu94",
+                                "onot5oka70",
+                                "elid5upe10",
+                                "anus9iri39",
+                                "avod1ubo72",
+                                "ugud9eka32",
+                                "udan1obo94",
+                                "siducb4uib" );
     $this->replaceValue = "";
   }
-  
+
   /**
   * Override to the Element::isVisible();
   * Is the element visible?
@@ -84,7 +86,7 @@ class Pge extends LpElement{
   function put( $string ) {
     $this->contents .= $string;
   }
-  
+
   /**
   * In some markup languages the chosen constants $this->replaceKey have markup meaning.
   * Replaces the  $this->replaceKey by  $this->sanitizedKey which should be save.
@@ -95,7 +97,7 @@ class Pge extends LpElement{
   function sanitizeKeys( $string ){
     return str_replace( $this->replaceKey, $this->sanitizedKey, $string );
   }
-  
+
   /**
   * Replaces the constants with the values.
   * @param String The content the constants should be replaced in.
@@ -105,22 +107,23 @@ class Pge extends LpElement{
     // initialize replacements on first use:
     if($this->replaceValue==""){
     	$this->replaceValue = Array( $url->get("newQueryString"),
-    	                             $this->title, 
+    	                             $this->title,
     	                             $cfg->get("SystemTitle"),
     	                             $usr->foreName,
     	                             $usr->surName,
     	                             $usr->userName,
     	                             "WillBeReplacedByElsShow",
     	                             urlencode( $_SERVER['REQUEST_URI'] ),
-    	                             $cfg->get("Link2UserAdminInterface") );
+    	                             $cfg->get("Link2UserAdminInterface"),
+    	                             date( $lng->get("DateFormat") ) );
     }
 
     $text = ( str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
-                           array_merge( $this->replaceValue, $this->replaceValue ), 
-                           $text ) 
+                           array_merge( $this->replaceValue, $this->replaceValue ),
+                           $text )
                            );
   }
-  
+
   /**
   * This function is called to display the contents. It gets called in ../include/page_layout.inc.
   * This function overrides the one from LpElement.
@@ -129,12 +132,12 @@ class Pge extends LpElement{
     global $lng;
     if ( !$this->isVisible() ) // not enough rights->no content
       $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
-              
+
     // Some replacements must be set here since they may not be correct before.
     $this->replaceConstants($this->contents);
     echo( $this->contents );
   }
-  
+
   /**
   * This function returns the predefined constants that will be replaced when showing (p.e. __LINKQUERY__).
   * It gets called when one edits a page element.

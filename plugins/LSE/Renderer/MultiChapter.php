@@ -2,6 +2,7 @@
 require_once('LSE/Renderer/Interface.php');
 require_once('LSE/Logger.php');
 require_once('LSE/Util/CoverImageGenerator.php');
+require_once('LSE/includes/SPT/View.php');
 class LSE_Renderer_MultiChapter implements LSE_Renderer_Interface
 {
     protected $_log;
@@ -37,6 +38,22 @@ class LSE_Renderer_MultiChapter implements LSE_Renderer_Interface
             $ig->setText($text);
             $ig->generate();
             $this->_plugin->setCoverImage('coverImage', file_get_contents($dstPath), 'image/png');
+
+            // Readers like Kindle could use a separate startpage
+            $dstPathInfo = pathinfo($dstPath);
+            $view = new SPT_View();
+            $view->assign(array(
+                'imagePath' => "/" . $dstPathInfo['filename'],
+                'book'      => $this->_engine->getBook(),
+            ));
+            $coverPage = $view->render(LSE_ROOT . '/templates/multichapter/coverpage.phtml', true);
+            
+            // Since everything is done relative to $this->_plugin->docRoot, we have to reset it
+            $oldDocRoot = $this->_plugin->getDocRoot();
+            $this->_plugin->setDocRoot($dstPathInfo['dirname']);
+            $this->_plugin->addChapter( 'coverpage', 'coverpage.html', $coverPage, FALSE, EPUB::EXTERNAL_REF_ADD);
+            $this->_plugin->setDocRoot($oldDocRoot);
+            
             unlink($dstPath);
         }
     }

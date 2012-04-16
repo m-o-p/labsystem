@@ -65,6 +65,20 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
          
+2012-04-16
+-------------------
+  /include/classes/Pge.inc:
+    Added constant __CURRENT_TIMESTAMP__. It gets formatted with the system configuration setting $lng->get("DateFormat").
+    It is used for the ePub imprint for instance.
+  /pages/accessibleLabs.php
+    EPub link is now only visible when you are logged in.
+  /plugin/LSE...
+    labsys_epub_theme.css
+    Plugin.php
+    MultiChapter.php
+    coverpage.phtml
+  Some Updates for the ePub.
+
 2012-04-15
 -------------------
   Fixed things in the LSE plugin for ePub export.

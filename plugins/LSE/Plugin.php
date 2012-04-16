@@ -146,6 +146,11 @@ class LSE_Plugin extends EPub
         return $output;
     }
     
+    public function getDocRoot()
+    {
+        return $this->docRoot;
+    }
+    
     public function setDocRoot($docRoot)
     {
         $this->docRoot = $docRoot;

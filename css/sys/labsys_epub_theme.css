@@ -130,7 +130,13 @@ hr{
 }
 
 .coverInside{
+	height: 100%;
+	width: 100%;
 	vertical-align:middle;
 	text-align: center;
-	page-break-after: always;
+}
+
+.imprint{
+	font-size: 0.6em;
+	vertical-align:bottom;
 }
