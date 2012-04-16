@@ -84,6 +84,8 @@ Feature Requests:
   /pages/accessibleLabs.php
     Added a new variable to the config "allowEpubDownload". Only if available and set to "1" the ePub downloads work and are offered.
   
+  /include/classes/elements/LlElement.inc
+    Added Cover and imprint to chapter ePub.
 
 2012-04-15
 -------------------
