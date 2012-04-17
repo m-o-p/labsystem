@@ -17,14 +17,16 @@ class LSE_Renderer_SingleChapter implements LSE_Renderer_Interface
     
     public function render()
     {
-        $this->_setupCoverImage();
+        $this->_setupCoverPageAndCoverImage();
+        $this->_setupFrontMatter();
         $this->_setupTOC();
         $this->_setupChapters();
         $this->_finalize();
     }
     
-    protected function _setupCoverImage()
+    protected function _setupCoverPageAndCoverImage()
     {
+        $vars['book'] = $this->_engine->getBook();
         $coverImage = $this->_engine->getBook()->getCoverImage();
         if ( $coverImage ) {
             $ig = new LSE_Util_CoverImageGenerator();
@@ -36,8 +38,34 @@ class LSE_Renderer_SingleChapter implements LSE_Renderer_Interface
             $ig->setText($text);
             $ig->generate();
             $this->_plugin->setCoverImage('coverImage', file_get_contents($dstPath), 'image/png');
+            
+            // Readers like Kindle could use a separate startpage
+            $dstPathInfo = pathinfo($dstPath);
+            
+            $vars['imagePath'] = "/" . $dstPathInfo['filename'];
+            
+            $view = new SPT_View();
+            $view->assign($vars);
+            $coverPage = $view->render(LSE_ROOT . '/templates/coverpage.phtml', true);
+            $oldDocRoot = $this->_plugin->getDocRoot();
+            $this->_plugin->setDocRoot($dstPathInfo['dirname']);
+            file_put_contents('/tmp/abcd', $coverPage);
+            $this->_plugin->addChapter( 'coverpage', 'coverpage.html', $coverPage, FALSE, EPUB::EXTERNAL_REF_ADD);
+            $this->_plugin->setDocRoot($oldDocRoot);
+            
             unlink($dstPath);
         }
+    }
+    
+    protected function _setupFrontMatter()
+    {
+        $vars = array('book' => $this->_engine->getBook());
+        $view = new SPT_View();
+        $view->assign($vars);
+        $frontMatter = $view->render(LSE_ROOT . '/templates/frontmatter.phtml', true);
+        
+        // Since everything is done relative to $this->_plugin->docRoot, we have to reset it
+        $this->_plugin->addChapter( 'frontmatter', 'frontmatter.html', $frontMatter, FALSE, EPUB::EXTERNAL_REF_ADD);
     }
     
     protected function _setupTOC()

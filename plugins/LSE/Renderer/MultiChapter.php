@@ -18,15 +18,17 @@ class LSE_Renderer_MultiChapter implements LSE_Renderer_Interface
 
     public function render()
     {
-        $this->_setupCoverImage();
+        $this->_setupCoverPageAndCoverImage();
+        $this->_setupFrontMatter();
         $this->_setupMultiChapterTOC();
         $this->_setupPreface();
         $this->_setupChapters();
         $this->_finalize();
     }
 
-    protected function _setupCoverImage()
+    protected function _setupCoverPageAndCoverImage()
     {
+        $vars = array('book' => $this->_engine->getBook());
         $coverImage = $this->_engine->getBook()->getCoverImage();
         if ( $coverImage ) {
             $ig = new LSE_Util_CoverImageGenerator();
@@ -38,17 +40,15 @@ class LSE_Renderer_MultiChapter implements LSE_Renderer_Interface
             $ig->setText($text);
             $ig->generate();
             $this->_plugin->setCoverImage('coverImage', file_get_contents($dstPath), 'image/png');
-
+            
             // Readers like Kindle could use a separate startpage
             $dstPathInfo = pathinfo($dstPath);
-            $view = new SPT_View();
-            $view->assign(array(
-                'imagePath' => "/" . $dstPathInfo['filename'],
-                'book'      => $this->_engine->getBook(),
-            ));
-            $coverPage = $view->render(LSE_ROOT . '/templates/multichapter/coverpage.phtml', true);
             
-            // Since everything is done relative to $this->_plugin->docRoot, we have to reset it
+            $vars['imagePath'] = "/" . $dstPathInfo['filename'];
+            
+            $view = new SPT_View();
+            $view->assign($vars);
+            $coverPage = $view->render(LSE_ROOT . '/templates/coverpage.phtml', true);
             $oldDocRoot = $this->_plugin->getDocRoot();
             $this->_plugin->setDocRoot($dstPathInfo['dirname']);
             $this->_plugin->addChapter( 'coverpage', 'coverpage.html', $coverPage, FALSE, EPUB::EXTERNAL_REF_ADD);
@@ -56,6 +56,17 @@ class LSE_Renderer_MultiChapter implements LSE_Renderer_Interface
             
             unlink($dstPath);
         }
+    }
+    
+    protected function _setupFrontMatter()
+    {
+        $vars = array('book' => $this->_engine->getBook());
+        $view = new SPT_View();
+        $view->assign($vars);
+        $frontMatter = $view->render(LSE_ROOT . '/templates/frontmatter.phtml', true);
+        
+        // Since everything is done relative to $this->_plugin->docRoot, we have to reset it
+        $this->_plugin->addChapter( 'frontmatter', 'frontmatter.html', $frontMatter, FALSE, EPUB::EXTERNAL_REF_ADD);
     }
 
     protected function _setupMultiChapterTOC()
@@ -68,13 +79,14 @@ class LSE_Renderer_MultiChapter implements LSE_Renderer_Interface
 //        foreach ($graph as $key => $lElement) {
 //            $graph[$key] = array("toc" => array()) + $lElement;
 //        }
-        $elementTable += array('toc' => array('toc', 'Table of Contents'));
+        // $elementTable += array('toc' => array('toc', 'Table of Contents'));
 
         $graphPrefix = array();
         $elementTablePrefix = array();
 
-        $graphPrefix['multiChapterTocPage'] = array();
-        $elementTablePrefix['multiChapterTocPage'] = array('multiChapterTocPage', 'Table of Contents');
+        // $graphPrefix['multiChapterTocPage'] = array();
+        // We don't show TOC in TOC Page itself
+        // $elementTablePrefix['multiChapterTocPage'] = array('multiChapterTocPage', 'Table of Contents');
 
         if ($book->getPreface()) {
             $graphPrefix['preface'] = array();
