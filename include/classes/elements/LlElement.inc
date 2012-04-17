@@ -713,50 +713,24 @@ class LlElement extends Element{
         'title'   => returnHTML( ( $extParagraph != "" ?  $extParagraph.'. '  : '' ).$this->title ),
         'authors' => returnHTML( $this->authors ),
         'comment' => returnHTML( $this->comment ),
-        'lang'    => $lng->get('Content-Language'),
-        // pass the user style sheet to be included in the epub
+        'lang'    => $lng->get('Content-Language')
+        // The user styles could be passed here
+        // to be included in the epub as
         // it contains the user defined styles.
-            // 'userStyleSheetPath' => $cfg->get("UserStyleSheet")
-        // Problem: user's might not write proper epub styles... thus better ignore
+        // 'userStyleSheetPath' => $cfg->get("UserStyleSheet")
+        // Problem: user's might not write proper epub styles... thus better ignore?
     );
-    
-    // cover:
-    $epubConfig['coverImage'] = ( $cfg->doesExist('courseLogo') && ($cfg->get('courseLogo') != '') ? $cfg->get('courseLogo') : '../syspix/labsyslogo_443x40.gif' );
-    // imprint:
-    if ($cfg->doesExist('imprintID') && $cfg->get('imprintID')!=''){
-      $imprintID = $cfg->get('imprintID');
-      $id = $imprintID{0}; $num = substr( $imprintID, 1);
-      require( "../php/getDBIbyID.inc" ); /* -> $DBI */
-      if ( !$imprint = $DBI->getData2idx( $num ) ){
-        trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
-        exit;
-      }
-      $epubConfig['imprint'] = $imprint->getePubContents();
-    } else {
-      $epubConfig['imprint'] = $cfg->get('SystemTitle')."<br />\n".date( $lng->get("DateFormat") )."<br />\nAll rights reserved.";
-    }
-    
+
+    // set cover and imprint up:
+    require( '../include/setupEpubFrontMatter.inc');
+
     $epubExporter->save('Ll', $fullAddress, '', $epubConfig);
 
-    /*
-    echo('ePub to '.
-          '[l-Element '.$fullAddress.'] Title: '.$this->title.'<br>'.
-          '[l-Element] Authors: '.$this->authors.'<br>'.
-          '[l-Element] Abstract: '.$this->comment.'<br>'.
-          '[l-Element] Language: '.$lng->get('Content-Language')
-          // maybe create the TOC on the fly? At each C element...
-          //"[l-Element] <!-- start of collection entity --><div class=\"labsys_mop_c_inner_coll_entity\">\n".
-          //$this->showTOC( $fullAddress, $extParagraph ). // we need a ePub Version here.
-          //"<!-- stop of collection entity --></div>\n"
-         );
-    // The content.
-    echo( '<hr><hr>prelab<hr><hr><br>' );
-    */
     if ( $this->preLabIsVisible2Me )
-      $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx.".epub", '' ); //( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
-    // echo( '<hr><hr>lab<hr><hr><br>' );
+      $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx.".epub", '' );
+
     if ( $this->labIsVisible2Me )
-      $this->lab->show( $fullAddress.".C".$this->labCollectionIdx.".epub", '' ); //( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
+      $this->lab->show( $fullAddress.".C".$this->labCollectionIdx.".epub", '' );
 
     if ($render) {
         $epubExporter->setOptions($epubConfig);

@@ -7,7 +7,9 @@ require('../include/init.inc');
 $file=tempnam(sys_get_temp_dir(), 'ePub_CoverImage_');;
 include('../plugins/LSE/Util/CoverImageGenerator.php');
 $myCG = new LSE_Util_CoverImageGenerator();
-$myCG->setSrcImagePath( ( $cfg->doesExist('courseLogo') && ($cfg->get('courseLogo') != '') ? $cfg->get('courseLogo') : '../syspix/labsyslogo_443x40.gif' ) );
+// set cover and imprint up:
+require( '../include/setupEpubFrontMatter.inc');
+$myCG->setSrcImagePath( $epubConfig['coverImage'] );
 $myCG->setDstImagePath($file);
 $myCG->setText( $cfg->get('SystemTitle') );
 $myCG->generate();
