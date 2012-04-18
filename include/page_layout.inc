@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -56,11 +56,11 @@
 */
 
 // alert/ info data may come via url or via set $SYS{INFO, ALERT}
-if ( $url->available('sysinfo') ) if ( isset($SYSINFO) ) $SYSINFO .= htmlentities( html_entity_decode( $url->get('sysinfo') ) ); 
+if ( $url->available('sysinfo') ) if ( isset($SYSINFO) ) $SYSINFO .= htmlentities( html_entity_decode( $url->get('sysinfo') ) );
                                                  else $SYSINFO  = htmlentities( html_entity_decode( $url->get('sysinfo') ) );
-if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlentities( html_entity_decode( $url->get('sysalert') ) ); 
+if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlentities( html_entity_decode( $url->get('sysalert') ) );
                                                    else $SYSALERT  = htmlentities( html_entity_decode( $url->get('sysalert') ) );
-                                                   
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
@@ -69,28 +69,28 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     <meta http-equiv="Content-Language" content="<?php $lng->say("Content-Language"); ?>">
     <meta name="generator" content="labsystem.m-o-p.de">
     <link rel="stylesheet" type="text/css" href="<?php $cfg->say("SystemStyleSheet"); ?>">
-    <?PHP if ( $cfg->doesExist('SysOverridingSheet') ) 
-            /* with this sheet you can easily make adoptions without rewriting the whole 
+    <?PHP if ( $cfg->doesExist('SysOverridingSheet') )
+            /* with this sheet you can easily make adoptions without rewriting the whole
                stylesheet and without putting it into the user's stylesheet... */
-            if ( $cfg->get('SysOverridingSheet') != '' ) echo('<link rel="stylesheet" type="text/css; charset=iso-8859-1" href="'.$cfg->get('SysOverridingSheet').'">'."\n"); 
+            if ( $cfg->get('SysOverridingSheet') != '' ) echo('<link rel="stylesheet" type="text/css; charset=iso-8859-1" href="'.$cfg->get('SysOverridingSheet').'">'."\n");
             /* For browsers with the ability to switch between stylesheets you could use:
                <LINK type="text/css; charset=iso-8859-1" title="green" rel="alternate stylesheet" href="../css/sys/labsys_mop_green_theme.css">
              */
      ?>
-     
+
     <link rel="stylesheet" type="text/css" href="<?php $cfg->say("UserStyleSheet"); ?>">
 
     <link rel="stylesheet" type="text/css" href="<?php $cfg->say("PrintStyleSheet"); ?>" media="print">
 
     <link rel="shortcut icon" href="<?php $cfg->say("Favicon"); ?>">
-    
+
     <script src="../pages/scripts.js" type="text/javascript" language="javascript"></script>
     <script language="javascript" type="text/javascript">
       var discardChangesWarning = "<?php $lng->say('discardChangesWarning'); ?>";
     </script>
-    
+
 <?PHP /* TinyMCE (WYSIWYG-Editor) integration */
-    if ($url->available('tinyMCE')) 
+    if ($url->available('tinyMCE'))
       echo('
     <script language="javascript" type="text/javascript" src="../plugins/tiny_mce/tiny_mce.js"></script>
     <script language="javascript" type="text/javascript">
@@ -129,10 +129,10 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     </script>
     ');
 ?>
-    
+
     <TITLE><?php $pge->replaceConstants( $pge->title ); echo( $pge->title ); ?> [<?php echo( $usr->userName."@" ); $cfg->say("SystemTitle"); ?>]</TITLE>
   </HEAD>
-  
+
   <BODY onbeforeunload="return dirtyWarning();">
     <table class="labsys_mop_maintable" align="center" cellpadding="0" cellspacing="0">
       <?php /* table layout fixed: first row sets the width */
@@ -152,11 +152,11 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 
 <!-- ************************* start of top sysinfo ************************* -->
       <tr><td colspan="3" class="labsys_mop_topSysinfo">
-        <?php 
+        <?php
           if ( isset($SYSINFO) )  echo("<span class=\"labsys_mop_systeminfo\">".$SYSINFO."</span> ");
           if ( isset($SYSALERT) ) echo("<span class=\"labsys_mop_systemalert\">".$SYSALERT."</span> ");
           // seeing someone
-          if ( $usr->isSeeingSomeonesData() ) 
+          if ( $usr->isSeeingSomeonesData() )
             echo( '<span class="labsys_mop_seeingSomeone">'.
                   '<a href="'.$url->link2( '../php/executeOnLab.php?address=l1&function=setSeeingUID&param=%22%22&redirectTo='.urlencode( $_SERVER['REQUEST_URI'] ) ).'">'.
                   '['.$lng->get("dataOf").' '.$usr->theSeeingDescr().' '.
@@ -167,7 +167,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
                   '</a>'.
                   ' ]'.
                   '</span> ' );
-          if ( $url->available('hideAnswers') ) 
+          if ( $url->available('hideAnswers') )
             echo( '<span class="labsys_mop_seeingSomeone">'.
                   '['.$lng->get("dataOf").' '.
                   '<a href="'.str_replace( '&hideAnswers=true', '', $_SERVER['REQUEST_URI'] ).'">'.
@@ -194,7 +194,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
           // language selector
           echo(date( $lng->get("DateFormat") ).
                ' | <a href="'.$url->link2('../pages/selectSysLng.php').'">'.$runningSystemLanguage.'</a>' // link to language selector (from /include/language.inc)
-               ); 
+               );
         ?>
       </td></tr>
 <!-- ************************* stop of top sysinfo ************************* -->
@@ -204,7 +204,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
           $menuVisible = !$GLOBALS['url']->available('nomenu');
           $url2 = new Url(); $url2->put( $url->get("oldQueryString") );
           if ( $menuVisible ) $url2->put( "nomenu=true" ); else $url2->rem( "nomenu=true" );
-         
+
           $link = $url2->link2( $_SERVER['PHP_SELF'] ); /* the fragment (p.e. "#top7") of the uri will be lost since it is not available to php */
           echo("<td class=\"labsys_mop_ableMenu\" ".
                     "onmouseover='javascript:this.className=\"labsys_mop_ableMenuhover\";' ".
@@ -218,7 +218,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
         <?php if ($menuVisible) require( INCLUDE_DIR."/menu.inc"); ?>
         </td>
 <!-- ************************* stop of menu ************************* -->
-        
+
 <!-- ************************* start of content ************************* --><td class="labsys_mop_content">
 
 
@@ -228,14 +228,14 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 <!-- ************************* stop of content ************************* --></td>
       </tr>
       <tr><td colspan="3" class="labsys_mop_bottomFooter">
-        <?php 
-          $cfg->say("BottomFooter"); 
+        <?php
+          $cfg->say("BottomFooter");
           /**
             *   Please keep the link to the project page here to enable other people to find and use the system...
             *   Thank you!
             */
           echo(' &copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem"></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
-               $_SERVER['SERVER_NAME'].'" target="_blank">mop</a> 2005-2011'); // Please do not remove this acknowledgement to me thanks!
+               $_SERVER['SERVER_NAME'].'" target="_blank">mop</a> 2005-2012'); // Please do not remove this acknowledgement to me thanks!
         ?>
       </td></tr>
     </table>

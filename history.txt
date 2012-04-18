@@ -86,6 +86,17 @@ Feature Requests:
   
   /include/classes/elements/LlElement.inc
     Added Cover and imprint to chapter ePub.
+    
+2012-04-18
+-------------------
+  /css/sys/labsys_mop_basic.css
+    Added img tag resizing images in to a max-width of 100%.
+    No overlap on smaller screen anymore...
+  /include/page_layout.inc
+    Changed (C) -2012
+  /include/XIlib.inc
+    Added tidyHTML to the export finction processContent().
+    HTML gets cleaned on export now.
 
 2012-04-15
 -------------------

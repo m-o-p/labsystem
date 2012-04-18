@@ -47,6 +47,12 @@ a:hover {             text-decoration:underline; color: #0065BD;}
                               The systems puts this style around each element's content part. */
                       font-size: 0.9em; 
 }
+
+/* Scale images */
+img {
+max-width:100%;
+height:auto
+}
 /* The main layout is set in the ../include/page_layout.inc.
    The following styles are used there */
 

@@ -67,7 +67,7 @@ function createIdImportMappingInitDB( $labFolder ){
   $labElementsOnDisk = scandir( $cfg->get('exportImportDir').$labFolder.'/data' );
   foreach ( $labElementsOnDisk as $value ){
     if ( (strlen( $value ) < 4) || (substr($value, -4) != '.txt') || ($value[1] != '0') ) continue; // skip all uninteresting files
-    
+
     $elementType = $value[0]; // get type (first letter)
     $elementID = intval( substr($value, 1, 7) ); // get number (rest)
 
@@ -93,14 +93,14 @@ function persistElement( &$element, $labUID, $isImport=false ){
       case 'm':
         $fileName = EXPORT_DATA_DIR_PRIVATE.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
         fileWrite( $fileName, $element->getSerialized(), $labUID ); // save full version
-        // clear sensitive data        
+        // clear sensitive data
         if ($element->elementId == 'i') $element->exampleSolution = 'Here will be the example solution in the full data set.';
         if ($element->elementId == 'm') $element->answerExplanation = 'Here will be the answer explanation in the full data set.';
         $fileName = EXPORT_DATA_DIR_PUBLIC.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // save "public" version.
       default:
         fileWrite( $fileName, $element->getSerialized(), $labUID );
     }
-     
+
   	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
   	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
   	htmlentities($element->title).
@@ -130,7 +130,7 @@ function persistElement( &$element, $labUID, $isImport=false ){
 function fileWrite( $fileName, $content, $labUID ) {
 	global $cfg;
 	$fileNameWithPath = $cfg->get('exportImportDir').$labUID.'/'.$fileName;
-	if ( !file_exists(dirname($fileNameWithPath))) 
+	if ( !file_exists(dirname($fileNameWithPath)))
     mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
 	$fh = fopen($fileNameWithPath, 'w') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
 	fwrite($fh, $content);
@@ -143,30 +143,30 @@ function fileWrite( $fileName, $content, $labUID ) {
  * @param string $labUID       The unique identifier of this lab (UID for export).
  * @return boolean Success?
  */
-function deleteExportDirectory( $labUID ) { 
+function deleteExportDirectory( $labUID ) {
   global $cfg, $pge;
   $dir = $cfg->get('exportImportDir').$labUID;
-  
+
   $pge->put( '<div class="labsys_mop_elements_menu_l">Exporting to directory '.$dir.'.</div>' );
-  
+
   if (!file_exists($dir)) return true;
-  
+
   $pge->put( '<div class="labsys_mop_elements_menu_l">Removed existing content.</div>' );
   return deleteDirectory( $dir );
 }
 
 // from http://php.net/manual/en/function.rmdir.php [EDITOR NOTE: "Credits to erkethan at free dot fr." - thiago]
-function deleteDirectory($dir) { 
-  if (!file_exists($dir)) return true; 
-  if (!is_dir($dir) || is_link($dir)) return unlink($dir); 
-      foreach (scandir($dir) as $item) { 
-          if ($item == '.' || $item == '..') continue; 
-          if (!deleteDirectory($dir . "/" . $item)) { 
-              chmod($dir . "/" . $item, 0777); 
-              if (!deleteDirectory($dir . "/" . $item)) return false; 
-          }; 
-      } 
-      return rmdir($dir); 
+function deleteDirectory($dir) {
+  if (!file_exists($dir)) return true;
+  if (!is_dir($dir) || is_link($dir)) return unlink($dir);
+      foreach (scandir($dir) as $item) {
+          if ($item == '.' || $item == '..') continue;
+          if (!deleteDirectory($dir . "/" . $item)) {
+              chmod($dir . "/" . $item, 0777);
+              if (!deleteDirectory($dir . "/" . $item)) return false;
+          };
+      }
+      return rmdir($dir);
 }
 
 /**
@@ -175,7 +175,7 @@ function deleteDirectory($dir) {
  * @param string  &$HTMLcode                The html code to be altered.
  * @return                                  Alters the code directly.
  */
-function removeExampleSolutions(&$HTMLcode){ 
+function removeExampleSolutions(&$HTMLcode){
   // inputs
 	$HTMLcode= preg_replace_callback( '#(?<=<!-- example solution -->)'. // Assertion "must be preceded by"
                                     '(.*)'.
@@ -184,7 +184,7 @@ function removeExampleSolutions(&$HTMLcode){
                                       create_function(
                                           '$matches',
                                           'return "<br><br><br><br>";'
-                                      ), 
+                                      ),
                                    $HTMLcode
                                    );
   // MCs
@@ -198,7 +198,7 @@ function removeExampleSolutions(&$HTMLcode){
                                       create_function(
                                           '$matches',
                                           'return "";'
-                                      ), 
+                                      ),
                                    $HTMLcode
                                    );
   // remove disabled (just for fun)
@@ -211,7 +211,7 @@ function removeExampleSolutions(&$HTMLcode){
                                       create_function(
                                           '$matches',
                                           'return $matches[2];'
-                                      ), 
+                                      ),
                                    $HTMLcode
                                    );
   // remove graying showing right solutions
@@ -219,11 +219,11 @@ function removeExampleSolutions(&$HTMLcode){
                                       create_function(
                                           '$matches',
                                           'return "...";'
-                                      ), 
+                                      ),
                                    $HTMLcode
-                                   );               
+                                   );
 
-                                   
+
 
 }
 
@@ -245,7 +245,10 @@ function removeExampleSolutions(&$HTMLcode){
 function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true, $isImport=false ){
 	reMapIDs($HTMLcode, $labNumber, $IDmappingArray); // Replace the linked internal elements in $HTMLcode identified by address= or #
   if ( !$isImport ){ // Export
-    if ( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) updateUsedClasses($HTMLcode); // collect Style information
+    if ( substr( $HTMLcode, 0, 6 ) == '[HTML]' ){
+      tidyHTML($HTMLcode); // clean HTML up if enabled
+      updateUsedClasses($HTMLcode); // collect Style information
+    }
     processLocalPix($HTMLcode, $doCopy);
     processLocalFiles($HTMLcode, $doCopy);
   } else { // Import
@@ -278,7 +281,7 @@ function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true,
     return array_key_exists( $ID.$IDX, $IDmappingArray ) ? $oldID[0].substr( $IDmappingArray[$ID.$IDX], 1 ) /*keep first letter big... */ : 'missing' /* not found */;
   }
   /** end of functions */
-  
+
 function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
 	$HTMLcode= preg_replace_callback(  '#(?=address=|\#)'. // Assertion "must be preceded by" (link or anchor usage...
                                      '(l'.$labNumber.')'.              // Just replace things for the current lab
@@ -319,7 +322,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     $parts = explode( '/', $fileWithPath );
     return ((substr( $fileWithPath, 0, 4 ) != 'http') && (substr( $fileWithPath, 0, 6 ) != 'mailto') && !(is_array( $parts ) && isset($parts[1]) && in_array( $parts[1], $ignorePaths )) );
   }
-  
+
   /**
    * Makes the given String a valid filename.
    * This function is used to sanitize filenames for making
@@ -334,9 +337,9 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
    // Only allow one dash separator at a time (and make string lowercase)
    return mb_strtolower(preg_replace('/--+/u', '-', $string), 'UTF-8');
   }
-  
+
   /** For Export:
-   * If the file passed by $localFileWithPath is recognized as local and 
+   * If the file passed by $localFileWithPath is recognized as local and
    * $doCopy is set (not the case for the HTML preview), then the file
    * is copied to $destDir.
    *
@@ -350,14 +353,14 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
    */
   function handleLocalFile( $localFileWithPath, $destDir, $doCopy ){
     global $cfg, $pge, $externallyLinkedElements;
-    
+
     // Remove urlencoded chars as they are not in filenames.
     // Remove heading and trailing whitespaces.
     $localFileWithPath = trim(urldecode($localFileWithPath));
-   
+
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
-    $localFileWithPath = preg_replace_callback(  '#(http(s)?://)?'.$_SERVER['SERVER_NAME'].'#', 
+    $localFileWithPath = preg_replace_callback(  '#(http(s)?://)?'.$_SERVER['SERVER_NAME'].'#',
                                                  create_function(
                                                                 '$matches',
                                                                 'return "..";'
@@ -366,7 +369,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
 
     // Files linked "/" should be "../"
     if ( $localFileWithPath[0] == '/' ) $localFileWithPath = '..'.$localFileWithPath;
-    
+
     // not local: do nothing
     if ( !isLocal( $localFileWithPath ) ){
       if ($doCopy){
@@ -390,7 +393,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     return (!isset( $itWorked ) // $doCopy === false...
             || $itWorked) ? $destDir.$fileName : $localFileWithPath;
   }
-  
+
   /** For Import
    * The file passed by $file2importWithPath
    * is copied to $destDir
@@ -404,30 +407,30 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
    */
   function importFile( $file2importWithPath, $destDir ){
     global $cfg, $pge;
-    
+
     $destDir .= $GLOBALS['exportUID'].'/'; // add subdirectory
     $file2importWithPath = $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$file2importWithPath; // complete full path
     $fileName = end(explode('/', $file2importWithPath));
     if ( !file_exists($destDir)){ mkdir($destDir, 0755, true) or trigger_error("Can't create directory ".$destDir, E_USER_ERROR); }
-    
+
     (file_exists($file2importWithPath) && copy( $file2importWithPath, $destDir.'/'.$fileName ) ) or trigger_error("Can't copy file [".htmlentities($file2importWithPath).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
     $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                 ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
                 $fileName.
                 "</div>\r\n" );
-  
+
     return $destDir.$fileName;
   }
   /** end of functions */
 
 /** The following processors parse the code for links and pictures.
  *
- *  The content may be 
+ *  The content may be
  *   - HTML (prefix "[HTML]")
  *   - MarkDown (prefix "[MD]")
  *   - plain (no prefix)
  */
- 
+
 /**
  * Helper: Apples regex on text and call func on matches.
  * @param $regEx   To be identified in $text
@@ -455,7 +458,7 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
   if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
        && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
        ) return; // nothing to do as it is plaintext
-       
+
   if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
   // MarkDown: Additionally to the <img tag it has
   // ![Alt text](/path/to/img.jpg)
@@ -468,9 +471,9 @@ function processLocalPix( &$HTMLcode, $doCopy=true ){
                           'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];',
                            $HTMLcode
                          );
-    
+
 	applyFunctionOnRegEx( '/(<img [^\>]*?src\s*=\s*[",\'])(?!..\/syspix\/|\/syspix\/)(.+?)([",\'])/s',
-                        'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];', 
+                        'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];',
                         $HTMLcode
                        );
 }
@@ -485,7 +488,7 @@ function importPix( &$HTMLcode ){
   if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
        && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
        ) return; // nothing to do as it is plaintext
-       
+
   if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
   // MarkDown: Additionally to the <img tag it has
   // ![Alt text](/path/to/img.jpg)
@@ -498,7 +501,7 @@ function importPix( &$HTMLcode ){
                           'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
                           $HTMLcode
                          );
-                                       
+
 	applyFunctionOnRegEx( '/(<img [^\>]*?src\s*=\s*[",\'])(images\/\S+)([",\'])/s',
                         'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
                         $HTMLcode
@@ -516,7 +519,7 @@ function processLocalFiles( &$HTMLcode, $doCopy=true ){
   if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
        && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
        ) return; // nothing to do as it is plaintext
-       
+
   if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
   // MarkDown: Additionally to the <img tag it has
   // This is [an example](http://example.com/ "Title") inline link.
@@ -546,7 +549,7 @@ function importFiles( &$HTMLcode ){
   if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
        && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
        ) return; // nothing to do as it is plaintext
-       
+
   if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
   // MarkDown: Additionally to the <img tag it has
   // This is [an example](http://example.com/ "Title") inline link.
@@ -559,7 +562,7 @@ function importFiles( &$HTMLcode ){
                           'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
                           $HTMLcode
                          );
-                         
+
 	applyFunctionOnRegEx( '/(<a [^\>]*?href\s*=\s*[",\'])(files\/.+?)([",\'])/s',
                         'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
                         $HTMLcode
@@ -578,7 +581,7 @@ function reindexCollectionElements( &$content, &$IDmappingArray ){
 	$content = '';
 	foreach ( $contents as $element ){
 	  $new = mapIt( $element, $IDmappingArray );
-    if ($new == 'missing') 
+    if ($new == 'missing')
       $GLOBALS['pge']->put( 'Element MISSING and removed: '.$element );
     else
       $content .= ' '.$new;
@@ -690,9 +693,9 @@ function getLabsFromDirectory( $directory ){
  * Thus when defined .blalba .lalilu .lolila we will identify <div class="lolila"... as a match independent of any surrounding divs.
  * This should be sufficient for most cases.
  */
- 
+
 // Content processing
- 
+
 /**
 * Collects all styles used in the current $content.
 * Has to be called for each HTML content to be parsed.
@@ -722,10 +725,10 @@ function updateUsedClasses( $content ){
  */
 function parseStyleSheet( $styleSheetTxt, &$tagArray, &$definitionsArray ){
   global $tagNamesTmp, $styleDefinitionsTmp;
-  
+
   $tagNamesTmp = array();
   $styleDefinitionsTmp = array();
-  
+
   // 1) Separate $tagNames and $styleDefinitions (preserve everything in here)
   preg_replace_callback(   '#(((?<!{).)*){.*?}#s',
                            create_function(
@@ -734,7 +737,7 @@ function parseStyleSheet( $styleSheetTxt, &$tagArray, &$definitionsArray ){
                            ),
                            $styleSheetTxt
                            );
-     
+
   // 2) Remove comments from $tagNames
   foreach ( $tagNamesTmp as $key=>$value )
     $tagNamesTmp[$key] = preg_replace_callback(  '#(\/\*.*\*\/)#s',
@@ -744,7 +747,7 @@ function parseStyleSheet( $styleSheetTxt, &$tagArray, &$definitionsArray ){
                                                  ),
                                                  $value
                                                  );
-   
+
    $tagArray = $tagNamesTmp;
    $definitionsArray = $styleDefinitionsTmp;
 }
@@ -758,15 +761,15 @@ function parseStyleSheet( $styleSheetTxt, &$tagArray, &$definitionsArray ){
  */
 function getTagPointer( $tagList ){
   $tagStylePointer = array(); // holds a list of pointers to each tag
-  foreach ( $tagList as $indexStyle=>$value ) 
+  foreach ( $tagList as $indexStyle=>$value )
     foreach( explode(',', $value ) as $value2 ){ //$value2 are all style tags
       $value2=trim($value2); // remove white spaces
       $lastSubTagStart = strrpos( $value2, ' ' ); // where does the last subtag start?
       $lastTag = ( $lastSubTagStart===false ? $value2 : substr( $value2, $lastSubTagStart+1 ) );
-      if ($lastTag[0] == '.'){ // ignore non custom HTML tags   
+      if ($lastTag[0] == '.'){ // ignore non custom HTML tags
         $tagName = substr($lastTag, 1);
         if ( !isset( $tagStylePointer[$tagName] ) || !in_array( $indexStyle, $tagStylePointer[$tagName] ) ) //already in => do nothing
-          $tagStylePointer[$tagName][] = $indexStyle; // entry exists but pointer has to be added 
+          $tagStylePointer[$tagName][] = $indexStyle; // entry exists but pointer has to be added
       }
     }
   return $tagStylePointer;
@@ -787,7 +790,7 @@ function getTagHashes( $sourceArray, &$hashArray, &$mappingArray ){
     $hashedValue = sha1( str_replace( ' ', '', trim($value) ) ); // try to hash something unchangeable...
     $hashArray[] = $hashedValue;
     $mappingArray[ $hashedValue ] = $key;
-  } 
+  }
 }
 
 ?>
