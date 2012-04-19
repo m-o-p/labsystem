@@ -80,6 +80,9 @@ Feature Requests:
     Removed an obsolete comment.
   /pages/uaManageUsers.php
     Uncommented the lastChanged field on csv export to make sorting visible.
+  /include/customErrHandle.inc
+    Added error handler that sends an email instead of showing the error.
+    To use it uncomment the code and set the $ERRORMAIL_RECEIVER.
     
 2012-04-18
 -------------------

@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -23,10 +23,9 @@
 * errors look more gently...
 *
 * @module     ../include/customErrorHandler.inc
-* @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
 */
+
+//$ERRORMAIL_RECEIVER = 'root@localhost';
 
 /**
 * Displays the error.
@@ -51,7 +50,7 @@ function displayError( $cssColor, $html ){
 * @return
 */
 
-function myErrorHandler($errno, $errstr, $errfile, $errline) 
+function myErrorHandler($errno, $errstr, $errfile, $errline)
 {
   if ( defined ( 'E_STRICT' ) && ($errno == constant ( 'E_STRICT' ) ) ) return; // ignore php5 warnings of missing public etc.
 
@@ -65,7 +64,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
           '<head><title>labsys.m-o-p.de-error: ['.$errno.'] '.$errstr.'</title></head>'.
           '<body style="background-color: #444444; padding: 2em;">'
          );
-         
+
     echo( '<div style="color: #666666; font-family: Verdana, Sans-serif; font-size: 5em; margin-bottom:-0.4em;">'.
           'ATTENTION'.
           '</div>'
@@ -73,7 +72,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
 
     echo( '<div style="border: solid gray 1px; background-color: white; color: black; font-family: Verdana, Sans-serif; padding: 0.5em;">' );
 
-// the question mark  
+// the question mark
     echo( '<div style="color: red; font-size: 5em; font-weight: bold; margin-top: -0.2em; width: 50px; float: left;">'.
           '!'.
           '</div>'
@@ -85,9 +84,9 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
           ", PHP " . PHP_VERSION . " (" . PHP_OS . ")</span><br />\n".
           "aborting...<br />\n" );
 
-// the back link       
+// the back link
     echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px gray;"><a href="javascript: history.back();">&lt; b a c k</a></div>' );
-    
+
     echo( '</div>' );
     echo( '<div style="color: #666666; font-family: Verdana, Sans-serif; font-size: 2em; text-align: right;">'.
           'labsystem.m-o-p.de'.
@@ -97,23 +96,54 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
     exit(1);
     break;
   case E_USER_WARNING:
-    displayError( '#ffff77', 
+    displayError( '#ffff77',
                   "<b>$errstr</b>: On line $errline of file $errfile\n"
                  );
     break;
   case E_USER_NOTICE:
-    displayError( '#33ff33', 
+    displayError( '#33ff33',
                   "<b>$errstr</b>: On line $errline of file $errfile\n"
                  );
     break;
   default:
-    displayError( '#6666ff', 
+    displayError( '#6666ff',
                   "<b>$errstr</b>: On line $errline of file $errfile\n"
                  );
     break;
   }
 }
 
+// This error handler sends an email with all relevant information
+// function mail_error_handler($number, $message, $file, $line, $vars){
+//   $email =
+//   $_SERVER['REQUEST_URI']."<br>".
+//   ( isset($_SESSION["uid"]) ? $_SESSION["foreName"].' '.$_SESSION["surName"].
+//                               ' ('.$_SESSION["mailAddress"].';i rights='.$_SESSION["userRights"].")<br>"
+//                               : '')."
+//                 <p>An error ($number) occurred on line
+//                 <strong>$line</strong> and in the <strong>file: $file.</strong>
+//                 <p> $message </p>";
+
+//   $email .= "<pre>" . print_r($vars, 1) . "</pre>";
+
+//   $headers = 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
+//   // Email the error to someone...
+//   if ( ($number !== E_NOTICE) && ($number < 2048) ){
+//     error_log($email, 1, $ERRORMAIL_RECEIVER, $headers);
+//   }
+
+//   // Make sure that you decide how to respond to errors (on the user's side)
+//   // Either echo an error message, or kill the entire project. Up to you...
+//   // The code below ensures that we only "die" if the error was more than
+//   // just a NOTICE.
+//   //if ( ($number !== E_NOTICE) && ($number !== E_WARNING) && ($number < 2048) ) {
+//   //      die("There was an error. Sorry.");
+//   //}
+// }
+
+
 // Install the new error handler.
+// $old_error_handler = set_error_handler('mail_error_handler');
 $old_error_handler = set_error_handler("myErrorHandler");
 ?>
