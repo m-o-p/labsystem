@@ -413,7 +413,8 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     $fileName = end(explode('/', $file2importWithPath));
     if ( !file_exists($destDir)){ mkdir($destDir, 0755, true) or trigger_error("Can't create directory ".$destDir, E_USER_ERROR); }
 
-    (file_exists($file2importWithPath) && copy( $file2importWithPath, $destDir.'/'.$fileName ) ) or trigger_error("Can't copy file [".htmlentities($file2importWithPath).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
+    (file_exists($file2importWithPath) && copy( $file2importWithPath, $destDir.$fileName ) )
+    or trigger_error("Can't copy file from '".htmlentities($file2importWithPath)."' to '".$destDir.$fileName, E_USER_WARNING);
     $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                 ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
                 $fileName.

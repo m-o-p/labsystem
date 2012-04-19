@@ -100,21 +100,21 @@ if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
   $id = $prefaceID{0}; $num = substr( $prefaceID, 1);
   require( "../php/getDBIbyID.inc" ); /* -> $DBI */
   if ( !$preface = $DBI->getData2idx( $num ) ){
-    trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
-    exit;
-  }
-  if ($returnEpub){
-    $epubConfig['preface'] = $preface->getePubContents();
+    trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_WARNING );
   }else{
-    $pge->put('
-    <tr>
-      <td width="75" class="labIndexNumber">
-      </td>
-      <td class="labIndexText">
-        <i><a href="../pages/view.php?address='.$prefaceID.'&amp;__LINKQUERY__" target="_top">'.$preface->title.'</a></i>
-      </td>
-    </tr>
-    ');
+    if ($returnEpub){
+      $epubConfig['preface'] = $preface->getePubContents();
+    }else{
+      $pge->put('
+      <tr>
+        <td width="75" class="labIndexNumber">
+        </td>
+        <td class="labIndexText">
+          <i><a href="../pages/view.php?address='.$prefaceID.'&amp;__LINKQUERY__" target="_top">'.$preface->title.'</a></i>
+        </td>
+      </tr>
+      ');
+    }
   }
 }
 
@@ -146,7 +146,7 @@ if (!$returnEpub && $allowEpub && $usr->isOfKind( IS_USER )){
       <td class="labIndexText">
         <a href="'.$url->link2( '../pages/accessibleLabs.php?ePub=ePub' ).'">
 
-        <img src="'.$url->link2( '../pages/getEPubCover.php' ).'" height="100" style="float: left; padding-right: 1em;" />
+        <img src="'.$url->link2( '../pages/getEPubCover.php' ).'" width="75px" style="float: left; padding-right: 1em;" />
         '.( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'
         <div style="clear: left;"></div>
 

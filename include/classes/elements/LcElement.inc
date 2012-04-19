@@ -220,6 +220,23 @@ class LcElement extends Element{
     $this->showEpubifiedChildren( $fullAddress, $extParagraph, false );
   }
 
+  function getePubContents( $paragraph="" ){
+    $returnVal = "";
+    $visibleArray = $this->getMyVisibleElements();
+    foreach( $visibleArray as $value ){
+      $id = $value{0};
+      $num = substr( $value, 1 );
+
+      require( "../php/getDBIbyID.inc" );
+      $element = $DBI->getData2idx( $num, true, $this->isInLab );
+
+      if (($id == 'p') ||Ê($id == 'c') ){
+        $returnVal .= $element->getePubContents( $paragraph );
+      }
+    }
+    return $returnVal;
+  }
+
   /**
   * Generates the ePub output for the children.
   *

@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -22,23 +22,29 @@
   * If no config is given this config is loaded:
   */
   define('DEFAULT_CONFIG', 'demo');
-  
+
 /**
  * This script forwards to the startpage.
- * Put the default configuration (the one that appears when no "config=" 
+ * Put the default configuration (the one that appears when no "config="
  * is present in the URL) in the second line where it says else $config = 'demo';
  */
   require( "include/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
                                              // needed to get parameters from the url ($url->get, ->available)
- 
+
   if ( $GLOBALS['url']->available('config') ) $config = $GLOBALS['url']->get('config'); // config provided
    else $config = DEFAULT_CONFIG; // use as default config: e.g. course32 here or &config=course23 in the URL -> config_course23.ini
 
   if ( $GLOBALS['url']->available('address') ) $address = $GLOBALS['url']->get('address'); // address provided
    else $address = 'p3'; // use this (startpage is 3) as defaul value
 
-  if ($address == 'accessableLabs') header ('Location: pages/accessableLabs.php?config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ));
+  if ($address == 'accessibleLabs') header ('Location: pages/accessibleLabs.php?config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ));
   else if ($address == 'register') header ('Location: pages/register.php?config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ));
+  // The link above leads to the scenario that each instance has its own registration list.
+  // In Munich we want to have only one registration list for the whole course.
+  // Thus we link to one registration instance for all courses, namely the useradmin.
+  // The configurations become vhost_useradmin then for distinction between different
+  // course types (e.g. ilab_userabmin and ilab2_useradmin).
+  // else if ($address == 'register') header ('Location: pages/register.php?config=useradmin');
   else header ('Location: pages/view.php?address='.$address.'&config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ) );
 
 /*

@@ -35,6 +35,7 @@ if ( $usr->isOfKind( $pge->visibleFor ) ){
 // visible for IS_CONTENT_EDITOR.
 // as we do not want this we exclude it here.
 // -> not IS_CONFIG_EDITOR -> blank
+  $userRestriction = $pge->visibleFor;
   require( "pgeStdFileEdit.inc" );
   // the following could be the currently open configuration...
   // this depends on the host we are currently on...

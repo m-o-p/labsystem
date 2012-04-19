@@ -65,6 +65,19 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
          
+2012-04-18
+-------------------
+  /include/classes/elements/LcElement.inc
+    Added "getePubContents" to allow having a c as preface element.
+  /include/XIlib.inc
+    Changed file names when importing files from the repository.
+  index.php
+    Changed forwarder to use accessibleLabs.php
+  /pages/accessibleLabs.php
+    Does not break on ePub creation when the preface is missing.
+  /pages/editConfig.php
+    Checks the access rights better now.
+
 2012-04-16
 -------------------
   /include/classes/Pge.inc:
