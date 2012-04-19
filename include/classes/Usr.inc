@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -44,7 +44,7 @@ class Usr extends ElementUser{
   function isLoggedIn() {
     return ( $this->userRights != IS_GUEST );
   }
-  
+
   /**
   * Selector to determine if the user is seeing someone else's data (for correcting).
   * @return BOOL  True if the user is seeing someone else's data, false otherwise.
@@ -57,21 +57,21 @@ class Usr extends ElementUser{
   /**
   * Whom is the user viewing?
   * @return The UID of the watched user or false.
-  */  
+  */
   function theSeeingUid(){
     if ( $this->isSeeingSomeonesData() ) return $_SESSION['seeingUID'];
     else return false;
   }
-  
+
   /**
   * What is the description of the viewed user?
   * @return The description of the watched user or false.
-  */  
+  */
   function theSeeingDescr(){
     if ( $this->isSeeingSomeonesData() ) return $_SESSION['seeingDESCR'];
     else return false;
   }
-  
+
   /**
   * Modifier to set whom the user is watching.
   * @param $uid The UID of the user to be watched.
@@ -79,7 +79,7 @@ class Usr extends ElementUser{
   function seesDataOf( $uid ){
     global $lng;
     if ( !($this->isOfKind( IS_CORRECTOR ) || ((IS_DB_USER_ADMIN != 0) && $this->isOfKind( IS_DB_USER_ADMIN ))) ) return false; // only correctors can do that
-    
+
     if ( $uid == "" ){ /* Turn off. */
       if ( isset( $_SESSION['seeingUID'] ) ){
         unset( $_SESSION['seeingUID'] );
@@ -95,7 +95,7 @@ class Usr extends ElementUser{
       $_SESSION['seeingUID'] = $uid;
     }
   }
-  
+
   /**
   * Asks the user DB fo forename, name and username.
   *
@@ -104,13 +104,13 @@ class Usr extends ElementUser{
   * @return Array( "name"     => string,
   *                "foreName" => string,
   *                "userName" => string,
-  *                "link"     => string    // links to ../php/setSeeingUID.php and should be 
+  *                "link"     => string    // links to ../php/setSeeingUID.php and should be
   *                                        // used wherever the username is needed to enable switching to the user's data
   *               );
   */
   function getUserInformation( $uid ){
     global $usr, $url, $lng;
-    if ( $usr->isOfKind( "IS_CORRECTOR" ) ){ // only correctors need to know about othe members
+    if ( $usr->isOfKind( IS_CORRECTOR ) ){ // only correctors need to know about othe members
       require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
       $uDBI = new DBInterfaceUser();
       $userData = $uDBI->getData4( $uid );

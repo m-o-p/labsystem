@@ -67,6 +67,8 @@ Feature Requests:
          
 2012-04-18
 -------------------
+  /include/classes/Usr.inc
+    Fixed isOfType("IS_CORRECTOR" by removing the "". 
   /include/classes/elements/LcElement.inc
     Added "getePubContents" to allow having a c as preface element.
   /include/XIlib.inc
