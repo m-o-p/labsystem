@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -49,16 +49,16 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                  EB::mkLink( $url->link2( '../pages/uaCreateUsers.php' ), "<img src=\"../syspix/button_new_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"new\" title=\"".$lng->get("explainCreateNew")."\">").
                  "</div>\n"
                );
-            
+
   // title
      $pge->put( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );
-     
-  // note
-     if ( $lng->get("uaManageUsrNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("uaManageUsrNote")."</div>\n" );  
 
-     
+  // note
+     if ( $lng->get("uaManageUsrNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("uaManageUsrNote")."</div>\n" );
+
+
 // stop seeing
-      if( $usr->isSeeingSomeonesData() ) 
+      if( $usr->isSeeingSomeonesData() )
         $pge->put( '<div class="labsys_mop_button_fullwidth">'."\n".
                    '<a href="'.$url->link2( '../php/uaManageUsersExecute.php?function=see&param='.urlencode( '' ).'&redirectTo='.urlencode( $_SERVER['REQUEST_URI'] ) ).'">'.
                    $lng->get("stopSeeingData").
@@ -68,9 +68,9 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
 // /stop seeing
 
   // new Interface to the userDB
-    $userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 
-                                $cfg->get('UserDatabaseUserName'), 
-                                $cfg->get('UserDatabasePassWord'), 
+    $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
+                                $cfg->get('UserDatabaseUserName'),
+                                $cfg->get('UserDatabasePassWord'),
                                 $cfg->get('UserDatabaseName'));
 
 // Multipageresult-Filtering Init $_GET as it is used by the sorter...
@@ -81,7 +81,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
 
 // new restriction? => set start to 1!
 if (isset($_POST['restrictTo'])) $startFrom = 1;
-    
+
       if ( $GLOBALS['url']->available('frameSize') &&
            is_numeric ( $GLOBALS['url']->get('frameSize') ) &&
            ($GLOBALS['url']->get('frameSize') > 0)
@@ -90,7 +90,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
 
 //Sorter
   // which courses exist?
-    // ask for the couseID fields starting with _                         
+    // ask for the couseID fields starting with _
     // list all columns
     $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
     $courseArray = Array();
@@ -112,13 +112,13 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
     // the sorter
 // /Sorter
       $pge->put( $sorter );
-      
+
 // DB Query
-    $result = $userDBC->mkSelect( '*', 
-                                  $cfg->get('UserDatabaseTable'), 
+    $result = $userDBC->mkSelect( '*',
+                                  $cfg->get('UserDatabaseTable'),
                                   ( (isset($_POST['restrictTo'])) ? // POST overrides GET!
                                       ( $_POST['restrictTo']!='' ? $_POST['restrictTo'].'=1' : '' ) : // empty? ignore!
-                                    ( ($GLOBALS['url']->available('restrictTo')) && $GLOBALS['url']->get('restrictTo')!='' ? $GLOBALS['url']->get('restrictTo').'=1' : '' ) 
+                                    ( ($GLOBALS['url']->available('restrictTo')) && $GLOBALS['url']->get('restrictTo')!='' ? $GLOBALS['url']->get('restrictTo').'=1' : '' )
                                    ),
                                    ( $restrictToKey == '_unassigned' ? 'registerFor, ' : '' ). // if unassigned order as well by courses registered to
                                    $orderBy.( $asc ?  ' ASC' :  ' DESC'  )
@@ -131,8 +131,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
      // Es wird downloaded.pdf benannt
      header('Content-Disposition: attachment; filename="labsystem'.$restrictToKey.'CSV.txt"');
      $doNotListFromUser = Array( $cfg->get('UserDBField_uid'),
-                                 $cfg->get('UserDBField_password'),
-                                 'labsys_mop_last_change'
+                                 $cfg->get('UserDBField_password')
                                 );
       $printLegend = true;
       while($data = mysql_fetch_assoc($result)){
@@ -146,23 +145,23 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
       }
       exit();
     }
-                   
+
 // Multipageresult-Filtering
       // How many lines were returned?
       $existingElemnts = $userDBC->datasetsIn($result);
-      
+
     // With more than 360 elements more than 8M are used and it gets slow!
     // -> only show result partially!
     // In mysql exists [LIMIT offset, rows] as argument, one could use that. BUT how many totally?
-     
+
       $manageNavigation = '<!-- navigation -->'."\n";
       $manageNavigation .= '<div class="labsys_mop_element_navigation">'."\n";
-    
+
         // back Arrows
         if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php?'.
                                                                                      'startFrom='.($startFrom-$frameSize).
                                                                                      '&frameSize='.$frameSize ).'">&lt;&lt;</a> '."\n";
-      
+
           $j = 1;
           for ( $i=1; $i<$existingElemnts; $i+=$frameSize ){
             $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php?'.
@@ -174,26 +173,26 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
                                  ( ($startFrom == $i) ?  '</b>'  : '' ).
                                  '</a> '."\n";
           }
-      
+
         // forward Arrows
         if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php?'.
                                                                                         'startFrom='.($startFrom+$frameSize).
                                                                                         '&frameSize='.$frameSize ).'">&gt;&gt;</a>'."\n";
-    
+
       $manageNavigation .= '</div>'."\n";
       $manageNavigation .= '<!-- /navigation -->'."\n";
-      
-    // If preserved before the links above become unsusable...  
+
+    // If preserved before the links above become unsusable...
       $url->preserve( 'startFrom' );
       $url->preserve( 'frameSize' );
 // /Multipageresult-Filtering
 
       $pge->put( $manageNavigation );
-      
+
 // legend
       $pge->put( "<div class=\"labsys_mop_u_row\">\n".
                  "<div class=\"labsys_mop_h3\">".$lng->get("legend")."</div>\n" );
-    
+
       for ( $i=0; $i<count( $courseArray ); $i++){
           for ($j=1; $j<=$i; $j++) // empty boxes
             $pge->put( '<input type="checkbox" disabled>'.infoArrow( '', true )/* ."\n" saves space! */ );
@@ -209,17 +208,17 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
                "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
                "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"".$url->rawLink2( $_SERVER['PHP_SELF'] )."\">\n"
               );
-              
+
     $currElNr = 0;
     $stopAt = $startFrom+$frameSize;
     while( $data = mysql_fetch_assoc( $result ) ){
       // skip not wanted
       $currElNr++; if ( $currElNr < $startFrom ) continue; if ( $currElNr >= $stopAt ) break;
       $pge->put( '<div class="labsys_mop_u_row">'."\n" );
-      
+
       // Identifier if uid is present (only selection is shown)
       $pge->put( '<input type="hidden" name="'.$data[ $cfg->get('UserDBField_uid') ].'" value="1">' );
-      
+
       foreach ( $data as $key => $value )
         if( $key[0] == '_' )
           $pge->put( '<input type="checkbox" id="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" name="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" value="'.$value.'" tabindex="'.$pge->nextTab++.'" '.( ($value == 1) ?  'checked="checked" '  : '' ).' onchange="isDirty=true">'.
@@ -237,20 +236,20 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
                  '>'.
                  "<img src=\"../syspix/button_delete_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"delete\" title=\"".$lng->get("explainDeleteElemnt")."\">".
                  "</a>\n".
-// /delete button                     
+// /delete button
 // mail2
                  ' <a href="mailto:'.$data[ $cfg->get('UserDBField_email') ].'"><img src="../syspix/button_mail_13x12.gif" width="13" height="12" border="0" title="'.$data[ $cfg->get('UserDBField_email') ].'" alt="'.$data[ $cfg->get('UserDBField_email') ].'"></a>'."\n".
 // /mail2
 // history (last change)
                  EB::history ( $lng->get('lastChange').': '.
-                               date( $lng->get("DateFormat"), 
+                               date( $lng->get("DateFormat"),
                                      mktime( substr( $data[ 'labsys_mop_last_change' ], 11, 2),  // hh
                                              substr( $data[ 'labsys_mop_last_change' ], 14, 2), // mm
                                              substr( $data[ 'labsys_mop_last_change' ], 17, 2), // ss
                                              substr( $data[ 'labsys_mop_last_change' ], 5, 2),  // MM
                                              substr( $data[ 'labsys_mop_last_change' ], 8, 2),  // DD
                                              substr( $data[ 'labsys_mop_last_change' ], 0, 4)   // YYYY
-                                            ) 
+                                            )
                               ), 'p1', true ).
 // /history
                  ( isset( $data[ '_unassigned' ] ) && ($data[ '_unassigned' ] == 1) ? '<br><b>'.$data[ 'registerFor' ]."</b> ".
@@ -262,13 +261,13 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
 // Multipageresult-Filtering
       $pge->put( $manageNavigation );
 // /Multipageresult-Filtering
-    
-    
+
+
 // /form
     $pge->put( "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
                '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?exportCSV=true' ).'">export.csv</a>'.
                "</FORM>"
-             );        
+             );
   } // /showing
 
 // Clean up url variables

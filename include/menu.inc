@@ -88,25 +88,20 @@ foreach ( $mainMenuIni as $key => &$value ){
       array_push( $value, '!'.$cfg->get('prefaceID') );
     }
 
-    // Overview page
+    // Menu from overview page -START-
     $value[ $lng->get('MnuEntryCourseContent') ] = '../pages/accessibleLabs.php';
 
-    // Labs that are visible without a schedule
-    //SELECT `idx` FROM `labs` WHERE `visible_before_first_sched`=1
-    $lDBI->queryResult = $lDBI->myDBC->mkSelect( 'idx', $lDBI->myTable, "idx!=1 && `visible_before_first_sched`=1" );
-    while( $nextData=mysql_fetch_array($lDBI->queryResult) ){
-      array_push( $value, '!l'.$nextData['idx'] );
+    // Collect all visible labs in the order:
+    //   - Visible labs without schedule.
+    //     (Scheduled labs that are visible before schedule are listed below.)
+    //   - Scheduled labs in the order of their schedule.
+    require('../include/allVisibleLabIDX.inc');
+    // Now $allVisibleLabIDX contains the indices as specified above.
+    foreach( $allVisibleLabIDX as $nextIDX ){
+      $value[] = '!'.$nextIDX; // !=check visibility
     }
 
-    // Currently scheduled in order of schedule
-    //SELECT `num` FROM `schedules` WHERE 1 GROUP BY num ORDER BY `start`
-    $sDBI->queryResult = $sDBI->myDBC->mkSelect( 'num', $sDBI->myTable, 'idx!=1', '`start`', 'num' );
-    while( $nextData=mysql_fetch_array($sDBI->queryResult) ){
-      if (  !in_array( '!l'.$nextData['num'], $value ) ){
-        // do not add twice...
-        array_push( $value, '!l'.$nextData['num'] );
-      }
-    }
+    // Menu from overview page -STOP-
 
     array_push( $value, '' ); // spacer
     $value[$lng->get( "MnuEntrySchedule" )]="../pages/view.php?address=s1"; // schedule

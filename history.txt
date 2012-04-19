@@ -65,6 +65,22 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
          
+2012-04-19
+-------------------
+  /include/allVisibleLabIDX.inc
+  /include/menu.inc
+  /pages/accessibleLabs.php
+    Put the functionality to discover visible labs in allVisibleLabIDX.inc.
+    Changed the logic to collect all scheduled labs first and then adding thos always visible on top.
+    The reason is that we want to make labs accessable before schedule for those students wanting to
+    access early. At the same time we want to keep the original schedule.
+  /php/saveFile.php
+    Removed stripslashes when saving.
+  /php/sendMail.inc
+    Removed an obsolete comment.
+  /pages/uaManageUsers.php
+    Uncommented the lastChanged field on csv export to make sorting visible.
+    
 2012-04-18
 -------------------
   /include/classes/Usr.inc

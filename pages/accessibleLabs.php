@@ -70,22 +70,18 @@ if (!$returnEpub){
 // note
 if ( !$returnEpub && $lng->doesExist("AccessibleLabsNote") && $lng->get("AccessibleLabsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("AccessibleLabsNote")."</div>\n" );
 
-$accessibleLabs = array();
-$alreadyAdded = array(); // for not adding dups...
-// Labs that are visible without a schedule
-//SELECT `idx` FROM `labs` WHERE `visible_before_first_sched`=1
-$lDBI->queryResult = $lDBI->myDBC->mkSelect( '*', $lDBI->myTable, "idx!=1 && `visible_before_first_sched`=1" );
-while( $nextElement=$lDBI->getNextData() ){
-  $accessibleLabs[] = $nextElement;
-  $alreadyAdded[] = $nextElement->idx;
-}
+// Collect all visible labs in the order:
+//   - Visible labs without schedule.
+//     (Scheduled labs that are visible before schedule are listed below.)
+//   - Scheduled labs in the order of their schedule.
+require('../include/allVisibleLabIDX.inc');
+// Now $allVisibleLabIDX contains the indices as specified above.
 
-// Currently scheduled in order of schedule
-//SELECT `num` FROM `schedules` WHERE 1 GROUP BY num ORDER BY `start`
-$sDBI->queryResult = $sDBI->myDBC->mkSelect( 'num', $sDBI->myTable, 'idx!=1', '`start`', 'num' );
-while( $nextData=mysql_fetch_array($sDBI->queryResult) ){
-  if (  !in_array( $nextData['num'], $alreadyAdded ) && ($nextLab = $lDBI->getData2idx( $nextData['num'] )) ) // do not add twice...
-  $accessibleLabs[] = $nextLab;
+$accessibleLabs = array();
+foreach( $allVisibleLabIDX as $nextIDX ){
+  if ( ($nextIDX[0] == 'l') && ($nextLab = $lDBI->getData2idx( substr($nextIDX, 1) )) ){
+    $accessibleLabs[] = $nextLab;
+  }
 }
 
 $counter = 0;
