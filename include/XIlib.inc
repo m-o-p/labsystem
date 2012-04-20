@@ -360,10 +360,11 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
 
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
-    $localFileWithPath = preg_replace_callback(  '#(http(s)?://)?'.$_SERVER['SERVER_NAME'].'#',
+    $localFileWithPath = preg_replace_callback(  '#(http(s)?://)?'.$_SERVER['SERVER_NAME'].'(.*)#',
                                                  create_function(
                                                                 '$matches',
-                                                                'return "..";'
+                                                                // only replace it if something follows. Links to the server itself may be intended...
+                                                                'return ( (strlen($matches[3]) > 1) ? "..".$matches[3] : $matches[0] );'
                                                                ),
                                                  $localFileWithPath );
 

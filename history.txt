@@ -73,6 +73,10 @@ Feature Requests:
     Included the call to the display error handler to give the user feedback.
     Added more information to the error reports (full URL, User, Rights).
     Activate mail reports by simply adding an email address in the files $ERRORMAIL_RECEIVER variable.
+  /include/XIlib.inc
+    handleLocalFile does not replace serverurl/"nothing" with .. anymore as one
+    may want to redirect to this server.
+    
     
 2012-04-19
 -------------------
