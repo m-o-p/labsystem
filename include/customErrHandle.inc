@@ -25,7 +25,7 @@
 * @module     ../include/customErrorHandler.inc
 */
 
-//$ERRORMAIL_RECEIVER = 'root@localhost';
+$ERRORMAIL_RECEIVER = ''; // If you enter a valid email address here and you have mailing configured you can receive an error report
 
 /**
 * Displays the error.
@@ -113,37 +113,43 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
   }
 }
 
-// This error handler sends an email with all relevant information
-// function mail_error_handler($number, $message, $file, $line, $vars){
-//   $email =
-//   $_SERVER['REQUEST_URI']."<br>".
-//   ( isset($_SESSION["uid"]) ? $_SESSION["foreName"].' '.$_SESSION["surName"].
-//                               ' ('.$_SESSION["mailAddress"].';i rights='.$_SESSION["userRights"].")<br>"
-//                               : '')."
-//                 <p>An error ($number) occurred on line
-//                 <strong>$line</strong> and in the <strong>file: $file.</strong>
-//                 <p> $message </p>";
+//This error handler sends an email with all relevant information
+function mail_error_handler($number, $message, $file, $line, $vars){
+  global $ERRORMAIL_RECEIVER;
+  if ( isset($ERRORMAIL_RECEIVER) && $ERRORMAIL_RECEIVER != '' ){
+    $email = 'URL causing the error:<br>'.
+             'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."<br>".
+             ( isset($_SERVER['HTTP_REFERER']) ? 'Last page before:<br>'.$_SERVER['HTTP_REFERER'].'<br>' : '').
+             ( isset($_SESSION["uid"]) ? 'User experiencing the error:  '.$_SESSION["foreName"].' '.$_SESSION["surName"].' ('.$_SESSION["mailAddress"].')<br>'.
+                                         'Rights while error occured:   '.$_SESSION["userRights"]."<br>"
+                                         : '')."
+                  <p>An error ($number) occurred on line
+                  <strong>$line</strong> and in the <strong>file: $file.</strong>
+                  <p> $message </p>";
 
-//   $email .= "<pre>" . print_r($vars, 1) . "</pre>";
+    $email .= "<pre>" . print_r($vars, 1) . "</pre>";
 
-//   $headers = 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+    $headers = 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
 
-//   // Email the error to someone...
-//   if ( ($number !== E_NOTICE) && ($number < 2048) ){
-//     error_log($email, 1, $ERRORMAIL_RECEIVER, $headers);
-//   }
+    // Email the error to someone...
+    if ( ($number !== E_NOTICE) && ($number < 2048) ){
+      error_log($email, 1, $ERRORMAIL_RECEIVER, $headers);
+    }
 
-//   // Make sure that you decide how to respond to errors (on the user's side)
-//   // Either echo an error message, or kill the entire project. Up to you...
-//   // The code below ensures that we only "die" if the error was more than
-//   // just a NOTICE.
-//   //if ( ($number !== E_NOTICE) && ($number !== E_WARNING) && ($number < 2048) ) {
-//   //      die("There was an error. Sorry.");
-//   //}
-// }
+    // Make sure that you decide how to respond to errors (on the user's side)
+    // Either echo an error message, or kill the entire project. Up to you...
+    // The code below ensures that we only "die" if the error was more than
+    // just a NOTICE.
+    //if ( ($number !== E_NOTICE) && ($number !== E_WARNING) && ($number < 2048) ) {
+    //      die("There was an error. Sorry.");
+    //}
+  }
+
+  // call the "normal" graphical error handler for the user:
+  myErrorHandler($number, $message, $file, $line, $vars);
+}
 
 
 // Install the new error handler.
-// $old_error_handler = set_error_handler('mail_error_handler');
-$old_error_handler = set_error_handler("myErrorHandler");
+$old_error_handler = set_error_handler('mail_error_handler');
 ?>

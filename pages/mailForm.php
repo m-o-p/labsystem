@@ -26,10 +26,6 @@
 */
 require( "../include/init.inc" );
 
-if (isset($_POST['SESSION_ID'])){
-  require("../php/sendMail.inc");
-}
-
 $pge->title       = $lng->get("titleSendMail");
 $pge->matchingMenu= "send mail";
 $pge->visibleFor  = IS_USER;
@@ -37,6 +33,10 @@ $pge->visibleFor  = IS_USER;
 if ( !$pge->isVisible() ){ // directly show warning and close.
   require( $cfg->get("SystemPageLayoutFile") );
   exit;
+}
+
+if (isset($_POST['SESSION_ID'])){
+  require("../php/sendMail.inc");
 }
 
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );

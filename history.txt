@@ -65,6 +65,15 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
          
+2012-04-20
+-------------------
+  /pages/mailForm.php
+    Included the sendMail.inc after checking if the site is accessible.
+  /include/customErrHandle.inc
+    Included the call to the display error handler to give the user feedback.
+    Added more information to the error reports (full URL, User, Rights).
+    Activate mail reports by simply adding an email address in the files $ERRORMAIL_RECEIVER variable.
+    
 2012-04-19
 -------------------
   /include/allVisibleLabIDX.inc
