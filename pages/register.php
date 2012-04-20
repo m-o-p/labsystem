@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -32,7 +32,7 @@
 
 /**
  *  Checks if the registered mail address already exists in the system.
- *  Yes: The user gets the registerFor, reasonToParticipate, desiredTeamPartner fields set. 
+ *  Yes: The user gets the registerFor, reasonToParticipate, desiredTeamPartner fields set.
  *       Rest of personal data does not get changed.
  *  No:  New user is created with Username = Email.
  *       User gets only subscribed to $UA_CourseID.
@@ -42,7 +42,7 @@
  *
  *  ! new users automatically belong to the course _unassigned !
  */
- 
+
 /**
  * Used config fields:
  *  - registerNote                  contains a note for the register page of this lab.
@@ -66,7 +66,7 @@ $pge->matchingMenu = $lng->get("MnuEntryRegister");
  $canRegister = true;
  if ($cfg->doesExist('registerIPprefix')){
    $canRegister = false;
-   $IPranges = explode(',', $cfg->get('registerIPprefix')); 
+   $IPranges = explode(',', $cfg->get('registerIPprefix'));
    foreach ( $IPranges as $nextIPrange ){
      $nextIPrange = trim($nextIPrange);
      $canRegister |= (substr( $_SERVER['REMOTE_ADDR'], 0, strlen( $nextIPrange ) ) == $nextIPrange);
@@ -86,25 +86,25 @@ if ( isset( $_POST['EMAIL'] ) &&
 
 if( isset($_POST['NAME']) && (( $_POST['NAME'] == '' ) || ( $_POST['FORENAME'] == '' )) )
     // alert
-    $SYSALERT = $lng->get('uaSurNameEmpty');  
+    $SYSALERT = $lng->get('uaSurNameEmpty');
 
  // title
  $pge->put( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );
 
  // new Interface to the userDB
- $userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 
-                             $cfg->get('UserDatabaseUserName'), 
-                             $cfg->get('UserDatabasePassWord'), 
+ $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
+                             $cfg->get('UserDatabaseUserName'),
+                             $cfg->get('UserDatabasePassWord'),
                              $cfg->get('UserDatabaseName'));
-                             
+
 
 
 if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no errors found.
   // process the custom fields (all fields that are added in the DB can be set...
     $customFields = '';
     // The following fields and those starting with "_" (course id)  will not be processed:
-    $doNotListFromUser = Array( $cfg->get('UserDBField_username'), 
-                                $cfg->get('UserDBField_name'), 
+    $doNotListFromUser = Array( $cfg->get('UserDBField_username'),
+                                $cfg->get('UserDBField_name'),
                                 $cfg->get('UserDBField_forename'),
                                 $cfg->get('UserDBField_email'),
                                 $cfg->get('UserDBField_uid'),
@@ -124,11 +124,11 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
     $usr->foreName    = $_POST['FORENAME'];
     $usr->surName     = $_POST['NAME'];
     $usr->mailAddress = $_POST['EMAIL'];
-        
+
   // Is this email already registered?
-   $result = $userDBC->mkSelect( "*", 
-                                 $cfg->get('UserDatabaseTable'), 
-                                 'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $usr->mailAddress )."')" 
+   $result = $userDBC->mkSelect( "*",
+                                 $cfg->get('UserDatabaseTable'),
+                                 'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $usr->mailAddress )."')"
                                 );
    if ($userDBC->datasetsIn( $result ) > 0) // yes => just update the interest
     $userDBC->mkUpdate( $customFields.
@@ -137,22 +137,23 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
                         $cfg->get('UserDatabaseTable'),
                         'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $_POST['EMAIL'] )."')" );
    else{ // email is new => create new entry
-       
+
     // generate new Password:
         srand((double)microtime()*1000000);
         $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
-        
+
         $userDBC->mkInsert( $customFields.
                             'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\', '.
                             '_unassigned=1, '.
                             $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $usr->userName )."', ".
                             $cfg->get('UserDBField_name')."='".$userDBC->escapeString( $usr->surName )."', ".
                             $cfg->get('UserDBField_forename')."='".$userDBC->escapeString( $usr->foreName )."', ".
-                            $cfg->get('UserDBField_password')."='".sha1( $newPW )."', ".
+                            $cfg->get('UserDBField_password')."='".crypt( $newPW, $usr->uid )."', ".
                             $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $usr->mailAddress )."', ".
                             $cfg->get('UserDBField_uid')."='".$userDBC->escapeString( $usr->uid )."', ".
                             $UA_CourseID.'=1',
                             $cfg->get('UserDatabaseTable') );
+
 
     // new user... send password mail
     // Load mail element from pages:
@@ -160,9 +161,9 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
     // replace constants using new user data from above:
     $pge->replaceConstants($mailPage->title);
     $pge->replaceConstants($mailPage->contents);
-    
+
     mail( $_POST['EMAIL'],
-         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/, 
+         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/,
          $mailPage->contents."\r\n\r\n".
          $lng->get('userName').': '.$_POST['EMAIL']."\r\n".
          $lng->get('passWord').': '.$newPW."\r\n".
@@ -174,23 +175,23 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
    }
    if ( $lng->get('thankYouForRegisteringNote') != '' ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get('thankYouForRegisteringNote')."</div>\n" );
-   
+
    if ( $cfg->doesExist('PidAfterRegistrationPage') ){
    	$afterRegistrationPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidAfterRegistrationPage'));
    	$pge->title = $afterRegistrationPage->title;
    	parseHTML($afterRegistrationPage->contents);
    	$pge->put( "<div class=\"labsys_mop_note\">\n".$afterRegistrationPage->contents."</div>\n" );
    }
-   
+
     // send after register mail
    // Load mail element from pages:
    $mailPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidRegistrationMail'));
    // replace constants using new user data from above:
    $pge->replaceConstants($mailPage->title);
    $pge->replaceConstants($mailPage->contents);
-   
+
     mail( $_POST['EMAIL'],
-         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/, 
+         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/,
          $mailPage->contents."\r\n\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
          "\r\n",
@@ -198,12 +199,12 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
-         
+
 } // data posted and no errors found.
 else{ // no data posted or errors found
      // note
      if ( $lng->get("registerNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("registerNote")."</div>\n" );
-     
+
      // In this note may be specific information for this course thus it is bound to the cfg.
      if ( $cfg->doesExist("PidRegistrationPage") ){
      	$registrationPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidRegistrationPage'));
@@ -211,18 +212,18 @@ else{ // no data posted or errors found
      	parseHTML($registrationPage->contents);
      	$pge->put( "<div class=\"labsys_mop_note\">\n".$registrationPage->contents."</div>\n" );
      }
-                   
+
      // query ALL column names
      $result = $userDBC->query( "SHOW COLUMNS FROM ".$cfg->get('UserDatabaseTable') ); // Attention: Breaks abstraction!
      $data = array();
      while( $data2 = mysql_fetch_array( $result ) ) $data[] = $data2['Field'];
-                                                                
+
      $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"#\">\n".
                 "<input type=\"hidden\" name=\"REGISTER4\" value=\"".$cfg->get('User_courseID')."\">\n".
                 "<fieldset><legend>".$lng->get("MnuEntryRegister").' | '.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').') '."</legend>\n".
                 "<div class=\"labsys_mop_in_fieldset\">\n" );
 
-     $pge->put( 
+     $pge->put(
      // Warning when IP prefix not matched
                 ( !$canRegister & $lng->doesExist('registerIPprefixViolationNote') ? "<div class=\"labsys_mop_note\" style=\"color: #ff5555;\">\n".$lng->get('registerIPprefixViolationNote').' ['.$_SERVER['REMOTE_ADDR'].']'."</div>\n" : '' ).
      // surName
@@ -235,13 +236,13 @@ else{ // no data posted or errors found
                 '<label for="email" class="labsys_mop_input_field_label_top">'.$lng->get('eMail').'</label>'."\n".
                 '<input'.( $canRegister ? '' : ' disabled="disabled"' ).' tabindex="'.$pge->nextTab++.'" type="text" id="eMail" name="EMAIL" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['EMAIL'] ) ? $_POST['EMAIL'] : $lng->get('eMail') ).'" onchange="isDirty=true">'."\n"
                );
-               
+
      // The rest of the fields.
      // Any additional database fields will be listed.
      // So if a field like "Matrikelnummer" is wanted just add it in the order you want to the table.
      // The following fields and those starting with "_" (course id)  will not be listed:
-     $doNotListFromUser = Array( $cfg->get('UserDBField_username'), 
-                                 $cfg->get('UserDBField_name'), 
+     $doNotListFromUser = Array( $cfg->get('UserDBField_username'),
+                                 $cfg->get('UserDBField_name'),
                                  $cfg->get('UserDBField_forename'),
                                  $cfg->get('UserDBField_email'),
                                  $cfg->get('UserDBField_uid'),
@@ -256,10 +257,10 @@ else{ // no data posted or errors found
                         '<label for="labsys_mop_'.$key.'" class="labsys_mop_input_field_label_top">'.( $lng->doesExist($key) ? $lng->get($key) : $key ).'</label>'."\n".
                         '<input'.( $canRegister ? '' : ' disabled="disabled"' ).' tabindex="'.$pge->nextTab++.'" type="text" id="labsys_mop_'.$key.'" name="LABSYS_MOP_'.$key.'" class="labsys_mop_input_fullwidth" value="'.( isset( $_POST['LABSYS_MOP_'.$key] ) ? $_POST['LABSYS_MOP_'.$key]: $key ).'" onchange="isDirty=true">'."\n"
                      );
-        
+
     // How many people registered from this course already?
-     $result = $userDBC->mkSelect( 'registerFor', 
-                                   $cfg->get('UserDatabaseTable'), 
+     $result = $userDBC->mkSelect( 'registerFor',
+                                   $cfg->get('UserDatabaseTable'),
                                    '_unassigned=1 && registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\''
                                   );
      $registrations = $userDBC->datasetsIn( $result ); // number of registrations under this courseID
@@ -269,14 +270,14 @@ else{ // no data posted or errors found
      $icons = '';
      for ($i=0; $i<$remaining; $i++) $icons.='<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">';
      for ($i=0; $i<$registrations; $i++) $icons.='<img src="../syspix/fullPlace_11x12.gif" width="11" height="12" alt="X">';
-     
+
      $pge->put( "</div>\n".
                 "</fieldset>\n".
                 "<input".( $canRegister ? '' : ' disabled="disabled"' )." tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
                 ' <div class="registerPlacesLeft">'.$lng->get('placesLeft').': '.$remaining.'/'.$max.' '.$icons."</div>\n".
                 "</FORM>"
                );
-               
+
 // focus
      $pge->put(
                 '<script language="JavaScript" type="text/javascript">
@@ -288,5 +289,5 @@ else{ // no data posted or errors found
 } // /no data posted or errors found
 
 // show!
-  require( $cfg->get("SystemPageLayoutFile") );   
+  require( $cfg->get("SystemPageLayoutFile") );
 ?>

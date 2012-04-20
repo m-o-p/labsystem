@@ -97,6 +97,9 @@ Feature Requests:
     It links to the pages/mailForm.php placing a link to the current element into the mail.
     This button can be used to point someone else to an element, e.g. a teammate "look at this" or a corrector "Could you explain your correction here?"
     Thanks to Andrey Uznov for requesting the nice feature.
+  /pages/register.php
+    The initial password was not stored correctly in the database (salt was missing).
+    Now it works.
     
 2012-04-19
 -------------------
