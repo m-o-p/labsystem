@@ -194,6 +194,7 @@ discardChangesWarning = "You are about to leave this page without saving your ch
 NotAllowedSaveLockAt= "You are not allowed to save this answer as the lock is at " ;; If the lock got placed on another answer this is not savable anymore.
 LockTakenFrom       = "The lock was taken from input" ;; " [idx of input]" gets added
 InputAlreadyClosed  = "The input is already closed!"
+noiLockNote         = "Your team has currently opened another question for answering. Please work together on formulating the answers." ; when saving a not opened answer this text is added before the new and then the old answer.
 ;i upload
 noFilesYet          = "No files uploaded yet."
 fileList            = "List of uploaded files"
@@ -441,6 +442,7 @@ explainManageElmnts = "Manage elements..."
 explainDeleteElemnt = "Delete this element..."
 explainViewStructure= "View the element's structure..."
 explainHistory      = "This element's history..."
+explainMailLink2    = "Mail a link to this element..."
 explainSaveElement  = "Save the current Element..."
 explainNext         = "next page&gt;&gt;"
 explainPrev         = "&lt;&lt;previous page"

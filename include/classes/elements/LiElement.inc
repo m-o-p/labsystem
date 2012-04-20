@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -29,7 +29,7 @@
 */
 
 /*
-The inputs are arbitrated by a lock. 
+The inputs are arbitrated by a lock.
 Each Team can only open one input at the same time.
 
 This serves two purposes:
@@ -38,7 +38,7 @@ This serves two purposes:
 
 
 How does the lock work now?
-Suppose we have computer A and B. 
+Suppose we have computer A and B.
 Both load the same question sheet so both see the "give answer�" buttons.
 
 Suppose A opens a question.
@@ -71,7 +71,7 @@ class LiElement extends Element{
   var $possibleCredits;       // Possible credits as float :2.
 
   var $visibleFor;            // Visibility constraints.
-  
+
   var $userAnswer;            // The user's answer to this question.
   var $answerComment;         // The correctors comment to this question.
   var $givenCredits;          // The correctors given credits.
@@ -80,21 +80,21 @@ class LiElement extends Element{
   var $isCorrected;           // Is the user answer corrected?
   var $hasFileUpload;         // If true users can upload files to this question.
   var $answerHistory;         // The user answer's history.
-  
+
   var $getDataOfTeam;         // The tem number data should be loaded of.
                               // For each Input the team is set to this beeing the $usr->currentTeam at the moment of first opening.
-  
-  var $lockIsSetTo;           /* A team can only answer the questions one by one.  Reason: Force them to work together. 
+
+  var $lockIsSetTo;           /* A team can only answer the questions one by one.  Reason: Force them to work together.
                                * The lock tells, which question is currently in answer mode (it contains its index or false).
                                */
-                               
-  var $forceReLock;           // This gets set if the user clicked on the red lock so when he is sure he wants to get the lock from 
+
+  var $forceReLock;           // This gets set if the user clicked on the red lock so when he is sure he wants to get the lock from
                               // another input which meant the other input could not be saved anymore (set to student friendly mod: save anyway)
-                    
+
   var $utDBI;                 // new LiDBInterfaceUidTeam();
   var $uaDBI;                 // new LiDBInterfaceAnswers();
   var $lkDBI;                 // new LiDBInterfaceLocks();
- 
+
   /**
   * The constructor.
   *
@@ -106,15 +106,15 @@ class LiElement extends Element{
   * @param $visibleOnlyInCollection   Is the element visible only inside a collection.
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
-  */ 
+  */
   function LiElement( $idx, $question, $exampleSolution, $possibleCredits, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
     global $usr;
     $this->elementId                = "i";
     $this->idx                      = $idx;
     $this->title                    = preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
                                         returnHTML( // remove [HTML] etc.
-                                          substr( $question, 0, 50 ) 
-                                        ) 
+                                          substr( $question, 0, 50 )
+                                        )
                                       );
     $this->matchingMenu             = "";                         // will be handled by ->getMatchingMenu();
     $this->question                 = $question;
@@ -123,7 +123,7 @@ class LiElement extends Element{
     $this->visibleFor               = $visibleFor;
     $this->visibleOnlyInCollection  = $visibleOnlyInCollection;
     $this->history                  = $history;
-    
+
     $this->IamVisible               = ($this->visibleFor == "0") || $usr->isOfKind( $this->visibleFor )
                                       && ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) );
     if ( $history ){ // history is false if only menu data is wanted (following not necessary)
@@ -136,23 +136,23 @@ class LiElement extends Element{
       $this->utDBI = new LiDBInterfaceUidTeam();
       $this->uaDBI = new LiDBInterfaceAnswers();
       $this->lkDBI = new LiDBInterfaceLocks();
-      
+
       $this->forceReLock = (( isset($_POST['forceReLock']) ) && ( $_POST['forceReLock'] == 1 ));
-  
+
       $this->loadUserData4(); // Fills rest of the structures with neutral values.
     }
-    
+
     $this->serializationArray       = array( 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
   }
-  
+
   /**
   * Serialize the element for export.
   */
-  
+
   /**
   * DeSerialize the element for import.
   */
-  
+
   /**
   * Loads the answer data to the given $uid into this instance's field.
   *
@@ -172,7 +172,7 @@ class LiElement extends Element{
       $this->isCorrected   = $answerData["isCorrected"];
       $this->answerHistory = $answerData["history"];
 
-      /* A team can only answer the questions one by one. Reason: Force them to work together. 
+      /* A team can only answer the questions one by one. Reason: Force them to work together.
        * The lock tells, which question is currently in answer mode (p.e. i142).
        */
       $this->lockIsSetTo   = $this->lkDBI->getData4( $this->getDataOfTeam );
@@ -183,7 +183,7 @@ class LiElement extends Element{
       $this->isClosed      = false;
       $this->isCorrected   = false;
       $this->answerHistory = "";
-      
+
       $this->lockIsSetTo   = false;
     }
   }
@@ -196,7 +196,7 @@ class LiElement extends Element{
    function getGivenCredits(){
      return $this->givenCredits;
    }
-   
+
   /**
    * Returns the credits one cen get for the correct answer.
    *
@@ -206,10 +206,10 @@ class LiElement extends Element{
      return $this->possibleCredits;
    }
 
-  
+
 // The next functions are used for the element's view page. *************************************************
 
-// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - - 
+// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - -
   /**
   * Shows the corrector's comments.
   *
@@ -221,7 +221,7 @@ class LiElement extends Element{
   */
   function showComment( $isInCorrection=false, $fullAddress='' ){
     global $usr, $pge, $cfg;
-    if ( $isInCorrection ) 
+    if ( $isInCorrection )
       return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n". // anchor for retrieving after saving
              "<textarea tabindex=\"".$pge->nextTab++."\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultICommentRows")."\" onchange='isDirty=true'>".
              returnEditable( $this->answerComment ).
@@ -233,7 +233,7 @@ class LiElement extends Element{
              "</div>\n";
     else return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n"; // anchor for retrieving after saving
   }
-  
+
   /**
   * Shows the user's answer.
   *
@@ -260,7 +260,7 @@ class LiElement extends Element{
                                                                     "</div>\n";
                               else return "";
   }
-  
+
   /**
   * Returns the HTML code of the fileUpload.
   *
@@ -271,41 +271,41 @@ class LiElement extends Element{
   private function showFileUpload( $isGettingAnswered=false ){
     global $lng, $url;
     if (!$this->hasFileUpload) return ''; // Has no upload -> nothing to see here
-  
+
     $ret = '<div class="labsys_mop_i_fileUpload">';
-    $ret .= '<h3><img src="../syspix/button_save_13x12.gif" width="13" height="12" alt="'.$lng->get('upload').'"> '.$lng->get('fileList').'</h3>'; 
-    $files = $this->uaDBI->getFiles($this->getDataOfTeam, $this->idx); 
-    if (empty($files)) $ret .= '<div class="labsys_mop_i_noUploads">'.$lng->get('noFilesYet').'</div>'; 
-    else { 
+    $ret .= '<h3><img src="../syspix/button_save_13x12.gif" width="13" height="12" alt="'.$lng->get('upload').'"> '.$lng->get('fileList').'</h3>';
+    $files = $this->uaDBI->getFiles($this->getDataOfTeam, $this->idx);
+    if (empty($files)) $ret .= '<div class="labsys_mop_i_noUploads">'.$lng->get('noFilesYet').'</div>';
+    else {
       if ( $isGettingAnswered ) // allow deleting files with this button
         $ret .= '<img class="labsys_mop_i_arrow" src="../syspix/delete-arrow.gif" alt="delete" /><input type="submit" name="fileDelete" value="'.$lng->get('deleteFile').'">';
-        
-      $ret .= '<ul class="labsys_mop_i_file_list">'; 
+
+      $ret .= '<ul class="labsys_mop_i_file_list">';
       foreach ($files as $file) { // List files. If isGettingAnswered with delete button.
-        $pathInfo = pathinfo($file['fileName']); 
-        $ret .= '<li>'; 
-        $filesize = round($file['size'] / 1024).' KB'; 
-        $fileTime = date('H:i j.n.Y', $file['timestamp']); 
-        $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />'; 
-        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' . 
-    	          $pathInfo['basename']. 
-                '</a> <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div></li>'; 
-      } 
-      $ret .= '</ul>'; 
-    } 
-    
+        $pathInfo = pathinfo($file['fileName']);
+        $ret .= '<li>';
+        $filesize = round($file['size'] / 1024).' KB';
+        $fileTime = date('H:i j.n.Y', $file['timestamp']);
+        $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />';
+        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' .
+    	          $pathInfo['basename'].
+                '</a> <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div></li>';
+      }
+      $ret .= '</ul>';
+    }
+
     if ( $isGettingAnswered ){ // if we can answer we can upload.
       $max_upload = (int)(ini_get('upload_max_filesize'));
       $max_post = (int)(ini_get('post_max_size'));
       $memory_limit = (int)(ini_get('memory_limit'));
       $upload_mb = min($max_upload, $max_post, $memory_limit);
-      $ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" name=\"file\" \">".  
-              "<input type=\"submit\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>'; 
+      $ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" name=\"file\" \">".
+              "<input type=\"submit\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>';
     }
     $ret .= '</div>';
     return $ret;
   }
-  
+
   /**
   * Shows the credits.
   *
@@ -322,7 +322,7 @@ class LiElement extends Element{
                      ( $this->isCorrected ?  "_green" :  "_red" ) : '' ).
           "\">".
             // the "is corrected" checkbox
-            ( $usr->isOfKind( IS_CORRECTOR ) && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ? 
+            ( $usr->isOfKind( IS_CORRECTOR ) && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
                         "<input type=\"checkbox\" name=\"IS_CORRECTED\" value=\"1\" ".
                         "tabindex=\"".$pge->nextTab++.'"'.
                         ( $isInCorrection ? ' checked="checked"' : '' ). // so it will be checked by default
@@ -334,14 +334,14 @@ class LiElement extends Element{
                       ).
             // the credits
             "[".
-            ( $isInCorrection ? 
+            ( $isInCorrection ?
                        // show input
                        "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".
                        // on first entering set the points to full points
                        ( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || $this->answerComment!='' ?  $this->givenCredits :  $this->possibleCredits  ).
                        "\" onchange='isDirty=true'>"."/ " :
                        ( !$possiblePtsOnly ?
-                                  ( ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )) ? 
+                                  ( ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )) ?
                                               // show given credits
                                               $this->givenCredits :
                                               '0')."/ "
@@ -350,7 +350,7 @@ class LiElement extends Element{
             $this->possibleCredits." ".$lng->get("Credits")."]".
           "</div>\n";
   }
-  
+
   /**
   * Shows the user's answer. Includes some misc!
   *                       Since there might be many independent inputs on one page the
@@ -365,7 +365,7 @@ class LiElement extends Element{
   */
   function showAnswerData( $fullAddress ){
     global $usr, $url, $pge, $cfg, $lng;
-    
+
     /* The element can have 5 states:
      *  - answerable (user did not close the input)
      *    + answer not editable
@@ -396,13 +396,13 @@ class LiElement extends Element{
      *    + same as correctable
      */
 
-         $isInCorrection  = ( $usr->isOfKind( IS_CORRECTOR ) && 
-                              $this->isClosed && 
+         $isInCorrection  = ( $usr->isOfKind( IS_CORRECTOR ) &&
+                              $this->isClosed &&
                               isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) &&
                               $_POST['TEAM'] == $this->getDataOfTeam
                              );
       if ($isInCorrection) makeLogEntry( 'i', 'getting corrected for team '.$this->getDataOfTeam, $this->idx );
-                             
+
       $isGettingAnswered  = ( $this->lockIsSetTo && ( $this->lockIsSetTo == $this->idx ) );
       if ($isGettingAnswered) makeLogEntry( 'i', 'getting answered', $this->idx );
 
@@ -415,7 +415,7 @@ class LiElement extends Element{
                                       $url->link2("../php/executeCommandOnElement.php?address=i")
                                      ).
                 "\">\n".
-                
+
                 (  $isInCorrection ?
                             ( $isInCorrection ?
                                        // the corrector has opened this for correction
@@ -437,11 +437,11 @@ class LiElement extends Element{
               ( $this->hasFileUpload ? $this->showFileUpload( $isGettingAnswered && !$usr->isOfKind( IS_CORRECTOR ) ) : '').
             // answer
               $this->showAnswer( $isGettingAnswered && !$usr->isOfKind( IS_CORRECTOR ) ); // correctors never edit answers
-              
+
     // comment
       if ( $this->isCorrected || $usr->isOfKind( IS_CORRECTOR ) ) $ret .= $this->showComment( $isInCorrection, $fullAddress );
-      
-    // credits           
+
+    // credits
       $ret .= $this->showCredits( $isInCorrection );
 
     // button
@@ -475,23 +475,23 @@ class LiElement extends Element{
                                       // here the users gets indicated that another question is locked, so clicking on the red lock forces acquiring from another question.
               }
       }
-              
-            
+
+
       $ret .= "</FORM>\n".
-    
+
               (  ( $isGettingAnswered || $isInCorrection ) ?
                           '<script language="JavaScript" type="text/javascript">'."\n".
                           '<!--'."\n".
                           'if (document.InputAnswer'.$this->idx.') document.InputAnswer'.$this->idx.'.'.( $isGettingAnswered ?  "ANSWER" :  "COMMENT"  ).'.focus();'.
                           '//-->'."\n".
                           '</script>'."\n" : '' ).
-                          
+
                         // answer history
               ( $this->answerHistory != "" ? EM::viewInputAnswerHistory( $this ) : '' );
-              
-    return $ret;                          
+
+    return $ret;
   }
-// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /**
   * Returns the element's HTML-representation in the way the VIEWER should see it.
@@ -500,7 +500,7 @@ class LiElement extends Element{
   * @param $fullAddress     The element's full address (p.e. C23.c42.p13)
   * @param $paragraph       The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   * @return string          The html code of the element's view view.
-  */ 
+  */
   function show( $fullAddress, $paragraph="" ){
     global $usr, $lng, $pge, $url;
     if (  !$this->isVisible() ){ // not enough rights->no content
@@ -512,16 +512,16 @@ class LiElement extends Element{
       $this->saveCorrectorStuff(); // directly save without editing further fields
       exit;
     };
-    
+
     if ($this->question == "") return "'()";
-    
+
     $answers = "";
     // Load the dynamic data from the working table.
     if ( !$usr->isOfKind( IS_CORRECTOR ) && !$usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ){ // "normal" user
       $this->loadUserData4( $this->utDBI->getData4( $usr->uid, $this->idx, $usr->currentTeam ) );    // create dataset tith user's team
       $answers = $this->showAnswerData( $fullAddress );
     }
-    
+
     if ( $usr->isSeeingSomeonesData() ) // correcting someone
       if ( $usr->theSeeingUid() != "all" ){
                                 $this->loadUserData4( $this->utDBI->getData4( $usr->theSeeingUid(), $this->idx, 0 ) ); // ( 0 = don't create the record )
@@ -534,11 +534,11 @@ class LiElement extends Element{
                                               $this->showAnswerData( $fullAddress );
                                 }
       }
-      
-  
+
+
     parseHTML( $this->question ); // Process [HTML].
     parseHTML( $this->exampleSolution );
-    
+
     return "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
            "<div class=\"labsys_mop_elements_i_around\">".
            EM::viewTopInput( $this, $fullAddress ).
@@ -546,9 +546,9 @@ class LiElement extends Element{
              "<div class=\"labsys_mop_i_question\">".
                ( ($paragraph!="") ?  $paragraph.". "  : '' ).$this->question.
              "</div>\n".
-             
+
            // example solution
-             ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !$url->available('hideExampleSolutionInThisTab') ? 
+             ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !$url->available('hideExampleSolutionInThisTab') ?
                                    "<div class=\"labsys_mop_i_example_solution\">".
                                    '<!-- example solution -->'."\r\n".
                                    $this->exampleSolution.
@@ -556,7 +556,7 @@ class LiElement extends Element{
                                    "</div>\n" : ''
                        ).
              ( $this->hasFileUpload && !$usr->isSeeingSomeonesData() /* contains upload already... */ && ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) || $usr->isOfKind( IS_CONTENT_EDITOR ) ) ? $this->showFileUpload() : ''). // show Upload for editors. Others see it in showAnswer.
-                        
+
            // answer + eventually comment + credits
              $answers.
              ( $answers == '' ? $this->showCredits( false, true ) : '' ).
@@ -564,7 +564,7 @@ class LiElement extends Element{
            EM::viewBottomInput( $this, $fullAddress ).
            "</div>";
   }
-  
+
   /**
   * Produces the ePub version of this element.
   * Called by LcElement.inc
@@ -578,19 +578,19 @@ class LiElement extends Element{
       echo( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>" );
       exit;
     }
-        
+
     parseHTML( $this->question );
     $pge->replaceConstants( $this->question ); // Process custon fields
-    
+
     $epubExporter = LSE_Exporter::getInstance();
-    $epubExporter->save('Li', 
-        $fullAddress, 
+    $epubExporter->save('Li',
+        $fullAddress,
         ( ($paragraph!="") ?  $paragraph.". "  : '' ).$this->question
     );
-    
+
     // echo ('[i-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
   }
-  
+
 // The next functions are used for the element's edit page. *************************************************
 
   /**
@@ -599,10 +599,10 @@ class LiElement extends Element{
   * @param $_GET["saveAsNew"] If $_GET["saveAsNew"] is set the save as new checkbox on the edit page should be set
   * @param $fullAddress       The element's full address (p.e. C23.c42.p13)
   * @return string            The html code of the element's edit view.
-  */  
+  */
   function showEdit( $fullAddress ){
     global $lng, $url, $pge, $cfg;
-    
+
      return EM::editTopInput( $this, $fullAddress ).
             "<FORM class=\"labsys_mop_std_form\" NAME=\"InputEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=i")."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
@@ -610,7 +610,7 @@ class LiElement extends Element{
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n". /* index of saved el. will be added on save.php! */
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
             "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
-            
+
           // question
             "<label for=\"question\" class=\"labsys_mop_input_field_label_top\">".$lng->get("question")."</label>".
             "<textarea tabindex=\"".$pge->nextTab++."\" id=\"question\" name=\"QUESTION\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultIQuestionRows")."\" onchange='isDirty=true'>".
@@ -628,16 +628,16 @@ class LiElement extends Element{
             "<label for=\"pC\" class=\"labsys_mop_input_field_label\">".$lng->get("Credits")."</label> ".
             "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"pC\" name=\"POSSIBLE_CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".$this->possibleCredits."\" onchange='isDirty=true'>".
             "</div>\n".
-                          
+
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
 
           // element options
-            "<fieldset><legend>".$lng->get("options")."</legend>\n". 
-              "<div>". 
-              "<input type=\"hidden\" name=\"HAS_FILE_UPLOAD\" value=\"0\" /><input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"hasFileUpload\" name=\"HAS_FILE_UPLOAD\" value=\"1\"".( $this->hasFileUpload ? " checked=\"checked\"" : '').">". 
-              "<label for=\"hasFileUpload\" class=\"labsys_mop_input_field_label\">".$lng->get("hasFileUpload")."</label>". 
-              "</div>\n". 
-            "</fieldset>\n". 
+            "<fieldset><legend>".$lng->get("options")."</legend>\n".
+              "<div>".
+              "<input type=\"hidden\" name=\"HAS_FILE_UPLOAD\" value=\"0\" /><input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"hasFileUpload\" name=\"HAS_FILE_UPLOAD\" value=\"1\"".( $this->hasFileUpload ? " checked=\"checked\"" : '').">".
+              "<label for=\"hasFileUpload\" class=\"labsys_mop_input_field_label\">".$lng->get("hasFileUpload")."</label>".
+              "</div>\n".
+            "</fieldset>\n".
 
           // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
@@ -664,7 +664,7 @@ class LiElement extends Element{
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".            
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
 
             "</FORM>\n".
             '<script language="JavaScript" type="text/javascript">
@@ -674,31 +674,31 @@ class LiElement extends Element{
             </script>'.
             EM::editBottomInput( $this, $fullAddress );
   }
-  
+
   /**
   * Used to save the edited element.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */  
+  */
   /*static*/  function save(){
     global $iDBI, $url, $lng, $usr;
-    
+
     // check for all necessary values posted
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO']) || 
-         !isset($_POST['FULLADDRESS']) || 
-         !isset($_POST['QUESTION']) || 
-         !isset($_POST['EXAMPLE_SOLUTION']) || 
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO']) ||
+         !isset($_POST['FULLADDRESS']) ||
+         !isset($_POST['QUESTION']) ||
+         !isset($_POST['EXAMPLE_SOLUTION']) ||
          !isset($_POST['POSSIBLE_CREDITS']) ||
          !isset($_POST['HAS_FILE_UPLOAD'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-       
+
     // Validity (session ID) is checked by the calling script yet.
-    
+
     // only content editors are allowed to save
     if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
                                                   trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
@@ -710,15 +710,15 @@ class LiElement extends Element{
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1) if ( isset( $_POST[ "UR_".$i] ) ) $userRights += $_POST["UR_".$i];
 
     $newInput = new LiElement(  $_POST['IDX'],
-                                $_POST['QUESTION'], 
+                                $_POST['QUESTION'],
                                 $_POST['EXAMPLE_SOLUTION'],
                                 $_POST['POSSIBLE_CREDITS'],
-                                $userRights, 
+                                $userRights,
                                 ($_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1"),
                                 ""
                                );
-    $newInput->hasFileUpload = $_POST['HAS_FILE_UPLOAD']; 
-                               
+    $newInput->hasFileUpload = $_POST['HAS_FILE_UPLOAD'];
+
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newInput->idx = $iDBI->setData( $newInput, true );
@@ -728,17 +728,17 @@ class LiElement extends Element{
                                       $iDBI->setData( $newInput );
                                       $url->put( "address=".$_POST['FULLADDRESS'] );  // the address remains
     }
-    
+
     // some user information
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("iNumber")." ".$newInput->idx );
     makeLogEntry( 'edit', 'saved', 'i'.$newInput->idx );
-      
+
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
-  
-    
+
+
+
   /**
   * Acquires the lock for $this->idx and $this->getDataOfTeam.
   *
@@ -758,19 +758,19 @@ class LiElement extends Element{
       // makeLogEntry( 'lock', 'removed by i'.$this->idx, 'i'.$this->lockIsSetTo );
     }
   }
-  
+
   /**
   * Used to save the users answer.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */  
+  */
   /*static*/ function saveUserAnswer(){
     global $url, $lng, $usr;
-    
+
     // check for all necessary values posted
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO']) || 
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO']) ||
          !isset($_POST['ANSWER']) ||
          !isset($_POST['FULLADDRESS']) ||
          !isset($_POST['TEAM'])
@@ -778,13 +778,15 @@ class LiElement extends Element{
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-       
+
     // Validity (session ID) is checked by the calling script yet.
-       
+
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
-    
+
     if (isset($_POST['cancel'])){ // cancel action
-      $this->removeLock();
+      if ( $this->lockIsSetTo == $this->idx ){
+        $this->removeLock();
+      }
       // One could also display the page here but that way it is left to the normal mechanism...
       header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
       exit;
@@ -800,61 +802,64 @@ class LiElement extends Element{
         makeLogEntry( 'i', 'saved', $this->idx );
         $this->removeLock();
       }
-      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->isClosed, $this->isCorrected, $this->history ); 
-    } else{ // You are only allowed to answer one question at the same time. 
+      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->isClosed, $this->isCorrected, $this->history );
+    } else{ // You are only allowed to answer one question at the same time.
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
             $url->put( "sysalert=".$lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
-            
-           // As this case should never happen, we save here anyway not to lose data:
+
+           // As this case should never happen, we save the data below the existing answer with a hint, not to lose data:
+            $existingData = $this->uaDBI->getData4( $_POST['TEAM'], $this->idx, false );
            // To abondon parallel answering we replace all spaces by NO_LOCK so the user has to remove this later again.
-            $_POST['ANSWER'] = preg_replace( '/\s/', 'NO_LOCK', $_POST['ANSWER'] );
+            $_POST['ANSWER'] = $lng->get( 'noiLockNote' )."\r\n\r\n".
+                               $_POST['ANSWER']."\r\n\r\n".
+                               $existingData["answer"];
             $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
     }
-    
+
     makeLogEntry( 'i', 'aw saved', 'i'.$this->idx );
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
-  /** 
-  * uploads a file, if a file has been sent, and deletes files, if they have been marked for deletion. 
-  */ 
-  private function handleUploadedFiles(){ 
-    global $url, $lng, $usr; 
+
+  /**
+  * uploads a file, if a file has been sent, and deletes files, if they have been marked for deletion.
+  */
+  private function handleUploadedFiles(){
+    global $url, $lng, $usr;
     if ($this->hasFileUpload){
-      if (!empty($_FILES['file']['size'])) { 
-        $this->uaDBI->uploadFile($_POST['TEAM'], $this->idx, $_FILES['file']['tmp_name'], $_FILES['file']['name']); 
+      if (!empty($_FILES['file']['size'])) {
+        $this->uaDBI->uploadFile($_POST['TEAM'], $this->idx, $_FILES['file']['tmp_name'], $_FILES['file']['name']);
         $this->history = $_FILES['file']['name'].' uploaded';
-      } else if (!empty($_POST['deleteFileNames'])) { 
- 	      foreach ($_POST['deleteFileNames'] as $fileName) { 
-          $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName); 
+      } else if (!empty($_POST['deleteFileNames'])) {
+ 	      foreach ($_POST['deleteFileNames'] as $fileName) {
+          $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName);
           $this->history .= $fileName.' deleted';
-        } 
-      } 
-    } else $url->put( "sysalert=".$lng->get("ElementHasNoFileUpload")); 
-  } 
-  
+        }
+      }
+    } else $url->put( "sysalert=".$lng->get("ElementHasNoFileUpload"));
+  }
+
   /**
   * Used to save the corrector's comment and given points.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */  
+  */
   /*static*/ function saveCorrectorStuff(){
     global $url, $lng, $usr;
-    
-    if ( $usr->isOfKind( IS_CORRECTOR ) 
-         && isset($_POST['IS_CORRECTED']) 
-         && !isset($_POST['CREDITS']) 
+
+    if ( $usr->isOfKind( IS_CORRECTOR )
+         && isset($_POST['IS_CORRECTED'])
+         && !isset($_POST['CREDITS'])
          && ($_POST['IDX'] == $this->idx) ){// start over without commenting
       makeLogEntry( 'i', 'quick correcting', $this->idx );
       $_POST['CREDITS'] = $this->possibleCredits;
     }
 
     // check for all necessary values posted
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO']) || 
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO']) ||
          !isset($_POST['CREDITS']) ||
          !isset($_POST['FULLADDRESS']) ||
          !isset($_POST['TEAM'])
@@ -862,15 +867,15 @@ class LiElement extends Element{
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-    
+
     // Validity (session ID) is checked by the calling script yet.
-       
+
     // only correctors are allowed to save
     if ( !$usr->isOfKind( IS_CORRECTOR ) ){
                                              trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
                                              exit;
                                            }
-       
+
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
 
     if (!isset($_POST['cancel'])){ // cancel? -> do nothing
@@ -880,28 +885,28 @@ class LiElement extends Element{
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
+
   /**
   * Tries to set the answer lock.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */  
-  /*static*/ function setUserAnswerLock(){ 
+  */
+  /*static*/ function setUserAnswerLock(){
     global $url, $lng;
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO']) || 
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO']) ||
          !isset($_POST['FULLADDRESS']) ||
-         !isset($_POST['TEAM'])   
+         !isset($_POST['TEAM'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
 
     // Validity (session ID) is checked by the calling script yet.
-     
+
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
-     
+
     if ($this->isClosed){
       $url->put( "sysalert=".$lng->get("InputAlreadyClosed") );
     }elseif ( $this->lockIsSetTo && ($this->lockIsSetTo != $this->idx) ){ // we do not have the lock
@@ -916,18 +921,18 @@ class LiElement extends Element{
       $this->acquireLock4( $_POST['FULLADDRESS'] );
       makeLogEntry( 'i', 'open', $this->idx );
     }
-            
+
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
+
   /**
   * Closes the input.
   *
   * Gets called by the l (lab) element.
   *
   * @param $teamNumber  The number of the team to open the input of.
-  */ 
+  */
   function closeInput( $teamNumber ){
     global $usr, $lng;
     $this->loadUserData4( $teamNumber );
@@ -937,14 +942,14 @@ class LiElement extends Element{
     $this->isCorrected = false;
     makeLogEntry( 'i', 'closed', 'i'.$this->idx );
   }
-  
+
   /**
   * ReOpens the input.
   *
   * Gets called by the l (lab) element.
   *
   * @param $teamNumber  The number of the team to open the input of.
-  */ 
+  */
   function reOpenInput( $teamNumber ){
     global $usr, $lng;
     $this->loadUserData4( $teamNumber );
@@ -955,7 +960,7 @@ class LiElement extends Element{
 
   /**
   * Creates the mapping $UID->$team.
-  * Normally the mapping should exist but if the user never viewed the question 
+  * Normally the mapping should exist but if the user never viewed the question
   * (only one teammember opened for answering) it might be missing.
   *
   * @param $uid   The user's unique identifier.
@@ -967,7 +972,7 @@ class LiElement extends Element{
       $this->utDBI->setData4( $uid, $this->idx, $team, $lng->get("userReMapped") );
     $this->loadUserData4( $team ); // necessary to create an answer
   }
-  
+
 // The next functions are used for the element's manage page. ***********************************************
 
   /**
@@ -982,7 +987,7 @@ class LiElement extends Element{
             "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" checked=\"checked\">".
                 infoArrow( $lng->get("visAlways") ).
                 $lng->get("visAlways")."<br>\n".
-               
+
              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled>".
                 infoArrow( $lng->get("visAlways"), false ).
                 "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" checked=\"checked\">".
@@ -992,14 +997,14 @@ class LiElement extends Element{
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1){
       $lgnd .= "<input type=\"radio\" disabled>".infoArrow( $lng->get("visAlways"), true )."<input type=\"radio\" disabled>".infoArrow( $lng->get("visOnlyInColl"), true )." | ";
       for ($j=1; $j<$i; $j=$j<<1) $lgnd .= '<input type="checkbox" disabled>'.infoArrow( $lng->get("Explain_UR_".$j), true )/* ."\n" saves space! */;
-      $lgnd .= rightsBox( "legend_".$i, $i, $i )." ".$lng->get("Explain_UR_".$i)."<br>\n";    
+      $lgnd .= rightsBox( "legend_".$i, $i, $i )." ".$lng->get("Explain_UR_".$i)."<br>\n";
     }
-    
+
     $lgnd .= "</div>\n";
-    
+
     return $lgnd;
   }
-  
+
   /**
   * This function is called to display the element's properties.
   * @param $prefix    If given this is put before the element's title (p.e. 1.2.3 title).
@@ -1008,7 +1013,7 @@ class LiElement extends Element{
   */
   function getPropertyRow( $prefix, $disabled=false ){
     global $pge, $lng, $cfg;
-    return  
+    return
               "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visAlways"), $disabled ).
               "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".

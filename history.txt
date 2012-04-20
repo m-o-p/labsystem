@@ -76,7 +76,27 @@ Feature Requests:
   /include/XIlib.inc
     handleLocalFile does not replace serverurl/"nothing" with .. anymore as one
     may want to redirect to this server.
-    
+  /include/classes/elements/LiElement.inc
+    Updated the lock behaviour (Thanks to Andrey Uznov for pointing me to the need for looking at that again!):
+      - A opens question Q1
+      - B refreshes and sees Q1 opened
+      - A saves Q1 and opens Q2
+      - B puts text into Q1 and saves
+        -> Now Q1 contains:
+           - A hint one should work together, not in parallel
+           - B's (newer) answer
+           - A's (older) answer
+    Cancel works now a expected too. (Before it removed all locks, now it only removes the lock if set to the canceled input.)
+  /pages/mailForm.php
+    Added the get variable "text" for the mail body in preparation of element links.
+  /syspix/button_mail_light_13x12.gif
+  /include/classes/ElementMenues.inc
+  /include/classes/ElementButtons.inc
+    Added a button to mail links to specific elements via the mailform.
+    This button is used next to the history button for regular users.
+    It links to the pages/mailForm.php placing a link to the current element into the mail.
+    This button can be used to point someone else to an element, e.g. a teammate "look at this" or a corrector "Could you explain your correction here?"
+    Thanks to Andrey Uznov for requesting the nice feature.
     
 2012-04-19
 -------------------

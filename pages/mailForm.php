@@ -150,7 +150,8 @@ $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST
            // mailbody
             "<label for=\"mailtext\" class=\"labsys_mop_input_field_label_top\">".$lng->get("message")."</label>".
             "<textarea tabindex=\"".$pge->nextTab++."\" id=\"mailtext\" name=\"MAILTEXT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("sendMailBodyRows")."\" onchange='isDirty=true'>".
-            (isset($_POST['MAILTEXT']) ? $_POST['MAILTEXT'] : '').
+            (isset($_POST['MAILTEXT']) ? $_POST['MAILTEXT'] :
+            	( $url->available('text') ? $url->get('text') : '') ).
             "</textarea>\n".
             "</fieldset>\n".
 

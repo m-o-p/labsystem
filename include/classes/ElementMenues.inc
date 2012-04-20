@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -51,11 +51,12 @@ class EM{ /* ElementMenues */
             EB::createNew( $elShortcut ).
             EB::delete( $fullAddress ).
             EB::manageElements().
+            EB::mail ( $fullAddress ).
             EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress ).
             "</div>\n";
-    else return;
+    else return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n";
   }
-  
+
   /**
   * Returns the standard bottom menu of an element;
   * @param &$theEl        A Reference to the element the menu is for.
@@ -65,11 +66,12 @@ class EM{ /* ElementMenues */
   */
   function viewBottomStandard( &$theEl, $fullAddress, $elShortcut ){
     global $usr, $lng;
-    if ( $usr->isOfKind( IS_CONTENT_EDITOR ) ) 
+    if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
       return "<div class=\"labsys_mop_elements_menu_".$elShortcut."_edit_bottom\">&nbsp;</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
     else
       return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
+             EB::mail ( $fullAddress ).
              EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress ).
              "</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
@@ -87,14 +89,14 @@ class EM{ /* ElementMenues */
   function viewBottomPage( &$eP, $fullAddress ){
     return EM::viewBottomStandard( $eP, $fullAddress, "p" );
   }
-  
+
   function viewTopMultipleChoice( &$eMC, $fullAddress ){
     return EM::viewTopStandard( $eMC, $fullAddress, "m" );
   }
   function viewBottomMultipleChoice( &$eMC, $fullAddress ){
     return EM::viewBottomStandard( $eMC, $fullAddress, "m" );
   }
-  
+
   function viewTopInput( &$eI, $fullAddress ){
     return EM::viewTopStandard( $eI, $fullAddress, "i" );
   }
@@ -108,17 +110,18 @@ class EM{ /* ElementMenues */
     global $usr, $lng;
 
     $elShortcut = "s";
-    
+
     return ( $usr->isOfKind( IS_CONTENT_EDITOR ) || $usr->isOfKind( IS_SCHEDULER ) ? "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
                                                                                      "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n" :'' ).
            ( $usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::link2Element( 's1' ) : '' ).
            ( $usr->isOfKind( IS_SCHEDULER ) ? EB::createNew( $elShortcut ) : '' ).
+           EB::mail ( $fullAddress ).
            ( $usr->isOfKind( IS_CONTENT_EDITOR ) || $usr->isOfKind( IS_SCHEDULER ) ?"</div>\n" : '' );
   }
   function viewBottomSchedule( &$eS, $fullAddress ){
     return EM::viewBottomStandard( $eS, $fullAddress, "s" );
   }
-    
+
   function viewTopLab( &$eL, $fullAddress ){
     global $usr, $lng;
     $elShortcut = 'l';
@@ -134,6 +137,7 @@ class EM{ /* ElementMenues */
             EB::link2epub( $fullAddress ).
             EB::printView( $fullAddress.".all" ).
             EB::manageElements().
+            EB::mail ( $fullAddress ).
             EB::history( $lng->get($elShortcut."Number").$eL->idx.":<hr>".$eL->history, $fullAddress ).
             "</div>\n";
     else return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
@@ -144,7 +148,7 @@ class EM{ /* ElementMenues */
   function viewBottomLab( &$eL, $fullAddress ){
     return EM::viewBottomStandard( $eL, $fullAddress, "l" );
   }
-  
+
   /**
   * The function returns the collection's top menu.
   * @param &$eC           The element collection.
@@ -152,7 +156,7 @@ class EM{ /* ElementMenues */
   * @param $prevAddress   If present the back arrow is generated and links to this address.
   * @param $nextAddress   If present the forward arrow is generated and links to this address.
   * @param $topAddress    If present the up arrow is generated and links to this address.
-  * @param $add2Style     If present this string is added to the style tag 
+  * @param $add2Style     If present this string is added to the style tag
   *                       (used to get a different div style for the bottom menu).
   * @return               The html code of the menu.
   */
@@ -161,7 +165,7 @@ class EM{ /* ElementMenues */
      $menu = (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
              (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
              (   $nextAddress ?                    EB::next( $nextAddress )  : '' );
-    if ( $usr->isOfKind( IS_CONTENT_EDITOR ) ) 
+    if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
       $menu  = ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
                "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
                $menu.
@@ -172,15 +176,16 @@ class EM{ /* ElementMenues */
                EB::delete( $fullAddress ).
                EB::printView( $fullAddress.".all" ).
                EB::manageElements().
+               EB::mail ( $fullAddress ).
                EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress );
     else $menu .= EB::printView( $fullAddress.".all" );
-      
+
     return "\n\n\t<!-- *************************start of c-element************************* -->\n\n".
            "<div class=\"labsys_mop_elements_menu_c".$add2Style."\">\n".
            $menu.
            "</div>\n";
   }
-  
+
   /**
   * The function returns the collection's bottom menu.
   * @param &$eC           The element collection.
@@ -208,7 +213,7 @@ class EM{ /* ElementMenues */
   * The function builds the multiple choice element's answer history.
   * @param &$eMC          The element multiple choice.
   * @return               The html code of the menu.
-  */  
+  */
   function viewMultipleChoiceAnswerHistory( &$eMC ){
     global $lng;
 
@@ -216,12 +221,12 @@ class EM{ /* ElementMenues */
            EB::history( $lng->get("mNumber").$eMC->idx." ".$lng->get("answerHistory").":\n".$eMC->answerHistory, "m".$eMC->idx, true ).
            "</div>\n";
   }
-  
+
   /**
   * The function builds the input element's answer history.
   * @param &$eMC          The element input.
   * @return               The html code of the menu.
-  */  
+  */
   function viewInputAnswerHistory( &$eI ){
     global $lng;
 
@@ -229,8 +234,8 @@ class EM{ /* ElementMenues */
            EB::history( $lng->get("iNumber").$eI->idx." ".$lng->get("answerHistory").":\n".$eI->answerHistory, "i".$eI->idx, true ).
            "</div>\n";
   }
-  
-  
+
+
 // E D I T
   /**
   * This function returns the standard top edit menu of an element;
@@ -249,6 +254,7 @@ class EM{ /* ElementMenues */
             EB::createNew( $elShortcut ).
             EB::delete( $fullAddress ).
             EB::manageElements().
+            EB::mail ( $fullAddress ).
             EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress ).
             "</div>\n";
   }
@@ -262,7 +268,7 @@ class EM{ /* ElementMenues */
   function editBottomStandard( &$theEl, $fullAddress, $elShortcut ){
     return EM::editTopStandard( $theEl, $fullAddress, $elShortcut );
   }
-  
+
 
   /**
   * The following functions return the element's top and bottom edit menus.
@@ -276,7 +282,7 @@ class EM{ /* ElementMenues */
   function editBottomPage( &$eP, $fullAddress ){
     return EM::editBottomStandard( $eP, $fullAddress, "p" );
   }
-  
+
 
   function editTopMultipleChoice( &$eMC, $fullAddress ){
     return EM::editTopStandard( $eMC, $fullAddress, "m" );
@@ -284,28 +290,28 @@ class EM{ /* ElementMenues */
   function editBottomMultipleChoice( &$eMC, $fullAddress ){
     return EM::editBottomStandard( $eMC, $fullAddress, "m" );
   }
-  
+
   function editTopInput( &$eI, $fullAddress ){
     return EM::editTopStandard( $eI, $fullAddress, "i" );
   }
   function editBottomInput( &$eI, $fullAddress ){
     return EM::editBottomStandard( $eI, $fullAddress, "i" );
   }
-  
+
   function editTopSchedule( &$eS, $fullAddress ){
     return EM::editTopStandard( $eS, $fullAddress, "s" );
   }
   function editBottomSchedule( &$eS, $fullAddress ){
     return EM::editBottomStandard( $eS, $fullAddress, "s" );
   }
-  
+
   function editTopLab( &$eL, $fullAddress ){
     return EM::editTopStandard( $eL, $fullAddress, "l" );
   }
   function editBottomLab( &$eL, $fullAddress ){
     return EM::editBottomStandard( $eL, $fullAddress, "l" );
   }
-  
+
   function editTopCollection( &$eC, $fullAddress ){
     return EM::editBottomCollection( $eC, $fullAddress ); // only editors get top menus
   }
@@ -323,10 +329,11 @@ class EM{ /* ElementMenues */
             EB::createNew( "c" ).
             EB::delete( $fullAddress ).
             EB::manageElements().
+            EB::mail ( $fullAddress ).
             EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress ).
             "</div>\n";
   }
-  
+
 // M A N A G E
   /**
   * Used on top of the "manage users" page.
@@ -358,7 +365,7 @@ class EM{ /* ElementMenues */
             EB::manageElements().
             EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, "p1", true );
   }
-  
+
   /**
   * Used on top of the elements' manage page.
   * @param $id  The element's id (p.e. p, i, m, ...).
@@ -379,7 +386,7 @@ class EM{ /* ElementMenues */
             EB::manageElements().
             "</div>\n";
   }
-  
+
   /**
   * This function returns the standard manage row of an element.
   * @param &$theEl        A Reference to the element the menu is for.
@@ -393,7 +400,7 @@ class EM{ /* ElementMenues */
             EB::delete( $elShortcut.$theEl->idx ).
             EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $elShortcut.$theEl->idx );
   }
-  
+
   /**
   * The following functions return the elements' manage rows.
   * @param &$e?   A reference to the element the row is for.
@@ -402,19 +409,19 @@ class EM{ /* ElementMenues */
   function manageRow_p( &$eP ){
     return EM::manageRowStandard( $eP, "p" );
   }
-  
+
   function manageRow_m( &$eMC ){
     return EM::manageRowStandard( $eMC, "m" );
   }
-  
+
   function manageRow_i( &$eI ){
     return EM::manageRowStandard( $eI, "i" );
   }
-  
+
   function manageRow_s( &$eS ){
     return EM::manageRowStandard( $eS, "s" );
   }
-  
+
   function manageRow_l( &$eL ){
     return EM::manageRowStandard( $eL, "l" );
   }
@@ -432,7 +439,7 @@ class EM{ /* ElementMenues */
             EB::manageElements().
             EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, "c".$eC->idx );
   }
-  
+
 // I N  C O L L E C T I O N  O V E R V I E W
   /**
   * This function returns the standard element row for the "what is inside the collection" page.
@@ -460,23 +467,23 @@ class EM{ /* ElementMenues */
   function collectionRow_p( &$eP, $fullAddress ){
     return EM::collectionRowStandard( $eP, $fullAddress, "p" );
   }
-  
+
   function collectionRow_m( &$eMC, $fullAddress ){
     return EM::collectionRowStandard( $eMC, $fullAddress, "m" );
   }
-  
+
   function collectionRow_i( &$eI, $fullAddress ){
     return EM::collectionRowStandard( $eI, $fullAddress, "i" );
   }
-  
+
   function collectionRow_s( &$eS, $fullAddress ){
     return EM::collectionRowStandard( $eS, $fullAddress, "s" );
   }
-  
+
   function collectionRow_l( &$eL, $fullAddress ){
     return EM::collectionRowStandard( $eL, $fullAddress, "l" );
   }
-  
+
   /**
   * The collection adds the "view structure" button.
   */

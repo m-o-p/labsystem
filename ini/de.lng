@@ -194,6 +194,7 @@ discardChangesWarning = "Sie haben Ihre Änderungen auf der Seite noch nicht gesp
 NotAllowedSaveLockAt= "Keine Erlaubnis zum Speichern der Antwort! Es gibt bereits ein Lock auf" ;; If the lock got placed on another answer this is not savable anymore.
 LockTakenFrom       = "Das Lock wurde von folgendem Eingabefeld genommen:" ;; " [idx of input]" gets added
 InputAlreadyClosed  = "Das Eingabefeld ist bereits geschlossen!"
+noiLockNote         = "Es ist bereits eine andere Frage zur Beantwortung gešffnet. Bitte beim Formulieren der Antworten zusammenarbeiten." ; when saving a not opened answer this text is added before the new and then the old answer.
 ;i upload
 noFilesYet          = "Keine hochgeladenen Dateien vorhanden."
 fileList            = "Hochgeladene Dateien"
@@ -282,7 +283,6 @@ orderPrelabFin      = "Reihenfolge in der die Benutzer das PreLab abgeschlossen 
 ;s
 start               = "Anfang" ; used in the sorter (manage schedules)
 stop                = "Ende"
-
 
 ;; manage users
 foreName            = "Vorname"
@@ -442,6 +442,7 @@ explainManageElmnts = "Elemente verwalten..."
 explainDeleteElemnt = "Dieses Element l&ouml;schen..."
 explainViewStructure= "Struktur des Elements..."
 explainHistory      = "Die Vergangenheit des Elements..."
+explainMailLink2    = "Einen Link zu diesem Element per Mail verschicken..."
 explainSaveElement  = "Das aktuelle Element speichern..."
 explainNext         = "n&auml;chste Seite&gt;&gt;"
 explainPrev         = "&lt;&lt;vorherige Seite"
