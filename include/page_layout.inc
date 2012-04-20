@@ -221,8 +221,9 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 
 <!-- ************************* start of content ************************* --><td class="labsys_mop_content">
 
-
 <?php $pge->show(); ?>
+
+<img src="../syspix/1pixel.gif" style="width: 1200px; height: 1px;" border="0">
 
 
 <!-- ************************* stop of content ************************* --></td>

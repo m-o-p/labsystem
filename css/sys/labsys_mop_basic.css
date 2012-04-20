@@ -55,10 +55,10 @@ height:auto
 }
 /* The main layout is set in the ../include/page_layout.inc.
    The following styles are used there */
+/* The width is set in .labsys_mop_content */
 
 /* main table (../include/page_layout.inc) */
   .labsys_mop_maintable {
-                      width: 95%;
                       table-layout: fixed; /* causes the sizes to be fixed (not content related) */
                       border: none;
                       padding: 0px;
@@ -121,6 +121,8 @@ height:auto
   }
   
   .labsys_mop_content { /* the content area */
+                      display: block; /* Only block elements can have a max-width. */
+                      max-width: 1024px; /* To enforce this goto /include/page_layout.inc and set the property identical for the 1pixel.gif */
                       vertical-align: top;
                       text-align: justify;
                       padding: 10px 15px 10px 15px; /* top left bottom right */

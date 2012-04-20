@@ -100,6 +100,11 @@ Feature Requests:
   /pages/register.php
     The initial password was not stored correctly in the database (salt was missing).
     Now it works.
+  /css/sys/labsys_mop_basic.css
+  /include/page_layout.inc
+  /syspix/1pixel.gif
+    Set the page size to max-width: 1200 and enforced it via a transparent 1pixel.gif in page_layout.
+  
     
 2012-04-19
 -------------------
