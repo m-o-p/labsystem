@@ -811,8 +811,8 @@ class LiElement extends Element{
            // As this case should never happen, we save the data below the existing answer with a hint, not to lose data:
             $existingData = $this->uaDBI->getData4( $_POST['TEAM'], $this->idx, false );
            // To abondon parallel answering we replace all spaces by NO_LOCK so the user has to remove this later again.
-            $_POST['ANSWER'] = $lng->get( 'noiLockNote' )."\r\n\r\n".
-                               $_POST['ANSWER']."\r\n\r\n".
+            $_POST['ANSWER'] = $lng->get( 'noiLockNote' )."\r\n\r\n- - - - -\r\n\r\n".
+                               $_POST['ANSWER']."\r\n\r\n- - - - -\r\n\r\n".
                                $existingData["answer"];
             $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
     }
