@@ -330,7 +330,7 @@ class EB{ /* ElementButtons */
   * @return          The button's html-code.
   */
   function mail( $address ){
-    global $lng, $url;
+    global $lng, $url, $usr;
     // Not logged in? -> mailForm is not available -> Button makes no sense
     if ( !$usr->isOfKind( IS_USER ) ){
       return;
