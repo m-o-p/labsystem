@@ -4,14 +4,6 @@ This file contains the history of labsystem.m-o-p.de.
 
 Feature Requests:
 -------------------
- - Picture Upload on lab page
-   - in every element
-   - upload dir fixed (import dir?)
- 
- - Test new config files
- - Fields in setup adden!
- - Check why login after setup new system does not work with admin user.
- 
  - Add Markdown help as module or as standard...
  
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
