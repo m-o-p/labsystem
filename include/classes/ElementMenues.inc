@@ -115,7 +115,6 @@ class EM{ /* ElementMenues */
                                                                                      "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n" :'' ).
            ( $usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::link2Element( 's1' ) : '' ).
            ( $usr->isOfKind( IS_SCHEDULER ) ? EB::createNew( $elShortcut ) : '' ).
-           EB::mail ( $fullAddress ).
            ( $usr->isOfKind( IS_CONTENT_EDITOR ) || $usr->isOfKind( IS_SCHEDULER ) ?"</div>\n" : '' );
   }
   function viewBottomSchedule( &$eS, $fullAddress ){
