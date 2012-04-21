@@ -1083,7 +1083,7 @@ class LlElement extends Element{
     }
 
      return EM::editTopLab( $this, $fullAddress ).
-            "<FORM class=\"labsys_mop_std_form\" NAME=\"labEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l")."\">\n".
+            "<FORM  enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"labEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l")."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".   // to check whether the call is valid            "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n". // index of saved el. will be added on save.php!
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
@@ -1164,10 +1164,18 @@ class LlElement extends Element{
            // export/ import
             "<fieldset><legend>".$lng->get("exportImport")."</legend>\n".
               // unique ID
-              "<label for=\"uniqueID\" class=\"labsys_mop_input_field_label_top\">".$lng->get('uniqueID')."<br>\r\n".$lng->get('uniqueIDnote')."</label>".
+              "<label for=\"uniqueID\" class=\"labsys_mop_input_field_label_top\">".$lng->get('uniqueID').": \r\n".$lng->get('uniqueIDnote')."</label>".
               "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"uniqueID\" name=\"UNIQUEID\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".
               $this->uniqueID.
               "\" onchange='isDirty=true'>\n".
+            "</fieldset>\n".
+
+           // material upload
+            '<a name="uploadMaterial"></a>'."\n". // anchor for retrieving after saving
+            "<fieldset><legend>".$lng->get('uploadMaterial')."</legend>\n".
+            $lng->get('uploadMaterialNote').
+            $this->getUploadInterface( $cfg->get('importPictureDir').$this->uniqueID, '&lt;img src=&quot;%1$s%2$s&quot; alt=&quot;%2$s&quot; /&gt;' ).
+            $this->getUploadInterface( $cfg->get('importFilesDir').$this->uniqueID, '&lt;a href=&quot;%1$s%2$s&quot;&gt;%2$s&lt;/a&gt;' ).
             "</fieldset>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
@@ -1182,13 +1190,111 @@ class LlElement extends Element{
   }
 
   /**
+   * Creates an upload interface for files from and to the directory $myPath.
+   * $myPath      The directory the upload interface should be created for.
+   * $strFormat   The link buttons link text gets filled with this. First %s gets replaced by the path, second %s by the filename.
+   */
+  private function getUploadInterface( $myPath, $strFormat="%s%s" ){
+    global $lng;
+    // $myPath = dirname($myPath);
+    $retHTML = '<div class="labsys_mop_elements_i_around"><div class="labsys_mop_i_fileUpload">'."\n".
+               '<h3><img src="../syspix/button_save_13x12.gif" width="13" height="12" alt="'.$lng->get('upload').'"> '.$lng->get('fileList').' '.$myPath.'</h3>'."\n";
+    // Create folder if not existing (may be the case for new labs)
+    if (!file_exists($myPath)) mkdir($myPath, 0755, true) or trigger_error("Error creating folder ".$myPath, E_USER_ERROR);
+
+    // get file names into $files
+    $files = array();
+    $dir = dir($myPath);
+    while (false !== ($entry = $dir->read())) {
+      if ($entry != '.' && $entry != '..' && !is_dir($myPath.'/'.$entry) ) {
+        $filePath = $myPath.'/'.$entry;
+        $fileChangedTime = filectime($filePath);
+        $filesize = filesize($filePath);
+        $files[$entry] = array(
+        'fileName' => $entry,
+        'timestamp' => $fileChangedTime,
+        'size' => $filesize
+                );
+      }
+    }
+    ksort($files);
+
+    // Identify this upload:
+    $pathID = sha1( $myPath );
+
+    if (empty($files)) $retHTML .= '<div class="labsys_mop_i_noUploads">'.$lng->get('noFilesYet').'</div>'."\n";
+    else {
+      // List existing files and allow deleting existing files:
+      $retHTML .= '<img class="labsys_mop_i_arrow" src="../syspix/delete-arrow.gif" alt="delete" /><input type="submit" class="labsys_mop_button" name="fileDelete" value="'.$lng->get('deleteFile').'">'.
+                  '<ul class="labsys_mop_i_file_list">'."\n";
+      foreach ($files as $file) {
+        // List files. If isGettingAnswered with delete button.
+        $pathInfo = pathinfo($file['fileName']);
+        $filesize = round($file['size'] / 1024).' KB';
+        $fileTime = date('H:i j.n.Y', $file['timestamp']);
+
+        $retHTML .= '<li>'.
+                    '<input type="checkbox" name="deleteFileNames'.$pathID.'[]" value="'.$pathInfo['basename'].'" />'.
+                    '<a href="'.$myPath.'/'.$file['fileName'].'">'.
+                    $pathInfo['basename'].
+                    '</a> '.EB::link2Content( sprintf( ( substr_count( $strFormat, '%s' ) != 2 ? $strFormat : '%s%s' ), $myPath.'/', $file['fileName'] ) ).
+                    ' <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.'</li>'."\n";
+      }
+      $retHTML .= '</ul>';
+    }
+
+    // Show the upload
+    $max_upload = (int)(ini_get('upload_max_filesize'));
+    $max_post = (int)(ini_get('post_max_size'));
+    $memory_limit = (int)(ini_get('memory_limit'));
+    $upload_mb = min($max_upload, $max_post, $memory_limit);
+    $retHTML .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" name=\"file".$pathID."\">\n".
+                "<input type=\"submit\" class=\"labsys_mop_button\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>'."\n".
+                '</div></div>';
+
+    return $retHTML;
+  }
+
+  /**
+   *
+   * Handles the uploaded file properties for $myPath.
+   * $myPath The path to handle upload values (new file, delete) for.
+   * return history entries.
+   */
+  private function handleUploadedFiles( $myPath ){
+    $history = "";
+    $pathID = sha1( $myPath );
+
+//     echo( "<br>\n".$myPath."<br>Files: \n");
+//     print_r( $_FILES );
+//     echo( "<br>Post: \n");
+//     print_r( $_POST );
+//     echo( "End: file".$pathID."<br>\n");
+
+    if (!empty($_FILES['file'.$pathID]['size'])) {
+      //echo ('moving '.$_FILES['file'.$pathID]['tmp_name'].' to '.$myPath.'/'.$_FILES['file'.$pathID]['name']."<br>\n" );
+      move_uploaded_file($_FILES['file'.$pathID]['tmp_name'], $myPath.'/'.$_FILES['file'.$pathID]['name'])
+      or trigger_error("Error moving uploaded file ".$myPath.'/'.$_FILES['file'.$pathID]['name'], E_USER_ERROR);
+      $history .= $_FILES['file'.$pathID]['name'].' uploaded; ';
+    } else if (!empty($_POST['deleteFileNames'.$pathID])) {
+      foreach ($_POST['deleteFileNames'.$pathID] as $fileName) {
+        //echo( 'deleting '.$myPath.'/'.$fileName."<br>\n" );
+        unlink($myPath.'/'.$fileName)
+        or trigger_error("Error deleting ".$myPath.'/'.$fileName, E_USER_ERROR);
+        $history .= $myPath.$fileName.' deleted; ';
+      }
+    }
+    return $history;
+  }
+
+  /**
   * Used to save the edited element.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
   */
   /*static*/ function save(){
-    global $lDBI, $url, $lng, $usr;
+    global $lDBI, $url, $lng, $usr, $cfg;
     if ( !isset($_POST['IDX']) ||
          !isset($_POST['REDIRECTTO']) ||
          !isset($_POST['FULLADDRESS']) ||
@@ -1211,6 +1317,10 @@ class LlElement extends Element{
                                                   exit;
                                                 }
 
+    // process file upload information
+    $history = $this->handleUploadedFiles( $cfg->get('importPictureDir').$this->uniqueID ).
+               $this->handleUploadedFiles( $cfg->get('importFilesDir').$this->uniqueID );
+
     // compute user rights:
     $userRights=0;
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1) if ( isset( $_POST[ "UR_".$i] ) ) $userRights += $_POST["UR_".$i];
@@ -1230,7 +1340,7 @@ class LlElement extends Element{
                               ( isset( $_POST["VISIBLE_DURING_SCHED"] ) && $_POST["VISIBLE_DURING_SCHED"] == 1 ),
                               ( isset( $_POST["VISIBLE_AFTER_FIRST_SCHED"] ) && $_POST["VISIBLE_AFTER_FIRST_SCHED"] == 1 ),
                               ( $_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1" ),
-                              ""
+                              $history
                              );
 
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
@@ -1247,7 +1357,7 @@ class LlElement extends Element{
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("lNumber")." ".$newLab->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ).( isset($history) ? '#uploadMaterial' : '' ) );
   }
 
 // The next functions are used for the element's manage page. ***********************************************

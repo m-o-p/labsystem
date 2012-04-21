@@ -243,7 +243,8 @@ labCloseNote        = "Durch Klick auf diesen Knopf werden <b>alle Antworten ges
 prelabCheckNote     = "Durch Klick auf diesen Knopf werden <b>alle Antworten korrigiert</b>. Erst wenn alle PreLab-Fragen von allen Teammitgliedern richtig (symbolisiert durch einen gr&uuml;nen Rand) ausgef&uuml;llt wurden, wird das Lab sichtbar.<br />Zur Beantwortung steht die folgende Anzahl an Versuchen zur Verf&uuml;gung: "
 prelabStatusNote    = "Diese Benutzer (in <b>Reihenfolge des Beendens</b>) haben das PreLab schon beendet."
 
-uniqueIDnote        = "Dieser Bezeichner wird verwendet, wenn Sie das Lab exportieren. Er muss für jedes Lab eindeutig sein, da er verwendet wird, das Modul ins SVN einzuchecken. Am besten verwenden Sie für Ihre Institution und Ihren Kurs ein Prefix (z.B. TUM_ilab1_Statis_routing). Achtung: wenn Sie diesen Bezeichner ändern, wird das Modul unter dem neuen bezeichner exportiert und es besteht kein Bezug zum alten Bezeichner mehr."
+uniqueIDnote        = "Dieser Bezeichner wird verwendet, wenn Sie das Lab exportieren. Er muss f&uuml;r jedes Lab eindeutig sein, da er verwendet wird, das Modul ins SVN einzuchecken. Am besten verwenden Sie für Ihre Institution und Ihren Kurs ein Prefix (z.B. TUM_ilab1_Statis_routing). Achtung: wenn Sie diesen Bezeichner ändern, wird das Modul unter dem neuen bezeichner exportiert und es besteht kein Bezug zum alten Bezeichner mehr."
+uploadMaterialNote  = "Hier k&ouml;nnen Sie Bilder und andere Dateien, die Sie im Lab verwenden wollen verwalten. Der Speicherort ist importFilesDir (in der Konfiguration definierbar) / uniqueID (oben definiert)."
 abstractNote        = "Diese Kurzfassung wird auf der Übersichtsseite jedes Moduls sowie auf der Übersichtsseite aller installierten Lernmodule angezeigt."
 
 ; uaMyData.php
@@ -341,6 +342,7 @@ authors             = "Autoren"
 abstract            = "Kurzbeschreibung"
 exportImport        = "Export/ Import"          ;; Header for the fieldset about export/ import
 uniqueID            = "Eindeutiger Bezeichner"
+uploadMaterial      = "Dateien, die zu diesem Lab geh&ouml;ren" ;; Header for this l-edit fieldset
 exportFollowingLabs = "Folgende labs EXportieren..."
 importFollowingLabs = "Folgende labs IMportieren..."
 

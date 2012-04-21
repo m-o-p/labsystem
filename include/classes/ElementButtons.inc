@@ -106,6 +106,20 @@ class EB{ /* ElementButtons */
   }
 
   /**
+  * Creates the link button linking to the given $content
+  *
+  * @param $content  The content to be shown in the link box..
+  *
+  * @return          The button's html-code.
+  */
+  function link2Content( $content ){
+    global $lng;
+    return EB::mkHiddenDiv( '#',
+                              "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
+                              '<input type="text" style="width: 100%" value="'.$content.'" onClick="this.select();">' );
+  }
+
+  /**
   * This button links to the epub of the element. It is used in l-elements.
   *
   * @param $address  The element's address.

@@ -278,7 +278,7 @@ class LiElement extends Element{
     if (empty($files)) $ret .= '<div class="labsys_mop_i_noUploads">'.$lng->get('noFilesYet').'</div>';
     else {
       if ( $isGettingAnswered ) // allow deleting files with this button
-        $ret .= '<img class="labsys_mop_i_arrow" src="../syspix/delete-arrow.gif" alt="delete" /><input type="submit" name="fileDelete" value="'.$lng->get('deleteFile').'">';
+        $ret .= '<img class="labsys_mop_i_arrow" src="../syspix/delete-arrow.gif" alt="delete" /><input type="submit" class="labsys_mop_button" name="fileDelete" value="'.$lng->get('deleteFile').'">';
 
       $ret .= '<ul class="labsys_mop_i_file_list">';
       foreach ($files as $file) { // List files. If isGettingAnswered with delete button.
@@ -300,7 +300,7 @@ class LiElement extends Element{
       $memory_limit = (int)(ini_get('memory_limit'));
       $upload_mb = min($max_upload, $max_post, $memory_limit);
       $ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" name=\"file\" \">".
-              "<input type=\"submit\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>';
+              "<input type=\"submit\"  class=\"labsys_mop_button\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>';
     }
     $ret .= '</div>';
     return $ret;

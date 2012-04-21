@@ -244,6 +244,7 @@ prelabCheckNote     = "If you click this button all your <b>answers above will b
 prelabStatusNote    = "Below you find a list of all members that finished the prelab. The list is <b>ordered by</b> the <b>time</b> the user <b>finished</b> the prelab."
 
 uniqueIDnote        = "This Identifier is used when you export the lab. It must be unique for each lab as it is used to check the lab into the svn. It is a good idea to use a prefix for your institution followed by an ID for this ly like TUM-ILAB1-BASICS. Note: if you change this ID and export the module it will be exported under the new ID that has no relation to the old ID."
+uploadMaterialNote  = "Here you can upload and deletes images and other files you want to use in the lab. They get stored in the folder importFilesDir (specified in the configuration) / uniqueID (specified above)."
 abstractNote        = "This abstract is shown on the lab index page and inside the index on the labsystem course server. It should give a short abstract of the course module (lab)."
 
 ; uaMyData.php
@@ -341,6 +342,7 @@ authors             = "authors"
 abstract            = "abstract"
 exportImport        = "export/ import"          ;; Header for the fieldset about export/ import
 uniqueID            = "unique ID"
+uploadMaterial      = "files belonging to this lab" ;; Header for this l-edit fieldset
 exportFollowingLabs = "Export the following labs..."
 importFollowingLabs = "Import the following labs..."
 
