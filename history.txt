@@ -65,6 +65,23 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
          
+2012-04-21
+-------------------
+  /pages/view.php
+    Added header("HTTP/1.0 404 Not Found"); when a page is not found.
+  /include/customErrHandle.inc
+    Added special code for the googlebot as it bothers with invented urls or pages and thus page faults...
+  /include/classes/elements/LsDBInterface.inc
+    When you make a new schedule it starts today 0:00:00 now and ends in one week at 23:59:59.
+    Before it always started 2005/04/15.
+  /include/customErrHandle.inc
+    Added code to handle the google bot separately when enabling the email feature.
+    Otherwhise you may get a lot of mails for page faults.
+  /pages/XIport.php
+    Schedules for imported labs start now in $newSchedule->num weeks at 0:00:00 and end 2 weeks later at 23:59:59.
+    This gives you directly an overview on the weeks you need for a course.
+    At the same time you can reschedule as nothing starts immediately.
+
 2012-04-20
 -------------------
   /pages/mailForm.php

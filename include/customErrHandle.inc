@@ -116,6 +116,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
 //This error handler sends an email with all relevant information
 function mail_error_handler($number, $message, $file, $line, $vars){
   global $ERRORMAIL_RECEIVER;
+
   if ( isset($ERRORMAIL_RECEIVER) && $ERRORMAIL_RECEIVER != '' ){
     $email = 'URL causing the error:<br>'.
              'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."<br>".
@@ -133,7 +134,14 @@ function mail_error_handler($number, $message, $file, $line, $vars){
 
     // Email the error to someone...
     if ( ($number !== E_NOTICE) && ($number < 2048) ){
-      error_log($email, 1, $ERRORMAIL_RECEIVER, $headers);
+      if (isset($_SERVER['HTTP_FROM']) && $_SERVER['HTTP_FROM'] == 'googlebot(at)googlebot.com'){
+        // The Googlebot seems to play around with parameters causing many errors for missing (unlinked) pages.
+        // Not to get bothered by them it is excluded here.
+        // file_put_contents( '/tmp/googlebot_urls.txt', 'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."\r\n", FILE_APPEND );
+        // error_log($email, 3, '/tmp/googlebot.txt');
+      } else {
+        error_log($email, 1, $ERRORMAIL_RECEIVER, $headers);
+      }
     }
 
     // Make sure that you decide how to respond to errors (on the user's side)

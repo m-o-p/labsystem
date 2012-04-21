@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl, Meyyar Palaniappan
  *
@@ -50,32 +50,33 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       $tagNames = array(); // holds only the tag names
       $styleDefinitions = array(); // holds the full definition
       // both arrays are joined via their numeric index!
-      parseStyleSheet( file_get_contents( $cfg->get('UserStyleSheet') ), 
-                       $tagNames, 
+      parseStyleSheet( file_get_contents( $cfg->get('UserStyleSheet') ),
+                       $tagNames,
                        $styleDefinitions );
-                   
+
     foreach ($_POST as $key => $value){
       //$pge->put( $key.' --- '.$value.'<br>' );
-     
+
       if ( $value == 'IMPORT' ){ // doImport
         $subDir = base64_decode( $key ); // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(
         $GLOBALS['exportUID'] = $subDir;
-     
+
       // load information about the lab
         $labToImport = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
         $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/l0000002.txt') );
 
       // create the mapping from the directory and create the "empty" DB objects for the elements
         $labElementArray = createIdImportMappingInitDB( $labToImport->uniqueID );
-        
+
         $newLabId = $labElementArray['l2'];
-        
+
         $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.$newLabId.' <a href="'.$url->link2('../pages/edit.php?address='.$newLabId).'">edit...</a>)</h3>'."\r\n" );
 
       // import elements
+        $importCounter = 0; // used for setting the schedules accordingly when importing
         foreach ($labElementArray as $value=>$newID){
           $nextElement = $GLOBALS[ $newID[0]."DBI" ]->getData2idx( substr($newID, 1) ); // load existing empty DB object
-          
+
           $importBaseDir = $cfg->get('exportImportDir').$subDir.'/';
           $importDataDirectory = 'data';
           $importFileName = '/'.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt';
@@ -88,12 +89,12 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
             default:
               $nextElement->initFromSerialized( file_get_contents( $importBaseDir.$importDataDirectory.$importFileName ) ); // init the next element
           }
-          
+
           processElement( $nextElement, $labElementArray, 1, true );
-          
+
         // renumber element
           $nextElement->idx = substr( $newID, 1);
-          
+
           $pge->put( persistElement( $nextElement, '', true ) );
         } // /foreach
 
@@ -103,10 +104,10 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           $importTagNames = array(); // holds only the tag names
           $importStyleDefinitions = array(); // holds the full definition
           // both arrays are joined via their numeric index!
-          parseStyleSheet( file_get_contents($cfg->get('exportImportDir').$subDir.'/css/user_styles.css' ), 
-                           $importTagNames, 
+          parseStyleSheet( file_get_contents($cfg->get('exportImportDir').$subDir.'/css/user_styles.css' ),
+                           $importTagNames,
                            $importStyleDefinitions );
-          
+
           $existingStylesHashed = array();
           $importStylesHashed = array();
           $importStyleMapping = array();
@@ -114,10 +115,10 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           getTagHashes( $tagNames, $existingStylesHashed, $importStyleMapping /*dummy*/ ); // hash existing
           // hash the possibly new styles to be imported
           getTagHashes( $importTagNames, $importStylesHashed, $importStyleMapping ); // hash the ones to be imported
-  
+
           // identify all tags that are not already in the user stylesheet
           $notAlreadyThereTagsHashes = array_diff( $importStylesHashed, $existingStylesHashed );
-                 
+
           $newStyles = array();
           foreach( $notAlreadyThereTagsHashes as $values )
             $newStyles[] = $importStyleDefinitions[ $importStyleMapping[$values] ];
@@ -132,21 +133,20 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                         "</div>\r\n" );
           }
         }
-      
+
         $externallyLinked = $cfg->get('exportImportDir').$subDir.'/files/externallyLinked.txt';
         if ( file_exists( $externallyLinked ) )
           $pge->put( '<pre>'.$externallyLinked.':'."\r\n".file_get_contents( $externallyLinked ).'</pre>' );
-          
+
         // create new schedule
         $newIdx = createNew( 's' );
         // load it
         $newSchedule = $GLOBALS[ 'sDBI' ]->getData2idx( $newIdx );
         $newSchedule->id = $newLabId[0];
         $newSchedule->num = substr( $newLabId, 1);
-        // yesterday morning
-        $startTime = mktime(0, 0, 0, date('m'), date('d')-1, date('Y'));
-        // yesterday night
-        $endTime = mktime(23, 59, 59, date('m'), date('d')-1, date('Y'));     
+        // Make a 2 weeks schedule starting in $newSchedule->num weeks:
+        $startTime = strtotime( '+'.$newSchedule->num.' weeks '.date('H:i:s') );
+        $endTime = strtotime( '+'.(2+$newSchedule->num).' weeks 23:59:59');
         $newSchedule->start = $startTime;
         $newSchedule->stop = $endTime;
         $pge->put( persistElement( $newSchedule, '', true ) );
@@ -154,9 +154,9 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 // doImport
       }else{
 // doExport
-    // get the lab      
+    // get the lab
         $labToExport = $lDBI->getData2idx( $key );
-        $pge->put( '<h3>'.$labToExport->title.' ('.$labToExport->uniqueID.' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export">)</h3>'."\r\n" );       
+        $pge->put( '<h3>'.$labToExport->title.' ('.$labToExport->uniqueID.' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="next" title="export">)</h3>'."\r\n" );
     // get all elements in lab as an array
         $labElementArray = explode( ' ',
                                 str_replace( array('( ', ' )'), '',  // remove "( ", " )"
@@ -171,51 +171,51 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       // Needed in some XIlib functions.
         $GLOBALS['exportUID'] = $labToExport->uniqueID;
         $GLOBALS['externallyLinkedElements'] = array();
-        
+
         deleteExportDirectory( $GLOBALS['exportUID'] ); // empty export directory
         $usedClasses = array(); // empty used styles!
-        
+
         fileWrite( 'images/readme.txt', 'In this directory the images are stored.', $GLOBALS['exportUID'] );
         fileWrite( 'files/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
         fileWrite( 'data/readme.txt', 'In this directory the serialized database data files are stored.', $GLOBALS['exportUID'] );
         fileWrite( EXPORT_DATA_DIR_PRIVATE.'/readme_im.txt', 'In this directory the serialized i, m elements are stored WITH solutions. If you do not want to distribute them remove this directory.', $GLOBALS['exportUID'] );
         fileWrite( EXPORT_DATA_DIR_PUBLIC.'/readme_im.txt', 'In this directory the serialized i, m elements are stored WITHOUT solutions. This version is used if the directory '.EXPORT_DATA_DIR_PRIVATE.' is not available.', $GLOBALS['exportUID'] );
         fileWrite( 'css/readme.txt', 'In this directory the style sheets for the preview and the user_styles.css for import are stored.', $GLOBALS['exportUID'] );
-        
+
     // get the HTML PREVIEW
-        // Remove user rights 
+        // Remove user rights
         $oldUsrRights = $usr->userRights;
         $usr->userRights -= IS_CONTENT_EDITOR;
         $htmlPreviewLab = '[HTML]'.$labToExport->show( 'l'.$key.'.all' );
         $usr->userRights = $oldUsrRights;
-        
+
       // remove the example solutions and relocate the embedded objects
         removeExampleSolutions($htmlPreviewLab);
 
       // relocate linked objects like images, linked files, etc.
         processContent($htmlPreviewLab, $key, $labElementArray, false);
-                
+
         $htmlPreviewLab = substr( $htmlPreviewLab, 6 ); // remove the [HTML] again as it is only needed for right processing.
       // relocate syspix to global server
         $htmlPreviewLab = str_replace( '../syspix/', 'http://labsystem.m-o-p.de/syspix/', $htmlPreviewLab );
-               
+
         $pge->put(  '<div class="labsys_mop_elements_menu_l">preview.html'.
                     ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                     "</div>\r\n" );
       // copy the system stylesheets for preview
         $file2importWithPath = $cfg->get('SystemStyleSheet');
-        copy( $file2importWithPath, 
+        copy( $file2importWithPath,
               $cfg->get('exportImportDir').$labToExport->uniqueID.'/css/system.css' ) or trigger_error("Can't copy file ".$file2copyWithPath, E_USER_WARNING);
         if ( $cfg->get('SysOverridingSheet') != '' ){
           $file2importWithPath = $cfg->get('SysOverridingSheet');
-          copy( $file2importWithPath, 
+          copy( $file2importWithPath,
                 $cfg->get('exportImportDir').$labToExport->uniqueID.'/css/system_override.css' ) or trigger_error("Can't copy file ".$file2copyWithPath, E_USER_WARNING);
         }
         $file2importWithPath = $cfg->get('PrintStyleSheet');
-        copy( $file2importWithPath, 
+        copy( $file2importWithPath,
               $cfg->get('exportImportDir').$labToExport->uniqueID.'/css/print.css' ) or trigger_error("Can't copy file ".$file2copyWithPath, E_USER_WARNING);
-      // user css gets processed below with the export as only used styles are exported        
-        fileWrite( 'preview.html', 
+      // user css gets processed below with the export as only used styles are exported
+        fileWrite( 'preview.html',
                    '
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
@@ -235,55 +235,55 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                    $htmlPreviewLab.
                    '
                    </div></BODY></HTML>
-                   ', 
+                   ',
                    $labToExport->uniqueID );
     // /get the HTML PREVIEW
 
     // Iterate through the elements
-        foreach ($labElementArray as $value=>$newID){         
+        foreach ($labElementArray as $value=>$newID){
           $nextElement = $GLOBALS[ $value[0]."DBI" ]->getData2idx( substr($value, 1) );
-         
+
           processElement( $nextElement, $labElementArray, $key );
-          
+
         // renumber element
           $nextElement->idx = substr( $newID, 1);
           $pge->put( persistElement( $nextElement, $labToExport->uniqueID ) );
         } // /foreach
-      fileWrite(  'data/externallyLinked.txt', 
+      fileWrite(  'data/externallyLinked.txt',
                   'The following external ressources are linked in this lab:'."\n".
-                  implode( "\n", $GLOBALS['externallyLinkedElements'] ), 
+                  implode( "\n", $GLOBALS['externallyLinkedElements'] ),
                   $GLOBALS['exportUID'] );
       $pge->put(  '<div class="labsys_mop_elements_menu_l">files/externallyLinked.txt'.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                   "</div>\r\n" );
-   // StyleSheet processing 
+   // StyleSheet processing
       //$styleDefinitions = array(); // holds the full definition
 
       $tagStylePointer = getTagPointer( $tagNames ); // Tag => array( indices from $styleDefinitions );
-      
+
       $stylesToExport = array(); // gets filled now
       foreach ( $GLOBALS['usedClasses'] as $value )
         if ( isset( $tagStylePointer[$value] ) )
           foreach ( $tagStylePointer[$value] as $index )
             $stylesToExport[] = $styleDefinitions[ $index ];
-                 
-      fileWrite(  'css/user_styles.css', 
-                  join( $stylesToExport ), 
+
+      fileWrite(  'css/user_styles.css',
+                  join( $stylesToExport ),
                   $GLOBALS['exportUID'] );
       $pge->put(  '<pre>'.htmlentities(implode( "\n", $stylesToExport ))."</pre>\n".
                   '<div class="labsys_mop_elements_menu_l">user_styles.css'.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                   "</div>\r\n" );
-                  
-      
+
+
       } // /doExport
     }
   } // end of do the import
   else{ // show list
   // additional note
     if ( $lng->get( 'lExportImportNote' ) != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get( 'lExportImportNote' )."</div>\n" );
-    
-  
+
+
   // sorting
    // get array of sorter keys from DBInterface
     $sortArray = $GLOBALS[ $id."DBI" ]->sortableByArray();
@@ -291,29 +291,29 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
     require( "../pages/sorter.inc" );
   // the sorter
     $pge->put( $sorter );
-  
+
   // iterate over all elements ordered by $orderBy, $asc
-    $DBI->getAllData( $orderBy, $asc ); 
-   
+    $DBI->getAllData( $orderBy, $asc );
+
     $pge->put('<FORM NAME="export_import" METHOD="POST" ACTION="#">');
     $pge->put( '<h4>'.$lng->get('exportFollowingLabs').'</h4>' );
     while ( $element = $DBI->getNextData() )
       $pge->put( $element->showExportImportRow( $element->idx.': ', true ) ); // show the property row
-    
+
     // Importable labs
     $pge->put( '<h4>'.$lng->get('importFollowingLabs').'</h4>' );
     $importableLabs = getLabsFromDirectory( $cfg->get('exportImportDir') );
     foreach( $importableLabs as $key=>$value )
       $pge->put( $value->showExportImportRow( '', false ) ); // show the property row
-     
+
   // saving
     $pge->put("<input TABINDEX=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("yesIconfirm")."\" accesskey=\"s\" onclick='isDirty=false; document.getElementById(\"progressBar\").style.display = \"inline\";'> ".
               '<div id="progressBar" style="display: none;"><img src="../syspix/labsystem_wait_17x117.gif" width="117" height="17"></div>' );
-  
-  
+
+
   // close the form
     $pge->put("</FORM>");
-  
+
   // the bottom menu
     $pge->put( EM::manageBottom( $id ) );
 

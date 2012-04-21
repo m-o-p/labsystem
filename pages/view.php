@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -33,8 +33,9 @@ require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0}; $num = substr( 
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
 if ( !$element = $DBI->getData2idx( $num ) ){
+                                              header("HTTP/1.0 404 Not Found");
                                               trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
-                                              exit;
+                                              die();
                                              }
 
 $pge->title        = $element->title;
@@ -45,6 +46,6 @@ $pge->matchingMenu = $element->getMatchingMenu();
 $pge->put( $element->show( $url->get("address"), "" ) );
 
 makeLogEntry( 'view', 'show', $url->get("address") );
-  
+
 require( $cfg->get("SystemPageLayoutFile") );
 ?>

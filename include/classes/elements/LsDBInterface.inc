@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -23,7 +23,7 @@
 * It connects to the data database's table "inputs".
 *
 *               ** ATTENTION **
-* In contrast to the other elements the schedule data is stored 
+* In contrast to the other elements the schedule data is stored
 * in the Working Database not in the Data DB.
 *
 * @module     ../include/elements/LsDBInterface.inc
@@ -39,12 +39,12 @@ require( INCLUDE_DIR."/classes/elements/LsElement.inc" );
 class LsDBInterface {
   var $myDBC;
   var $myTable;
-  
+
   function LsDBInterface(){
     $this->myDBC   = new Wdbc();
     $this->myTable = "schedules";
   }
-  
+
   /**
   * Returns the schedule information to a specified element.
   * The element is specified by $id & $num (p.e. c1).
@@ -65,7 +65,7 @@ class LsDBInterface {
     $result = $this->myDBC->mkSelect( "start, stop", $this->myTable, "id='".$id."' && num='".$num."'", "'start' ASC" );
     if ( mysql_num_rows($result) == 0 ){ // no dataset found
       return Array( "isBefore1stSched" => false,
-                    "isInSched" => false, 
+                    "isInSched" => false,
                     "isAfter1stSched" => false,
                     "notFound" => true
                   );
@@ -74,7 +74,7 @@ class LsDBInterface {
       $isInSched = false;
       $isAfter1stSched = false;
       $is1stSched = true;
-      
+
       // walk thru all schedules for this element
       while( $data = mysql_fetch_array($result) ){
         $start = strtotime($data['start']);
@@ -87,13 +87,13 @@ class LsDBInterface {
         if ( ( date("YmdHis", $start ) < date("YmdHis") ) && ( date("YmdHis") < date("YmdHis", $stop ) ) ) $isInSched = true;
       }
       return Array( "isBefore1stSched"  => $isBefore1stSched,
-                    "isInSched"         => $isInSched, 
+                    "isInSched"         => $isInSched,
                     "isAfter1stSched"   => $isAfter1stSched,
                     "notFound"          => false
                   );
     }
   }
-  
+
 // The "normal" DBI starts here...
 
   /**
@@ -109,7 +109,7 @@ class LsDBInterface {
   *                           passed to the real constructor.
   *
   * @return LsElement
-  */  
+  */
   function getData2idx( $idx, $isInColl=false ){
     global $cfg;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
@@ -121,15 +121,15 @@ class LsDBInterface {
       return new LsElement( $data['idx'],                   // $idx
                             $data['id'],                    // $id
                             $data['num'],                   // $num
-                            strtotime(  $data['start'] ),   // $start
-                            strtotime(  $data['stop'] ),    // $stop
+                            strtotime(  ( $idx == 1 ? 'today 0:00:00' : $data['start'] ) ),   // $start
+                            strtotime(  ( $idx == 1 ? '+2 weeks 23:59:59' : $data['stop'] ) ),    // $stop
                             $this->myDBC->unEscapeString($data['comment']), // $comment
                             $this->myDBC->unEscapeString($data['history']), // $history
                             $isInColl                       // $isInColl
                            );
     }
   }
-  
+
   /**
   * For the menu only a little amount of data is needed so here only that stuff is loaded.
   *
@@ -164,14 +164,14 @@ class LsDBInterface {
                            );
     }
   }
-  
+
   /**
   * !$createNew: Stores the data into the database. Position specified by $eS->idx.
   *  $createNew: Creates a new dataset and returns its index in the database.
   *
   * @param $eS  The LsElement to store.
   * @param $createNew  Shall a new element be created in the DB?
-  * @return !$createNew: possible error 
+  * @return !$createNew: possible error
   *          $createNew: int The idx of the newly created element.
   */
   function setData( &$eS, $createNew = false ){
@@ -185,18 +185,18 @@ class LsDBInterface {
 
     if ( $createNew )
       return $this->myDBC->mkInsertReturnIDX( $toSet.
-                                              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).' '.$lng->get("dataSetCreated")."\\n' )", 
+                                              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).' '.$lng->get("dataSetCreated")."\\n' )",
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     ( $eS->history != '' ? 
+                                     ( $eS->history != '' ?
                                         ( $eS->history[0] == ']' ?
                                             'history=\''.substr( $eS->history, 1 )."'" : // import... -> no stamping please
                                             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n".$this->myDBC->escapeString( $eS->history )."' )" )
                                         : // if the program changed the history: take it
                                         "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n', ".$this->myTable.".history )"
-                                     ), 
-                                     $this->myTable, 
+                                     ),
+                                     $this->myTable,
                                      "idx=".$eS->idx );
   }
 
@@ -209,8 +209,8 @@ class LsDBInterface {
   function deleteData( $idx ){
     return $this->myDBC->mkDelete( $this->myTable, "idx='".$idx."'" );
   }
-  
-  
+
+
   var $queryResult;
   /**
   * Queries for all elements. P.e. used at the manage page.
@@ -222,22 +222,22 @@ class LsDBInterface {
     if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
     $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "", $orderBy );
   }
-  
+
   /**
    * Returns the amount of returned datasets from the query;
-   * 
+   *
    * @return  amount of returned datasets from the query
    */
   function allSize(){
     return $this->myDBC->datasetsIn( $this->queryResult );
   }
-  
+
   /**
   * Returns the next element from the getAllData() query or false (no more results).
   *
   * @return LsElement
   * @return FALSE     If no more datasets are available.
-  */  
+  */
   function getNextData(){
     if ($data = mysql_fetch_array($this->queryResult))
       return new LsElement( $data['idx'],                   // $idx
@@ -251,10 +251,10 @@ class LsDBInterface {
                            );
     return false;
   }
-  
+
   /**
   * Returns an Array( description => database key, ... ).
-  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ... 
+  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ...
   * The first entry is the default soring key.
   * This is used for the order by selector on top of the manage page.
   *
