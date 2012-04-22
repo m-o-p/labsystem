@@ -268,8 +268,8 @@ else{ // no data posted or errors found
      $remaining = $max - $registrations;
      if ($remaining<0) $remaining = 0;
      $icons = '';
-     for ($i=0; $i<$remaining; $i++) $icons.='<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">';
      for ($i=0; $i<$registrations; $i++) $icons.='<img src="../syspix/fullPlace_11x12.gif" width="11" height="12" alt="X">';
+     for ($i=0; $i<$remaining; $i++) $icons.='<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">';
 
      $pge->put( "</div>\n".
                 "</fieldset>\n".
