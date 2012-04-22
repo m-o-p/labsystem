@@ -58,7 +58,12 @@ class ElementUser {
   * @return BOOL          True, if the rights are fulfilled false otherwise.
   */
   function isOfKind( $role, $ownRole="" ){
-    if ( !is_numeric($role) || ($role == 0) ) { // too riscious to return true here (the user_roles might not be included) 0 must be checked explicitly
+    if (!is_numeric( $role ) && !defined ( $role )){
+      trigger_error( $role.": is not defined (ElementUser::isOfKind)", E_USER_WARNING );
+      return false; // user role is not defined
+    }
+
+    if ( $role == 0 ) { // too riscious to return true here (the user_roles might not be included) 0 must be checked explicitly
                             trigger_error( $role.": ElementUser::isOfKind: checked for 0", E_USER_WARNING );
                             return false;
                         }

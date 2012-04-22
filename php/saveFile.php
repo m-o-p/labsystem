@@ -44,8 +44,8 @@ if ( !isset($_POST['FILENAME']) ||
       exit;
      }
 
-if (!($usr->isOfKind(IS_CONFIG_EDITOR) || // only those two can edit files!
-      $usr->isOfKind(IS_CONTENT_EDITOR))){
+if (!($usr->isOfKind(IS_CONTENT_EDITOR) || // only those two can edit files!
+      (defined(IS_CONFIG_EDITOR) && $usr->isOfKind(IS_CONFIG_EDITOR)))){
       trigger_error( $lng->get("TxtNotEnoughRights"), E_USER_ERROR );
       exit;
 }
@@ -58,7 +58,8 @@ $allowedFiles = Array(  $cfg->get("SystemResourcePath").$cfg->get("SystemMenuFil
                         $cfg->get("UserStyleSheet")
                       );
 
-if ( $usr->isOfKind(IS_CONFIG_EDITOR) &&
+if ( defined(IS_CONFIG_EDITOR) &&
+     $usr->isOfKind(IS_CONFIG_EDITOR) &&
      isset($_POST['SAVEAS_PREFIX']) &&
      isset($_POST['SAVEAS_POSTFIX']) &&
      isset($_POST['SAVEAS'])
@@ -73,7 +74,8 @@ if ( !( isset($_POST['SESSION_ID']) &&
         ($_POST['SESSION_ID'] != "") &&
         ($_POST['SESSION_ID'] == session_id()) &&
         ( in_array ($fileName, $allowedFiles) || // from above...
-          ($usr->isOfKind(IS_CONFIG_EDITOR) && ( // something in the ressource path:
+          ( defined(IS_CONFIG_EDITOR) &&
+            $usr->isOfKind(IS_CONFIG_EDITOR) && ( // something in the ressource path:
                                                 !( strpos( strtoupper($fileName), strtoupper($cfg->get("SystemResourcePath")) ) === false ) ||
                                                 // something in the stylesheet path:
                                                 !( strpos( strtoupper($fileName), substr( strtoupper($cfg->get("UserStyleSheet")), 0, strrpos( $cfg->get("UserStyleSheet"), '/' )) ) === false)

@@ -24,7 +24,6 @@ Feature Requests:
        - Multiple Choice
        - Input
      - Export/ Import
-     - Upload tool
      
      - Work as a student
        - initial registration
