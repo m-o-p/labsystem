@@ -56,6 +56,12 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
          
+2012-04-23
+-------------------
+  /pages/uaMyData.php
+  /php/uaMyDataSave.php
+    Fixed an escape issue in the html form. " led to closing the value tag :(
+
 2012-04-21
 -------------------
   /pages/view.php

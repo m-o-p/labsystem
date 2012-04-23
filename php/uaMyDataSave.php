@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -48,9 +48,9 @@ if ( !isset( $_POST['REDIRECTTO'] ) ||
      }
 
 if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
-     !( isset($_POST['SESSION_ID']) && 
-      ($_POST['SESSION_ID'] != "") && 
-      ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */   
+     !( isset($_POST['SESSION_ID']) &&
+      ($_POST['SESSION_ID'] != "") &&
+      ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */
    ){
       trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
       exit;
@@ -70,16 +70,16 @@ elseif( ( $_POST['NAME'] == '' ) || ( $_POST['FORENAME'] == '' ) )
     $url->put( 'sysalert='.$lng->get('uaSurNameEmpty') );
 else{
     // new Interface to the userDB
-    $userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 
-                                $cfg->get('UserDatabaseUserName'), 
-                                $cfg->get('UserDatabasePassWord'), 
+    $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
+                                $cfg->get('UserDatabaseUserName'),
+                                $cfg->get('UserDatabasePassWord'),
                                 $cfg->get('UserDatabaseName'));
 
     // check if the username exists:
     $result = $userDBC->mkSelect( $cfg->get('UserDBField_name').', '.
                                   $cfg->get('UserDBField_forename').', '.
-                                  $cfg->get('UserDBField_uid'), 
-                                  $cfg->get('UserDatabaseTable'), 
+                                  $cfg->get('UserDBField_uid'),
+                                  $cfg->get('UserDatabaseTable'),
                                   $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $_POST['USERNAME'] )."' && ".
                                   $cfg->get('UserDBField_uid')."!='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
                                  );
@@ -89,12 +89,12 @@ else{
       $url->put( 'sysalert='.$_POST['USERNAME'].' '.$lng->get('uaAsUsrNmeIsUsedBy').' '.$data[ $cfg->get('UserDBField_forename') ].' '.$data[  $cfg->get('UserDBField_name') ] );
     }
     else{ // save data
-      
+
       // process the custom fields:
       $customFields = '';
       // The following fields and those starting with "_" (course id)  will not be processed:
-      $doNotListFromUser = Array( $cfg->get('UserDBField_username'), 
-                                  $cfg->get('UserDBField_name'), 
+      $doNotListFromUser = Array( $cfg->get('UserDBField_username'),
+                                  $cfg->get('UserDBField_name'),
                                   $cfg->get('UserDBField_forename'),
                                   $cfg->get('UserDBField_email'),
                                   $cfg->get('UserDBField_uid'),
@@ -105,16 +105,16 @@ else{
         if( substr( $key, 0, 11 ) == 'LABSYS_MOP_' ){ // all start with that prefix
           $key = substr( $key, 11 );
           if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ) /* do nothing */;
-          else $customFields .= $key."='".$value."'".', ';
+          else $customFields .= $key."='".$userDBC->escapeString( $value )."'".', ';
         }
-        
+
       // update the values
       $userDBC->mkUpdate( $customFields. // coming on top they will not override system fields below.
                           $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $_POST['USERNAME'] )."', ".
                           $cfg->get('UserDBField_name')."='".$userDBC->escapeString( $_POST['NAME'] )."', ".
                           $cfg->get('UserDBField_forename')."='".$userDBC->escapeString( $_POST['FORENAME'] )."', ".
-                          $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $_POST['EMAIL'] )."'", 
-                          $cfg->get('UserDatabaseTable'), 
+                          $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $_POST['EMAIL'] )."'",
+                          $cfg->get('UserDatabaseTable'),
                           $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ?  $usr->theSeeingUid()  : $usr->uid  )."'"
                          );
       // note
