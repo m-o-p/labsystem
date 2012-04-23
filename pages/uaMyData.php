@@ -69,16 +69,16 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
      $pge->put(
      // userName
                 '<label for="userName" class="labsys_mop_input_field_label_top">'.$lng->get('userName').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="userName" name="USERNAME" class="labsys_mop_input_fullwidth" value="'.htmlentities( $data[ $cfg->get('UserDBField_username') ] ).'" onchange="isDirty=true">'."\n".
+                '<input tabindex="'.$pge->nextTab++.'" type="text" id="userName" name="USERNAME" class="labsys_mop_input_fullwidth" value="'.returnEditable( $data[ $cfg->get('UserDBField_username') ] ).'" onchange="isDirty=true">'."\n".
      // surName
                 '<label for="surName" class="labsys_mop_input_field_label_top">'.$lng->get('surName').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="surName" name="NAME" class="labsys_mop_input_fullwidth" value="'.htmlentities( $data[ $cfg->get('UserDBField_name') ] ).'" onchange="isDirty=true">'."\n".
+                '<input tabindex="'.$pge->nextTab++.'" type="text" id="surName" name="NAME" class="labsys_mop_input_fullwidth" value="'.returnEditable( $data[ $cfg->get('UserDBField_name') ] ).'" onchange="isDirty=true">'."\n".
      // foreName
                 '<label for="name" class="labsys_mop_input_field_label_top">'.$lng->get('foreName').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="name" name="FORENAME" class="labsys_mop_input_fullwidth" value="'.htmlentities( $data[ $cfg->get('UserDBField_forename') ] ).'" onchange="isDirty=true">'."\n".
+                '<input tabindex="'.$pge->nextTab++.'" type="text" id="name" name="FORENAME" class="labsys_mop_input_fullwidth" value="'.returnEditable( $data[ $cfg->get('UserDBField_forename') ] ).'" onchange="isDirty=true">'."\n".
      // email
                 '<label for="email" class="labsys_mop_input_field_label_top">'.$lng->get('eMail').'</label>'."\n".
-                '<input tabindex="'.$pge->nextTab++.'" type="text" id="eMail" name="EMAIL" class="labsys_mop_input_fullwidth" value="'.htmlentities( $data[ $cfg->get('UserDBField_email') ] ).'" onchange="isDirty=true">'."\n"
+                '<input tabindex="'.$pge->nextTab++.'" type="text" id="eMail" name="EMAIL" class="labsys_mop_input_fullwidth" value="'.returnEditable( $data[ $cfg->get('UserDBField_email') ] ).'" onchange="isDirty=true">'."\n"
                );
 
      // The rest of the fields.
