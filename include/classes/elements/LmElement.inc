@@ -672,7 +672,7 @@ class LmElement extends Element{
   * return The marked value
   */
   public static function markAsUnChanged( $input ){
-    return $input | 33554432;
+    return $input | (1 << 60);
   }
 
   /**
@@ -681,7 +681,7 @@ class LmElement extends Element{
    * return If the question is marked as answered
    */
   private function isChangedByUser( $input ){
-    return !($input & 33554432);
+    return !($input & (1 << 60));
   }
 
 // The next functions are used for the element's manage page. ***********************************************

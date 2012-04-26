@@ -61,8 +61,8 @@ Feature Requests:
   /include/classes/elements/LmDBInterfaceAnswers.inc
   /include/classes/elements/LmElement.inc
     Changed the lock behaviour: Now only CHANGED questions get checked on the checkup of the prelab.
-    To do so unanswered questions are marked by setting the 2^25 bit as mark.
-    This means that if answer 25 is set the mc will always be marked as unanswered and cannot be checked.
+    To do so unanswered questions are marked by setting the 2^60 bit as mark.
+    This means that if answer 60 is set the mc will always be marked as unanswered and cannot be checked.
   /include/classes/customErrHandle.inc
     Added code to mail error reports only for users being logged in.
     
