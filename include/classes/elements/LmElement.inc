@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -38,7 +38,7 @@ class LmElement extends Element{
   var $answerExplanation;     // Why is the answer correct?
   var $correctMask;           // Bitmask: Which answers are correct?
   var $visibleFor;            // Visibility constraints.
-  
+
   var $answerCount;           // Number of answers.
   var $displayPermutation;    // Array containing the permutated Order of answers.
   var $previousAnswersArray;  // Array containing the bitmasks of previous answers.
@@ -59,15 +59,15 @@ class LmElement extends Element{
   * @param $visibleOnlyInCollection   Is the element visible only inside a collection.
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
-  */ 
+  */
   function LmElement( $idx, $question, $answerArray, $answerExplanation, $correctMask, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
     global $usr;
     $this->elementId                = "m";
     $this->idx                      = $idx;
     $this->title                    = preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
                                         returnHTML( // remove [HTML] etc.
-                                          substr( $question, 0, 50 ) 
-                                        ) 
+                                          substr( $question, 0, 50 )
+                                        )
                                       );
     $this->matchingMenu             = "";
     $this->question                 = $question;
@@ -78,17 +78,17 @@ class LmElement extends Element{
     $this->visibleFor               = $visibleFor;
     $this->visibleOnlyInCollection  = $visibleOnlyInCollection;
     $this->history                  = $history;
-    
+
     $this->IamVisible               = ($this->visibleFor == "0") || $usr->isOfKind( $this->visibleFor )
                                       && ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) );
     if ( $history ){ // history is false if only menu data is wanted (following not necessary)
       $this->mcDBI                    = new LmDBInterfaceAnswers();
       $this->loadUserData4(""); // Fills rest of the structures with neutral values.
     }
-    
+
     $this->serializationArray       = array( 'idx', 'question', 'answerArray', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
   }
-  
+
   /**
   * Loads the answer data to the given $uid into this instance's field.
   *
@@ -100,7 +100,7 @@ class LmElement extends Element{
     global $usr, $cfg;
     if ( $uid != "" ){
       $answerData = $this->mcDBI->getData4( $uid,
-                                            $this->idx, 
+                                            $this->idx,
                                             $this->answerCount,
                                             !$usr->isSeeingSomeonesData() );
 
@@ -119,12 +119,12 @@ class LmElement extends Element{
       $this->isAnswered           = true;
     }
   }
-  
+
 
   /**
    * Returns the credits given by the corrector.
    *
-   * Since I did not implement any credits you get one 
+   * Since I did not implement any credits you get one
    * credit less for each answering attempt...
    *
    * @return $cfg->get( 'MCAnsweringAttempts' )-$this->answerCount
@@ -134,7 +134,7 @@ class LmElement extends Element{
      if ( $this->isCorrectlyAnswered ) $add = 1; else $add = 0;
      return $cfg->get( 'MCAnsweringAttempts' )-$this->triesUp2Now+$add;
    }
-   
+
   /**
    * Returns the credits one cen get for the correct answer.
    *
@@ -147,7 +147,7 @@ class LmElement extends Element{
      global $cfg;
      return $cfg->get( 'MCAnsweringAttempts' );
    }
-  
+
   /**
   * Returns a bitmask with the $setBit-th bit set.
   *
@@ -161,7 +161,7 @@ class LmElement extends Element{
 
 // The next functions are used for the element's view page. *************************************************
 
-// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - - 
+// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - -
 
   /**
   * This function displays the answer and contains some logic.
@@ -179,7 +179,7 @@ class LmElement extends Element{
   */
   function showAnswer( $fullAddress ){
     global $usr, $lng, $pge, $url, $cfg;
-    
+
     $isGettingAnswered = ( isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) );
     $isAnswerable      = !$this->isAnswered &&                  // not done
                          !$usr->isSeeingSomeonesData() &&       // my answer
@@ -197,7 +197,7 @@ class LmElement extends Element{
        */
 
     $ret = ""; // The html-code to be returned.
-    
+
     // If the element is not answered a FORM is needed.
     if ( $isAnswerable ){
       $ret .= "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit".$this->idx."\" METHOD=\"POST\" ".
@@ -212,16 +212,16 @@ class LmElement extends Element{
               "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
               "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n";            // needed by ../php/executeCommandOnElement.php
     }
-    
+
     // The answer(attempt)s will be put inside a table.
     $ret .= "<table id=\"aTable".$this->idx."\" class=\"labsys_mop_m_answers_table\" cellspacing=\"5px\">\n".
             "<tr><!-- fixed layout -->";
             // all previous answering attempts
             for ( $i=0; $i < $this->triesUp2Now; $i++ ) $ret .= "<td class=\"labsys_mop_m_answers_table_checkbox_cell\"></td>";
-        
+
             // the solution
             if ( !$this->isAnswered || !$this->isCorrectlyAnswered ) $ret .= "<td class=\"labsys_mop_m_answers_table_checkbox_cell\"></td>";
-        
+
             // the answers
             $ret .= "<td class=\"labsys_mop_m_answers_table_answer_cell\"></td></tr>\n";
 
@@ -231,21 +231,21 @@ class LmElement extends Element{
 
       for ( $j=0; $j < $this->triesUp2Now; $j++ ) { // Iteration over the previous answers
         $actualMask = $this->previousAnswersArray[$j]; // the answer given there
-        
+
         $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell_".( $actualMask == $this->correctMask ?  "right" :  "wrong"  )."\">".
                  "<input type=\"checkbox\" ".
                         "tabindex=\"".$pge->nextTab++."\" ".
                         "title='".$lng->get( 'isCorrect' )."' ".
-                         ( ($actualMask & LmElement::mask($actualAnswer)) ?  
+                         ( ($actualMask & LmElement::mask($actualAnswer)) ?
                                     "checked=\"checked\" " : ''
                                    ).
                          "disabled=\"disabled\" ".
                   " onchange='isDirty=true'></td>\n";
        } // Iteration over the previous answers (end)
-       
+
        if ( !$this->isAnswered ) $actualMask = $this->previousAnswersArray[$this->triesUp2Now]; // the current answer
                             else $actualMask = $this->correctMask; // the example solution
-       
+
        if ( !$this->isAnswered || !$this->isCorrectlyAnswered ){
        // show current answer or example solution
         $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell\">".
@@ -254,15 +254,15 @@ class LmElement extends Element{
                         "name=\"ANSWER".$actualAnswer."\" ".
                         "value=\"".LmElement::mask($actualAnswer)/*2^$actualAnswer*/."\" ".
                         "tabindex=\"".$pge->nextTab++."\" ".
-                         ( ($actualMask & LmElement::mask($actualAnswer)) ?  
+                         ( ($actualMask & LmElement::mask($actualAnswer)) ?
                                     "checked=\"checked\" " : ''
                                    ).
                          ( !$isGettingAnswered ?
-                                    "disabled=\"disabled\" " : '' 
+                                    "disabled=\"disabled\" " : ''
                                    ).
                   " onchange='isDirty=true'></td>\n";
        }
-       
+
        // The answers:
        $ret .=  "\t<td class=\"labsys_mop_m_answers_table_answer_cell\">".
                 "<label for=\"m".$this->idx."a".$actualAnswer."\">".
@@ -272,7 +272,7 @@ class LmElement extends Element{
                 "</label>".
                 "</td>\n</tr>\n";
      } // iteration over the number of answers (end)
-     
+
      $ret .= "</table>\n";
 
      // If the element is not answered a FORM is needed.
@@ -280,10 +280,10 @@ class LmElement extends Element{
        $ret .= "<input tabindex=\"".$pge->nextTab++."\" ".
                       "type=\"submit\" ".
                       "class=\"labsys_mop_m_save_button\" ".
-                      "value=\"".( $isGettingAnswered ? 
-                                            $lng->get("save") : 
+                      "value=\"".( $isGettingAnswered ?
+                                            $lng->get("save") :
                                             $lng->get("giveAnswer")
-                                           )."\" onclick='isDirty=false'>\n".                        
+                                           )."\" onclick='isDirty=false'>\n".
                "</FORM>\n";
                if ($isGettingAnswered) makeLogEntry( 'm', 'opened', $this->idx );
      }
@@ -294,10 +294,10 @@ class LmElement extends Element{
      // answer history
      if ( $this->triesUp2Now > 0) $ret .= EM::viewMultipleChoiceAnswerHistory( $this );
 
-     return $ret;     
+     return $ret;
   }
 
-// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /**
   * Returns the element's HTML-representation in the way the VIEWER should see it.
@@ -305,7 +305,7 @@ class LmElement extends Element{
   * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   * @return string        The html code of the element's view view.
-  */ 
+  */
   function show( $fullAddress, $paragraph="" ){
     global $usr, $lng, $pge, $url;
     if (  !$this->isVisible() ){ /* not enough rights->no content */
@@ -314,14 +314,14 @@ class LmElement extends Element{
     }
 
     if ($this->question == ""){ return "'()"; exit; }
-    
-    
+
+
     parseHTML( $this->question ); // Process [HTML].
-    
+
     $answers = "";
 
     if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ) $answers = $this->showAnswer( $fullAddress ); // example solution
-    
+
     if ( !$usr->isOfKind( IS_CORRECTOR ) ){    // Load the dynamic data from the working table.
       // "normal" usr
       if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ) ; // example solution
@@ -346,13 +346,14 @@ class LmElement extends Element{
                   }
         }
     }
-    
+
     return "<div class=\"labsys_mop_elements_m_around\">".
            EM::viewTopMultipleChoice( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
              "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
              "<div class=\"labsys_mop_m_question\">".
               "<label for=\"aTable".$this->idx."\">".
+               ( $this->isAnswered || $this->isChangedByUser( end($this->previousAnswersArray) ) ? '' : "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get("explainEdit")."\"> ").
                ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->question.
               "</label>".
              "</div>\n".
@@ -361,8 +362,8 @@ class LmElement extends Element{
            EM::viewBottomMultipleChoice( $this, $fullAddress ).
            "</div>";
   }
-  
-  
+
+
   /**
   * Produces the ePub version of this element.
   * Called by LcElement.inc
@@ -378,15 +379,15 @@ class LmElement extends Element{
     }
 
     if ($this->question == ""){ echo "'()"; exit; }
-    
+
     parseHTML( $this->question ); // Process [HTML].
     $pge->replaceConstants( $this->question ); // Process custon fields
 
     $epubExporter = LSE_Exporter::getInstance();
     $answerArray = array();
-    
+
     //echo ('[m-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
-    
+
     // The answers using the current permutation array
     for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
       parseHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
@@ -394,21 +395,21 @@ class LmElement extends Element{
       $answerArray[] = $this->answerArray[ $this->displayPermutation[$i] ] ;
       // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ $this->displayPermutation[$i] ] ).'<br>' );
     }
-    
-    $epubExporter->save('Lm', 
-        $fullAddress, 
-        '', 
+
+    $epubExporter->save('Lm',
+        $fullAddress,
+        '',
         array(
             'question'   => ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->question,
             'answerArray' => $answerArray,
         )
     );
   }
-  
-  
+
+
 // The next functions are used for the element's edit page. *************************************************
 
-// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - - 
+// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - -
 // These function were originally coded inline into the showEdit method but php doesn't support inline
 // methods. So I put them out again.
     /**
@@ -448,7 +449,7 @@ class LmElement extends Element{
        $answerFields .= "</table>";
        return $answerFields;
      }
-// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+// /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /**
   * Returns the element's HTML-representation in the way the EDITOR should see it.
@@ -456,10 +457,10 @@ class LmElement extends Element{
   * @param $_GET["saveAsNew"] If $_GET["saveAsNew"] is set the save as new checkbox on the edit page should be set
   * @param $fullAddress       The element's full address (p.e. C23.c42.p13)
   * @return string            The html code of the element's edit view.
-  */      
+  */
   function showEdit( $fullAddress ){
     global $lng, $url, $pge, $cfg;
-    
+
      return EM::editTopMultipleChoice( $this, $fullAddress ).
             "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=m")."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
@@ -467,7 +468,7 @@ class LmElement extends Element{
             "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".   // to check whether the call is valid
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n".  // index of saved el. will be added on save.php!
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
-            
+
           // question input
             "<label for=\"q\" class=\"labsys_mop_input_field_label_top\">".$lng->get("question")."</label>".
             "<textarea tabindex=\"".$pge->nextTab++."\" id=\"q\" name=\"QUESTION\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultMCQuestionRows")."\" onchange='isDirty=true'>".
@@ -476,7 +477,7 @@ class LmElement extends Element{
 
           // answers
             "<label for=\"a0\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputAnswers")."</label>".
-            $this->answerFields( $this->answerArray, $this->correctMask ).            
+            $this->answerFields( $this->answerArray, $this->correctMask ).
 
           // answer explanation
             "<label for=\"aE\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputAnswerExpl")."</label>".
@@ -511,7 +512,7 @@ class LmElement extends Element{
             "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
             "</fieldset>\n".
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".            
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
 
             "</FORM>\n".
             '<script language="JavaScript" type="text/javascript">
@@ -521,36 +522,36 @@ class LmElement extends Element{
             </script>'.
             EM::editBottomMultipleChoice( $this, $fullAddress );
   }
-  
+
   /**
   * Used to save the edited element.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */  
+  */
   /*static*/ function save(){
     global $mDBI, $url, $lng, $usr;
 
     // check for all necessary values posted
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO']) || 
-         !isset($_POST['FULLADDRESS']) || 
-         !isset($_POST['QUESTION']) || 
-         !isset($_POST['ANSWER0']) || 
-         !isset($_POST['ANSWER_EXPLANATION'])     
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO']) ||
+         !isset($_POST['FULLADDRESS']) ||
+         !isset($_POST['QUESTION']) ||
+         !isset($_POST['ANSWER0']) ||
+         !isset($_POST['ANSWER_EXPLANATION'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-       
+
     // Validity (session ID) is checked by the calling script yet.
-    
+
     // only content editors are allowed to save
     if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
                                                   trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
                                                   exit;
                                                 }
-    
+
     // create answerArray + compute correctMask
     $toDoArray = "\$answerArray = Array(";
     $correctMask=0;
@@ -570,15 +571,15 @@ class LmElement extends Element{
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1) if ( isset( $_POST[ "UR_".$i] ) ) $userRights += $_POST["UR_".$i];
 
     $newMultipleChoice = new LmElement( $_POST['IDX'],
-                                        $_POST['QUESTION'], 
-                                        $answerArray, 
+                                        $_POST['QUESTION'],
+                                        $answerArray,
                                         $_POST['ANSWER_EXPLANATION'],
-                                        $correctMask, 
-                                        $userRights, 
+                                        $correctMask,
+                                        $userRights,
                                         ($_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1"),
                                         ""
                                        );
-                                       
+
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newMultipleChoice->idx = $mDBI->setData( $newMultipleChoice, true );
@@ -588,41 +589,41 @@ class LmElement extends Element{
                                       $mDBI->setData( $newMultipleChoice );
                                       $url->put( "address=".$_POST['FULLADDRESS'] );    // the address remains
     }
-    
+
     // some user information
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("mNumber")." ".$newMultipleChoice->idx );
     makeLogEntry( 'm', 'saved', $newMultipleChoice->idx );
-      
+
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
+
   /**
   * Used to save the users answer.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */  
+  */
   /*static*/ function saveUserAnswer(){
     global $url, $lng, $usr;
-    
+
     // check for all necessary values posted
-    if ( !isset($_POST['IDX']) || 
-         !isset($_POST['REDIRECTTO']) || 
-         !isset($_POST['FULLADDRESS'])     
+    if ( !isset($_POST['IDX']) ||
+         !isset($_POST['REDIRECTTO']) ||
+         !isset($_POST['FULLADDRESS'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
 
     // Validity (session ID) is checked by the calling script yet.
-    
+
     // compute bitmask (sum of posted values).
     $sum = 0; for ($i = 0; $i < $this->answerCount; $i++) if ( isset( $_POST['ANSWER'.$i] ) ) $sum += $_POST['ANSWER'.$i];
 
     // load the dataset
     $this->loadUserData4( $usr->uid );
-    
+
     // set this at the end
     $this->previousAnswersArray[$this->triesUp2Now] = $sum;
 
@@ -630,11 +631,11 @@ class LmElement extends Element{
     $this->mcDBI->setData4( $usr->uid, $this->idx, $this->displayPermutation, $this->previousAnswersArray );
 
     makeLogEntry( 'm', 'saved', $this->idx );
-    
+
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
-  
+
   /**
   * Called to check the user's answer.
   *
@@ -642,23 +643,46 @@ class LmElement extends Element{
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
   *
   * @return bool  true if the answer is correct or there are no more tries left (called by lab).
-  */  
+  */
   /*static*/ function checkUserAnswer(){
     global $usr;
-   
+
     if ( $this->isAnswered ){  // enough checks yet or correct...
       return true;
-      exit;
     }
-    
-    array_push( $this->previousAnswersArray, "0" ); // insert empty answer at the end
+
+    if ( !$this->isChangedByUser(end($this->previousAnswersArray)) ){
+      // not answered yet -> do nothing
+      return false;
+    }
+
+    $this->previousAnswersArray[] = $this->markAsUnChanged(0); // insert empty answer at the end
     $this->mcDBI->setData4( $usr->uid, $this->idx, $this->displayPermutation, $this->previousAnswersArray, "-check-" );
 
     $this->mcDBI = $this->loadUserData4( $usr->uid ); // Load data with applied changes.
     return $this->isAnswered;
   }
-  
-  
+
+  /**
+  * Marks the answer as UNanswered. Used to mark if the user already saved
+  * an answer.
+  * Only questions answered once get checked on the checkup.
+  * $input The value to mark
+  * return The marked value
+  */
+  public static function markAsUnChanged( $input ){
+    return $input | 4096;
+  }
+
+  /**
+   * Is the question marked as answered?
+   * $input The value to check
+   * return If the question is marked as answered
+   */
+  private function isChangedByUser( $input ){
+    return !($input & 4096);
+  }
+
 // The next functions are used for the element's manage page. ***********************************************
 
   /**
@@ -673,25 +697,25 @@ class LmElement extends Element{
             "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" checked=\"checked\">".
                 infoArrow( $lng->get("visAlways") ).
                 $lng->get("visAlways")."<br>\n".
-               
+
              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled>".
                 infoArrow( $lng->get("visAlways"), false ).
                 "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" checked=\"checked\">".
                 infoArrow( $lng->get("visOnlyInColl") ).
                 $lng->get("visOnlyInColl")."<br>\n";
-                
+
     // rights
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1){
       $lgnd .= "<input type=\"radio\" disabled>".infoArrow( $lng->get("visAlways"), true )."<input type=\"radio\" disabled>".infoArrow( $lng->get("visOnlyInColl"), true )." | ";
       for ($j=1; $j<$i; $j=$j<<1) $lgnd .= '<input type="checkbox" disabled>'.infoArrow( $lng->get("Explain_UR_".$j), true )/* ."\n" saves space! */;
-      $lgnd .= rightsBox( "legend_".$i, $i, $i )." ".$lng->get("Explain_UR_".$i)."<br>\n";    
+      $lgnd .= rightsBox( "legend_".$i, $i, $i )." ".$lng->get("Explain_UR_".$i)."<br>\n";
     }
-    
+
     $lgnd .= "</div>\n";
-    
+
     return $lgnd;
   }
-  
+
   /**
   * This function is called to display the element's properties.
   * @param $prefix    If given this is put before the element's title (p.e. 1.2.3 title).

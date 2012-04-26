@@ -92,7 +92,8 @@ class LpElement extends Element{
     return EM::viewTopPage( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">".
            "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
-           $this->contents."</div>".
+           "<div class=\"labsys_mop_elements_p_around\">".
+           $this->contents."</div></div>".
            EM::viewBottomPage( $this, $fullAddress );
   }
 

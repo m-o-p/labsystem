@@ -552,7 +552,9 @@ fieldset{
                     background-color: transparent;
   }  
 
-/* ------ additional styles for the p element ------ */  
+/* ------ additional styles for the p element ------ */
+  .labsys_mop_elements_p_around{}
+  
   .labsys_mop_p_field_constants{ /* The constants getting replaced on display are shown in that style. */
                     font-size: 0.8em;
                     text-align: center;

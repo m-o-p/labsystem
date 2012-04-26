@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -43,7 +43,7 @@ class LmDBInterfaceAnswers {
     $this->myDBC   = new Wdbc();
     $this->myTable = "multiple_choice_answers";
   }
-  
+
   /**
   * Returns the dataset specified by $uid & $mIdx.
   *
@@ -68,27 +68,27 @@ class LmDBInterfaceAnswers {
       $permutationArray = range (0, $countOfAnswers-1);
       srand ((float)microtime()*1000000);
       shuffle ($permutationArray);
-      
-      if ($createDataset) $this->setData4( $uid, $mIdx, $permutationArray, Array( "0" ), $lng->get("dataSetCreated") ); // the last entry of the array ("0" here) is always editable
-      return Array( "permutation" => $permutationArray, 
-                    "answers" => Array( "0" ), 
+
+      if ($createDataset) $this->setData4( $uid, $mIdx, $permutationArray, Array( LmElement::markAsUnchanged( 0 ) ), $lng->get("dataSetCreated") ); // the last entry of the array ("0" here) is always editable
+      return Array( "permutation" => $permutationArray,
+                    "answers" => Array( LmElement::markAsUnchanged( 0 ) ),
                     "history" => "" );
     }else{
       $answerArray = unserialize( $this->myDBC->unEscapeString($data['answer_array']) );
       $permutationArray = array_shift( $answerArray );
       if ( count( $permutationArray ) != $countOfAnswers ){
-        // The permutation array doesn't math the number of possible answers (one was addded or deleted).
+        // The permutation array doesn't match the number of possible answers (one was addded or deleted).
         $permutationArray = range (0, $countOfAnswers-1);
         srand ((float)microtime()*1000000);
         shuffle ($permutationArray);
         $this->setData4( $uid, $mIdx, $permutationArray, $answerArray );
       }
-      return Array( "permutation" => $permutationArray, 
-                    "answers" => $answerArray, 
+      return Array( "permutation" => $permutationArray,
+                    "answers" => $answerArray,
                     "history" => $data['history'] );
     }
   }
-  
+
   /**
   * Stores the data into the database. Position specified by $uid & $mIdx.
   * @param $uid               The user's unique identifier.
@@ -120,7 +120,7 @@ class LmDBInterfaceAnswers {
 
     $this->queryResult = $this->myDBC->mkSelect( $what, $this->myTable, "mc_idx='".$mIdx."'", $orderBy );
   }
-  
+
   /**
   * Returns the next result of the getAllData() query or false (no more results).
   * @return int     Next members uid.

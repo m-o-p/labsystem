@@ -117,7 +117,8 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
 function mail_error_handler($number, $message, $file, $line, $vars){
   global $ERRORMAIL_RECEIVER;
 
-  if ( isset($ERRORMAIL_RECEIVER) && $ERRORMAIL_RECEIVER != '' ){
+  if ( isset($ERRORMAIL_RECEIVER) && $ERRORMAIL_RECEIVER != ''
+       && isset($_SESSION["mailAddress"]) ){ // mail only errors user experience that are logged in
     $email = 'URL causing the error:<br>'.
              'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."<br>".
              ( isset($_SERVER['HTTP_REFERER']) ? 'Last page before:<br>'.$_SERVER['HTTP_REFERER'].'<br>' : '').
