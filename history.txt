@@ -56,6 +56,16 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
          
+2012-04-27
+-------------------
+  /include/classes/elements/LmDBInterfaceAnswers.inc
+  /include/classes/elements/LmElement.inc
+    Changed the lock behaviour: Now only CHANGED questions get checked on the checkup of the prelab.
+    To do so unanswered questions are marked by setting the 2^25 bit as mark.
+    This means that if answer 25 is set the mc will always be marked as unanswered and cannot be checked.
+  /include/classes/customErrHandle.inc
+    Added code to mail error reports only for users being logged in.
+    
 2012-04-23
 -------------------
   /pages/uaMyData.php

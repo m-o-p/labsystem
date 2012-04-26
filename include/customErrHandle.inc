@@ -24,7 +24,6 @@
 *
 * @module     ../include/customErrorHandler.inc
 */
-
 $ERRORMAIL_RECEIVER = ''; // If you enter a valid email address here and you have mailing configured you can receive an error report
 
 /**

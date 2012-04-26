@@ -34,6 +34,7 @@
 * @copyright  Marc-Oliver Pahl 2005
 * @version    1.0
 */
+
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 
 class LmDBInterfaceAnswers {

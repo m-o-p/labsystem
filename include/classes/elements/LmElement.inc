@@ -28,6 +28,7 @@
 * @copyright  Marc-Oliver Pahl 2005
 * @version    1.0
 */
+
 require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 // The following DBI is used in loadUserData4() (connects to the user's answers).
 require( INCLUDE_DIR."/classes/elements/LmDBInterfaceAnswers.inc" );
@@ -671,7 +672,7 @@ class LmElement extends Element{
   * return The marked value
   */
   public static function markAsUnChanged( $input ){
-    return $input | 4096;
+    return $input | 33554432;
   }
 
   /**
@@ -680,7 +681,7 @@ class LmElement extends Element{
    * return If the question is marked as answered
    */
   private function isChangedByUser( $input ){
-    return !($input & 4096);
+    return !($input & 33554432);
   }
 
 // The next functions are used for the element's manage page. ***********************************************
