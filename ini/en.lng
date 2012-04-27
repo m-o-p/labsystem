@@ -118,10 +118,10 @@ MnuEntrySendMail     = "send mail"
 MnuEntryCourseContent= "Course Content"
 
 ;l
-mnuEntryPrelab2Fin  = "&raquo; all questions (checkable)" ; appears under the prelab section if the prelab is not finished
+mnuEntryPrelab2Fin  = "&raquo;! all questions" ; appears under the prelab section if the prelab is not finished
 mnuEntryPrelabFin   = "&raquo; all questions" ; same as above but prelab finished
 mnuEntryPreLabStats = "&raquo; prelab status"
-mnuEntryLab2Fin     = "&raquo; all questions (not closed!)"
+mnuEntryLab2Fin     = "&raquo;! all questions"
 mnuEntryLabFin      = "&raquo; all questions"
 mnuEntryLabStatus   = "&raquo; lab status"
 
@@ -437,6 +437,7 @@ TxtNotConfigUA      = "This page can only be viewed if loaded with config=userad
 explainLink2        = "Link to the element with added __LINKQUERY__"
 explainView         = "User's view of the element..."
 explainEdit         = "Edit this element..."
+explainUnChanged    = "Please answer this question to get it checked..." ;; appears next to unanswered m-elements as alt text for the pen image
 explainLink2epub    = "Here you can download the ePub version of your lab. The ePub will always contain the data you currently have access to."
 explainPrint        = "Print view (all on one page)..."
 explainCreateNew    = "Create a new element of this type..."
