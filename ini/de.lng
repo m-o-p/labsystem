@@ -240,7 +240,7 @@ toReOpenTheLab      = "klicken, um das Lab wieder zu &ouml;ffnen..."
 toCloseTheLab       = "klicken, um das Lab zu schlie&szlig;en... (Um es wieder &ouml;ffnen zu k&ouml;nnen, muss ein laufender Schedule vorhanden sein!)"
 
 labCloseNote        = "Durch Klick auf diesen Knopf werden <b>alle Antworten geschlossen</b>. "
-prelabCheckNote     = "Durch Klick auf diesen Knopf werden <b>alle Antworten korrigiert</b>. Erst wenn alle PreLab-Fragen von allen Teammitgliedern richtig (symbolisiert durch einen gr&uuml;nen Rand) ausgef&uuml;llt wurden, wird das Lab sichtbar.<br />Zur Beantwortung steht die folgende Anzahl an Versuchen zur Verf&uuml;gung: "
+prelabCheckNote     = "Durch Klick auf diesen Knopf werden alle <b>oben gegebenen Antworten korrigiert</b>. Unbeantwortete Fragen sind mit dem <b><img src='../syspix/button_edit_13x12.gif' />-Symbol</b> markiert und <b>werden nicht &uuml;berpr&uuml;ft</b>.<br>Erst wenn alle PreLab-Fragen von allen Teammitgliedern richtig (symbolisiert durch einen gr&uuml;nen Rand) ausgef&uuml;llt wurden, wird das Lab sichtbar.<br />Zur Beantwortung steht die folgende Anzahl an Versuchen zur Verf&uuml;gung: "
 prelabStatusNote    = "Diese Benutzer (in <b>Reihenfolge des Beendens</b>) haben das PreLab schon beendet."
 
 uniqueIDnote        = "Dieser Bezeichner wird verwendet, wenn Sie das Lab exportieren. Er muss f&uuml;r jedes Lab eindeutig sein, da er verwendet wird, das Modul ins SVN einzuchecken. Am besten verwenden Sie für Ihre Institution und Ihren Kurs ein Prefix (z.B. TUM_ilab1_Statis_routing). Achtung: wenn Sie diesen Bezeichner ändern, wird das Modul unter dem neuen bezeichner exportiert und es besteht kein Bezug zum alten Bezeichner mehr."

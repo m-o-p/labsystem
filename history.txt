@@ -55,7 +55,12 @@ Feature Requests:
        - Ini files
        - URL install aufrufen
          - Passwort &auml;ndern!
-         
+
+2012-04-27
+-------------------
+  /ini/{en, de}.lng
+    Changed the help text for the checkup button. It explains the new behavior checking only *answered* questions up better now.
+
 2012-04-27
 -------------------
   /include/classes/elements/LmDBInterfaceAnswers.inc
