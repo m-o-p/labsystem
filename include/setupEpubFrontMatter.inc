@@ -45,12 +45,23 @@ if ($cfg->doesExist('imprintID') && $cfg->get('imprintID')!=''){
   $imprint = new LpElement( 1, "Imprint", "to be filled next", "", 0, 0, "" );
   $imprint->contents = '[HTML]
 <p>
-  __SYSTEMTITLE__<br>
+  '.$epubConfig['title'].'<br>
+  '.$epubConfig['authors'].'<br>
+  <br>
+  ID: '.$epubConfig['identifier'].'<br>
+  <br>
+  '.$epubConfig['description'].'<br>
+  <br>
+  '.$epubConfig['publisher'].'<br>
+  '.$epubConfig['publisherUrl'].'<br>
+  <br>
+  Downloaded from: '.$epubConfig['sourceUrl'].'<br>
   Downloaded at: __CURRENT_TIMESTAMP__<br>
   Downloaded by: __FORENAME__ __NAME__ (__USERNAME__)<br>
-  All Copyrights Reserved.
+  <br>
+  '.$epubConfig['rights'].'
 </p>
-  ';
+  '; 
 }
-$epubConfig['imprint'] = $imprint->getePubContents();
+$epubConfig['imprint'] = utf8_encode( $imprint->getePubContents() );
 ?>
