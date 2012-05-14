@@ -714,12 +714,18 @@ class LlElement extends Element{
         'authors'      => returnHTML( $this->authors ),
         'comment'      => returnHTML( $this->comment ),
         'lang'         => $lng->get('Content-Language'),
-        'identifier'   => 'Part of '.($cfg->doesExist('ePubIdentifier') && $cfg->get('ePubIdentifier') != "" ? $cfg->get('ePubIdentifier') : $cfg->get('SystemTitle').'-labsystem.sf.net' ),
-        'description'  => ($cfg->doesExist('ePubDescription') && $cfg->get('ePubDescription') != "" ? $cfg->get('ePubDescription') : 'labsystem.sf.net ePub to the course '.$cfg->get('SystemTitle') ).' - '.$this->title,
-        'publisher'    => ($cfg->doesExist('ePubPublisher') && $cfg->get('ePubPublisher') != "" ? $cfg->get('ePubPublisher') : 'labsystem.sf.net' ),
-        'publisherUrl' => ($cfg->doesExist('ePubPublisherURL') && $cfg->get('ePubPublisherURL') != "" ? $cfg->get('ePubPublisherURL') : 'http://labsystem.sf.net' ),
-        'rights'       => ($cfg->doesExist('ePubCopyrightMeta') && $cfg->get('ePubCopyrightMeta') != "" ? $cfg->get('ePubCopyrightMeta') : 'All rights reserved' ),
-        'sourceUrl'    => ($cfg->doesExist('ePubSourceURL') && $cfg->get('ePubSourceURL') != "" ? $cfg->get('ePubSourceURL') : 'http://'.$_SERVER['SERVER_NAME'] )
+        'identifier'   => $this->title.'-'.($cfg->doesExist('ePubIdentifier') && $cfg->get('ePubIdentifier') != "" ?
+                                                                                 $cfg->get('ePubIdentifier') : $cfg->get('SystemTitle').'-labsystem.sf.net' ),
+        'description'  => ($cfg->doesExist('ePubDescription') && $cfg->get('ePubDescription') != "" ?
+                                                                       $cfg->get('ePubDescription') : 'labsystem.sf.net ePub to the course '.$cfg->get('SystemTitle') ).' - '.$this->title,
+        'publisher'    => ($cfg->doesExist('ePubPublisher') && $cfg->get('ePubPublisher') != "" ?
+                                                                     $cfg->get('ePubPublisher') : 'labsystem.sf.net' ),
+        'publisherUrl' => ($cfg->doesExist('ePubPublisherURL') && $cfg->get('ePubPublisherURL') != "" ?
+                                                                        $cfg->get('ePubPublisherURL') : 'http://labsystem.sf.net' ),
+        'rights'       => ($cfg->doesExist('ePubCopyrightMeta') && $cfg->get('ePubCopyrightMeta') != "" ?
+                                                                         $cfg->get('ePubCopyrightMeta') : 'All rights reserved' ),
+        'sourceUrl'    => ($cfg->doesExist('ePubSourceURL') && $cfg->get('ePubSourceURL') != "" ?
+                                                                     $cfg->get('ePubSourceURL') : 'http://'.$_SERVER['SERVER_NAME'] )
         // The user styles could be passed here
         // to be included in the epub as
         // it contains the user defined styles.

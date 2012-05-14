@@ -56,7 +56,11 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
-2012-04-27
+2012-05-14
+-------------------
+  Epub finilazing with Bibek. Great work man!
+  
+2012-05-12
 -------------------
   /ini/{en, de}.lng
     Changed the help text for the checkup button. It explains the new behavior checking only *answered* questions up better now.
