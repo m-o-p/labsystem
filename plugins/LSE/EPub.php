@@ -110,15 +110,15 @@ class LSE_EPub implements LSE_Engine
         $author = LSE_Util::filterPTag($this->book->getAuthors());
         $author = $this->book->getAuthors();
 
-        $identifier   = $this->book->getOption('identifier');
-        $language     = $this->book->getOption('lang');
-        $description  = $this->book->getOption('description');
-        $publisher    = $this->book->getOption('publisher');
-        $publisherUrl = $this->book->getOption('publisherUrl');
+        $identifier   = utf8_encode( $this->book->getOption('identifier') );
+        $language     = utf8_encode( $this->book->getOption('lang') );
+        $description  = utf8_encode( $this->book->getOption('description') );
+        $publisher    = utf8_encode( $this->book->getOption('publisher') );
+        $publisherUrl = utf8_encode( $this->book->getOption('publisherUrl') );
         if (empty($publisherUrl)) $publisherUrl = 'http://labsystem.sf.net';
-        $date         = $this->book->getOption('date');
-        $rights       = $this->book->getOption('rights');
-        $sourceUrl    = $this->book->getOption('sourceUrl');
+        $date         = utf8_encode( $this->book->getOption('date') );
+        $rights       = utf8_encode( $this->book->getOption('rights') );
+        $sourceUrl    = utf8_encode( $this->book->getOption('sourceUrl') );
         if (empty($sourceUrl)) $sourceUrl = 'http://labsystem.sf.net';
         
         $book->setTitle($title);
