@@ -43,8 +43,7 @@ if ($cfg->doesExist('imprintID') && $cfg->get('imprintID')!=''){
   }
 } else {
   $imprint = new LpElement( 1, "Imprint", "to be filled next", "", 0, 0, "" );
-  $imprint->contents = '
-[HTML]
+  $imprint->contents = '[HTML]
 <p>
   __SYSTEMTITLE__<br>
   Downloaded at: __CURRENT_TIMESTAMP__<br>
