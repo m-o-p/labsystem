@@ -53,11 +53,19 @@ if ($returnEpub){
   //TODO: Call functions to tell ePub export that multiple labs come now.
   $epubExporter = LSE_Exporter::getInstance();
   $epubConfig = array(
-    'title'   => $cfg->get('SystemTitle'),
-    'authors' => 'Multiple Authors',
-    'lang'    => $lng->get('Content-Language'),
+    'title'        => $cfg->get('SystemTitle'),
+    'authors'      => ($cfg->doesExist('ePubMultiAuthors') && $cfg->get('ePubMultiAuthors') != "" ? $cfg->get('ePubMultiAuthors') : 'labsystem.sf.net' ),
+    'lang'         => $lng->get('Content-Language'),
     'isMultiChapterEnabled' => TRUE,
+    'identifier'   => ($cfg->doesExist('ePubIdentifier') && $cfg->get('ePubIdentifier') != "" ? $cfg->get('ePubIdentifier') : $cfg->get('SystemTitle').'-labsystem.sf.net' ),
+    'description'  => ($cfg->doesExist('ePubDescription') && $cfg->get('ePubDescription') != "" ? $cfg->get('ePubDescription') : 'labsystem.sf.net ePub to the course '.$cfg->get('SystemTitle') ),
+    'publisher'    => ($cfg->doesExist('ePubPublisher') && $cfg->get('ePubPublisher') != "" ? $cfg->get('ePubPublisher') : 'labsystem.sf.net' ),
+    'publisherUrl' => ($cfg->doesExist('ePubPublisherURL') && $cfg->get('ePubPublisherURL') != "" ? $cfg->get('ePubPublisherURL') : 'http://labsystem.sf.net' ),
+    'rights'       => ($cfg->doesExist('ePubCopyrightMeta') && $cfg->get('ePubCopyrightMeta') != "" ? $cfg->get('ePubCopyrightMeta') : 'All rights reserved' ),
+    'sourceUrl'    => ($cfg->doesExist('ePubSourceURL') && $cfg->get('ePubSourceURL') != "" ? $cfg->get('ePubSourceURL') : 'http://'.$_SERVER['SERVER_NAME'] )
   );
+  /*
+  
 
   // set cover and imprint up:
   require( '../include/setupEpubFrontMatter.inc');

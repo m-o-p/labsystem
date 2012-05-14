@@ -82,7 +82,17 @@ class LSE_Exporter
     /**
      * Allow passing configuration options from Exporter to Engine class
      *
-     * @param array $option
+     * @param $option
+     * An associative array containing:
+     * - title: A string to use as title of EPub
+     * - author: A string to use in the Author field
+     * - lang: A string to use as Language. defaults to "en". Use RFC3066 Language codes, such as "en", "da", "fr" etc.
+     * - identifier: A string to uniquely identify the EPub. Could also be the ISBN number, prefered for published books, or a UUID.
+     * - publisher: A string to use as publisher of EPub
+     * - publisherUrl: A string to use as PUblisher Url.
+     * - date: A date, usually to represent time when EPub was generated. 
+     * - rights: A string to be used as Copyright Text
+     * - sourceURL: A string to be used as URL where the EPub was generated
      */
     function setOptions(array $options)
     {

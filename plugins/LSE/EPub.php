@@ -106,19 +106,30 @@ class LSE_EPub implements LSE_Engine
         $book = new LSE_Plugin();
         
         $title = LSE_Util::filterPTag($this->book->getTitle());
-        $title = $this->book->getTitle();
+        $title = LSE_Util::string_decode($this->book->getTitle());
         $author = LSE_Util::filterPTag($this->book->getAuthors());
         $author = $this->book->getAuthors();
+
+        $identifier  = $this->book->getOption('identifier');
+        $language    = $this->book->getOption('lang');
+        $description = $this->book->getOption('description');
+        $publisher   = $this->book->getOption('publisher');
+        $publisherUrl = $this->book->getOption('publisherUrl');
+        if (empty($publisherUrl)) $publisherUrl = 'http://labsystem.sf.net';
+        $date        = $this->book->getOption('date');
+        $rights      = $this->book->getOption('rights');
+        $sourceUrl   = $this->book->getOption('sourceUrl');
+        if (empty($sourceUrl)) $sourceUrl = 'http://labsystem.sf.net';
         
         $book->setTitle($title);
-        $book->setIdentifier("http://ilab.net.in.tum.de/", EPub::IDENTIFIER_URI); // Could also be the ISBN number, prefered for published books, or a UUID.
-        $book->setLanguage("en"); // Not needed, but included for the example, Language is mandatory, but EPub defaults to "en". Use RFC3066 Language codes, such as "en", "da", "fr" etc.
-        $book->setDescription("This is a brief description\nA test ePub book as an example of building a book in PHP");
+        $book->setIdentifier($identifier, EPub::IDENTIFIER_URI); // Could also be the ISBN number, prefered for published books, or a UUID.
+        $book->setLanguage($language); // Not needed, but included for the example, Language is mandatory, but EPub defaults to "en". Use RFC3066 Language codes, such as "en", "da", "fr" etc.
+        $book->setDescription($description);
         $book->setAuthor($author, $author); 
-        $book->setPublisher("Technische Universität München", "http://ilab.net.in.tum.de/"); // I hope this is a non existant address :) 
-        $book->setDate(time()); // Strictly not needed as the book date defaults to time().
-        $book->setRights("Copyright and licence information specific for the book."); // As this is generated, this _could_ contain the name or licence information of the user who purchased the book, if needed. If this is used that way, the identifier must also be made unique for the book.
-        $book->setSourceURL("http://ilab.net.in.tum.de-");
+        $book->setPublisher($publisher, $publisherUrl); // I hope this is a non existant address :) 
+        $book->setDate($date); // Strictly not needed as the book date defaults to time().
+        $book->setRights($rights); // As this is generated, this _could_ contain the name or licence information of the user who purchased the book, if needed. If this is used that way, the identifier must also be made unique for the book.
+        $book->setSourceURL($sourceUrl);
         
         $book->setDocRoot(LSE_PATH_LABSYSTEM);
         return $book;
