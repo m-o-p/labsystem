@@ -45,21 +45,21 @@ if ($cfg->doesExist('imprintID') && $cfg->get('imprintID')!=''){
   $imprint = new LpElement( 1, "Imprint", "to be filled next", "", 0, 0, "" );
   $imprint->contents = '[HTML]
 <p>
-  '.$epubConfig['title'].'<br>
-  '.$epubConfig['authors'].'<br>
+  '.(isset($epubConfig['title']) ? $epubConfig['title'] : 'title').'<br>
+  '.(isset($epubConfig['authors']) ? $epubConfig['authors'] : 'authors').'<br>
   <br>
-  ID: '.$epubConfig['identifier'].'<br>
+  ID: '.(isset($epubConfig['identifier']) ? $epubConfig['identifier'] : 'identifier').'<br>
   <br>
-  '.$epubConfig['description'].'<br>
+  '.(isset($epubConfig['description']) ? $epubConfig['description'] : 'description').'<br>
   <br>
-  '.$epubConfig['publisher'].'<br>
-  '.$epubConfig['publisherUrl'].'<br>
+  '.(isset($epubConfig['publisher']) ? $epubConfig['publisher'] : 'publisher').'<br>
+  '.(isset($epubConfig['publisherUrl']) ? $epubConfig['publisherUrl'] : 'publisherUrl').'<br>
   <br>
-  Downloaded from: '.$epubConfig['sourceUrl'].'<br>
+  Downloaded from: '.(isset($epubConfig['sourceUrl']) ? $epubConfig['sourceUrl'] : 'sourceUrl').'<br>
   Downloaded at: __CURRENT_TIMESTAMP__<br>
   Downloaded by: __FORENAME__ __NAME__ (__USERNAME__)<br>
   <br>
-  '.$epubConfig['rights'].'
+  '.(isset($epubConfig['rights']) ? $epubConfig['rights'] : 'rights').'
 </p>
   '; 
 }
