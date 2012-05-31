@@ -2,7 +2,7 @@
 // Available Variables
 $id               = $this->id;
 // @todo debug why we have PasteBin & Feedback here instead of &amp;
-$title            = LSE_Util::filterPTag(htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false));
+$title            = LSE_Util::filterPTag(htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false), $id);
 $content          = $this->content;
 $includePageBreak = $this->includePageBreak;
 ?>

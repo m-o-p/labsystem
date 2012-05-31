@@ -1,7 +1,7 @@
 <?php
 // Available Variables
 $id               = $this->id;
-$content          = LSE_Util::filterPTag($this->content);
+$content          = LSE_Util::filterPTag($this->content, $id);
 $includePageBreak = $this->includePageBreak;
 ?>
 <!-- Start LowP : <?php print $id?> -->

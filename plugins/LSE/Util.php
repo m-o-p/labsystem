@@ -49,7 +49,13 @@ class LSE_Util
         return (in_array($actualParentType, $parentType));
     }
     
-    public static function filterPTag($string)
+    /**
+     * Formats incorrect HTML in string and returns a well formatted valid HTML
+     *
+     * @param $string that needs to be verified
+     * @param $id     for debugging purpose, if there is an error, id is printed with debug
+     */
+    public static function filterPTag($string, $id = null)
     {
         // @todo LowC sometimes has & instead of escaped &amp; for example in PasteBin & Feedback
         $string = utf8_encode($string);
@@ -62,10 +68,18 @@ class LSE_Util
         $domDoc->recover = true;
         $domDoc->strictErrorChecking = false;
         
+        libxml_use_internal_errors(true);
+        
         // we need to wrap it inside div because by default if we just put normal text, it is wrapped inside 
         // a p tag eg, if string is "a <p>b</p> c" then result string would be "<p>a </p><p>b</p> c" Note last c is
         // not enclosed in p. Strange
         $domDoc->loadHTML("<div>$string</div>");
+        $errors = libxml_get_errors();
+        if (count($errors)) {
+            self::handleLoadHtmlError($errors, $string, $id);
+            exit(0);
+        }
+        libxml_use_internal_errors(false);
         return self::get_inner_html($domDoc->documentElement->firstChild->firstChild);
 //        print $result . "///////////////////////\n";
 //        if (strpos($string, "Paste") === 0)
@@ -125,13 +139,34 @@ class LSE_Util
     
     public static function string_decode($string)
     {
-        return $string;
-//        return html_entity_decode($string, ENT_COMPAT, 'UTF-8');
+        // return $string;
+        return html_entity_decode($string, ENT_COMPAT, 'UTF-8');
     }
     
     public static function string_encode($string)
     {
         return $string;
 //        return htmlentities($string, ENT_COMPAT, 'UTF-8');
+    }
+    
+    public static function handleLoadHtmlError($errors, $doc, $id = null) {
+        $output = '';
+        if ($id) $output .= 'You have error in ' . $id . (isset($_GET['config']) ? " [<a href='../pages/edit.php?config=".$_GET['config']."&inside=true&address=".$id."'>edit</a>]" : '' )."\n";
+        foreach ($errors as $error) {
+            $output .= 'Error: Line ' . ($error->line-1) . ' : ' . $error->message . "\n";
+        }
+        $tpl = <<<EOF
+<html>
+  <head>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js' type='text/javascript'></script>
+    <link rel="stylesheet" href='http://cdn.bitbucket.org/shekharpro/google_code_prettify/downloads/prettify.css' />
+  </head>
+  <body onload='prettyPrint()'>
+    <pre>%s</pre>
+    <pre class='prettyprint linenums'>%s</pre>
+  </body>
+</html>
+EOF;
+        printf($tpl, $output, htmlspecialchars($doc));
     }
 }

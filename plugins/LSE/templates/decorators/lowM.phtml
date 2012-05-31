@@ -1,10 +1,10 @@
 <?php
 // Available Variables
 $id       = $this->id;
-$question = LSE_Util::filterPTag($this->question);
+$question = LSE_Util::filterPTag($this->question, $id);
 $answers  = $this->answers; 
 foreach ($answers as $key => $answer) {
-    $answers[$key] = LSE_Util::filterPTag($answer);
+    $answers[$key] = LSE_Util::filterPTag($answer, $id);
 }
 ?>
 <!-- Start LowM : <?php print $id?> -->

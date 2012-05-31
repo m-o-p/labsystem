@@ -1,7 +1,7 @@
 <?php
 // Available Variables
 $id       = $this->id;
-$question = LSE_Util::filterPTag($this->question);
+$question = LSE_Util::filterPTag($this->question, $id);
 ?>
 <!-- Start LowI : <?php print $id?> -->
 <div class='collection_content section donotbreak lowI' id='<?php print $id ?>'>

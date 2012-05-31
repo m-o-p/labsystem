@@ -4,12 +4,13 @@
  *
  * Available variables
  */
-$title   = LSE_Util::filterPTag($this->title);   // Title of the book
-$title   = preg_replace('#([0-9a-z]+)\. (.*)#', '<span class="capterCoverNumber">\1. </span>\2', $title);
 $id      = $this->id;      // The id of the book
+$title   = LSE_Util::filterPTag($this->title, $id);   // Title of the book
+$title   = preg_replace('#([0-9a-z]+)\. (.*)#', '<span class="capterCoverNumber">\1. </span>\2', $title);
+
 $childContent = $this->childContent; // The content of the book, no filtering assuming the content is already filtered.
-$author  = LSE_Util::filterPTag($this->author);  // The Author names
-$comment = LSE_Util::filterPTag($this->comment); // Comment for the book
+$author  = LSE_Util::filterPTag($this->author, $id);  // The Author names
+$comment = LSE_Util::filterPTag($this->comment, $id); // Comment for the book
 // @todo debug why filterPTag throws an error for table of contents (probably because the links do not exist)
 //$toc     = LSE_Util::filterPTag(htmlspecialchars($this->toc, ENT_COMPAT, 'UTF-8', false));
 $toc     = $this->toc;

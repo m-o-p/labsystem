@@ -4,7 +4,7 @@
 
 // Available Variables
 $id           = $this->id;
-$title        = LSE_Util::filterPTag(htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false));
+$title        = LSE_Util::filterPTag(htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false), $id);
 $childContent = $this->childContent;
 $content      = $this->content;
 
