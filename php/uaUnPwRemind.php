@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -48,15 +48,15 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') // only in this configu
      }
 
 // new Interface to the userDB
-$userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 
-                            $cfg->get('UserDatabaseUserName'), 
-                            $cfg->get('UserDatabasePassWord'), 
+$userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
+                            $cfg->get('UserDatabaseUserName'),
+                            $cfg->get('UserDatabasePassWord'),
                             $cfg->get('UserDatabaseName'));
-                                
+
 // check if the mailAddress exists:
 $result = $userDBC->mkSelect( $cfg->get('UserDBField_username').', '.
-                              $cfg->get('UserDBField_uid').' AS uid', 
-                              $cfg->get('UserDatabaseTable'), 
+                              $cfg->get('UserDBField_uid').' AS uid',
+                              $cfg->get('UserDatabaseTable'),
                               'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$_POST['EMAIL']."')"
                              );
 if ( mysql_num_rows( $result ) < 1)
@@ -67,32 +67,34 @@ else{
     // generate new Password:
     srand((double)microtime()*1000000);
     $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
-                              
+
     // set the new password
     $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".crypt( $newPW, $data['uid'] )."'",  // the UID is used as salt
-                        $cfg->get('UserDatabaseTable'), 
+                        $cfg->get('UserDatabaseTable'),
                         $cfg->get('UserDBField_uid')."='".$data[ $cfg->get('UserDBField_uid') ]."'"
                        );
-    
+
     // send the reminding mail
     // switch to the user for successfull field replacement.
-    $usr->userRights &= IS_CORRECTOR; // only correctors can load user data...
-    $requestingUsr = $usr->getUserInformation($data[ $cfg->get('UserDBField_uid') ]);
+    if (!$usr->isOfKind( IS_CORRECTOR )){
+      $usr->userRights += IS_CORRECTOR; // only correctors can load user data...
+    }
+    $requestingUsr = $usr->getUserInformation($data[ 'uid' ]);
     $usr->userName    = $requestingUsr['userName'];
     $usr->foreName    = $requestingUsr['foreName'];
     $usr->surName     = $requestingUsr['name'];
     $usr->mailAddress = $_POST['EMAIL'];
-    
+
     // Load mail element from pages:
     $mailPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidPasswordMail'));
     // replace constants using new user data from above:
     $pge->replaceConstants($mailPage->title);
     $pge->replaceConstants($mailPage->contents);
-    
+
     $senderAddr = $cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].'>';
-    
+
     mail( $usr->mailAddress,
-         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/, 
+         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/,
          $mailPage->contents."\r\n\r\n".
          $lng->get('userName').': '.$data[ $cfg->get('UserDBField_username') ]."\r\n".
          $lng->get('passWord').': '.$newPW."\r\n".

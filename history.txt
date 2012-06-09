@@ -56,6 +56,11 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2012-06-10
+-------------------
+  /php/uaPwRemind.php
+    Fixed loading user data for the personalized mail.
+    
 2012-05-14
 -------------------
   Epub finilazing with Bibek. Great work man!
