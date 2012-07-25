@@ -274,7 +274,7 @@ else{ // no data posted or errors found
      $pge->put( "</div>\n".
                 "</fieldset>\n".
                 "<input".( $canRegister ? '' : ' disabled="disabled"' )." tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
-                ' <div class="registerPlacesLeft">'.$lng->get('placesLeft').': '.$remaining.'/'.$max.' '.$icons."</div>\n".
+                ' <div class="registerPlacesLeft">'.$icons.' '.$lng->get('placesLeft').': '.$remaining.'/'.$max."</div>\n".
                 "</FORM>"
                );
 

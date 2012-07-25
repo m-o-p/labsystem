@@ -258,7 +258,7 @@ uaNewUsrsSubscript  = "The new users will have these subscriptions."
 ; register.php
 registerNote        = "Please fill out the fields below to register for the course."
 thankYouForRegisteringNote = "Thank you for registering!"
-desiredTeamPartner  = "Do you already know with whom you want to be on a team? Her you can name the one..."
+desiredTeamPartner  = "Do you already know with whom you want to be on a team? Here you can name the one..."
 reasonToParticipate = "For which reason do you think you are the right one to participate in the course? (Just provide one short sentence.)"
 placesLeft          = "places left"
 intendedDegree      = "Which program are you currently in? (Bachelor, Master, Diploma, ...)"
