@@ -56,6 +56,42 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2012-09-18
+-------------------
+  /include/classes/ElementButtons.inc
+  /include/classes/elements/Element.inc
+  /ini/de.lng
+  /ini/en.lng
+  /syspix/button_folder_open_13x12.gif
+  /syspix/button_print_13x12.gif
+    Changed the printer icon to a folder icon and the explanation text. 
+    It says now what it does: opening all included elements. The printer was misleading.
+
+    Also added serializing functionality for m-elements to Element.inc. 
+    It removes trailing empty answers now when serializing. 
+    Maybe this fixes the issue with empty imported answers... 
+    If not it is something with the expand on import... 
+    I will check this now.
+
+  /include/XIlib.inc
+  /include/classes/elements/Element.inc
+  /include/classes/elements/LmDBInterface.inc
+  /include/classes/elements/LmElement.inc
+  /pages/XIport.php
+    Solved the bug that imported an empty answer when only two answers were given 
+    for a multiple choice question. The bug was caused in the XIlib.inc processElement 
+    when going through all answers using the NON-UPDATED answerCount. It was always 3
+    due to 3 answers in the prototype it was initially initialized with...
+    
+  /include/page_layout.inc
+	/ini/configBase/defaultSystemLayout.ini
+    Added support for google-code-prettify. See plugins/google-code-prettify/#README.txt.
+    
+2012-09-09
+-------------------
+  /plugins/LSE/class_diagram.png
+    Added LSE documentation (class diagram).
+
 2012-06-10
 -------------------
   /php/uaPwRemind.php

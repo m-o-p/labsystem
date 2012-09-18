@@ -130,10 +130,23 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     ');
 ?>
 
+<?PHP /* Javascript code google-code-prettify; place the scripts in plugins/google-code-prettify/ */
+    if ($cfg->doesExist('google-code-prettify') && $cfg->get('google-code-prettify') == 'TRUE'){
+      echo('
+    <link href="../plugins/google-code-prettify/prettify.css" type="text/css" rel="stylesheet" />
+    <style type="text/css" media="screen">
+      .prettyprint, .labsys_mop_contentArea .labsys_mop_elements_p_around .prettyprint { background-color: #fff; color: #000; }
+    </style>
+    <script type="text/javascript" src="../plugins/google-code-prettify/prettify.js"></script>
+    ');
+    $loadPrettyPrint = true;
+    }
+?>
+
     <TITLE><?php $pge->replaceConstants( $pge->title ); echo( $pge->title ); ?> [<?php echo( $usr->userName."@" ); $cfg->say("SystemTitle"); ?>]</TITLE>
   </HEAD>
 
-  <BODY onbeforeunload="return dirtyWarning();">
+  <BODY<?PHP if( isset($loadPrettyPrint) ){ echo(' onload="prettyPrint();"'); } ?> onbeforeunload="return dirtyWarning();">
     <table class="labsys_mop_maintable" align="center" cellpadding="0" cellspacing="0">
       <?php /* table layout fixed: first row sets the width */
         echo("<tr><td class=\"labsys_mop_ableMenu\"></td>". // show/ hide menu
