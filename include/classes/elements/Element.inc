@@ -108,9 +108,16 @@ class Element{
     $output = '';
     foreach ( $this->serializationArray as $value ){
       $output .= '<'.$value.'>';
-      if( is_array($this->$value) )
+      if( is_array($this->$value) ){
+        // Remove empty elements at the end of the array:
+        while( $this->value[sizeof($this->$value)-1] == "" ){
+          unset( $this->value[sizeof($this->$value)-1] );
+        }
         $output .=  "<arrayElement>".implode("</arrayElement>\n<arrayElement>", $this->$value)."</arrayElement>"; // transform the array elements to XML
-        else $output .= $this->$value;
+        }
+      else{
+        $output .= $this->$value;
+        }
       $output .= '</'.$value.'>'."\r\n";
     }
     return $output;

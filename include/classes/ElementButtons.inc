@@ -172,7 +172,7 @@ class EB{ /* ElementButtons */
   function printView( $address ){
     global $lng, $url;
     $link = $url->link2( "../pages/view.php?address=".$address );
-    return EB::mkLink( $link, "<img src=\"../syspix/button_print_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view\" title=\"".$lng->get("explainPrint")."\">" );
+    return EB::mkLink( $link, "<img src=\"../syspix/button_folder_open_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view\" title=\"".$lng->get("explainPrintView")."\">" );
   }
 
   /**
