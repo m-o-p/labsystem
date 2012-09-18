@@ -321,7 +321,9 @@ class LmElement extends Element{
 
     $answers = "";
 
-    if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ) $answers = $this->showAnswer( $fullAddress ); // example solution
+    if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ){
+       $answers = $this->showAnswer( $fullAddress ); // example solution
+    }
 
     if ( !$usr->isOfKind( IS_CORRECTOR ) ){    // Load the dynamic data from the working table.
       // "normal" usr

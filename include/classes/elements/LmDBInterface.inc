@@ -123,11 +123,13 @@ class LmDBInterface {
   */
   function setData( &$eM, $createNew = false ){
     global $usr, $cfg, $lng;
+
     if ($cfg->get('tidyHTML') == 'TRUE'){
       tidyHTML( $eM->question );
       tidyHTML( $eM->answerExplanation );
-      foreach ( $eM->answerArray as &$value ) tidyHTML($value);   
+      foreach ( $eM->answerArray as &$value ){ tidyHTML($value); }   
     }
+
     $toSet =  "question='".$this->myDBC->escapeString($eM->question)."', ".
               "answer_array='".$this->myDBC->escapeString( serialize($eM->answerArray) )."', ".
               "answer_explanation='".$this->myDBC->escapeString($eM->answerExplanation)."', ".

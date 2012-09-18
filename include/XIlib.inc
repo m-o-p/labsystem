@@ -639,7 +639,8 @@ Fill $exportContent and write it at the bottom once!
     case 'm':
       processContent( $element->question, $labNumber, $mappingArray, true, $isImport );
       processContent( $element->answerExplanation, $labNumber, $mappingArray, true, $isImport );
-      for ($i=0; $i < $element->answerCount; $i++)
+      // Do NOT use $element->answerCount here as it was initialized with the default 3 entries...
+      for ($i=0; $i < count($element->answerArray); $i++)
         processContent( $element->answerArray[$i], $labNumber, $mappingArray, true, $isImport );
       break;
     case 'i':

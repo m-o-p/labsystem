@@ -109,15 +109,10 @@ class Element{
     foreach ( $this->serializationArray as $value ){
       $output .= '<'.$value.'>';
       if( is_array($this->$value) ){
-        // Remove empty elements at the end of the array:
-        while( $this->value[sizeof($this->$value)-1] == "" ){
-          unset( $this->value[sizeof($this->$value)-1] );
-        }
         $output .=  "<arrayElement>".implode("</arrayElement>\n<arrayElement>", $this->$value)."</arrayElement>"; // transform the array elements to XML
-        }
-      else{
+      }else{
         $output .= $this->$value;
-        }
+      }
       $output .= '</'.$value.'>'."\r\n";
     }
     return $output;
@@ -157,7 +152,7 @@ class Element{
                  $this->$value = substr($this->$value, 14); //cut front
                  $this->$value = substr($this->$value, 0, strlen($this->$value)-15); //cut rear
                  $this->$value = explode( "</arrayElement>\n<arrayElement>", $this->$value ); // post process arrays
-                 }
+            }
             // get next line and continue if one is there
             if (!next( $inputLines )) break;
       }
