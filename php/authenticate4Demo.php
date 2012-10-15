@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -59,7 +59,7 @@ $url->clearQueryString(); $url->put( $url->get("oldQueryString") );
                       $authUserData["userName"] = "DemoUser";
                       $authUserData["foreName"] = "Marc-Oliver";
                       $authUserData["name"]     = "Pahl";
-                      $authUserData["eMail"]    = "pelase_donate@labsystem.m-o-p.de";
+                      $authUserData["eMail"]    = "please_donate@labsystem.m-o-p.de";
 /* /demo login issues */
 
 // authenticated
@@ -96,6 +96,6 @@ else{
   $link2 = '../pages/view.php?address=l2.C6.c2';
 }
 
-// Link to the after login page from the config file or to 
+// Link to the after login page from the config file or to
   header( "Location: ".$url->rawLink2( $link2/* .'&tinyMCE' */ ) );
 ?>
