@@ -672,7 +672,7 @@ function getLabsFromDirectory( $directory ){
   if (!is_dir( $directory )) return $retArray;
 	$subDirs = scandir( $directory );
   for( $i=0; $i<sizeof( $subDirs ); $i++){
-    if (!is_dir( $subDirs[$i] )) continue; // skip non-directories
+    if (!is_dir( $directory.$subDirs[$i] )) continue; // skip non-directories
     if ( $subDirs[$i] == '.' || $subDirs[$i] == '..' ) continue; // skip those
     $file_name = $directory.$subDirs[$i].'/data/l0000002.txt';
     if( file_exists($file_name) ){
