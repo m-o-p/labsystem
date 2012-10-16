@@ -145,7 +145,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $newSchedule->id = $newLabId[0];
         $newSchedule->num = substr( $newLabId, 1);
         // Make a 2 weeks schedule starting in $newSchedule->num weeks:
-        $startTime = strtotime( '+'.$newSchedule->num.' weeks '.date('H:i:s') );
+        $startTime = strtotime( '+'.$newSchedule->num.' weeks 0:0:0' );
         $endTime = strtotime( '+'.(2+$newSchedule->num).' weeks 23:59:59');
         $newSchedule->start = $startTime;
         $newSchedule->stop = $endTime;
