@@ -106,16 +106,16 @@ class Pge extends LpElement{
     global $url, $usr, $lng, $cfg;
     // initialize replacements on first use:
     if($this->replaceValue==""){
-    	$this->replaceValue = Array( $url->get("newQueryString"),
-    	                             $this->title,
-    	                             $cfg->get("SystemTitle"),
-    	                             $usr->foreName,
-    	                             $usr->surName,
-    	                             $usr->userName,
-    	                             "WillBeReplacedByElsShow",
-    	                             urlencode( $_SERVER['REQUEST_URI'] ),
-    	                             $cfg->get("Link2UserAdminInterface"),
-    	                             date( $lng->get("DateFormat") ) );
+    	$this->replaceValue = Array( htmlentities( $url->get("newQueryString") ),
+    	                             htmlentities( $this->title ),
+    	                             htmlentities( $cfg->get("SystemTitle") ),
+    	                             htmlentities( $usr->foreName ),
+    	                             htmlentities( $usr->surName ),
+    	                             htmlentities( $usr->userName ),
+    	                             htmlentities( "WillBeReplacedByElsShow" ),
+    	                             htmlentities( urlencode( $_SERVER['REQUEST_URI'] ) ),
+    	                             htmlentities( $cfg->get("Link2UserAdminInterface") ),
+    	                             htmlentities( date( $lng->get("DateFormat") ) ) );
     }
 
     $text = ( str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
