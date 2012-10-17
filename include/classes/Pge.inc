@@ -106,15 +106,15 @@ class Pge extends LpElement{
     global $url, $usr, $lng, $cfg;
     // initialize replacements on first use:
     if($this->replaceValue==""){
-    	$this->replaceValue = Array( htmlentities( $url->get("newQueryString") ),
+    	$this->replaceValue = Array( $url->get("newQueryString"),
     	                             htmlentities( $this->title ),
     	                             htmlentities( $cfg->get("SystemTitle") ),
     	                             htmlentities( $usr->foreName ),
     	                             htmlentities( $usr->surName ),
     	                             htmlentities( $usr->userName ),
     	                             htmlentities( "WillBeReplacedByElsShow" ),
-    	                             htmlentities( urlencode( $_SERVER['REQUEST_URI'] ) ),
-    	                             htmlentities( $cfg->get("Link2UserAdminInterface") ),
+    	                             urlencode( $_SERVER['REQUEST_URI'] ),
+    	                             $cfg->get("Link2UserAdminInterface"),
     	                             htmlentities( date( $lng->get("DateFormat") ) ) );
     }
 
