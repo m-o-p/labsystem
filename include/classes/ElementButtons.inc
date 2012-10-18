@@ -350,7 +350,7 @@ class EB{ /* ElementButtons */
     if ( !$usr->isOfKind( IS_USER ) ){
       return;
     }
-    $link = $url->link2( '../pages/mailForm.php?subject='.urlencode( $subject ).'&text='.urlencode( "\r\n\r\n".'-> http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$address ) );
+    $link = $url->link2( '../pages/mailForm.php?subject='.urlencode( '[><] '.$subject ).'&text='.urlencode( "\r\n\r\n".'-> http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$address ) );
     return EB::mkLink( $link, "<img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"next\" title=\"".$lng->get("explainMailLink2")."\">" );
   }
 }
