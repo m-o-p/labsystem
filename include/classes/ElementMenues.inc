@@ -136,7 +136,7 @@ class EM{ /* ElementMenues */
             EB::link2epub( $fullAddress ).
             EB::printView( $fullAddress.".all" ).
             EB::manageElements().
-            EB::mail ( $fullAddress, $theEl->title ).
+            EB::mail ( $fullAddress, $eL->title ).
             EB::history( $lng->get($elShortcut."Number").$eL->idx.":<hr>".$eL->history, $fullAddress ).
             "</div>\n";
     else return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
@@ -175,7 +175,7 @@ class EM{ /* ElementMenues */
                EB::delete( $fullAddress ).
                EB::printView( $fullAddress.".all" ).
                EB::manageElements().
-               EB::mail ( $fullAddress, $theEl->title ).
+               EB::mail ( $fullAddress, $eC->title ).
                EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress );
     else $menu .= EB::printView( $fullAddress.".all" );
 
@@ -328,7 +328,7 @@ class EM{ /* ElementMenues */
             EB::createNew( "c" ).
             EB::delete( $fullAddress ).
             EB::manageElements().
-            EB::mail ( $fullAddress, $theEl->title ).
+            EB::mail ( $fullAddress, $eC->title ).
             EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress ).
             "</div>\n";
   }
