@@ -51,7 +51,7 @@ class EM{ /* ElementMenues */
             EB::createNew( $elShortcut ).
             EB::delete( $fullAddress ).
             EB::manageElements().
-            EB::mail ( $fullAddress ).
+            EB::mail ( $fullAddress, $theEl->title ).
             EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress ).
             "</div>\n";
     else return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n";
@@ -71,7 +71,7 @@ class EM{ /* ElementMenues */
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
     else
       return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
-             EB::mail ( $fullAddress ).
+             EB::mail ( $fullAddress, $theEl->title ).
              EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress ).
              "</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
@@ -136,7 +136,7 @@ class EM{ /* ElementMenues */
             EB::link2epub( $fullAddress ).
             EB::printView( $fullAddress.".all" ).
             EB::manageElements().
-            EB::mail ( $fullAddress ).
+            EB::mail ( $fullAddress, $theEl->title ).
             EB::history( $lng->get($elShortcut."Number").$eL->idx.":<hr>".$eL->history, $fullAddress ).
             "</div>\n";
     else return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
@@ -175,7 +175,7 @@ class EM{ /* ElementMenues */
                EB::delete( $fullAddress ).
                EB::printView( $fullAddress.".all" ).
                EB::manageElements().
-               EB::mail ( $fullAddress ).
+               EB::mail ( $fullAddress, $theEl->title ).
                EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress );
     else $menu .= EB::printView( $fullAddress.".all" );
 
@@ -253,7 +253,7 @@ class EM{ /* ElementMenues */
             EB::createNew( $elShortcut ).
             EB::delete( $fullAddress ).
             EB::manageElements().
-            EB::mail ( $fullAddress ).
+            EB::mail ( $fullAddress, $theEl->title ).
             EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress ).
             "</div>\n";
   }
@@ -328,7 +328,7 @@ class EM{ /* ElementMenues */
             EB::createNew( "c" ).
             EB::delete( $fullAddress ).
             EB::manageElements().
-            EB::mail ( $fullAddress ).
+            EB::mail ( $fullAddress, $theEl->title ).
             EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress ).
             "</div>\n";
   }

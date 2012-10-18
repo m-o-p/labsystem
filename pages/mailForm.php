@@ -146,7 +146,9 @@ $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST
             "<fieldset><legend>".$lng->get("yourMail")."</legend>\n".
            // subject
             "<label for=\"subject\" class=\"labsys_mop_input_field_label_top\">".$lng->get("subject")."</label>".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"subject\" name=\"SUBJECT\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".(isset($_POST['SUBJECT']) ? $_POST['SUBJECT'] : '')."\" onchange='isDirty=true'>\n".
+            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"subject\" name=\"SUBJECT\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"".
+            (isset($_POST['SUBJECT']) ? $_POST['SUBJECT'] :
+                ( $url->available('subject') ? $url->get('subject') : '') )."\" onchange='isDirty=true'>\n".
            // mailbody
             "<label for=\"mailtext\" class=\"labsys_mop_input_field_label_top\">".$lng->get("message")."</label>".
             "<textarea tabindex=\"".$pge->nextTab++."\" id=\"mailtext\" name=\"MAILTEXT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("sendMailBodyRows")."\" onchange='isDirty=true'>".
