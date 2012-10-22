@@ -314,7 +314,7 @@ newPWreType         = "retype new password"
 lastChange          = "last change"   ;; timestamp of last change of the dataset in the user.db
 
 ; uaCreateUsers.php
-mailaddressesNewUsr = "Enter the following comma separated data one user per line: &quot;<b>surname, forename, mail address</b>&quot; of the users you want to create. Put one user's data per line."
+mailaddressesNewUsr = "Enter the following comma separated data one user per line: &quot;<b>surname, forename, mail address</b>&quot; of the users you want to create. Put <b>one user's data per line</b>."
 
 ;p
 inputTitle          = "<b>Title</b> (e.g. the title of your element is used for the browser's caption.)"

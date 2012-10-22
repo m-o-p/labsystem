@@ -455,7 +455,9 @@ class LlElement extends Element{
          // Cachemiss?
           if ( !array_key_exists( $labStatus['lIdx'], $labNameCache ) ){
             $element = $lDBI->getMenuData2idx( $labStatus['lIdx'] );
-            $labNameCache += array( $labStatus['lIdx'] => $element->title );
+            if ($element) {
+              $labNameCache += array( $labStatus['lIdx'] => $element->title );
+            }
           }
             $labName = '<span class="labsys_mop_grayed"> &nbsp;'.$labNameCache[ $labStatus['lIdx'] ].'</span>';
         }
