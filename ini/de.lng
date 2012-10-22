@@ -252,7 +252,7 @@ uaMyDataNote        = "Hier k&ouml;nnen Sie Ihre pers&ouml;nlichen Daten &auml;n
 uaMyPwNote          = "Hier k&ouml;nnen Sie Ihr Passwort &auml;ndern."
 uaUnPwRemNote       = "Wenn Sie ein registrierter Benutzer sind, k&ouml;nnen Sie sich von dieser Seite Ihren <b>Benutzernamen und Ihr Passwort an Ihre Mailadresse</b> zuschicken lassen. <br />Geben Sie dazu bitte in das Feld die Mailadresse ein, die Sie im System hinterlegt haben."
 uaManageUsrNote     = "Um die Benutzerdaten zu &auml;ndern, auf die Benutzer klicken. (Sie m&uuml;ssen Korrektor sein!).<br />Die Zuordnungen zu den Kursen k&ouml;nnen auf dieser Seite vorgenommen werden."
-uaCreateUsrNote     = "Sie k&ouml;nnen Benutzer anlegen, indem Sie eine mit Liste von <b>Emailadressen</b> in das Feld eintragen (<b>Eine pro Zeile!</b>).<br />Die Benutzer werden dann mit Emailadresse als Benutzernamen und einem generierten Passwort angelegt.<br />Beides k&ouml;nnen sie auf der Passwort und/ oder Benutzernamenvergessen-Seite anfordern und dann dort auch &auml;ndern. Das hat den Seiteneffekt, dass die unvollst&auml;ndigen Benutzerdaten vervollst&auml;ndigt werden m&uuml;ssen zum Speichern...<br/>Meistens ist die <b>Selbstregistrierung &uuml;ber register.php</b> das geeignetere Mittel, um Teilnehmer hinzu zu f&uuml;gen. Dort werden gleich alle Stammdaten vom Teilnehmer abgefragt."
+uaCreateUsrNote     = "Sie k&ouml;nnen Benutzer anlegen, indem Sie eine Liste mit <b>Nachname, Vorname, Emailadresse</b> in das Feld eintragen (<b>Ein Nutzer pro Zeile!</b>).<br />Die Benutzer werden dann mit Emailadresse als Benutzernamen und einem generierten Passwort angelegt.<br />Beides k&ouml;nnen sie auf der Passwort und/ oder Benutzernamenvergessen-Seite anfordern und dann dort auch &auml;ndern. Das hat den Seiteneffekt, dass die unvollst&auml;ndigen Benutzerdaten vervollst&auml;ndigt werden m&uuml;ssen zum Speichern...<br/>Meistens ist die <b>Selbstregistrierung &uuml;ber register.php</b> das geeignetere Mittel, um Teilnehmer hinzu zu f&uuml;gen. Dort werden gleich alle Stammdaten vom Teilnehmer abgefragt."
 uaNewUsrsSubscript  = "Die neu angelegten Benutzer werden diesen Kursen zugeordnet."
 
 ; register.php
@@ -314,7 +314,7 @@ newPWreType         = "Wiederholung des neuen Passwortes"
 lastChange          = "letzte &Auml;nderung"   ;; timestamp of last change of the dataset in the user.db
 
 ; uaCreateUsers.php
-mailaddressesNewUsr = "Hier die Emailadressen der Benutzer, die angelegt werden sollen eingeben - eine Adresse pro Zeile."
+mailaddressesNewUsr = "Geben Sie bitte "Nachname, Vorname, Mailadresse" mit Komma separiert pro Benutzer, den Sie anlegen wollen hier an. Schreiben Sie pro Zeile einen Benutzer."
 
 ;p
 inputTitle          = "<b>Titel</b> (Wird z.B. f&uuml;r den Browsertitel verwendet.)"

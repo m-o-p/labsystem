@@ -252,7 +252,7 @@ uaMyDataNote        = "Here you can change your personal data.<br />Provide a <b
 uaMyPwNote          = "Here you can change your password."
 uaUnPwRemNote       = "As member you can receive a mail with your login <b>username</b> and a <b>new password</b> from this page.<br />Just enter the mailaddress you provided to the system."
 uaManageUsrNote     = "You can edit the user's by clicking on them. (You have to be able to correct for that!).<br />You can change the subsciptions to the courses here."
-uaCreateUsrNote     = "You can create the users her by entering a <b>list of mailaddresses (ONE per line!)</b> in the field below.<br />The users will get the mailadress as username and a generated password.<br />Since the data is not mailed to them and their dataset is incomplete they are supposed to <b>request username and password from the reminder page</b> and to change/ enter their data after that.<br/>Normally the <b>self registration over register.php</b> should be the method of choice as it directly fills all data."
+uaCreateUsrNote     = "You can create the users her by entering a <b>list of surname, forename, mailaddress (one line per user!)</b> in the field below.<br />The users will get the mailadress as username and a generated password.<br />Since the data is not mailed to them and their dataset is incomplete they are supposed to <b>request username and password from the reminder page</b> and to change/ enter their data after that.<br/>Normally the <b>self registration over register.php</b> should be the method of choice as it directly fills all data."
 uaNewUsrsSubscript  = "The new users will have these subscriptions."
 
 ; register.php
@@ -314,7 +314,7 @@ newPWreType         = "retype new password"
 lastChange          = "last change"   ;; timestamp of last change of the dataset in the user.db
 
 ; uaCreateUsers.php
-mailaddressesNewUsr = "Enter the mail addresses of the users you want to create. Put one mailaddress per line."
+mailaddressesNewUsr = "Enter the following comma separated data one user per line: "surname, forename, mail address" of the users you want to create. Put one user's data per line."
 
 ;p
 inputTitle          = "<b>Title</b> (e.g. the title of your element is used for the browser's caption.)"

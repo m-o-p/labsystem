@@ -110,7 +110,10 @@ class Usr extends ElementUser{
   */
   function getUserInformation( $uid ){
     global $usr, $url, $lng;
-    if ( $usr->isOfKind( IS_CORRECTOR ) ){ // only correctors need to know about othe members
+    if ( $usr->isOfKind( IS_USER ) ){ // (not) only correctors need to know about other members
+                                      // this function is called on the statistics page as well
+                                      // if you restrict to correctors users will not see other user's names
+                                      // you should remove the history then as well in the statistics
       require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
       $uDBI = new DBInterfaceUser();
       $userData = $uDBI->getData4( $uid );
