@@ -455,9 +455,7 @@ class LlElement extends Element{
          // Cachemiss?
           if ( !array_key_exists( $labStatus['lIdx'], $labNameCache ) ){
             $element = $lDBI->getMenuData2idx( $labStatus['lIdx'] );
-            if ($element) {
-              $labNameCache += array( $labStatus['lIdx'] => $element->title );
-            }
+            $labNameCache += array( $labStatus['lIdx'] => ( $element ? $element->title : '-' ) );
           }
             $labName = '<span class="labsys_mop_grayed"> &nbsp;'.$labNameCache[ $labStatus['lIdx'] ].'</span>';
         }
@@ -893,7 +891,7 @@ class LlElement extends Element{
   function show( $fullAddress, $extParagraph="" ){
     global $usr, $lng, $pge, $url, $cfg;
     if (  !$this->isVisible() &&
-          !(substr($fullAddress, strrpos($fullAddress, '.')+1, strrpos($fullAddress, '.')+13) == 'ALLlabStatus') // the Labstatus should always be visible
+          !(substr($fullAddress, strrpos($fullAddress, '.')+1, strrpos($fullAddress, '.')+10) == 'ALLlabStatus') // the Labstatus should always be visible
          ){ /* not enough rights->no content */
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
