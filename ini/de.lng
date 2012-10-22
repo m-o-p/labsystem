@@ -314,7 +314,7 @@ newPWreType         = "Wiederholung des neuen Passwortes"
 lastChange          = "letzte &Auml;nderung"   ;; timestamp of last change of the dataset in the user.db
 
 ; uaCreateUsers.php
-mailaddressesNewUsr = "Geben Sie bitte "Nachname, Vorname, Mailadresse" mit Komma separiert pro Benutzer, den Sie anlegen wollen hier an. Schreiben Sie pro Zeile einen Benutzer."
+mailaddressesNewUsr = "Geben Sie bitte &quot;<b>Nachname, Vorname, Mailadresse</b>&quot; mit Komma separiert pro Benutzer, den Sie anlegen wollen hier an. Schreiben Sie pro Zeile einen Benutzer."
 
 ;p
 inputTitle          = "<b>Titel</b> (Wird z.B. f&uuml;r den Browsertitel verwendet.)"
