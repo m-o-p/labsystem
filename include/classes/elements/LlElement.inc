@@ -1541,6 +1541,8 @@ class LlElement extends Element{
             $uid          = $dataArray['uid'];
             $permissions  = $this->usDBI->getData4( $uid );
             $preLabAllTeammatesFin &= $permissions['preLabFinished'];
+            // log this to check why the program sometimes does not open the lab for teams both having finished the prelab
+            makeLogEntry( 'l', 'checked ID '.$uid.' '.($permissions['preLabFinished'] ? 'true' : 'false'), $this->idx );
           }
 
           if ( $preLabAllTeammatesFin ){ // all have finished so
