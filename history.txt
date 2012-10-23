@@ -77,6 +77,29 @@ Feature Requests:
     prelab state now. The system is checking during lab schedule now if all prelab 
     members finished and sets the status accordingly.
 
+
+---
+272	10/23/12 11:13 AM	1	m-o-p	Added a log entry for other team member check in the prelab. I hunt the bug that prevents the lab from opening for teams having finished the prelab.
+271	10/23/12 10:33 AM	1	m-o-p	Changed the spaces after thebrackets of the fly-over correction button.
+270	10/23/12 10:29 AM	1	m-o-p	Added a legend to the corrector's "start-over" button. This button directly sets the credits to 100% and the question to the state "corrected". Now it explains [ ] 100% ./ -> ? credits.
+269	10/22/12 7:11 PM	1	m-o-p	Fixed the fix. Fixed visibility issue for ALLlabStatusCompact as the string comparison was wrong and thus the user rights were checked in a wrong way as well giving only editors access.
+268	10/22/12 6:58 PM	3	m-o-p	Fixed ". Added a check for empty results in ALLlabStatus.
+267	10/22/12 6:15 PM	2	m-o-p	Fixed "->&quot;
+266	10/22/12 6:10 PM	3	m-o-p	Made the user info readible for all users again. Now one can see the names of other students not only in the history of the entry but directly again. This was restricted to correctors only?! Changed the explanations for the mass subscriptions as the explanation for adding surname and forename were missing!
+265	10/21/12 8:20 PM	1	m-o-p	Added the animated test tube to the pix directory.
+264	10/18/12 6:44 PM	1	m-o-p	el -> eL in the EB::mail call.
+263	10/18/12 6:42 PM	1	m-o-p	Added the elementId and idx to the subject of the mail generate with the mail button.
+262	10/18/12 6:34 PM	1	m-o-p	Added an "icon" to the subject of the mails created with the mail button.
+261	10/18/12 6:27 PM	1	m-o-p	Fixed element links.
+260	10/18/12 6:20 PM	3	m-o-p	Added the element's title as subject to the mail button for the elements.
+259	10/17/12 8:52 PM	1	m-o-p	Fault escaping of URLs fixed ;)
+258	10/17/12 8:22 PM	1	m-o-p	Added htmlentities to the constants to be replaced. This should help for user names with Umlaute to display them correctly.
+257	10/16/12 9:38 PM	1	m-o-p	Fixed the directory check.
+*256	10/16/12 9:10 PM	1	m-o-p	Import directory walker should skip non-directories (like .htaccess file) now.
+255	10/16/12 3:00 PM	1	m-o-p	Changed schedule start time to 00:00:00 instead of date('H:i:s').
+254	10/15/12 7:56 PM	4	m-o-p	Added comments to the menu and the user roles.
+---
+
 2012-09-18
 -------------------
   /include/classes/ElementButtons.inc
