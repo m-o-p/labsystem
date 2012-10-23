@@ -56,6 +56,27 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2012-10-23
+-------------------
+  /pages/manageUsers.php
+    Before user rights and team assignments were not deleted even when a user 
+    was able to login once but is not able to login any more.
+    What happened was that an advisor assigned a user a team number and then 
+    removed this user from the instance. Then a team had suddenly two users plus
+    a hidden one. As a result the users were not allowed to do the lab even 
+    though they both finished.
+    As a result when visiting the user rights page now, all data of users currently
+    unable to log on the instance are deleted.
+
+  /include/classes/DBInterfaceUserRights.inc
+    Added a command remove rights and team assignment for a specific user UID.
+
+  /include/classes/elements/LlElement.inc
+    Cleaned the check prelab functionality.
+    Revised the update status functionality so that it really reflects the 
+    prelab state now. The system is checking during lab schedule now if all prelab 
+    members finished and sets the status accordingly.
+
 2012-09-18
 -------------------
   /include/classes/ElementButtons.inc

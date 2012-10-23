@@ -1532,23 +1532,9 @@ class LlElement extends Element{
          makeLogEntry( 'l', 'prelab finished', $this->idx );
 
          // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
-          require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-          $urDBI = new DBInterfaceUserRights();
-
-          $urDBI->getAllData( "", true, "`currentTeam` = '".$usr->currentTeam."' && `uid` != '".$usr->uid."'" ); // Only check others.
-          $preLabAllTeammatesFin = true;
-          while ( ($dataArray = $urDBI->getNextData()) ){
-            $uid          = $dataArray['uid'];
-            $permissions  = $this->usDBI->getData4( $uid );
-            $preLabAllTeammatesFin &= $permissions['preLabFinished'];
-            // log this to check why the program sometimes does not open the lab for teams both having finished the prelab
-            makeLogEntry( 'l', 'checked ID '.$uid.' '.($permissions['preLabFinished'] ? 'true' : 'false'), $this->idx );
-          }
-
-          if ( $preLabAllTeammatesFin ){ // all have finished so
+          if ( $this->isPrelabFinishedByAllCurrentTeammates( $usr->currentTeam ) ){ // all have finished so
             // update their prelab status
             $this->usDBI->setPrelabFinished( $usr->currentTeam );
-
             makeLogEntry( 'l', 'prelab finished team '.$usr->currentTeam, $this->idx );
 
             if ( $this->noLab ) // If we have no lab it gets closed when all teammembers finished the prelab
@@ -1567,6 +1553,28 @@ class LlElement extends Element{
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+  }
+
+  /**
+   * This selector checks if all CURRENT members of $teamToCheck finished the prelab.
+   *
+   * @param $teamToCheck The team to be checked using the CURRENT mapping.
+   */
+  function isPrelabFinishedByAllCurrentTeammates( $teamToCheck ){
+    // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
+    require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+    $urDBI = new DBInterfaceUserRights();
+
+    $urDBI->getAllData( "", true, "`currentTeam` = '".$teamToCheck."'" );
+    $preLabAllTeammatesFin = true;
+    while ( ($dataArray = $urDBI->getNextData()) ){
+      $uid          = $dataArray['uid'];
+      $permissions  = $this->usDBI->getData4( $uid );
+      $preLabAllTeammatesFin &= $permissions['preLabFinished'];
+      // log this to check why the program sometimes does not open the lab for teams both having finished the prelab
+      makeLogEntry( 'l', 'checked team '.$teamToCheck.' ID '.$uid.' '.($permissions['preLabFinished'] ? 'true' : 'false'), $this->idx );
+    }
+    return $preLabAllTeammatesFin;
   }
 
   /**
@@ -1858,10 +1866,10 @@ class LlElement extends Element{
             ) // yes -> save them.
               $this->usDBI->setData4( $labStatus['uid'],
                                       $teamJustChecked = $labStatus['currentTeam'],
-                                      true,
+                                      $labStatus['preLabFinished'],
                                       $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
                                       $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
-                                      true,
+                                      $labStatus['preLabAllTeammFinished'],
                                       $parameter[$labStatus['currentTeam']]['areAllClosed'],
                                       $parameter[$labStatus['currentTeam']]['areAllCorrected'],
                                       ( $labStatus['labCorrected'] ? '' : $parameter[$labStatus['currentTeam']]['correctedString']),
@@ -1897,7 +1905,7 @@ class LlElement extends Element{
                         'possibleCredits' => 0 );
 
 
-    if ( true )// echo('processing '.$labStatus['uid'].'<br />');
+    //if ( true )// echo('processing '.$labStatus['uid'].'<br />');
       $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
                               "\$element->loadUserData4( '".$labStatus['uid']."' ); ".
 //                              "echo( '".$labStatus['uid']." - m'.\$element->idx.' - '.\$element->getGivenCredits().'/ '.\$element->getPossibleCredits().'<br>');".
@@ -1909,17 +1917,30 @@ class LlElement extends Element{
                             "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
                             $parameter2 );
 
+    // check DURING and after 1st schedule if all teammates finished to set this status correctly:
+    $prelabFinishedByTeam = ( // if it is running do a check
+                                ($this->isInSched || $this->visibleBefore1stSched) &&
+                                $this->isPrelabFinishedByAllCurrentTeammates( $labStatus['currentTeam'] )
+                            ) || ( // if we did not check we take what was there
+                                !($this->isInSched || $this->visibleBefore1stSched) &&
+                                $labStatus['preLabAllTeammFinished']
+                            );
+    // Change? -> Change status
+    if ( $labStatus['preLabAllTeammFinished'] != $prelabFinishedByTeam ){
+            $this->usDBI->setPrelabFinished( $labStatus['currentTeam'] );
+            makeLogEntry( 'l', 'prelab finished team '.$labStatus['currentTeam'], $this->idx );
+    }
 
 //echo( $parameter2['givenCredits'].'/ '.$parameter2['possibleCredits'].'<br>' );
        // changes?
-        if ( true// $labStatus['preLabPossibleCredits'] == 0
-            ) // yes -> save them.
+        //if ( true// $labStatus['preLabPossibleCredits'] == 0
+        //    ) // yes -> save them.
               $this->usDBI->setData4( $labStatus['uid'],
                                       $labStatus['currentTeam'],
-                                      $labStatus['preLabFinished'],
+                                      $parameter2['allPreLabAnswered'], // $labStatus['preLabFinished'],
                                      $parameter2['givenCredits'], // $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
                                      $parameter2['possibleCredits'], // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
-                                      $labStatus['preLabAllTeammFinished'],
+                                      $prelabFinishedByTeam, // $labStatus['preLabAllTeammFinished'],
                                       $labStatus['labClosed'],
                                       $labStatus['labCorrected'],
                                       $labStatus['whichCorrected'],

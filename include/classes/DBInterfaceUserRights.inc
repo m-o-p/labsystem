@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -19,10 +19,10 @@
  */
 
 /**
-* This is the interface to the working databse's "user_rights" table which 
+* This is the interface to the working databse's "user_rights" table which
 * holds the user's system rights and team mapping.
 *
-* DBInterfaceUser.inc is used to authenticate the user. After that the 
+* DBInterfaceUser.inc is used to authenticate the user. After that the
 * user's UID is known and he can get its rights from here.
 *
 * @module     ../include/classes/DBInterfaceUserRights.inc
@@ -66,14 +66,22 @@ class DBInterfaceUserRights {
       $newIDX = $this->myDBC->mkInsertReturnIDX( $toSet, 'user_rights' );
       $this->setData4( $uid, $cfg->get("DefaultAuthUserRights"), $cfg->get("DefaultAuthUserTeam")+$newIDX, $lng->get("dataSetCreated") );
       return Array( "rights"      => $cfg->get("DefaultAuthUserRights"),
-                    "currentTeam" => $cfg->get("DefaultAuthUserTeam")+$newIDX, 
+                    "currentTeam" => $cfg->get("DefaultAuthUserTeam")+$newIDX,
                     "history"     => "");
     }else
       return Array( "rights"      => $data['rights'],
                     "currentTeam" => $data['currentTeam'],
                     "history"     => $data['history'] );
   }
-  
+
+  /**
+   * Removes the user rights entry for the given $uid.
+   * @param $uid The UID to be removed from the user rights table
+   */
+  function removeUID($uid){
+    $this->myDBC->mkDelete($this->myTable, "uid='".$uid."'");
+  }
+
   /**
   * Stores the data into the database. Position specified by $uid.
   * @param $uid               The user's unique identifier.
@@ -91,7 +99,7 @@ class DBInterfaceUserRights {
     $this->myDBC->mkUpdIns( $toSet, "user_rights", "uid='".$uid."'" );
   }
 
-  
+
   var $queryResult;
   /**
   * Queries for all datasets.
@@ -105,16 +113,16 @@ class DBInterfaceUserRights {
     if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
     $this->queryResult = $this->myDBC->mkSelect( "uid, rights, currentTeam, history", "user_rights", $restrictBy, $orderBy );
   }
-  
+
   /**
    * Returns the amount of returned datasets from the query;
-   * 
+   *
    * @return  amount of returned datasets from the query
    */
   function allSize(){
     return $this->myDBC->datasetsIn( $this->queryResult );
   }
-  
+
   /**
   * Returns the next result of the getAllData() query or false (no more results).
   * @return Array(  "uid" => string,
@@ -127,14 +135,14 @@ class DBInterfaceUserRights {
   /* This call returns the next $userStruct or FALSE. */
     if ( $resArray = mysql_fetch_array($this->queryResult) ) return Array( "uid"         => $resArray['uid'],
                                                                            "rights"      => $resArray['rights'],
-                                                                           "currentTeam" => $resArray['currentTeam'], 
+                                                                           "currentTeam" => $resArray['currentTeam'],
                                                                            "history"     => $resArray['history'] );
     return false;
   }
-  
+
   /**
   * Returns an Array( description => database key, ... ).
-  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ... 
+  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ...
   * The first entry is the default soring key.
   * This is used for the order by selector on top of the manage page.
   *

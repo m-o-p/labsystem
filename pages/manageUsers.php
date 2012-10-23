@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -65,24 +65,34 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 $uDBI = new DBInterfaceUser();
 $urDBI = new DBInterfaceUserRights();
 
+// remove access rights for users without access (as they may have been removed
+// from the instance and if they were part of a team they may cause trouble...)
+$urDBI->getAllData();
+while( $nextUserDataSet = $urDBI->getNextData() ){
+  if ($uDBI->getData4($nextUserDataSet['uid']) === false){
+    $urDBI->removeUID($nextUserDataSet['uid']);
+    echo('Removed all user rights for UID '.$nextUserDataSet['uid']);
+  }
+}
+
 $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/saveUserRights.php").'"><div>'."\n");
 
 // Since the data have two sources, the external users and the internal user rights db
 //   we have to distinguish!
-  if ( ( $orderBy == $cfg->get("UserDBField_name") ) || 
-       ( $orderBy == $cfg->get("UserDBField_forename") ) || 
+  if ( ( $orderBy == $cfg->get("UserDBField_name") ) ||
+       ( $orderBy == $cfg->get("UserDBField_forename") ) ||
        ( $orderBy == $cfg->get("UserDBField_username") ) ){
           /* $uDBI is the source */
-          $master = new DBInterfaceUser(); 
+          $master = new DBInterfaceUser();
           $slave  = new DBInterfaceUserRights();
   }else{
           /* $urDBI is source */
-          $master = new DBInterfaceUserRights();  
+          $master = new DBInterfaceUserRights();
           $slave  = new DBInterfaceUser();
   }
-              
+
   $master->getAllData( $orderBy, $asc );
-  
+
   $existingElemnts = $master->allSize();
 // With more than 360 elements more than 8M are used and it gets slow!
 // -> only show result partially!
@@ -97,7 +107,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
        ($GLOBALS['url']->get('frameSize') > 0)
       ) $frameSize = $GLOBALS['url']->get('frameSize'); else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
 
-  
+
   $manageNavigation = '<!-- navigation -->'."\n";
   $manageNavigation .= '<div class="labsys_mop_element_navigation">'."\n";
 
@@ -107,7 +117,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
                                                                                  '&frameSize='.$frameSize.
                                                                                  '&orderBy='.$orderByKey.
                                                                                  '&asc='.( $asc ?  'asc' :  'desc'  ) ).'">&lt;&lt;</a> '."\n";
-  
+
       $j = 1;
       for ( $i=1; $i<=$existingElemnts; $i+=$frameSize ){
         $manageNavigation .= '<a href="'.$url->link2( '../pages/manageUsers.php?'.
@@ -121,7 +131,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
                              ( ($startFrom == $i) ?  '</b>'  : '' ).
                              '</a> '."\n";
       }
-  
+
     // forward Arrows
     if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manageUsers.php?'.
                                                                                     'startFrom='.($startFrom+$frameSize).
@@ -131,10 +141,10 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
 
   $manageNavigation .= '</div>'."\n";
   $manageNavigation .= '<!-- /navigation -->'."\n";
-  
-  
+
+
   $pge->put( $manageNavigation );
-  
+
 // legend
   $pge->put( ElementUser::showPropertyLegend() );
 
@@ -153,7 +163,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
     $pge->put( '<input type="hidden" name="'.$userData[ 'uid' ].'_present" value="1">'."\n" ); // necessary to identify available users
     $pge->put( $user->showPropertyRow( $userData["uid"] ) );
   }
-  
+
   $pge->put( $manageNavigation );
 
 //saving
@@ -161,7 +171,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
               <input type="hidden" name="REDIRECTTO" value="'.$url->rawLink2( $_SERVER['PHP_SELF'].( isset($startFrom) ? '?startFrom='.$startFrom.'&frameSize='.$frameSize : '' ) ).'">
               <input type="hidden" name="SESSION_ID" value="'.session_id().'">
               <input TABINDEX="'.$pge->nextTab++.'" type="submit" class="labsys_mop_input" value="'.$lng->get("save").'"  accesskey="s" onclick="isDirty=false">
-              
+
               </div></FORM>
   ');
 
