@@ -56,6 +56,16 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2012-10-24
+-------------------
+  Fixed issues with the ePub export that occured for users aas all labs tried to be exported even the non-visible ones.
+  
+  /pages/accessibleLabs.php
+    When exporting the ePub only visible labs are getting exported now.
+    
+  /include/classes/elements/LlElement.inc
+    When an ePub is requested but the lab is not visible the function returns directly.
+
 2012-10-23
 -------------------
   /pages/manageUsers.php

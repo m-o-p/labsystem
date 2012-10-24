@@ -57,20 +57,20 @@ if ($returnEpub){
     'authors'               => ($cfg->doesExist('ePubMultiAuthors') && $cfg->get('ePubMultiAuthors') != "" ? $cfg->get('ePubMultiAuthors') : 'labsystem.sf.net' ),
     'lang'                  => $lng->get('Content-Language'),
     'isMultiChapterEnabled' => TRUE,
-    'identifier'            => ($cfg->doesExist('ePubIdentifier') && $cfg->get('ePubIdentifier') != "" ? 
+    'identifier'            => ($cfg->doesExist('ePubIdentifier') && $cfg->get('ePubIdentifier') != "" ?
                                                                            $cfg->get('ePubIdentifier') : $cfg->get('SystemTitle').'-labsystem.sf.net' ),
     'description'           => ($cfg->doesExist('ePubDescription') && $cfg->get('ePubDescription') != "" ?
                                                                             $cfg->get('ePubDescription') : 'labsystem.sf.net ePub to the course '.$cfg->get('SystemTitle') ),
-    'publisher'             => ($cfg->doesExist('ePubPublisher') && $cfg->get('ePubPublisher') != "" ? 
+    'publisher'             => ($cfg->doesExist('ePubPublisher') && $cfg->get('ePubPublisher') != "" ?
                                                                           $cfg->get('ePubPublisher') : 'labsystem.sf.net' ),
-    'publisherUrl'          => ($cfg->doesExist('ePubPublisherURL') && $cfg->get('ePubPublisherURL') != "" ? 
+    'publisherUrl'          => ($cfg->doesExist('ePubPublisherURL') && $cfg->get('ePubPublisherURL') != "" ?
                                                                              $cfg->get('ePubPublisherURL') : 'http://labsystem.sf.net' ),
-    'rights'                => ($cfg->doesExist('ePubCopyrightMeta') && $cfg->get('ePubCopyrightMeta') != "" ? 
+    'rights'                => ($cfg->doesExist('ePubCopyrightMeta') && $cfg->get('ePubCopyrightMeta') != "" ?
                                                                               $cfg->get('ePubCopyrightMeta') : 'All rights reserved' ),
-    'sourceUrl'             => ($cfg->doesExist('ePubSourceURL') && $cfg->get('ePubSourceURL') != "" ? 
+    'sourceUrl'             => ($cfg->doesExist('ePubSourceURL') && $cfg->get('ePubSourceURL') != "" ?
                                                                           $cfg->get('ePubSourceURL') : 'http://'.$_SERVER['SERVER_NAME'] )
   );
-  
+
   // set cover and imprint up:
   require( '../include/setupEpubFrontMatter.inc');
 }
@@ -92,7 +92,7 @@ require('../include/allVisibleLabIDX.inc');
 $accessibleLabs = array();
 foreach( $allVisibleLabIDX as $nextIDX ){
   if ( ($nextIDX[0] == 'l') && ($nextLab = $lDBI->getData2idx( substr($nextIDX, 1) )) ){
-    $accessibleLabs[] = $nextLab;
+  $accessibleLabs[] = $nextLab;
   }
 }
 
@@ -129,10 +129,9 @@ if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
 foreach ( $accessibleLabs as $value ){
   if ($returnEpub){
     $extParagraph = (string)( $value->visibleBefore1stSched ? chr ($charCounter) : $counter );
-    // echo( $extParagraph.' '.$value->title.' ('.$value->elementId.$value->idx.')<br>');
-    //echo( $value->showTOC( $value->elementId.$value->idx, $extParagraph ) );
-    //TODO: $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ) );
-    $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ).'');
+    if ($value->isVisible()) {
+      $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ).'');
+    }
   }else{
     $pge->put('
 <tr>

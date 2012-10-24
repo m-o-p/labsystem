@@ -704,6 +704,10 @@ class LlElement extends Element{
       exit;
     }
 
+    if (!$this->isVisible()){
+      return; // Nothing to do.
+    }
+
 
     include_once(INCLUDE_DIR . '/../plugins/LSE/Exporter.php');
 
