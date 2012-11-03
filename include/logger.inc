@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2011  Marc-Oliver Pahl
  *
@@ -39,14 +39,14 @@
 * @param $alternative The alternative.
 * @return             The consequent or the alternative.
 */
-function makeLogEntry( $group, $operation, $resource='' ){ 
+function makeLogEntry( $group, $operation, $resource='' ){
 global $cfg, $configPrefix;
 
   $doLogging = $cfg->doesExist('logDir') && ($cfg->get('logDir') != '');
-  
+
   if (!isset($doLogging) || !$doLogging || !isset($_SESSION['uid'])) return; // only log for authenticated users
-  
-	if ( !file_exists($cfg->get('logDir'))) 
+
+	if ( !file_exists($cfg->get('logDir')))
     mkdir($cfg->get('logDir'), 0755, true) or trigger_error("Error creating folder ".$cfg->get('logDir'), E_USER_ERROR);
   $theLogFile = $cfg->get('logDir').( substr( $cfg->get('logDir'), -1 ) != '/' ? '/' : '' ).$configPrefix.$GLOBALS['url']->get('config').'_'.date("Y-m-d").'.log';
 
@@ -65,7 +65,8 @@ global $cfg, $configPrefix;
               $_SESSION['userRights']."\t".
               $group."\t". /* system, prelab, lab */
               $operation."\t". /* login, save, open */
-              $resource."\r\n";
+              $resource."\t".
+              $GLOBALS['url']->get('address')."\r\n";
   // timestamp actorUID actorClearname team action resource
   //echo( $logEntry.'<br>' );
 
@@ -74,7 +75,7 @@ global $cfg, $configPrefix;
                                                       ) )
      // alert that it didn't work
     $url->put( 'sysalert='.$lng->get('errorWritingFile').' ('.$theLogFile.')' );
-  
+
   fclose($logFile);
 }
 ?>

@@ -68,8 +68,8 @@ function setCheckboxes(do_check)
 ";
 
 
-$allSupporter = "";
-$allOther = "";
+$allSupporter = array();
+$allOther = array();
 
 $urDBI = new DBInterfaceUserRights();
 $urDBI->getAllData();
@@ -82,18 +82,14 @@ while( $userRightsData = $urDBI->getNextData() ){
   if ( !$user->isOfKind( IS_MAIL_RECEIVER ) || !$userData || ($userData["eMail"] == "") ) continue;
  // Distinguish between mail supporters and others
   if ( $user->isOfKind( IS_MAIL_SUPPORTER ) )
-    $allSupporter .= ", \"".$user->surName.", ".$user->foreName."\" => '\"".$user->foreName.' '.$user->surName.'"<'.$user->mailAddress.">'"; // format '"'  NAME  '"'  ' '  '<'  ADDRESS  '>'
+    $allSupporter[$user->surName.', '.$user->foreName] = $user->foreName.' '.$user->surName.' <'.$user->mailAddress.'>'; // format '"'  NAME  '"'  ' '  '<'  ADDRESS  '>'
   else
-    $allOther .= ", \"".
-                 ( ($user->surName != '') || ($user->foreName != '') ?
+    $allOther[( ($user->surName != '') || ($user->foreName != '') ?
                             $user->surName.", ".$user->foreName :
                             $user->userName
                            ).
-                 " (".$user->currentTeam.")\" => '\"".$user->foreName.' '.$user->surName.'" <'.$user->mailAddress.">'"; // format '"'  NAME  '"'  ' '  '<'  ADDRESS  '>'
+                 ' ('.$user->currentTeam.')'] = $user->foreName.' '.$user->surName.' <'.$user->mailAddress.'>'; // format '"'  NAME  '"'  ' '  '<'  ADDRESS  '>'
 }
-
-eval("\$allSupporter = Array( ".substr($allSupporter, 2)." );" );
-eval("\$allOther = Array( ".substr($allOther, 2)." );" );
 
 // sort them alphabetically (for different ordering change here and above at the insertion code).
 ksort( $allSupporter );
@@ -104,11 +100,11 @@ $counter=0;
 $checkAll = $GLOBALS['url']->available('checkAll');
 
 $allSupporterInputs = "";
-foreach( $allSupporter as $key => $value ) $allSupporterInputs .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".( $checkAll ?  " checked=\"checked\" "  : '' )." onchange='isDirty=true'>".
+foreach( $allSupporter as $key => $value ) $allSupporterInputs .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value=\"".htmlentities($value)."\"".( $checkAll ?  " checked=\"checked\" "  : '' )." onchange='isDirty=true'>".
                                                                   "<label for=\"MAIL2_".$counter."\" class=\"labsys_mop_input_field_label\">".$key."</label><br />\n";
 $allOtherInputs = "";
 if ( $usr->isOfKind( IS_ALL_MAILER ) )
-  foreach( $allOther as $key => $value ) $allOtherInputs         .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value='".$value."'".( $checkAll ?  " checked=\"checked\" "  : '' )." onchange='isDirty=true'>".
+  foreach( $allOther as $key => $value ) $allOtherInputs         .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value=\"".htmlentities($value)."\"".( $checkAll ?  " checked=\"checked\" "  : '' )." onchange='isDirty=true'>".
                                                                     "<label for=\"MAIL2_".$counter."\" class=\"labsys_mop_input_field_label\">".$key."</label><br />\n";
 
 $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST\" ACTION=\"".$url->link2("../pages/mailForm.php")."\">\n".
