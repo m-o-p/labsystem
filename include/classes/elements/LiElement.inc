@@ -403,10 +403,10 @@ class LiElement extends Element{
                               isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) &&
                               $_POST['TEAM'] == $this->getDataOfTeam
                              );
-      if ($isInCorrection) makeLogEntry( 'i', 'getting corrected for team '.$this->getDataOfTeam, $this->idx );
+      if ($isInCorrection) makeLogEntry( 'i', 'getting corrected for team '.$this->getDataOfTeam, $fullAddress );
 
       $isGettingAnswered  = ( $this->lockIsSetTo && ( $this->lockIsSetTo == $this->idx ) );
-      if ($isGettingAnswered) makeLogEntry( 'i', 'getting answered', $this->idx );
+      if ($isGettingAnswered) makeLogEntry( 'i', 'getting answered', $fullAddress );
 
       $ret =   "<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
                "<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
@@ -748,7 +748,7 @@ class LiElement extends Element{
   */
   function acquireLock4( $fullAddress ){
     $this->lkDBI->setData4( $this->getDataOfTeam, $this->idx, $fullAddress );
-    // makeLogEntry( 'lock', 'set', 'i'.$this->idx );
+    makeLogEntry( 'lock', 'set', $fullAddress );
   }
 
   /**
@@ -757,7 +757,7 @@ class LiElement extends Element{
   function removeLock(){
     if ( $this->lockIsSetTo ){
       $this->lkDBI->remLock4( $this->getDataOfTeam );
-      // makeLogEntry( 'lock', 'removed by i'.$this->idx, 'i'.$this->lockIsSetTo );
+      makeLogEntry( 'lock', 'removed by clicking on i'.$this->idx, 'i'.$this->lockIsSetTo );
     }
   }
 
@@ -801,7 +801,7 @@ class LiElement extends Element{
         $this->handleUploadedFiles(); // modifies $this->history!
       } else {
         // non file handling operation
-        makeLogEntry( 'i', 'saved', $this->idx );
+        // makeLogEntry( 'i', 'saved', $this->idx );
         $this->removeLock();
       }
       $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->isClosed, $this->isCorrected, $this->history );

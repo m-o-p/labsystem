@@ -286,7 +286,7 @@ class LmElement extends Element{
                                             $lng->get("giveAnswer")
                                            )."\" onclick='isDirty=false'>\n".
                "</FORM>\n";
-               if ($isGettingAnswered) makeLogEntry( 'm', 'opened', $this->idx );
+               if ($isGettingAnswered) makeLogEntry( 'm', 'opened', $fullAddress );
      }
      if ( $this->isAnswered && ($this->answerExplanation != "") )
       // answer explanation
@@ -595,7 +595,7 @@ class LmElement extends Element{
 
     // some user information
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("mNumber")." ".$newMultipleChoice->idx );
-    makeLogEntry( 'm', 'saved', $newMultipleChoice->idx );
+    makeLogEntry( 'm', 'created', $newMultipleChoice->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
@@ -648,9 +648,10 @@ class LmElement extends Element{
   * @return bool  true if the answer is correct or there are no more tries left (called by lab).
   */
   /*static*/ function checkUserAnswer(){
-    global $usr;
+    global $usr, $cfg;
 
     if ( $this->isAnswered ){  // enough checks yet or correct...
+      makeLogEntry( 'm', 'check: is answered ('.$this->triesUp2Now.'/'.$cfg->get('MCAnsweringAttempts').')', 'm'.$this->idx );
       return true;
     }
 
@@ -663,6 +664,7 @@ class LmElement extends Element{
     $this->mcDBI->setData4( $usr->uid, $this->idx, $this->displayPermutation, $this->previousAnswersArray, "-check-" );
 
     $this->mcDBI = $this->loadUserData4( $usr->uid ); // Load data with applied changes.
+    makeLogEntry( 'm', 'check: '.($this->isAnswered ? 'correct' : 'wrong').' ('.$this->triesUp2Now.'/'.$cfg->get('MCAnsweringAttempts').')', 'm'.$this->idx );
     return $this->isAnswered;
   }
 
