@@ -323,20 +323,23 @@ class LiElement extends Element{
           "\">".
             // the "is corrected" checkbox
             ( $usr->isOfKind( IS_CORRECTOR ) && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
-                        "<label for=\"IS_CORRECTED\" class=\"labsys_mop_input_field_label_right\">".
-                      // visible for students radio button and icon
-                          "<input type=\"radio\" name=\"IS_CORRECTED\" value=\"1\" ".
-                          "tabindex=\"".$pge->nextTab++.'"'.
-                          ( $this->isCorrected || $isInCorrection ? ' checked="checked"' : '' ). // so it will be checked by default
-                          " onchange='isDirty=true;if(document.getElementById(\"FULL_CREDITS".$this->idx."\").checked||(this.checked!=this.defaultChecked)){document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"}'>".
-                          '<img src="../syspix/labCorrected_yes_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
-                      // not visible for students radio button and icon
-                          "<input type=\"radio\" name=\"IS_CORRECTED\" value=\"0\" ".
-                          "tabindex=\"".$pge->nextTab++.'"'.
-                          ( !$this->isCorrected && !$isInCorrection ? ' checked="checked"' : '' ). // so it will not be checked by default
-                          " onchange='isDirty=true;if(document.getElementById(\"FULL_CREDITS".$this->idx."\").checked||(this.checked!=this.defaultChecked)){document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"}'>".
-                          '<img src="../syspix/labCorrected_no_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
-                '</label> '
+                "<input type=\"checkbox\" id=\"IS_CORRECTED".$this->idx."\" name=\"IS_CORRECTED\" value=\"1\" ".
+                "tabindex=\"".$pge->nextTab++.'"'.
+                ( $this->isCorrected || $isInCorrection ? ' checked="checked"' : '' ). // so it will be checked by default
+                        " onchange='isDirty=true;".
+                "if(this.checked){".
+                "document.getElementById(\"imgIsCorrected".$this->idx."\").setAttribute(\"src\", \"../syspix/labCorrected_yes_12x12.gif\");".
+                "}else{".
+                "document.getElementById(\"imgIsCorrected".$this->idx."\").setAttribute(\"src\", \"../syspix/labCorrected_no_12x12.gif\");".
+                "};".
+                "if (document.getElementById(\"FULL_CREDITS".$this->idx."\").checked || (this.checked!=this.defaultChecked)){".
+                  "document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"".
+                "}else{".
+                  "document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"".
+                "}'>".
+                        "<label for=\"IS_CORRECTED".$this->idx."\" class=\"labsys_mop_input_field_label_right\">".
+                                  '<img id="imgIsCorrected'.$this->idx.'" src="../syspix/labCorrected_'.($this->isCorrected || $isInCorrection?'yes':'no').'_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
+                        '</label> '
                         : ''
                       ).
             // the credits
@@ -358,10 +361,13 @@ class LiElement extends Element{
     ( $usr->isOfKind( IS_CORRECTOR ) && $usr->isSeeingSomeonesData() && !$this->isCorrected && !$isInCorrection ?
         "<input type=\"checkbox\" name=\"FULL_CREDITS".$this->idx."\" id=\"FULL_CREDITS".$this->idx."\" value=\"1\" ".
                           "tabindex=\"".$pge->nextTab++.'"'.
-                          " onchange='isDirty=true; if (this.checked){document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"}'>"
+                          " onchange='isDirty=true;if(this.checked||(document.getElementById(\"IS_CORRECTED".$this->idx."\").checked!=document.getElementById(\"IS_CORRECTED".$this->idx."\").defaultChecked)){document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"}'>".
+        "<label for=\"FULL_CREDITS".$this->idx."\" class=\"labsys_mop_input_field_label_right\">".
+        $this->possibleCredits." ".$lng->get("Credits").
+        '</label>'
         :
-        '' ).
-            $this->possibleCredits." ".$lng->get("Credits")."]".
+        $this->possibleCredits." ".$lng->get("Credits") ).
+            "]".
           "</div>\n";
   }
 
