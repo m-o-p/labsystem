@@ -323,15 +323,20 @@ class LiElement extends Element{
           "\">".
             // the "is corrected" checkbox
             ( $usr->isOfKind( IS_CORRECTOR ) && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
-                        ( $isInCorrection ? '' : '[' ).
-                        "<input type=\"checkbox\" name=\"IS_CORRECTED\" value=\"1\" ".
-                        "tabindex=\"".$pge->nextTab++.'"'.
-                        ( $isInCorrection ? ' checked="checked"' : '' ). // so it will be checked by default
-                        " onchange='isDirty=true'>".
-                         ( $isInCorrection ? '' : '100% <img src="../syspix/yes_13x12.gif" width="13px" height="12px">-&gt; '.$this->possibleCredits.' '.$lng->get('Credits').'] ').
                         "<label for=\"IS_CORRECTED\" class=\"labsys_mop_input_field_label_right\">".
-                          '<img src="../syspix/labCorrected_'.( $this->isCorrected ?  'yes' :  'no' ) .'_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
-                        '</label> '
+                      // visible for students radio button and icon
+                          "<input type=\"radio\" name=\"IS_CORRECTED\" value=\"1\" ".
+                          "tabindex=\"".$pge->nextTab++.'"'.
+                          ( $this->isCorrected || $isInCorrection ? ' checked="checked"' : '' ). // so it will be checked by default
+                          " onchange='isDirty=true;if(document.getElementById(\"FULL_CREDITS".$this->idx."\").checked||(this.checked!=this.defaultChecked)){document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"}'>".
+                          '<img src="../syspix/labCorrected_yes_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
+                      // not visible for students radio button and icon
+                          "<input type=\"radio\" name=\"IS_CORRECTED\" value=\"0\" ".
+                          "tabindex=\"".$pge->nextTab++.'"'.
+                          ( !$this->isCorrected && !$isInCorrection ? ' checked="checked"' : '' ). // so it will not be checked by default
+                          " onchange='isDirty=true;if(document.getElementById(\"FULL_CREDITS".$this->idx."\").checked||(this.checked!=this.defaultChecked)){document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"}'>".
+                          '<img src="../syspix/labCorrected_no_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
+                '</label> '
                         : ''
                       ).
             // the credits
@@ -349,6 +354,13 @@ class LiElement extends Element{
                                               '0')."/ "
                                  : '' )
                       ).
+            // given credits = 0 && not in correction && corrector -> full credits box
+    ( $usr->isOfKind( IS_CORRECTOR ) && $usr->isSeeingSomeonesData() && !$this->isCorrected && !$isInCorrection ?
+        "<input type=\"checkbox\" name=\"FULL_CREDITS".$this->idx."\" id=\"FULL_CREDITS".$this->idx."\" value=\"1\" ".
+                          "tabindex=\"".$pge->nextTab++.'"'.
+                          " onchange='isDirty=true; if (this.checked){document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"}'>"
+        :
+        '' ).
             $this->possibleCredits." ".$lng->get("Credits")."]".
           "</div>\n";
   }
@@ -455,7 +467,7 @@ class LiElement extends Element{
                                             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
                                                    "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
                                    }
-        elseif ( !isset( $_POST['FULLADDRESS'] ) ){  $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
+        elseif ( !isset( $_POST['FULLADDRESS'] ) ){  $ret .= "<input id=\"saveButton".$this->idx."\" tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                                    "value=\"".$lng->get("correct")."\" onclick='isDirty=false;'>\n";
                                                   }
         else{ ; }// another is opened yet
@@ -510,7 +522,8 @@ class LiElement extends Element{
       exit;
     }
 
-    if ( $usr->isOfKind( IS_CORRECTOR ) && isset($_POST['IS_CORRECTED'])  && !isset($_POST['CREDITS']) && ( $_POST['IDX'] == $this->idx) ){
+    // start over quick
+    if ( $this->isStartOver() ){
       $this->saveCorrectorStuff(); // directly save without editing further fields
       exit;
     };
@@ -843,6 +856,17 @@ class LiElement extends Element{
   }
 
   /**
+   * Used for quick correction. Checks if the start over funtionality is used...
+   */
+  function isStartOver(){
+    global $usr;
+    return  $usr->isOfKind( IS_CORRECTOR )
+            && ((isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED']!=($this->isCorrected ? 1 : 0)) || isset($_POST['FULL_CREDITS'.$this->idx])) // these buttons are available when not opened...
+            && !isset($_POST['CREDITS'])
+            && ($_POST['IDX'] == $this->idx);
+  }
+
+  /**
   * Used to save the corrector's comment and given points.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
@@ -850,19 +874,9 @@ class LiElement extends Element{
   */
   /*static*/ function saveCorrectorStuff(){
     global $url, $lng, $usr;
-
-    if ( $usr->isOfKind( IS_CORRECTOR )
-         && isset($_POST['IS_CORRECTED'])
-         && !isset($_POST['CREDITS'])
-         && ($_POST['IDX'] == $this->idx) ){// start over without commenting
-      makeLogEntry( 'i', 'quick correcting', $this->idx );
-      $_POST['CREDITS'] = $this->possibleCredits;
-    }
-
     // check for all necessary values posted
     if ( !isset($_POST['IDX']) ||
          !isset($_POST['REDIRECTTO']) ||
-         !isset($_POST['CREDITS']) ||
          !isset($_POST['FULLADDRESS']) ||
          !isset($_POST['TEAM'])
        ){
@@ -880,8 +894,13 @@ class LiElement extends Element{
 
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
 
+    if ( $this->isStartOver() ){// start over without commenting
+      makeLogEntry( 'i', 'quick correcting', $this->idx );
+      $_POST['CREDITS'] = (isset($_POST['FULL_CREDITS'.$this->idx]) ? $this->possibleCredits : $this->givenCredits);
+    }
+
     if (!isset($_POST['cancel'])){ // cancel? -> do nothing
-      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ), true, isset($_POST['IS_CORRECTED']) );
+      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ), true, isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1 );
       makeLogEntry( 'i', 'correction saved', $this->idx );
     }
     // One could also display the page here but that way it is left to the normal mechanism...
