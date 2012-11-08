@@ -322,23 +322,23 @@ class LiElement extends Element{
                      ( $this->isCorrected ?  "_green" :  "_red" ) : '' ).
           "\">".
             // the "is corrected" checkbox
-            ( $usr->isOfKind( IS_CORRECTOR ) && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
-                "<input type=\"checkbox\" id=\"IS_CORRECTED".$this->idx."\" name=\"IS_CORRECTED\" value=\"1\" ".
+            ( $usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
+                "<input type=\"checkbox\" id=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" name=\"IS_CORRECTED\" value=\"1\" ".
                 "tabindex=\"".$pge->nextTab++.'"'.
                 ( $this->isCorrected || $isInCorrection ? ' checked="checked"' : '' ). // so it will be checked by default
                         " onchange='isDirty=true;".
                 "if(this.checked){".
-                "document.getElementById(\"imgIsCorrected".$this->idx."\").setAttribute(\"src\", \"../syspix/labCorrected_yes_12x12.gif\");".
+                "document.getElementById(\"imgIsCorrected-".$this->idx.'-'.$this->getDataOfTeam."\").setAttribute(\"src\", \"../syspix/labCorrected_yes_12x12.gif\");".
                 "}else{".
-                "document.getElementById(\"imgIsCorrected".$this->idx."\").setAttribute(\"src\", \"../syspix/labCorrected_no_12x12.gif\");".
+                "document.getElementById(\"imgIsCorrected-".$this->idx.'-'.$this->getDataOfTeam."\").setAttribute(\"src\", \"../syspix/labCorrected_no_12x12.gif\");".
                 "};".
-                "if (document.getElementById(\"FULL_CREDITS".$this->idx."\").checked || (this.checked!=this.defaultChecked)){".
-                  "document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"".
+                "if (document.getElementById(\"FULL_CREDITS-".$this->idx.'-'.$this->getDataOfTeam."\").checked || (this.checked!=this.defaultChecked)){".
+                  "document.getElementById(\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\").value=\"".$lng->get("save")."\"".
                 "}else{".
-                  "document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"".
+                  "document.getElementById(\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\").value=\"".$lng->get("correct")."\"".
                 "}'>".
-                        "<label for=\"IS_CORRECTED".$this->idx."\" class=\"labsys_mop_input_field_label_right\">".
-                                  '<img id="imgIsCorrected'.$this->idx.'" src="../syspix/labCorrected_'.($this->isCorrected || $isInCorrection?'yes':'no').'_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
+                        "<label for=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" class=\"labsys_mop_input_field_label_right\">".
+                                  '<img id="imgIsCorrected-'.$this->idx.'-'.$this->getDataOfTeam.'" src="../syspix/labCorrected_'.($this->isCorrected || $isInCorrection?'yes':'no').'_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
                         '</label> '
                         : ''
                       ).
@@ -358,11 +358,11 @@ class LiElement extends Element{
                                  : '' )
                       ).
             // given credits = 0 && not in correction && corrector -> full credits box
-    ( $usr->isOfKind( IS_CORRECTOR ) && $usr->isSeeingSomeonesData() && !$this->isCorrected && !$isInCorrection ?
-        "<input type=\"checkbox\" name=\"FULL_CREDITS".$this->idx."\" id=\"FULL_CREDITS".$this->idx."\" value=\"1\" ".
+    ( $usr->isOfKind( IS_CORRECTOR ) && $usr->isSeeingSomeonesData() && $this->isClosed && !$this->isCorrected && !$isInCorrection ?
+        "<input type=\"checkbox\" name=\"FULL_CREDITS".$this->idx."\" id=\"FULL_CREDITS-".$this->idx.'-'.$this->getDataOfTeam."\" value=\"1\" ".
                           "tabindex=\"".$pge->nextTab++.'"'.
-                          " onchange='isDirty=true;if(this.checked||(document.getElementById(\"IS_CORRECTED".$this->idx."\").checked!=document.getElementById(\"IS_CORRECTED".$this->idx."\").defaultChecked)){document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton".$this->idx."\").value=\"".$lng->get("correct")."\"}'>".
-        "<label for=\"FULL_CREDITS".$this->idx."\" class=\"labsys_mop_input_field_label_right\">".
+                          " onchange='isDirty=true;if(this.checked||(document.getElementById(\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\").checked!=document.getElementById(\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\").defaultChecked)){document.getElementById(\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\").value=\"".$lng->get("correct")."\"}'>".
+        "<label for=\"FULL_CREDITS-".$this->idx.'-'.$this->getDataOfTeam."\" class=\"labsys_mop_input_field_label_right\">".
         $this->possibleCredits." ".$lng->get("Credits").
         '</label>'
         :
@@ -473,7 +473,7 @@ class LiElement extends Element{
                                             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
                                                    "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
                                    }
-        elseif ( !isset( $_POST['FULLADDRESS'] ) ){  $ret .= "<input id=\"saveButton".$this->idx."\" tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
+        elseif ( !isset( $_POST['FULLADDRESS'] ) ){  $ret .= "<input id=\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\" tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                                    "value=\"".$lng->get("correct")."\" onclick='isDirty=false;'>\n";
                                                   }
         else{ ; }// another is opened yet
