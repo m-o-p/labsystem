@@ -56,6 +56,17 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2012-11-08
+-------------------
+  /include/classes/elements/LiElement.inc
+    Enhanced the quick correct feature to allow even faster correction.
+    Quick correct fixed JSs and HTM IDs to work with multiple teams as well. Quick correction buttons are only visible when being able to correct now.
+    
+2012-11-07
+-------------------
+  /include/classes/elements/LiElement.inc
+    Enhanced the quick correction functionality to set the isCorrected state an the points independently. This supports the 4 eyes principle better.
+
 2012-10-24
 -------------------
   Fixed issues with the ePub export that occured for users aas all labs tried to be exported even the non-visible ones.
