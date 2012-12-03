@@ -114,8 +114,13 @@ height:auto
   .labsys_mop_menu { /* the menu's backrow when visible */
                       width: 180px;
                       vertical-align: top;
-                      border-right: solid 1px #89897c;  
+                      border-right: solid 1px #89897c;
   }
+  
+  .labsys_mop_menu .labsys_mop_menu{
+                      border-right: none;
+  }
+  
   .labsys_mop_menu_hidden { /* the menu's backrow when hidden */
                       width: 1px;
                       background-color: #ffffff; /* should be the same as in content */
@@ -159,6 +164,7 @@ height:auto
   /* menu entries */
     .labsys_mop_menu ul li {
                                           margin-bottom: 1px;
+                                          border-radius: 0.3em;
     }
     
     .labsys_mop_menu ul li.title {
