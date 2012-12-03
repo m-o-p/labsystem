@@ -204,20 +204,20 @@ height:auto
 
   /* off */    
     .labsys_mop_menu ul li.off {    
-                                          background-color: #E0FFFF;
+                                          background-color: #bbb; /*#E0FFFF;*/
     }    
   /* the off rows shade to show the submenu additionally to the indention */
     .labsys_mop_menu ul li ul li.off { /* 1st grade */
-                                          background-color: #E9FFFF;
+                                          background-color: #ccc; /*#E9FFFF;*/
     }
     .labsys_mop_menu ul li ul li ul li.off { /* 2nd grade */
-                                          background-color: #F0FFFF;
+                                          background-color: #ddd; /*#F0FFFF;*/
     }
     .labsys_mop_menu ul li ul li ul li ul li.off { /* 3rd grade */
-                                          background-color: #F9FFFF;
+                                          background-color: #eee; /*#F9FFFF;*/
     }
     .labsys_mop_menu ul li ul li ul li ul li ul li.off { /* 4th grade */
-                                          background-color: #FFFFFF;
+                                          background-color: #fff;
     }
   /* submenus */
     .labsys_mop_menu ul li ul {
