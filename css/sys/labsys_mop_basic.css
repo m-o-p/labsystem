@@ -39,6 +39,7 @@ pre {
     white-space: -pre-wrap; /* Opera 4-6 */
     white-space: -o-pre-wrap; /* Opera 7 */
     word-wrap: break-word; /* Internet Explorer 5.5+ */
+    font-family: monospace;
 }
 a {                   text-decoration:none; color: #0065BD;}
 a:hover {             text-decoration:underline; color: #0065BD;}
@@ -824,34 +825,41 @@ fieldset{
   .labsys_mop_i_credits_green{ /* Correctors see that style if "corrected" is checked. */
                     font-size: 0.7em;
                     border: none;
-                    background-color: #ccffcc;
+                    background-color: #cfc;
                     text-align: right;
+                    border-radius: 0.3em;
                     padding: 5px 5px 5px 5px;
+                    border: solid 1px #c0f0c0;
   }
   .labsys_mop_i_credits_red{ /* Correctors see that style if "corrected" is not checked. */
                     font-size: 0.7em;
                     border: none;
+                    border-radius: 0.3em;
                     background-color: #ffcccc;
                     text-align: right;
                     padding: 5px 5px 5px 5px;
+                    border: solid 1px #f0c0c0;
   }
 
   .labsys_mop_i_comment{ /* The comment as shown when not in edit mode */
                     margin: 1px 1px 1px 1px;
                     color: #444444;
-                   	font-size: 0.8em;
-                  	border: solid 1px #aaaaaa;
+                   	font-size: 0.9em;
+                  	border: solid 1px #080;
                     padding: 5px;
-                    background-color: #ffffaa;
+                    font-color: #080;
+                    border-radius: 0.3em;
+                    /* background-color: #ddffdd; */
   } 
   
   .labsys_mop_i_example_solution{
                   	font-size: 1em;
                   	color:#333333;
+                  	border-radius: 0.3em;
                   	text-align: left;
                     padding: 5px 5px 5px 5px;
-                    font-family: times, serif;
-                    background-color: #ffffaa;
+                    background-color: #ffa;
+                    border: solid 1px #f0f0a0;
   } 
   
   /* Has to be limited as much as possible since the pastings have huge width sometimes */
@@ -884,10 +892,12 @@ fieldset{
                     margin-left: -20px;
                     padding: 5px 5px 5px 25px;
                     font-size: 0.7em;
-                    text-align: left;
+                    text-align: right;
                     border: none;
                     background-color: #999999;
                     color: #ffffff;
+                    border-radius: 0.3em;
+                    border: solid 1px #555;
   }
   
   /* File Upload stuff */

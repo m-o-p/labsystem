@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -45,7 +45,7 @@ function infoArrow( $text, $grayed=false ){
 * @param $disabled  Should the checkbox be disabled?
 * @constant Explain_UR_ The "Explain_UR_[bitmask of the current right]" entries should be present in the language file!
 */
-function rightsBox( $name, $value, $rights, $disabled=false ){ 
+function rightsBox( $name, $value, $rights, $disabled=false ){
   global $lng, $usr, $pge;
   return "<input type=\"checkbox\" id=\"".$name."\" name=\"".$name."\" value=\"".$value."\" tabindex=\"".$pge->nextTab++."\"".
          ( $usr->isOfKind($value, $rights) ?  " checked=\"checked\"" : '').
@@ -60,7 +60,7 @@ function rightsBox( $name, $value, $rights, $disabled=false ){
 * @param $disabled  Should the checkbox be disabled?
 * @constant MAX_USER_ROLE Used to determine the amount of Userright-Boxes.
 */
-function showRightsHorizontal( $prefix, $rights, $disabled=false ){ 
+function showRightsHorizontal( $prefix, $rights, $disabled=false ){
   $ret = "";
   for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1)
     $ret .= rightsBox( $prefix."_".$i, $i, $rights, $disabled );
@@ -110,7 +110,7 @@ function parseHTML( &$object ){
   // handle multiple spaces as Indention
   $toReplace = array( '   ', '  ', "\b([^ ])" );
   $replaceWith = array ( '&nbsp; &nbsp;', '&nbsp; ', "&nbsp;\\1" );
-  
+
   if ( (substr( $object, 0, 4 ) == '[MD]') && file_exists( '../plugins/phpMarkDown/markdown.php' ) && include_once( '../plugins/phpMarkDown/markdown.php' ) ){ //phpMarkDown http://michelf.com/projects/php-markdown/
     $object = Markdown( $GLOBALS['pge']->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
   }
@@ -181,34 +181,34 @@ function createNew( $elementID ){
 * @return String The content without HTML.
 */
 function html2txt( $HTMLcontent ){
-  $search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript 
-                   "'<[/!]*?[^<>]*?>'si",          // Strip out HTML tags 
-                   "'([rn])[s]+'",                // Strip out white space 
-                   "'&(quot|#34);'i",                // Replace HTML entities 
-                   "'&(amp|#38);'i", 
-                   "'&(lt|#60);'i", 
-                   "'&(gt|#62);'i", 
-                   "'&(nbsp|#160);'i", 
-                   "'&(iexcl|#161);'i", 
-                   "'&(cent|#162);'i", 
-                   "'&(pound|#163);'i", 
-                   "'&(copy|#169);'i", 
-                   "'&#(d+);'e");                    // evaluate as php 
-  
-  $replace = array ("", 
-                   "", 
-                   "\1", 
-                   "\"", 
-                   "&", 
-                   "<", 
-                   ">", 
-                   " ", 
-                   chr(161), 
-                   chr(162), 
-                   chr(163), 
-                   chr(169), 
-                   "chr(\1)"); 
-  
+  $search = array ("'<script[^>]*?>.*?</script>'si",  // Strip out javascript
+                   "'<[/!]*?[^<>]*?>'si",          // Strip out HTML tags
+                   "'([rn])[s]+'",                // Strip out white space
+                   "'&(quot|#34);'i",                // Replace HTML entities
+                   "'&(amp|#38);'i",
+                   "'&(lt|#60);'i",
+                   "'&(gt|#62);'i",
+                   "'&(nbsp|#160);'i",
+                   "'&(iexcl|#161);'i",
+                   "'&(cent|#162);'i",
+                   "'&(pound|#163);'i",
+                   "'&(copy|#169);'i",
+                   "'&#(d+);'e");                    // evaluate as php
+
+  $replace = array ("",
+                   "",
+                   "\1",
+                   "\"",
+                   "&",
+                   "<",
+                   ">",
+                   " ",
+                   chr(161),
+                   chr(162),
+                   chr(163),
+                   chr(169),
+                   "chr(\1)");
+
   return preg_replace($search, $replace, $HTMLcontent);
 }
 ?>

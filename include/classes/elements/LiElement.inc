@@ -189,6 +189,20 @@ class LiElement extends Element{
   }
 
   /**
+   * Adds a pre tag around non-HTML $text. Used to format the corrector's comments and the example solutions.
+   * @param String $text
+   * @return The HTML of the text.
+   */
+  private function returnPREformatted($text){
+    return ( $text[0] == '[' ? // formatted?
+        returnHTML( $text )
+        :
+        '<pre style="width: 100%; border: 0; padding: 0; margin: 0; background-color: transparent; display: inline;">'.
+        htmlspecialchars( $text ).
+        '</pre>' );
+  }
+
+  /**
    * Returns the credits given by the corrector.
    *
    * @return $this->givenCredits
@@ -229,7 +243,7 @@ class LiElement extends Element{
     else if ( $this->answerComment != "" )
       return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n". // anchor for retrieving after saving
              "<div class=\"labsys_mop_i_comment\">".
-             returnHTML( $this->answerComment ).
+             $this->returnPREformatted( $this->answerComment ).
              "</div>\n";
     else return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n"; // anchor for retrieving after saving
   }
@@ -251,12 +265,7 @@ class LiElement extends Element{
                                                   htmlentities( $this->userAnswer ).
                                                   "</textarea>\n";
                          else if ( $this->userAnswer != "" ) return "<div class=\"labsys_mop_textarea\">".
-                                                                    ( $this->userAnswer[0] == '[' ? // formatted?
-                                                                    returnHTML( $this->userAnswer )
-                                                                    :
-                                                                    '<pre style="width: 100%; border: 0; padding: 0; margin: 0; background-color: transparent; display: inline;">'.
-                                                                    htmlspecialchars( $this->userAnswer ).
-                                                                    '</pre>' ).
+                                                                    $this->returnPREformatted( $this->userAnswer ).
                                                                     "</div>\n";
                               else return "";
   }
@@ -558,7 +567,6 @@ class LiElement extends Element{
 
 
     parseHTML( $this->question ); // Process [HTML].
-    parseHTML( $this->exampleSolution );
 
     return "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
            "<div class=\"labsys_mop_elements_i_around\">".
@@ -572,7 +580,7 @@ class LiElement extends Element{
              ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !$url->available('hideExampleSolutionInThisTab') ?
                                    "<div class=\"labsys_mop_i_example_solution\">".
                                    '<!-- example solution -->'."\r\n".
-                                   $this->exampleSolution.
+                                   $this->returnPREformatted( $this->exampleSolution ).
                                    '<!-- /example solution -->'."\r\n".
                                    "</div>\n" : ''
                        ).
