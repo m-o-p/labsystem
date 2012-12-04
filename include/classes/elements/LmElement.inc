@@ -650,14 +650,15 @@ class LmElement extends Element{
   /*static*/ function checkUserAnswer(){
     global $usr, $cfg;
 
-    if ( !$this->isChangedByUser(end($this->previousAnswersArray)) ){
-      // not answered yet -> do nothing
-      return false;
-    }
-
+    // if it is not answered it will not be correct as the not answered status sets a bit...
     if ( $this->isAnswered ){  // enough checks yet or correct...
       makeLogEntry( 'm', 'check: is answered ('.$this->triesUp2Now.'/'.$cfg->get('MCAnsweringAttempts').')', 'm'.$this->idx );
       return true;
+    }
+
+    if ( !$this->isChangedByUser(end($this->previousAnswersArray)) ){
+      // not answered yet -> do nothing
+      return false;
     }
 
     $this->previousAnswersArray[] = $this->markAsUnChanged(0); // insert empty answer at the end
