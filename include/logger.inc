@@ -66,7 +66,15 @@ global $cfg, $configPrefix;
               $group."\t". /* system, prelab, lab */
               $operation."\t". /* login, save, open */
               $resource."\t".
-              $GLOBALS['url']->get('address')."\r\n";
+              $GLOBALS['url']->get('address')."\t";
+  $lastAddress = 'unknown';
+  if (isset($_SERVER['HTTP_REFERER'])){
+    // try to get last address
+    if(preg_match('#address=([^\&]*)#', $_SERVER['HTTP_REFERER'], $regMatchArray)!=0){
+      $lastAddress = $regMatchArray[1];
+    }
+  }
+  $logEntry .= $lastAddress."\r\n";
   // timestamp actorUID actorClearname team action resource
   //echo( $logEntry.'<br>' );
 

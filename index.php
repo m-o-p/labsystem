@@ -37,15 +37,15 @@
   if ( $GLOBALS['url']->available('address') ) $address = $GLOBALS['url']->get('address'); // address provided
    else $address = 'p3'; // use this (startpage is 3) as defaul value
 
-  if ($address == 'accessibleLabs') header ('Location: pages/accessibleLabs.php?config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ));
-  else if ($address == 'register') header ('Location: pages/register.php?config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ));
+  if ($address == 'accessibleLabs') header ('Location: pages/accessibleLabs.php?config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ).( $GLOBALS['url']->available('nomenu') ? '&nomenu=true' : '' ));
+  else if ($address == 'register') header ('Location: pages/register.php?config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ).( $GLOBALS['url']->available('nomenu') ? '&nomenu=true' : '' ));
   // The link above leads to the scenario that each instance has its own registration list.
   // In Munich we want to have only one registration list for the whole course.
   // Thus we link to one registration instance for all courses, namely the useradmin.
   // The configurations become vhost_useradmin then for distinction between different
   // course types (e.g. ilab_userabmin and ilab2_useradmin).
   // else if ($address == 'register') header ('Location: pages/register.php?config=useradmin');
-  else header ('Location: pages/view.php?address='.$address.'&config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ) );
+  else header ('Location: pages/view.php?address='.$address.'&config='.$config.( $GLOBALS['url']->available('inside') ? '&inside=true' : '' ).'&nomenu=true'  );
 
 /*
  * You might create other forwaders to other pages:
