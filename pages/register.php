@@ -50,6 +50,9 @@
  *  - maxRegistrations              number of maximum people to register with this course id.
  *  - afterRegisterMailSubject
  *  - afterRegisterMailText
+ *  - registerIPprefix              If set a string prefix matching is done for these addresses.
+ *                                  Only computers with these address prefixes can register OR
+ *  $_GET[$cfg->doesExist('registerAllowExternal')]=$cfg->doesExist('registerAllowExternal')    For external users...
  */
 
 $UA_CourseID='_ua'; // to this ID new users get registered to automatically
@@ -64,7 +67,9 @@ $pge->matchingMenu = $lng->get("MnuEntryRegister");
  // one can only register if one is inside this prefix.
  // Prefixes can be separated by commas.
  $canRegister = true;
- if ($cfg->doesExist('registerIPprefix')){
+ if ($cfg->doesExist('registerIPprefix') &&
+     !($cfg->doesExist('registerAllowExternal') && isset($_GET[$cfg->doesExist('registerAllowExternal')]) && ($_GET[$cfg->doesExist('registerAllowExternal')] == $cfg->doesExist('registerAllowExternal')))
+     ){
    $canRegister = false;
    $IPranges = explode(',', $cfg->get('registerIPprefix'));
    foreach ( $IPranges as $nextIPrange ){

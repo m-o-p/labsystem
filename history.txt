@@ -55,6 +55,14 @@ Feature Requests:
        - Ini files
        - URL install aufrufen
          - Passwort &auml;ndern!
+2013-01-27
+-------------------
+  /ini/configBase/defaultRegister.ini
+    Added a config parameter registerIPprefix for:
+  /pages/register.php
+    If a user is not in registerIPprefix and this is enabled, adding the specified String to the url,
+    e.g. ?...&external=external, will allow IP range-external registration. 
+    Should still be spam protected and allows external students to register.
 
 2012-11-08
 -------------------
