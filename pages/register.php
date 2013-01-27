@@ -68,7 +68,7 @@ $pge->matchingMenu = $lng->get("MnuEntryRegister");
  // Prefixes can be separated by commas.
  $canRegister = true;
  if ($cfg->doesExist('registerIPprefix') &&
-     !($cfg->doesExist('registerAllowExternal') && isset($_GET[$cfg->doesExist('registerAllowExternal')]) && ($_GET[$cfg->doesExist('registerAllowExternal')] == $cfg->doesExist('registerAllowExternal')))
+     !($cfg->doesExist('registerAllowExternal') && isset($_GET[$cfg->get('registerAllowExternal')]) && ($_GET[$cfg->get('registerAllowExternal')] == $cfg->get('registerAllowExternal')))
      ){
    $canRegister = false;
    $IPranges = explode(',', $cfg->get('registerIPprefix'));
