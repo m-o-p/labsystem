@@ -4,8 +4,13 @@ This file contains the history of labsystem.m-o-p.de.
 
 Feature Requests:
 -------------------
- - Add Markdown help as module or as standard...
- 
+/php/sendMail.inc
+    Parses fields for the current user (sender) now. So you can use the normal page tags, e.g. __NAME__.
+    Probably I will change it soon so that you can write personalized mails, e.g. Dear __FORENAME_ __NAME__, ...
+    - Use userIDs in mailForm.
+    - Load user data for generating fields then.
+    
+    
  - Search on manage pages: SELECT * FROM `TABLE` WHERE `FIELD` like '%SEARCHSTRING%'
    - Maybe in page sorter?
    
@@ -55,6 +60,13 @@ Feature Requests:
        - Ini files
        - URL install aufrufen
          - Passwort &auml;ndern!
+
+2013-02-13
+-------------------
+  /php/sendMail.inc
+    Parses fields for the current user (sender) now. So you can use the normal page tags, e.g. __NAME__.
+    Probably I will change it soon so that you can write personalized mails, e.g. Dear __FORENAME_ __NAME__, ...
+
 2013-01-27
 -------------------
   /ini/configBase/defaultRegister.ini

@@ -71,13 +71,18 @@ $myAddr4Copy = '';
 else
 $myAddr4Copy = $mailFrom;
 
+// Handle mail text fields...
+$mailText = $_POST['MAILTEXT'];
+$pge->replaceConstants($mailText); // parse fields
+$_POST['MAILTEXT'] = str_replace( "_", "&#x005F;", $_POST['MAILTEXT'] );
+
 $sendViaBCC = isset( $_POST['MAIL_VIA_BCC'] ) && $_POST['MAIL_VIA_BCC'] == '1';
 
 if ( $mailto == "" ) $url->put( "sysalert=".$lng->get("NoReceiver") );
 else{
   mail( encodeMailconform( ( $sendViaBCC ?  $mailFrom :  $mailto  ) ), // Bcc? -> mail to sender
         encodeMailconform( '['.$cfg->get("SystemTitle").'] '.$_POST['SUBJECT'] ),
-        encodeMailconform( $_POST['MAILTEXT'].
+        encodeMailconform( $mailText.
                            $cfg->get('mailFooter') ).
          "\r\n",
          "From: ".encodeMailconform( $mailFrom )."\r\n".

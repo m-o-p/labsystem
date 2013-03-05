@@ -599,10 +599,14 @@ class LlElement extends Element{
             $myRetVal  .= round($percentage*100, 2)."%\n";
             $myRetVal  .= $this->percentBar( $percentage, $cfg->get("percentageFailedPreLab") );
             $myRetVal  .= '<span class="labsys_mop_grayed">'.
-                          round( $sumGivenCreditsPreLab/ $summandsPreLab, 2 )."/ ".
-                          round( $sumPossibleCreditsPreLab/ $summandsPreLab, 2 ).
+                          round( $sumGivenCreditsPreLab/*/ $summandsPreLab*/, 2 )."/ ".
+                          round( $sumPossibleCreditsPreLab/*/ $summandsPreLab*/, 2 ).
                           "</span>\n";
-/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( round($percentage*100, 2)."%\t" );
+/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')){
+            echo( round($percentage*100, 2)."%\t" );
+            echo( $sumGivenCreditsPreLab."\t" );
+            echo( $sumPossibleCreditsPreLab."\t" );
+            }
       }
       $myRetVal .=   "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_prelab_fin\"></td>".
@@ -617,10 +621,14 @@ class LlElement extends Element{
             $myRetVal  .= round($percentage*100, 2)."%\n";
             $myRetVal  .= $this->percentBar( $percentage, $cfg->get("percentageFailedLab") );
             $myRetVal  .= '<span class="labsys_mop_grayed">'.
-                          round( $sumGivenCreditsLab/ $summandsLab, 2 )."/ ".
-                          round( $sumPossibleCreditsLab/ $summandsLab, 2 ).
+                          round( $sumGivenCreditsLab/*/ $summandsLab*/, 2 )."/ ".
+                          round( $sumPossibleCreditsLab/*/ $summandsLab*/, 2 ).
                           "</span>\n";
-/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( round($percentage*100, 2)."%" );
+/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')){
+            echo( round($percentage*100, 2)."%\t" );
+            echo( $sumGivenCreditsLab."\t" );
+            echo( $sumPossibleCreditsLab );
+            }
       }
 
       $myRetVal .=   "</td></tr>\n";
@@ -838,7 +846,7 @@ class LlElement extends Element{
 /* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) {
      header('Content-type: text/x-csv');
      header('Content-Disposition: attachment; filename="labsystem_result_summary'.$GLOBALS['cfg']->get('User_courseID').'CSV.txt"');
-     echo( "name\tforename\tteam\tprelabCredits\tlabCredits\r\n");
+     echo( "name\tforename\tteam\tprelabPercentage\tprelabCreditsReached\tprelabCreditsReachable\tlabPercentage\tlabCreditsReached\tlabCreditsReachable\r\n");
 }
               /* the first entry is the default */
               require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
