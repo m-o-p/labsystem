@@ -346,7 +346,7 @@ class LlElement extends Element{
   *
   * @return string      The bar's html-code.
   */
-  function percentBar( $percentage, $percentageFailed ){
+  function percentBar( $percentage, $percentageFailed, $style="labsys_mop_l_status_percentBarDiv" ){
     // $p2 = $percentage - $percentageFailed mapped on [0..1] for coloring.
     // The color varies from #ff0000 ( $p2 =   0% ) (red)
     //                  over #ffff99 ( $p2 =  50% ) (yellow)
@@ -366,7 +366,7 @@ class LlElement extends Element{
 
     $color = substr( '0'.dechex( 255-$moveRed ), -2 ).substr( '0'.dechex( $moveGreen ), -2 ).'00';
 
-    return "<div class=\"labsys_mop_l_status_percentBarDiv\">".
+    return "<div class=\"".$style."\">".
            "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; width: ".round($percentage*100)."%\"></img>".
            "</div>\n";
   }

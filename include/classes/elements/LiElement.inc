@@ -324,7 +324,7 @@ class LiElement extends Element{
   * @return string            The html representation of the correctors comment.
   */
   function showCredits( $isInCorrection=false, $possiblePtsOnly=false ){
-    global $lng, $pge, $usr;
+    global $lng, $pge, $usr, $cfg;
     return "<div class=\"labsys_mop_i_credits".
           // if we are viewing someone the color of the credits division tells whether the input is marked as corrected
           ( $usr->isOfKind( IS_CORRECTOR ) && !$possiblePtsOnly ?
@@ -352,6 +352,11 @@ class LiElement extends Element{
                         : ''
                       ).
             // the credits
+    ( !$possiblePtsOnly &&
+      ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )) ?
+        // show given credits
+        LlElement::percentBar(($this->possibleCredits == 0?1:$this->givenCredits/$this->possibleCredits), 0, "labsys_mop_i_answer_percentBarDiv") : ''
+          ).
             "[".
             ( $isInCorrection ?
                        // show input

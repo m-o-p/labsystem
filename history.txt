@@ -61,6 +61,15 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-03-05
+-------------------
+  /include/classes/elements/LlElement.inc
+    Modified LlElemet.inc statistics to show full points instead of rounded ones in summary.
+  /include/classes/elements/LiElement.inc
+  /include/classes/elements/LlElement.inc
+  /css/sys/labsys_mop_basic.css
+    Added a new indicator bar showing where credits were lost for participants and correctors next to the credits at an i-answer.
+
 2013-02-13
 -------------------
   /php/sendMail.inc
