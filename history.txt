@@ -61,6 +61,44 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-04-02
+-------------------
+	/include/logger.inc
+	/pages/timeTracking.php
+		Fabian and I worked the whole day on the user log. Now we log into the working database.
+		A basic evaluation is already happening.
+		We aim to visualize the interaction of the users with the system so that the creators of 
+		the exercises see where most time is spent by the students, the students see where they 
+		spend time and where others spent time, etc.
+
+	/include/classes/DBConnection.inc
+	/include/classes/Ddbc.inc
+	/include/classes/Wdbc.inc
+	/include/classes/elements/BCElement.inc
+	/include/classes/elements/LcElement.inc
+	/include/classes/elements/LiElement.inc
+	/include/classes/elements/LlElement.inc
+	/include/classes/elements/LmElement.inc
+	/include/classes/elements/LpElement.inc
+	/pages/edit.php
+	/pages/pgeStdFileEdit.inc
+	/pages/view.php
+	/php/authenticate.php
+	/php/logout.php
+		Logging is included now.
+
+	/ini/configBase/defaultCourseBehaviour.ini
+		The config has a new parameter 
+		logEvents               = "1"         ; logs the user interaction for visualization.
+	/ini/configBase/defaultSystemLayout.ini
+		The file log remains. It logs events like deletions etc. that are system critical 
+		but irrelevant for the above log process.
+		logDir                  = "/tmp/" ; If set, critical events like rights change, delete, etc. are logged to the given directory with automatic log rotate.
+
+	/setup/index.php
+	/setup/sql_new_wdb_event_log_tbl.sql
+		The event_log table is automatically created in the setup now.
+
 2013-03-05
 -------------------
   /include/classes/elements/LlElement.inc

@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -34,6 +34,7 @@ $url->clearQueryString(); $url->put( $url->get("oldQueryString") ); /* we will l
 $url->rem( "inside=true" );
 
 makeLogEntry( 'system', 'logout' );
+$GLOBALS['Logger']->logToDatabase('system', logActions::logout);
 
 if ( strip_tags(SID) != "" )
   $url->rem( strip_tags(SID) ); // remove SID from url

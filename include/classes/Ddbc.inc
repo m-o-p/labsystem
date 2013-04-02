@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -36,8 +36,8 @@ class Ddbc extends DBConnection{
   */
   function Ddbc(){
     global $cfg;
-    return $this->DBConnection( $cfg->get("DataDatabaseHost"), 
-                                $cfg->get("DataDatabaseUserName"), 
+    return $this->DBConnection( $cfg->get("DataDatabaseHost"),
+                                $cfg->get("DataDatabaseUserName"),
                                 $cfg->get("DataDatabasePassWord"),
                                 $cfg->get("DataDatabaseName"));
   }

@@ -145,7 +145,7 @@ class BCElement extends LcElement{
     $myRetVal = "";
    // show toc
         if ( $last == "" ){
-                           makeLogEntry( 'C', 'opened', $fullAddress );
+                           $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::cOpen);
                            $myRetVal .= "<div class=\"labsys_mop_contentArea\">".
                                         "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>".
                                         $this->getTOC( $fullAddress, $extParagraph ).
@@ -180,7 +180,7 @@ class BCElement extends LcElement{
                                           $element = $DBI->getData2idx( $num, true, $this->isInLab );
                                           $GLOBALS["pge"]->title        = $element->title;
                                           $GLOBALS["pge"]->matchingMenu = $element->getMatchingMenu();
-                                          if ($id == 'c'){ makeLogEntry( 'c', 'opened', $fullAddress ); }
+                                          if ($id == 'c'){ $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::cOpen); }
                                           $myRetVal .= $element->show( $fullAddress, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $first ), true );
                                         }
    // we don't handle so maybe our parent does... ( p.e. .structure )

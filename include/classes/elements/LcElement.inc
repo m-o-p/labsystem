@@ -374,6 +374,8 @@ class LcElement extends Element{
   function showEdit( $fullAddress ){
     global $lng, $usr, $url, $cfg, $pge, $cDBI;
 
+    $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::cEditorOpen);
+
     if ( $url->available('insert') ){ $url->rem('insert'); $this->insertNew( $GLOBALS['url']->get('insert') ); } // inserts an element of the given type at the end of the collection
 
     $myRetVal =  "<FORM class=\"labsys_mop_std_form\" NAME=\"collectionEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=c")."\">\n".
@@ -524,10 +526,12 @@ class LcElement extends Element{
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newCollection->idx = $cDBI->setData( $newCollection, true );
                                       $url->put( "address=c".$newCollection->idx );   // the address of the new element
+                                      $GLOBALS['Logger']->logToDatabase('c'.$newCollection->idx, logActions::cEditorSave);
                                      }
     else{
                                       $cDBI->setData( $newCollection );
                                       $url->put( "address=".$_POST['FULLADDRESS'] );  // the address remains
+                                      $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::cEditorSave);
     }
 
     // some user information

@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -22,7 +22,7 @@
 * Called by ../pages/login.php to do the authentication.
 *
 * As this is the only place where authentication happens you can insert
-* any authentication mechanism you want to use here like kerberos, LDAP 
+* any authentication mechanism you want to use here like kerberos, LDAP
 * etc.
 * If you plan to do so make sure you have consistent user keys as well as
 * an adopted user listing function in the '../classes/DBInterfaceUser.inc'
@@ -50,13 +50,13 @@ $uDBI = new DBInterfaceUser();
 // preserve the current url since we will probably link back (p.e. to give an error) or add something to the url.
 $url->clearQueryString(); $url->put( $url->get("oldQueryString") );
 
-if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD']) ) ){ 
+if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD']) ) ){
  // not authenticated
   $url->put( "sysalert=".$lng->get("AlertWrongUsrPw") );
   header( "Location: ".$url->rawLink2("../pages/login.php") );
   exit;
   }
-  
+
 // authenticated
   $NEWSESSION = true;
   require( INCLUDE_DIR."/session.inc" );
@@ -87,7 +87,8 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
     $_SESSION["userRights"]  = (intval($_SESSION["userRights"]) | IS_USER_RIGHTS_EDITOR);
 
   makeLogEntry( 'system', 'login' );
-// Link to the after login page from the config file or to 
+  $GLOBALS['Logger']->logToDatabase('system', logActions::login);
+// Link to the after login page from the config file or to
   if ( isset( $_POST['REDIRECTTO'] ) ) header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );
                                   else header( "Location: ".$url->rawLink2( $cfg->get("AfterLogInPage") ) );
 ?>

@@ -909,6 +909,7 @@ class LlElement extends Element{
       exit;
     }
 
+    $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::lOpen);
    // Address splitting.
     $parentAddr = $fullAddress;
     $this->splitAddress( $parentAddr, $myAddrArray );
@@ -1090,6 +1091,7 @@ class LlElement extends Element{
   function showEdit( $fullAddress ){
     global $lng, $url, $pge, $cfg;
 
+    $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::lEditorOpen);
     // dropdown list for collections:
     $dropDownOptionsPreLab = '<option value="0">0: '.$lng->get( 'explainCreateNew' ).'</option>';
     $dropDownOptionsLab    = '<option value="0">0: '.$lng->get( 'explainCreateNew' ).'</option>';
@@ -1371,10 +1373,12 @@ class LlElement extends Element{
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newLab->idx = $lDBI->setData( $newLab, true );
                                       $url->put( "address=l".$newLab->idx );
+                                      $GLOBALS['Logger']->logToDatabase('l'.$newLab->idx, logActions::lOpen);
                                      }
     else{
                                       $lDBI->setData( $newLab );
                                       $url->put( "address=".$_POST['FULLADDRESS'] );
+                                      $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::lOpen);
     }
 
     // some user information
@@ -1523,8 +1527,6 @@ class LlElement extends Element{
                             "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
                             $parameter );
 
-      makeLogEntry( 'l', 'prelab checked '.( $parameter[ 'allPreLabAnswered' ] ? '(right)' : '(wrong)' ), $this->idx );
-
       if( $parameter[ 'allPreLabAnswered' ] ){
 
          // create my dataset
@@ -1541,13 +1543,13 @@ class LlElement extends Element{
                                   0,                                // $possibleCredits
                                   $lng->get("preLabUserFinished")   // $history
                                  );
-         makeLogEntry( 'l', 'prelab finished', $this->idx );
+         $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lPreLabFinished);
 
          // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
           if ( $this->isPrelabFinishedByAllCurrentTeammates( $usr->currentTeam ) ){ // all have finished so
             // update their prelab status
             $this->usDBI->setPrelabFinished( $usr->currentTeam );
-            makeLogEntry( 'l', 'prelab finished team '.$usr->currentTeam, $this->idx );
+            $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabOpen);
 
             if ( $this->noLab ) // If we have no lab it gets closed when all teammembers finished the prelab
               $this->usDBI->closeLab( $usr->currentTeam, $lng->get("labClosed") );
@@ -1583,8 +1585,7 @@ class LlElement extends Element{
       $uid          = $dataArray['uid'];
       $permissions  = $this->usDBI->getData4( $uid );
       $preLabAllTeammatesFin &= $permissions['preLabFinished'];
-      // log this to check why the program sometimes does not open the lab for teams both having finished the prelab
-      makeLogEntry( 'l', 'checked team '.$teamToCheck.' ID '.$uid.' '.($permissions['preLabFinished'] ? 'true' : 'false'), $this->idx );
+      // Fixed?: log this to check why the program sometimes does not open the lab for teams both having finished the prelab
     }
     return $preLabAllTeammatesFin;
   }
@@ -1635,7 +1636,6 @@ class LlElement extends Element{
   */
   function reallyCloseAllLabInputs( $team ){
     global $lng, $usr;
-    makeLogEntry( 'l', 'closing all i', 'l'.$this->idx );
    // close all lab inputs:
    // also reMap all inputs  (necessary for users that never entered a question (done together).
     $parameter = Array(); //teamUIDs
@@ -1649,8 +1649,9 @@ class LlElement extends Element{
                         "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
                         $parameter );
 
-    if ( !$labStatus['labClosed'] ) // Status changed?
+    if ( !$labStatus['labClosed'] ){ // Status changed?
       $this->usDBI->closeLab( $team, $lng->get("labClosed") );
+    }
   }
 
   /**
@@ -1663,7 +1664,7 @@ class LlElement extends Element{
     global $url;
     $this->reallyCloseAllLabInputs( $team );
 
-    makeLogEntry( 'l', 'all inputs closed for team '.$team, $this->idx );
+    $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabClose, $team);
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
@@ -1709,7 +1710,7 @@ class LlElement extends Element{
 
     $this->usDBI->reOpenLab( $team, $lng->get("labReOpened") );
 
-    makeLogEntry( 'l', 'all inputs reopened for team '.$team, $this->idx );
+    $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabOpen, $team);
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
@@ -1735,7 +1736,7 @@ class LlElement extends Element{
     if ( $labStatus['labClosed'] ) // if the lab is closed the input has to be closed too.
       $this->reallyCloseAllLabInputs( $labStatus['currentTeam'] );
 
-    makeLogEntry( 'l', 'all inputs remapped for team '.$team, $this->idx );
+    //makeLogEntry( 'l', 'all inputs remapped for team '.$team, $this->idx );
   }
 
   /**
@@ -1890,6 +1891,10 @@ class LlElement extends Element{
                                       $lng->get("statusUpdated") ); // create my dataset
     }
 
+    if ($labStatus['labCorrected']){
+      $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
+    }
+
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
 
@@ -1940,7 +1945,7 @@ class LlElement extends Element{
     // Change? -> Change status
     if ( $labStatus['preLabAllTeammFinished'] != $prelabFinishedByTeam ){
             $this->usDBI->setPrelabFinished( $labStatus['currentTeam'] );
-            makeLogEntry( 'l', 'prelab finished team '.$labStatus['currentTeam'], $this->idx );
+            $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lPreLabFinished, $labStatus['currentTeam']);
     }
 
 //echo( $parameter2['givenCredits'].'/ '.$parameter2['possibleCredits'].'<br>' );

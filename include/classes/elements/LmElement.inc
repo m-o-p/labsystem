@@ -286,7 +286,9 @@ class LmElement extends Element{
                                             $lng->get("giveAnswer")
                                            )."\" onclick='isDirty=false'>\n".
                "</FORM>\n";
-               if ($isGettingAnswered) makeLogEntry( 'm', 'opened', $fullAddress );
+               if ($isGettingAnswered){
+                 $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::mOpen);
+               }
      }
      if ( $this->isAnswered && ($this->answerExplanation != "") )
       // answer explanation
@@ -463,6 +465,7 @@ class LmElement extends Element{
   */
   function showEdit( $fullAddress ){
     global $lng, $url, $pge, $cfg;
+    $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::mEditorOpen);
 
      return EM::editTopMultipleChoice( $this, $fullAddress ).
             "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=m")."\">\n".
@@ -587,15 +590,16 @@ class LmElement extends Element{
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newMultipleChoice->idx = $mDBI->setData( $newMultipleChoice, true );
                                       $url->put( "address=m".$newMultipleChoice->idx ); // the address of the new element
+                                      $GLOBALS['Logger']->logToDatabase('m'.$newMultipleChoice->idx, logActions::mEditorSave);
                                      }
     else{
                                       $mDBI->setData( $newMultipleChoice );
                                       $url->put( "address=".$_POST['FULLADDRESS'] );    // the address remains
+                                      $GLOBALS['Logger']->logToDatabase('m'.$this->idx, logActions::mEditorSave);
     }
 
     // some user information
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("mNumber")." ".$newMultipleChoice->idx );
-    makeLogEntry( 'm', 'created', $newMultipleChoice->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
@@ -633,7 +637,7 @@ class LmElement extends Element{
     // store the new dataset
     $this->mcDBI->setData4( $usr->uid, $this->idx, $this->displayPermutation, $this->previousAnswersArray );
 
-    makeLogEntry( 'm', 'saved', $this->idx );
+    $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::mSave);
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
@@ -650,9 +654,11 @@ class LmElement extends Element{
   /*static*/ function checkUserAnswer(){
     global $usr, $cfg;
 
+    $GLOBALS['Logger']->logToDatabase('l'.$_POST['IDX'].'~m'.$this->idx, logActions::mCheck);
+    $GLOBALS['Logger']->logToDatabase('l'.$_POST['IDX'].'~m'.$this->idx, ($this->isCorrectlyAnswered?logActions::mIsCorrectAnswer:logActions::mIsWrongAnswer));
+
     // if it is not answered it will not be correct as the not answered status sets a bit...
     if ( $this->isAnswered ){  // enough checks yet or correct...
-      makeLogEntry( 'm', 'check: is answered ('.$this->triesUp2Now.'/'.$cfg->get('MCAnsweringAttempts').')', 'm'.$this->idx );
       return true;
     }
 
@@ -665,7 +671,6 @@ class LmElement extends Element{
     $this->mcDBI->setData4( $usr->uid, $this->idx, $this->displayPermutation, $this->previousAnswersArray, "-check-" );
 
     $this->mcDBI = $this->loadUserData4( $usr->uid ); // Load data with applied changes.
-    makeLogEntry( 'm', 'check: '.($this->isAnswered ? 'correct' : 'wrong').' ('.$this->triesUp2Now.'/'.$cfg->get('MCAnsweringAttempts').')', 'm'.$this->idx );
     return $this->isAnswered;
   }
 

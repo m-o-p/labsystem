@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -36,8 +36,9 @@ class Wdbc extends DBConnection{
   */
   function Wdbc(){
     global $cfg;
-    return $this->DBConnection( $cfg->get("WorkingDatabaseHost"), 
-                                $cfg->get("WorkingDatabaseUserName"), 
+
+    return $this->DBConnection( $cfg->get("WorkingDatabaseHost"),
+                                $cfg->get("WorkingDatabaseUserName"),
                                 $cfg->get("WorkingDatabasePassWord"),
                                 $cfg->get("WorkingDatabaseName"));
   }

@@ -45,7 +45,7 @@ $pge->matchingMenu = $element->getMatchingMenu();
 
 $pge->put( $element->show( $url->get("address"), "" ) );
 
-makeLogEntry( 'view', 'show', $url->get("address") );
+$GLOBALS['Logger']->logReferrerEvent();
 
 require( $cfg->get("SystemPageLayoutFile") );
 ?>

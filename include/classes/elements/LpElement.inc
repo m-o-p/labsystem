@@ -82,6 +82,8 @@ class LpElement extends Element{
       exit;
     }
 
+    $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::pOpen);
+
     if ($this->contents == "") return "'()";  // is empty
 
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
@@ -149,6 +151,7 @@ class LpElement extends Element{
   */
   function showEdit( $fullAddress ){
     global $lng, $url, $pge, $cfg;
+     $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::pEditorOpen);
      return EM::editTopPage( $this, $fullAddress ).
             "<FORM class=\"labsys_mop_std_form\" NAME=\"pageEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=p")."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
@@ -258,10 +261,12 @@ class LpElement extends Element{
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newPage->idx = $pDBI->setData( $newPage, true );
                                       $url->put( "address=p".$newPage->idx );         // the address of the new element
+                                      $GLOBALS['Logger']->logToDatabase('p'.$newPage->idx, logActions::pEditorSave);
                                      }
     else{
                                       $pDBI->setData( $newPage );
                                       $url->put( "address=".$_POST['FULLADDRESS'] );  // the address remains
+                                      $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::pEditorSave);
     }
 
     // some user information

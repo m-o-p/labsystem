@@ -1,5 +1,5 @@
 <!--
-    labsystem.m-o-p.de - 
+    labsystem.m-o-p.de -
                     the web based eLearning tool for practical exercises
     Copyright (C) 2009  Marc-Oliver Pahl
 
@@ -35,7 +35,7 @@ if ( version_compare( "4.3.0", phpversion(), ">=" ) ){
                                                         trigger_error( "You need at least PHP 4.3 to run the labsystem!", E_USER_ERROR );
                                                         exit;
                                                       }
-                                                      
+
 /** IF NO OBVIOUS USER ERRORS -> Show Info Page */
 if ( !isset($_POST['continue']) ){
 if ( !file_exists( 'information.txt' ) ){
@@ -52,11 +52,11 @@ if ( !file_exists( 'information.txt' ) ){
   <div style="width: 40em; background-color: #ffffff; color: #000000; padding: 1em;">
 
   <h3>labsystem.m-o-p.de setup started...</h3>
- 
+
   <p>
     You are about to install the configuration <b>'.$_GET['config'].'</b>.
   </p>
-    
+
   <p style="color: #ff0000; font-size: 0.8em;">
     Click the following button first to ensure your config file is not readable by everyone.<br>
     <br>
@@ -68,7 +68,7 @@ if ( !file_exists( 'information.txt' ) ){
 ');
 readfile( 'information.txt' );
 echo('
-  </pre>  
+  </pre>
   <form method="POST" action="'.$_SERVER['REQUEST_URI'].'">
   <input type="hidden" name="continue" value="yes" checked="checked">
   <input type="submit" value="continue..." style="width: 100%; height: 3em;">
@@ -123,7 +123,7 @@ function runMySqlFromFile( $filename, &$database ){
     }
   }
   fclose($fh);
-  
+
   echo( "<br>\r\n" );
 }
 ?>
@@ -184,9 +184,9 @@ echo('running setup script...<br />'."\n");
 
 /************************ user database part: ***************************/
 say_title( 'user database part' );
-$usrDB = new DBConnection($cfg->get("UserDatabaseHost"), 
-                          $cfg->get("UserDatabaseUserName"), 
-                          $cfg->get("UserDatabasePassWord"), 
+$usrDB = new DBConnection($cfg->get("UserDatabaseHost"),
+                          $cfg->get("UserDatabaseUserName"),
+                          $cfg->get("UserDatabasePassWord"),
                           $cfg->get("UserDatabaseName"));
 
 echo( $cfg->get("UserDatabaseName").': ' );
@@ -215,7 +215,7 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                  `labsys_mop_last_change` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                  `_unassigned` tinyint(1) NOT NULL,
                  PRIMARY KEY  ( '.$cfg->get("UserDBField_username").' ),
-                 UNIQUE KEY (`'.$cfg->get("UserDBField_uid").'`), 
+                 UNIQUE KEY (`'.$cfg->get("UserDBField_uid").'`),
                  INDEX( '.$cfg->get("UserDBField_username").' )
                  )';
        $usrDB->query($query);
@@ -255,7 +255,7 @@ if( $usrDB->db_exists( $cfg->get("UserDatabaseName") ) &&
     !$usrDB->column_exists( $cfg->get("UserDatabaseTable"), $cfg->get("User_courseID") )
    )
 {
-       $query = 'ALTER TABLE '.$cfg->get("UserDatabaseTable").' ADD COLUMN 
+       $query = 'ALTER TABLE '.$cfg->get("UserDatabaseTable").' ADD COLUMN
                  '.$cfg->get("User_courseID").' tinyint(1) NOT NULL default \'0\'';
        $usrDB->query($query);
        if ( !$usrDB->reportErrors() ) say_done(); else say_failed();
@@ -308,11 +308,11 @@ say_toptitle( 'creating databases' ); /*******************************/
 /************************ data database: ***************************/
 say_title( 'data database part' );
 
-$dataDB = new DBConnection($cfg->get("DataDatabaseHost"), 
-                           $cfg->get("DataDatabaseUserName"), 
-                           $cfg->get("DataDatabasePassWord"), 
+$dataDB = new DBConnection($cfg->get("DataDatabaseHost"),
+                           $cfg->get("DataDatabaseUserName"),
+                           $cfg->get("DataDatabasePassWord"),
                            $cfg->get("DataDatabaseName"));
- 
+
 echo( $cfg->get("DataDatabaseName").': ' );
 if(!$dataDB->db_exists( $cfg->get("DataDatabaseName") ))
 {
@@ -324,11 +324,11 @@ if(!$dataDB->db_exists( $cfg->get("DataDatabaseName") ))
 /************************ working database: ***************************/
 say_title( 'working database part' );
 
-$wrkDB = new DBConnection($cfg->get("WorkingDatabaseHost"), 
-                          $cfg->get("WorkingDatabaseUserName"), 
-                          $cfg->get("WorkingDatabasePassWord"), 
+$wrkDB = new DBConnection($cfg->get("WorkingDatabaseHost"),
+                          $cfg->get("WorkingDatabaseUserName"),
+                          $cfg->get("WorkingDatabasePassWord"),
                           $cfg->get("WorkingDatabaseName"));
-                          
+
 echo( $cfg->get("WorkingDatabaseName").': ' );
 if(!$wrkDB->db_exists( $cfg->get("WorkingDatabaseName") ))
 {
@@ -346,9 +346,9 @@ say_toptitle( 'creating system tables' ); /***********************************/
 say_title( 'user rights' );
 
 echo( 'user_rights: ' );
-if(!$wrkDB->table_exists("user_rights")) 
+if(!$wrkDB->table_exists("user_rights"))
   runMySqlFromFile( 'sql_new_wdb_ur_tbl.sql', $wrkDB );
-else 
+else
   say_skipped();
 
 
@@ -358,13 +358,13 @@ say_title( 'storage for <b>P</b>age elements' );
 echo( 'pages: ' );
 if(!$dataDB->table_exists("pages")){
   runMySqlFromFile( 'sql_new_ddb_pages_tbl.sql', $dataDB );
-  echo("demo prelab content created<br>\n"); 
-  echo("after login page created<br>\n"); 
-  echo("authoring tutorial created<br>\n");  
-  echo("demo lab content created<br>\n");  
-  echo("button pictogramm explanation created<br>\n");  
-  echo("suggestion/ complaints page created<br>\n");  
-  
+  echo("demo prelab content created<br>\n");
+  echo("after login page created<br>\n");
+  echo("authoring tutorial created<br>\n");
+  echo("demo lab content created<br>\n");
+  echo("button pictogramm explanation created<br>\n");
+  echo("suggestion/ complaints page created<br>\n");
+
    if (substr( $_GET['config'], -9 ) == 'useradmin'){
      $query = "INSERT INTO `pages` VALUES (3, 'UserAdministration interface', '[HTML]\r\n<!-- click on the icon with the eye (second one) on the upper right to see how this page looks like! -->\r\n\r\n<h3>__ELEMENTTITLE__</h3>\r\n\r\n<p style=\"text-align: left;\">\r\n This is the user administration interface.\r\n</p>\r\n\r\n<div style=\"text-align: center;\">\r\n <img src=\"../pix/useradmin_400_60.jpg\"  width=\"400\" height=\"60\" style=\"border: 0;\" alt=\"Das Fest, Karlsruhe Germany; &copy; Marc-Oliver Pahl Summer 2005\" />\r\n <div style=\"padding-left: 0.5em; padding-right: 0.5em; text-align: center; font-size: 0.7em;\">Das Fest, Karlsruhe Germany; &copy; Marc-Oliver Pahl Summer 2005</div>\r\n</div>\r\n\r\n<p style=\"text-align: right;\">\r\n As user of the <a href=\"http://labsystem.m-o-p.de\" target=\"_blank\">labsystem</a> you can log in here and change your personal data (e.g. your password)...<br />\r\n As user administrator you can log in here and administrate the user accounts...<br />\r\n As one having <b><a href=\"../pages/uaUnPwReminder.php?__LINKQUERY__\">forgotten password and/ or username</a></b> click <a href=\"../pages/uaUnPwReminder.php?__LINKQUERY__\">here</a>...<br />\r\n</p>', '', 0, 0, CONCAT( now(), ': Marc-Oliver Pahl' ) );";
      echo('useradmin ');
@@ -372,9 +372,9 @@ if(!$dataDB->table_exists("pages")){
      $query = "INSERT INTO `pages` VALUES (3, 'Demo Startpage', '[HTML]\r\n<!-- click on the icon with the eye (second one) on the upper right to see how this page looks like! -->\r\n\r\n<h3>__ELEMENTTITLE__</h3>\r\n\r\n<p style=\"text-align: left;\">\r\n <b>Well done</b>, the system is running!\r\n</p>\r\n\r\n<div style=\"text-align: center;\">\r\n <img src=\"../pix/startpage.jpg\" width=\"400\" height=\"144\" style=\"border: 0;\" alt=\"A street in Bordeaux, France; &copy; Marc-Oliver Pahl, Summer 2005\" />\r\n <div style=\"padding-left: 0.5em; padding-right: 0.5em; text-align: center; font-size: 0.7em;\">A street in Bordeaux, France; &copy; Marc-Oliver Pahl, Summer 2005</div>\r\n</div>\r\n\r\n<p style=\"text-align: right;\">\r\n Now you can <b><a href=\"../pages/login.php?__LINKQUERY__\">log in</a></b>...\r\n</p>', '', 0, 0, CONCAT( now(), ': Marc-Oliver Pahl' ));";
      echo('demo ');
    }
-   $dataDB->query($query); 
-   echo(" startpage inserted<br>\n");      
-       
+   $dataDB->query($query);
+   echo(" startpage inserted<br>\n");
+
 } else say_skipped();
 
 
@@ -436,6 +436,15 @@ if(!$wrkDB->table_exists("input_answers_locks"))
 else
   say_skipped();
 
+/************************ event log part: ***************************/
+say_title( 'storage for event log' );
+
+echo( 'event_log: ' );
+if(!$dataDB->table_exists("event_log"))
+  runMySqlFromFile( 'sql_new_wdb_event_log_tbl.sql', $wrkDB );
+else
+  say_skipped();
+
 /**************************** labs database ****************************/
 say_title( 'storage for <b>L</b>ab elements' );
 
@@ -465,25 +474,25 @@ else
 
 /* If necessary create menu-file */
 if ( !file_exists( $cfg->get("SystemResourcePath").$cfg->get("SystemMenuFile") ) )
-  if (!copy(  $cfg->get("SystemResourcePath").'menu_prototype.ini', 
+  if (!copy(  $cfg->get("SystemResourcePath").'menu_prototype.ini',
               $cfg->get("SystemResourcePath").$cfg->get("SystemMenuFile")
             )
       ) echo("failed to copy menu...<br>\n");
   else  echo("menu copied...<br>\n");
-  
+
 /* If necessary create userRoles-file */
 if ( !file_exists( $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles") ) )
-  if (!copy(  $cfg->get("SystemResourcePath").'default_user_roles.inc', 
+  if (!copy(  $cfg->get("SystemResourcePath").'default_user_roles.inc',
               $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles")
             )
       ) echo("failed to copy user roles...<br>\n");
   else  echo("user roles copied...<br>\n");
-  
+
 /**************************** labs database ****************************/
 say_title( 'style sheets' );
 /* If necessary create the userStyleSheet-file */
 if ( !file_exists( $cfg->get("UserStyleSheet") ) )
-  if (!copy(  '../css/sys/labsys_user_style_proto.css', 
+  if (!copy(  '../css/sys/labsys_user_style_proto.css',
               $cfg->get("UserStyleSheet")
             )
       ) echo("failed to copy user stylesheet...<br>\n");
@@ -491,7 +500,7 @@ if ( !file_exists( $cfg->get("UserStyleSheet") ) )
 
   /* If necessary create the printStyleSheet-file */
 if ( !file_exists( $cfg->get("PrintStyleSheet") ) )
-  if (!copy(  '../css/sys/labsys_print_style_proto.css', 
+  if (!copy(  '../css/sys/labsys_print_style_proto.css',
               $cfg->get("PrintStyleSheet")
             )
       ) echo("failed to copy print stylesheet...<br>\n");
@@ -507,7 +516,7 @@ say_toptitle( 'Checking directories...' ); /***********************************/
 $toDoChown = ""; // Collects the Linux commands that could be issued as root to set the permissions.
 function checkDirectoryWritable( $configFieldName ){
   global $cfg, $toDoChown;
-  $directory = ( substr( $cfg->get($configFieldName), -1, 1 ) == '/' ? 
+  $directory = ( substr( $cfg->get($configFieldName), -1, 1 ) == '/' ?
                     $cfg->get($configFieldName) : // is already a directory...
                     dirname($cfg->get($configFieldName)) ); // is not...
   echo( '<br><br><span style="color: #ffff99">['.$configFieldName.': '.$directory.']</span> ' );
@@ -523,8 +532,8 @@ function checkDirectoryWritable( $configFieldName ){
   }else{
     echo('exists. Testing subfolder... Creating... ');
     if (mkdir($directory.'/test23r2', 0755, true)){
-      echo('<span style="color: #77ff77;">o.k.</span> Deleting... '.(rmdir($directory.'/test23r2/') ? 
-                                                                       '<span style="color: #77ff77;">o.k.</span>' : 
+      echo('<span style="color: #77ff77;">o.k.</span> Deleting... '.(rmdir($directory.'/test23r2/') ?
+                                                                       '<span style="color: #77ff77;">o.k.</span>' :
                                                                        '<span style="color: #ff7777;">failed!</span>' ));
     }else{
       echo('<span style="color: #ff7777;">failed!</span>');
@@ -538,7 +547,7 @@ say_title('User Uploads');
 checkDirectoryWritable('UploadDirectory');
 /* If necessary create the userStyleSheet-file */
 if ( !file_exists( $cfg->get('UploadDirectory').'.htaccess' ) )
-  if (!copy(  $cfg->get('SystemResourcePath').'.htaccess', 
+  if (!copy(  $cfg->get('SystemResourcePath').'.htaccess',
               $cfg->get('UploadDirectory').'.htaccess'
             )
       ) echo("failed to copy .htaccess to ".$cfg->get('UploadDirectory')."...<br>\n");

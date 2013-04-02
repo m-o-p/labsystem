@@ -435,10 +435,15 @@ class LiElement extends Element{
                               isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) &&
                               $_POST['TEAM'] == $this->getDataOfTeam
                              );
-      if ($isInCorrection) makeLogEntry( 'i', 'getting corrected for team '.$this->getDataOfTeam, $fullAddress );
+      if ($isInCorrection){
+        $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iCorrectorOpen, $this->getDataOfTeam);
+      }
 
       $isGettingAnswered  = ( $this->lockIsSetTo && ( $this->lockIsSetTo == $this->idx ) );
-      if ($isGettingAnswered) makeLogEntry( 'i', 'getting answered', $fullAddress );
+      if ($isGettingAnswered){
+        //makeLogEntry( 'i', 'getting answered', $fullAddress );
+        $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iStudentOpen);
+      }
 
       $ret =   "<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
                "<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
@@ -636,6 +641,7 @@ class LiElement extends Element{
   */
   function showEdit( $fullAddress ){
     global $lng, $url, $pge, $cfg;
+    $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iEditorOpen);
 
      return EM::editTopInput( $this, $fullAddress ).
             "<FORM class=\"labsys_mop_std_form\" NAME=\"InputEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=i")."\">\n".
@@ -765,7 +771,7 @@ class LiElement extends Element{
 
     // some user information
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("iNumber")." ".$newInput->idx );
-    makeLogEntry( 'edit', 'saved', 'i'.$newInput->idx );
+    $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iEditorSave);
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
@@ -780,7 +786,6 @@ class LiElement extends Element{
   */
   function acquireLock4( $fullAddress ){
     $this->lkDBI->setData4( $this->getDataOfTeam, $this->idx, $fullAddress );
-    makeLogEntry( 'lock', 'set', $fullAddress );
   }
 
   /**
@@ -789,7 +794,6 @@ class LiElement extends Element{
   function removeLock(){
     if ( $this->lockIsSetTo ){
       $this->lkDBI->remLock4( $this->getDataOfTeam );
-      makeLogEntry( 'lock', 'removed by clicking on i'.$this->idx, 'i'.$this->lockIsSetTo );
     }
   }
 
@@ -820,6 +824,7 @@ class LiElement extends Element{
     if (isset($_POST['cancel'])){ // cancel action
       if ( $this->lockIsSetTo == $this->idx ){
         $this->removeLock();
+        $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentCancel);
       }
       // One could also display the page here but that way it is left to the normal mechanism...
       header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
@@ -851,7 +856,7 @@ class LiElement extends Element{
             $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
     }
 
-    makeLogEntry( 'i', 'aw saved', 'i'.$this->idx );
+    $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentSave);
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
@@ -914,13 +919,16 @@ class LiElement extends Element{
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
 
     if ( $this->isStartOver() ){// start over without commenting
-      makeLogEntry( 'i', 'quick correcting', $this->idx );
+      //makeLogEntry( 'i', 'quick correcting', $this->idx );
+      $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorQuick, $_POST['TEAM']);
       $_POST['CREDITS'] = (isset($_POST['FULL_CREDITS'.$this->idx]) ? $this->possibleCredits : $this->givenCredits);
     }
 
     if (!isset($_POST['cancel'])){ // cancel? -> do nothing
       $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ), true, isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1 );
-      makeLogEntry( 'i', 'correction saved', $this->idx );
+      $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorSave, $_POST['TEAM']);
+    }else{
+      $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorCancel, $_POST['TEAM']);
     }
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
@@ -959,7 +967,7 @@ class LiElement extends Element{
     }
     if (!$this->lockIsSetTo || $this->forceReLock){
       $this->acquireLock4( $_POST['FULLADDRESS'] );
-      makeLogEntry( 'i', 'open', $this->idx );
+      //makeLogEntry( 'i', 'open', $this->idx );
     }
 
     // One could also display the page here but that way it is left to the normal mechanism...
@@ -980,7 +988,7 @@ class LiElement extends Element{
     if (!$this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, true, false, $lng->get("closesInput")  );
     $this->isClosed = true;
     $this->isCorrected = false;
-    makeLogEntry( 'i', 'closed', 'i'.$this->idx );
+    //makeLogEntry( 'i', 'closed', 'i'.$this->idx );
   }
 
   /**

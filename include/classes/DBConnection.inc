@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -25,7 +25,7 @@
 /**
 * If you decide not to use mysql but something else it might be sufficient to make
 * changes to the methods implementations here.
-* The class also implements some stuff that will be available with mysqli in future php 
+* The class also implements some stuff that will be available with mysqli in future php
 * versions so if you have a newer version you might adopt something here.
 *
 * @module     ../include/classes/DBConnection.inc
@@ -50,27 +50,27 @@ class DBConnection{
   function DBConnection( $host, $user, $password, $dataBase ){
     $this->link = mysql_pconnect( $host, $user, $password, 2/*CLIENT_FOUND_ROWS*/ );
     /*
-"Note: When using UPDATE, MySQL will not update columns where the 
-new value is the same as the old value. This creates the 
-possiblity that mysql_affected_rows() may not actually equal the 
-number of rows matched, only the number of rows that were literally 
-affected by the query." 
+"Note: When using UPDATE, MySQL will not update columns where the
+new value is the same as the old value. This creates the
+possiblity that mysql_affected_rows() may not actually equal the
+number of rows matched, only the number of rows that were literally
+affected by the query."
 
 
-As of PHP 4.3.0 (I assume, I only tried with 4.3.2), you can make 
-mysql_affected_rows() return the number of rows matched, even if 
-none are updated. 
+As of PHP 4.3.0 (I assume, I only tried with 4.3.2), you can make
+mysql_affected_rows() return the number of rows matched, even if
+none are updated.
 
 
-You do this by setting the CLIENT_FOUND_ROWS flag in 
-mysql_connect(). For some reason, not all the flags are defined in 
-PHP, but you can use the decimal equivalent, which for 
-CLIENT_FOUND_ROWS is 2. 
+You do this by setting the CLIENT_FOUND_ROWS flag in
+mysql_connect(). For some reason, not all the flags are defined in
+PHP, but you can use the decimal equivalent, which for
+CLIENT_FOUND_ROWS is 2.
 
-So, for example: 
+So, for example:
 
-$db= mysql_connect("localhost", "user", "pass", false, 2); 
-mysql_select_db("mydb", $db); 
+$db= mysql_connect("localhost", "user", "pass", false, 2);
+mysql_select_db("mydb", $db);
 
 Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     */
@@ -78,7 +78,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     $this->dataBase = $dataBase;
     return $this->link;
   }
-  
+
   /**
   * Performs a query on the database. Should only be called from inside here!
   * @param  $theQuery   The query to perform.
@@ -91,7 +91,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     //echo( "<p style=\"background-color: #ff0000; color: #ffffff; padding: 5px; margin-bottom: 10px\">".$theQuery."<br>affected rows: ".mysql_affected_rows()."</p>\n");
     return $ret; // "$ret = mysql... ; do something return $ret" is no good becaus mqsql_affected_rows() and so on isn't set then!
   }
-  
+
   /* Returns the amount of datasets returned by the query.
    * @param $queryRes The resource ID of the query.
    * @return          The amount of datasets returned by the query.
@@ -99,7 +99,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
   function datasetsIn( $queryRes ){
     return mysql_num_rows( $queryRes );
   }
-  
+
   /**
   * Performs a query on the database. Should only be called from inside here!
   * @param  $what   Fields to select.
@@ -128,7 +128,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
                           $theQuery  = "INSERT INTO ".$into." SET ".$what;
     return $this->query(  $theQuery );
   }
-  
+
   /**
   * Performs an insert on the database and returns the value of the autoincremented field used.
   * @param  $what   Fields and values to insert.
@@ -143,7 +143,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     $this->query("UNLOCK TABLES");
     return mysql_result($idx, 0);
   }
-  
+
   /**
   * Performs a delete on the database.
   * @param  $from   Name of the database to select from.
@@ -154,7 +154,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     $theQuery  = "DELETE FROM ".$from." WHERE ".$where;
     return $this->query(  $theQuery );
   }
-  
+
   /**
   * Tries to Performs an update query on the database.
   * @param  $what   Fields and values to insert.
@@ -166,7 +166,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
                           $theQuery  = "UPDATE ".$into." SET ".$what." WHERE ".$where;
     return $this->query(  $theQuery );
   }
-  
+
   /**
   * Tries to Performs an update query on the database. If that doesn't work it makes an insert.
   * @param  $what   Fields and values to insert.
@@ -187,10 +187,10 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
       return $this->mkInsert( $what.( $where != '' ?  ', '.str_replace( $toReplace, ',', $where ) : '' ),
                               $into );
     } else return $res;
-    
+
     /* 2008/ 01/ 11: mysql_affected_rows() reported 1 on Gentoo even though it should be 0?!? so this is used now
     ereg("Rows matched: ([0-9]*)", mysql_info(), $rows_matched);
-    
+
     if ( (mysql_affected_rows() > 0) && ($rows_matched > 0) )
     // succeeded
       return $res;
@@ -200,7 +200,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     }
        */
   }
-  
+
   /**
   * This function reports mysql_errors if present.
   * @param  $theQuery  The resource handler of the query (If "" takes last performed).
@@ -213,10 +213,10 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     }else
       return false;
   }
-  
+
   /**
   * Checks if a database exists on the server connected to. (only used in the setup -> not very important to implement).
-  * @param  $databaseName  Name of the database to check existance of.
+  * @param  $databaseName  Name of the database to check existence of.
   * @return                True if database exists false otherwise.
   */
   function db_exists( $databaseName ){
@@ -224,10 +224,10 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     while( $data = mysql_fetch_array( $result ) ) if ( $databaseName == $data[0] ) return true;
     return false;
   }
-  
+
   /**
   * Checks if a table exists in the database.
-  * @param  $tableName  Name of the table to check existance of.
+  * @param  $tableName  Name of the table to check existence of.
   * @return             True if table exists false otherwise.
   */
   function table_exists( $tableName ){
@@ -235,8 +235,8 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     while( $data = mysql_fetch_array( $result ) ) if ( $tableName == $data[0] ) return true;
     return false;
   }
-  
-    
+
+
   /**
   * Checks if a column in the specified table exists in the database.
   *
@@ -251,7 +251,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
     while( $data = mysql_fetch_array( $result ) ) if ( $columnName == $data[0] ) return true;
     return false;
   }
-  
+
   /** It is necessary to escape all input values in order to prevent from SQL-Injection!!!
    *  So all user/ url-values MUST be escapeStringed!!!
    *
@@ -272,6 +272,6 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
    */
   function unEscapeString( $val ){
     return $val;
-  } 
+  }
 }
 ?>
