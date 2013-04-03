@@ -275,11 +275,12 @@ else{ // no data posted or errors found
      $icons = '';
      for ($i=0; $i<$registrations; $i++) $icons.='<img src="../syspix/fullPlace_11x12.gif" width="11" height="12" alt="X">';
      for ($i=0; $i<$remaining; $i++) $icons.='<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">';
+     for ($i=$registrations-$max; $i>0; $i--) $icons.='<img src="../syspix/waitingPlace_11x12.gif" width="11" height="12" alt="+" title="on waiting list...">';
 
      $pge->put( "</div>\n".
                 "</fieldset>\n".
                 "<input".( $canRegister ? '' : ' disabled="disabled"' )." tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
-                ' <div class="registerPlacesLeft">'.$icons.' '.$lng->get('placesLeft').': '.$remaining.'/'.$max."</div>\n".
+                ' <div class="registerPlacesLeft">'.$icons.' '.$lng->get('placesLeft').': '.($max - $registrations).'/'.$max."</div>\n".
                 "</FORM>"
                );
 

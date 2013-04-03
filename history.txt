@@ -61,6 +61,15 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-04-03
+-------------------
+  /pages/register.php
+  /syspix/waitingPlace_11x12.gif
+    Added an orange icon for showing waiting list places.
+    Changed the counting to reflect waiting list (shown with negative sign now).
+    Background: usually not all students really take part or we have some more 
+    lab places. Thus it makes sense to register even when the course is full...
+
 2013-04-02
 -------------------
 	/include/logger.inc
