@@ -91,6 +91,21 @@ while( $userRightsData = $urDBI->getNextData() ){
                  ' ('.$user->currentTeam.')'] = $user->foreName.' '.$user->surName.' <'.$user->mailAddress.'>'; // format '"'  NAME  '"'  ' '  '<'  ADDRESS  '>'
 }
 
+// For useradmin show all groups:
+if ( (substr( $url->get('config'), -9 ) == 'useradmin') && $usr->isOfKind( IS_ALL_MAILER ) ){
+  // new Interface to the userDB
+  $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
+                              $cfg->get('UserDatabaseUserName'),
+                              $cfg->get('UserDatabasePassWord'),
+                              $cfg->get('UserDatabaseName'));
+  $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
+  while( $data = mysql_fetch_array( $result ) ){
+    if ( substr( $data[0], 0, 1 ) == '_' ){
+      $allOther['#'.$data[0]] = '#'.$data[0];
+    }
+  }
+}
+
 // sort them alphabetically (for different ordering change here and above at the insertion code).
 ksort( $allSupporter );
 ksort( $allOther );

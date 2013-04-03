@@ -69,6 +69,14 @@ Feature Requests:
     Changed the counting to reflect waiting list (shown with negative sign now).
     Background: usually not all students really take part or we have some more 
     lab places. Thus it makes sense to register even when the course is full...
+    
+  /php/sendMail.inc
+  /pages/mailForm.php
+    Added support to send mails to all users of a group at the useradmin page.
+    Users being ALL_MAILER logged on at the useradmin see addresses #_courseID now.
+    Using them sends an email to the whole group.
+    This is especially intended to send an email to the unassigned students before 
+    the first meeting and before those not having attended the first meeting get removed... 
 
 2013-04-02
 -------------------

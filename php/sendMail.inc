@@ -59,9 +59,31 @@ $mailFrom = '"'.$usr->foreName.' '.$usr->surName.'" <'.$usr->mailAddress.'>';
 $i = 0;
 
 $mailto = "";
-if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) )
-while( ++$i <= $_POST['POSSIBLE_RECVR'] ) if ( isset( $_POST['MAIL2_'.$i] ) )
-$mailto .= ", ".$_POST['MAIL2_'.$i];
+if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
+  while( ++$i <= $_POST['POSSIBLE_RECVR'] ) if ( isset( $_POST['MAIL2_'.$i] ) ){
+    if (substr($_POST['MAIL2_'.$i], 0, 2) == '#_' && (substr( $url->get('config'), -9 ) == 'useradmin') && $usr->isOfKind( IS_ALL_MAILER )){
+      // add all receivers
+
+      // new Interface to the userDB
+      $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
+                                  $cfg->get('UserDatabaseUserName'),
+                                  $cfg->get('UserDatabasePassWord'),
+                                  $cfg->get('UserDatabaseName'));
+      // The field names are taken from the config*.ini file
+      $what = $cfg->get("UserDBField_name")." AS name, ".
+              $cfg->get("UserDBField_forename")." AS forename, ".
+              $cfg->get("UserDBField_email")." AS email";
+      // mysql_real_escape_string() against SQL-Injection!
+      $where= substr($_POST['MAIL2_'.$i],1)."='1'";
+      $result = $userDBC->mkSelect( $what, $cfg->get('UserDatabaseTable'), $where );
+      while( $data = mysql_fetch_array( $result ) ){
+        $mailto .= ", ".$data['forename'].' '.$data['name'].' <'.$data['email'].'>';
+      }
+    }else{
+      $mailto .= ", ".$_POST['MAIL2_'.$i];
+    }
+  }
+}
 
 $mailto = substr( $mailto, 2 );
 
