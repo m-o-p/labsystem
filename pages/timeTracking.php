@@ -34,6 +34,19 @@ function getAllAddressesAsArray($parentAddress, &$collection){
   return $output;
 }
 
+/**
+ * Returns the title info for the element specified by $resourceID.
+ * @param unknown $resourceFullAddress The ID the title information should be returned for.
+ */
+function getTitle($resourceFullAddress){
+  $pos = strrpos($resourceFullAddress, '.');
+  if ($pos != 0){
+    $pos++;
+  }
+  $lastID = substr($resourceFullAddress, $pos);
+  return $GLOBALS[strtolower($lastID[0]).'DBI']->getMenuData2idx(substr($lastID,1))->title;
+}
+
 function startsWith($haystack, $needle)
 {
   return !strncmp($haystack, $needle, strlen($needle));
@@ -103,6 +116,10 @@ $pge->put('<p>Hello world!</p>');
 
 // Buckets are there. The keys are the element addresses.
 
+    // The logger pushed all potential closes (35) from the children to the parents.
+    // 1) Unnecessary ones should be deleted from the DB.
+    // 2) The parents should push potential close events to their children as "last resort"
+
 // Sort all events to their matching bucket:
     $result = $Logger->myDBC->mkSelect("*, UNIX_TIMESTAMP(timestamp) as timestampInt", $Logger->myTable, 'resourceID LIKE "l'.$labIDX.'%"'); // TODO: Add date and user restrictions.
     $labFragmentID = 'l'.$labIDX.'~'; // The ~occurs on check events when the context is unknown (only the lab is known).
@@ -123,15 +140,22 @@ $pge->put('<p>Hello world!</p>');
     }
 
 // Generate some output:
-    $pge->put('<ul>');
-    foreach( $allBuckets as $key=>$value){
-      $pge->put('<li><a href="'.$url->link2('/pages/view.php?address='.$key).'">'.$key.'</a><ul>');
-      foreach ($value as $logEntry){
-        $pge->put('<li>'.date('r', $logEntry['timestampInt']).': '.$logEntry['action']."\t -&gt; ".$logEntry['idx'].': '.$logEntry['resourceID'].': '.$logEntry['referrerID'].': '.$logEntry['teamNr']);
-      }
-      $pge->put('</ul>');
-    }
-    $pge->put('</ul>');
+    // Invariant: $allBuckets contains all resourceIDs as keys sorted by occurrence.
+    //                        The values are arrays of the events for the resource sorted by time.
+    // getTitle($resourceFullAddress) can be used to get the title of a resource.
+    // $url->link2('/pages/view.php?address='.$key) links to the resource.
+    //
+    // Traversing could be:
+    //
+    //     foreach( $allBuckets as $key=>$value){
+    //       $pge->put('<li><a href="'.$url->link2('/pages/view.php?address='.$key).'">'.$key.'</a>: '.getTitle($key).'<ul>');
+    //       foreach ($value as $logEntry){
+    //         $pge->put('<li>'.date('r', $logEntry['timestampInt']).': '.$logEntry['action']."\t -&gt; ".$logEntry['idx'].': '.$logEntry['resourceID'].': '.$logEntry['referrerID'].': '.$logEntry['teamNr']);
+    //       }
+    //       $pge->put('</ul>');
+    //     }
+
+    require('timeTracking/listView.inc');
 
 $pge->put( EM::manageBottom( $id ) );
 
