@@ -1,4 +1,4 @@
-CREATE TABLE  `ilab2_2012ws_fablogtst_work`.`event_log` (
+CREATE TABLE IF NOT EXISTS `event_log` (
 `idx` BIGINT NOT NULL AUTO_INCREMENT ,
 `resourceID` VARCHAR( 255 ) NOT NULL ,
 `referrerID` VARCHAR( 255 ) NOT NULL ,

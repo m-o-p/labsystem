@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -41,7 +41,7 @@ if ( $GLOBALS['url']->available("config") ) session_name ( $url->get("config") )
 
 if ( isset( $NEWSESSION ) ) {
   $url->put("inside=true");
-  session_regenerate_id();
+  session_regenerate_id(true);
 }else
   $url->preserve("inside"); /* The presence of this tag in the url has two effects:
                              *  - not all that stuff got to be loaded (but could be)
@@ -58,10 +58,10 @@ if ( strip_tags(SID) != "" ) $url->put( strip_tags(SID) );
 if ( isset($_SESSION["uid"]) &&/* if one of the fields is available all must be */
      ( ($_SESSION["config"] == "") || ( $GLOBALS['url']->available('config') && ($_SESSION["config"] == $url->get('config') ) ) )
      /* This second check (you view data for your configuration) is important because otherwise
-        one could change to another configuration and keep his rights even thoug he did never log
+        one could change to another configuration and keep his rights even though he did never log
         in for that configuration!
       */
-    ) { 
+    ) {
   $usr->uid         = $_SESSION["uid"];
   $usr->userName    = $_SESSION["userName"];
   $usr->foreName    = $_SESSION["foreName"];

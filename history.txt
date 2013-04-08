@@ -61,6 +61,13 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-04-08
+-------------------
+  /include/session.inc
+    Deletes old session files now (since php 5 the parameter of session_regenerate_id() has to be true for that).
+  /setup/sql_new_wdb_event_log_tbl.sql
+    Creates the table in the current DB now. Was buggy.
+
 2013-04-03
 -------------------
   /pages/register.php
