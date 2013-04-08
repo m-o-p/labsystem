@@ -67,6 +67,16 @@ Feature Requests:
     Deletes old session files now (since php 5 the parameter of session_regenerate_id() has to be true for that).
   /setup/sql_new_wdb_event_log_tbl.sql
     Creates the table in the current DB now. Was buggy.
+    
+  /include/init.inc
+  /include/page_layout.inc
+    Included code for measuring the site creation. It is shown in the footer now.
+  /include/classes/DBConnection.inc
+  /include/logger.inc
+    Included mkMultiRowInsert to make multi row inserts.
+    It is used by the logger.inc.
+  /pages/timeTracking.php
+    Formatted output.
 
 2013-04-03
 -------------------

@@ -130,6 +130,18 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
   }
 
   /**
+   * Performs a multi-row insert on the database.
+   * e.g. INSERT INTO table (a, b, c) VALUES (1,2,3)
+   * @param  $what   Fields and values to insert.
+   * @param  $into   Name of the database to insert in.
+   * @return BOOL    The return value of the query.
+   */
+  function mkMultiRowInsert( $what, $into ){
+    $theQuery  = "INSERT INTO ".$into.' '.$what;
+    return $this->query(  $theQuery );
+  }
+
+  /**
   * Performs an insert on the database and returns the value of the autoincremented field used.
   * @param  $what   Fields and values to insert.
   * @param  $into   Name of the database to insert in.

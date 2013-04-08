@@ -100,6 +100,7 @@ class logActions
   const iCorrectorCancel = 16;
   const iEditorOpen      = 17;
   const iEditorSave      = 18;
+  const iClose           = 36; // Fired by the view.php and the edit.php.
 
   const mOpen            = 19;
   const mSave            = 20;
@@ -118,6 +119,8 @@ class logActions
   const lLabCorrected    = 32;
   const lEditorOpen      = 33;
   const lEditorSave      = 34;
+
+  const implicitClose    = 35; // A close the function for evaluating the data infers from the data.
 }
 
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
@@ -157,7 +160,7 @@ class Logger{
     $previousAddress = $GLOBALS['Logger']->getReferrerID();
     if ($url->get("address") != $previousAddress){
       $previousElementID = strtolower(substr(array_pop( explode ( ".", $previousAddress ) ),0,1));
-      if (in_array($previousElementID, array('p', 'l', 'm', 'c'))){
+      if (in_array($previousElementID, array('p', 'l', 'm', 'c', 'i'))){
         $GLOBALS['Logger']->logToDatabase($previousAddress, eval('return logActions::'.$previousElementID.'Close;'));
       }
     }
@@ -175,12 +178,52 @@ class Logger{
     $doLogging = $this->doTheLogging && $cfg->doesExist('logDir') && ($cfg->get('logDir') != '');
     if (!isset($doLogging) || !$doLogging || !isset($_SESSION['uid'])) return; // only log for authenticated users
 
-    $what = 'resourceID="'.$this->myDBC->escapeString($resourceID).'",'.
-            'referrerID="'.$this->myDBC->escapeString($this->getReferrerID()).'",'.
-            'teamNr="'.$this->myDBC->escapeString( ($otherTeamID==''?$_SESSION['currentTeam']:$otherTeamID) ).'",'.
-            'userID="'.$this->myDBC->escapeString($_SESSION['uid']).'",'.
-            'action="'.$action.'"';
-    $this->myDBC->mkInsert($what, $this->myTable);
+    $what = array('resourceID' => $this->myDBC->escapeString($resourceID),
+                  'referrerID' => $this->myDBC->escapeString($this->getReferrerID()),
+                  'teamNr' => $this->myDBC->escapeString( ($otherTeamID==''?$_SESSION['currentTeam']:$otherTeamID) ),
+                  'userID' => $this->myDBC->escapeString($_SESSION['uid']),
+                  'action' => $action );
+    $multiRowToInsert = '("'.$what['resourceID'].'","'.$what['referrerID'].'",'.$what['teamNr'].',"'.$what['userID'].'",'.$what['action'].')';
+
+    // Create implicit closes in all parents.
+    // Rationale: A problem when evaluating the log is that we do not always get
+    // close events. Thus we have to infer them. In this step we add potential close
+    // events.
+    // In the evaluation the wrong ones get removed again so that the database gets
+    // garbage collected.
+    if (($action == logActions::cClose)
+     || ($action == logActions::pClose)
+     || ($action == logActions::pEditorSave)
+     || ($action == logActions::iStudentSave)
+     || ($action == logActions::iStudentCancel)
+     || ($action == logActions::iCorrectorSave)
+     || ($action == logActions::iCorrectorQuick)
+     || ($action == logActions::iCorrectorCancel)
+     || ($action == logActions::mSave)
+     || ($action == logActions::mClose)
+     || ($action == logActions::lClose)
+     || ($action == logActions::lPreLabFinished)
+     || ($action == logActions::lLabClose)
+     || ($action == logActions::lLabCorrected)
+     || ($action == logActions::cEditorSave)
+     || ($action == logActions::iEditorSave)
+     || ($action == logActions::mEditorSave)
+     || ($action == logActions::lEditorSave)
+      ){
+      $what['referrerID'] = $what['resourceID'];
+      $what['action'] = logActions::implicitClose;
+      $what['resourceID'] = '';
+      foreach(explode('.', $resourceID) as $nextIDtoken){
+        if ($what['resourceID'] != ''){
+          $what['resourceID'] .= '.';
+        }
+        $what['resourceID'] .= $nextIDtoken;
+        $multiRowToInsert .= ',("'.$what['resourceID'].'","'.$what['referrerID'].'",'.$what['teamNr'].',"'.$what['userID'].'",'.$what['action'].')';
+      }
+    }
+
+    $this->myDBC->mkMultiRowInsert('(resourceID,referrerID,teamNr,userID,action) VALUES '.$multiRowToInsert,
+        $this->myTable);
   }
 }
 $Logger = new Logger();

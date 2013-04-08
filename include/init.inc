@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -27,11 +27,17 @@
 * @version    1.0
 */
 
+// time measurement
+$mtime = microtime();
+$mtime = explode(" ",$mtime);
+$mtime = $mtime[1] + $mtime[0];
+$pagecreation_starttime = $mtime;
+
 ini_set( "display_errors", "On" ); // uncomment to force php to display errors (php.ini value gets temporarily overwritten).
 //error_reporting(E_ALL ^ (E_NOTICE & E_STRICT) ); // remove warnings php5
 ini_set( "register_globals", "Off" ); // a) security b) problems may arise with duplicate variable names
 
-/* The order of the includes should be like it is since the later  
+/* The order of the includes should be like it is since the later
  * includes require the presence of the previous ones. */
 
 define( "INCLUDE_DIR", "../include" );
@@ -54,7 +60,7 @@ $url->preserve("hideAnswers");                  //  keep in url if present (hide
 $url->preserve('hideExampleSolutionInThisTab');
 
 require( INCLUDE_DIR."/classes/ElementUser.inc" );                // user
-require( INCLUDE_DIR."/classes/Usr.inc" );      /* Creates a current user with default values for accessLevel, name, ... 
+require( INCLUDE_DIR."/classes/Usr.inc" );      /* Creates a current user with default values for accessLevel, name, ...
                                                    => Object $usr.
                                                  */
 require( INCLUDE_DIR."/session.inc" );          /* Include session management (db based) and, if available,

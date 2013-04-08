@@ -104,11 +104,11 @@ $pge->put('<p>Hello world!</p>');
 // Buckets are there. The keys are the element addresses.
 
 // Sort all events to their matching bucket:
-    $result = $Logger->myDBC->mkSelect("*", $Logger->myTable, 'resourceID LIKE "l'.$labIDX.'%"');
-    $labFragmentID = 'l'.$labIDX.'~';
+    $result = $Logger->myDBC->mkSelect("*, UNIX_TIMESTAMP(timestamp) as timestampInt", $Logger->myTable, 'resourceID LIKE "l'.$labIDX.'%"'); // TODO: Add date and user restrictions.
+    $labFragmentID = 'l'.$labIDX.'~'; // The ~occurs on check events when the context is unknown (only the lab is known).
     while($resArray = mysql_fetch_array($result)){
       if (startswith($resArray['resourceID'], $labFragmentID)){
-        foreach( $allBukets as $key=>$value){
+        foreach( $allBuckets as $key=>$value){
           if(endswith($key, substr($resArray['resourceID'], strlen($labFragmentID)))){
             $allBuckets[$key][] = $resArray;
           }
@@ -127,7 +127,7 @@ $pge->put('<p>Hello world!</p>');
     foreach( $allBuckets as $key=>$value){
       $pge->put('<li><a href="'.$url->link2('/pages/view.php?address='.$key).'">'.$key.'</a><ul>');
       foreach ($value as $logEntry){
-        $pge->put('<li>'.$logEntry['idx'].': '.$logEntry['resourceID'].': '.$logEntry['referrerID'].': '.$logEntry['teamNr'].': '.$logEntry['action']);
+        $pge->put('<li>'.date('r', $logEntry['timestampInt']).': '.$logEntry['action']."\t -&gt; ".$logEntry['idx'].': '.$logEntry['resourceID'].': '.$logEntry['referrerID'].': '.$logEntry['teamNr']);
       }
       $pge->put('</ul>');
     }

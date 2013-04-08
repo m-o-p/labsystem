@@ -243,13 +243,20 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
       </tr>
       <tr><td colspan="3" class="labsys_mop_bottomFooter">
         <?php
+        $mtime = microtime();
+        $mtime = explode(" ",$mtime);
+        $mtime = $mtime[1] + $mtime[0];
+        $endtime = $mtime;
+        $totaltime = ($endtime - $pagecreation_starttime);
+        echo "This page was created in ".$totaltime." seconds | ";
+
           $cfg->say("BottomFooter");
           /**
             *   Please keep the link to the project page here to enable other people to find and use the system...
             *   Thank you!
             */
           echo(' &copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem"></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
-               $_SERVER['SERVER_NAME'].'" target="_blank">mop</a> 2005-2012'); // Please do not remove this acknowledgement to me thanks!
+               $_SERVER['SERVER_NAME'].'" target="_blank">mop</a> 2005-2013'); // Please do not remove this acknowledgement to me thanks!
         ?>
       </td></tr>
     </table>
