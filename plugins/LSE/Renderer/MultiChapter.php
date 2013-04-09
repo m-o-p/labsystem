@@ -42,17 +42,11 @@ class LSE_Renderer_MultiChapter implements LSE_Renderer_Interface
             $this->_plugin->setCoverImage('coverImage', file_get_contents($dstPath), 'image/png');
             
             // Readers like Kindle could use a separate startpage
-            $dstPathInfo = pathinfo($dstPath);
-            
-            $vars['imagePath'] = "/" . $dstPathInfo['filename'];
-            
+            $vars['imagePath'] = "images/coverImage";
             $view = new SPT_View();
             $view->assign($vars);
             $coverPage = $view->render(LSE_ROOT . '/templates/coverpage.phtml', true);
-            $oldDocRoot = $this->_plugin->getDocRoot();
-            $this->_plugin->setDocRoot($dstPathInfo['dirname']);
-            $this->_plugin->addChapter( 'coverpage', 'coverpage.html', $coverPage, FALSE, EPUB::EXTERNAL_REF_ADD);
-            $this->_plugin->setDocRoot($oldDocRoot);
+            $this->_plugin->addChapter( 'coverpage', 'coverpage.html', $coverPage, FALSE);
             
             unlink($dstPath);
         }

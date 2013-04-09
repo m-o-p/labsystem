@@ -153,6 +153,7 @@ class LSE_Plugin extends EPub
     
     public function setDocRoot($docRoot)
     {
+        $docRoot .= (substr($docRoot, -1) == "/")?"":"/";
         $this->docRoot = $docRoot;
     }
     
