@@ -99,7 +99,7 @@ setDataBaseField(){
     fi
     if [[ -n "$newValue" || "$3" == "-s" ]]
     then 
-      replace=`echo "$wholeLine" | sed -rn "s&(\s*$1\s*=\s*\")\S*(\").*&\1$(printf '%q' $(printf '%q' $newValue))\2&p"`
+      replace=`echo "$wholeLine" | sed -rn "s&(\s*$1\s*=\s*\")\S*(\".*)&\1$(printf '%q' "$newValue")\2&p"`
       sed -i "s&$wholeLine&$replace&" $2
     fi
   fi
