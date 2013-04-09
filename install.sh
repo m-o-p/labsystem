@@ -1,4 +1,4 @@
 #!/bin/bash
 cd setup
-bash install.sh
+bash install.sh $@
 cd ..

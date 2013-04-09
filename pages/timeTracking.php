@@ -114,6 +114,8 @@ $pge->put('<p>Hello world!</p>');
       }
     }
 
+    $allBuckets['system'] = array();
+
 // Buckets are there. The keys are the element addresses.
 
     // The logger pushed all potential closes (35) from the children to the parents.
@@ -121,7 +123,7 @@ $pge->put('<p>Hello world!</p>');
     // 2) The parents should push potential close events to their children as "last resort"
 
 // Sort all events to their matching bucket:
-    $result = $Logger->myDBC->mkSelect("*, UNIX_TIMESTAMP(timestamp) as timestampInt", $Logger->myTable, 'resourceID LIKE "l'.$labIDX.'%"'); // TODO: Add date and user restrictions.
+    $result = $Logger->myDBC->mkSelect("*, UNIX_TIMESTAMP(timestamp) as timestampInt", $Logger->myTable, 'resourceID LIKE "l'.$labIDX.'%" OR resourceID="system"'); // TODO: Add date and user restrictions.
     $labFragmentID = 'l'.$labIDX.'~'; // The ~occurs on check events when the context is unknown (only the lab is known).
     while($resArray = mysql_fetch_array($result)){
       if (startswith($resArray['resourceID'], $labFragmentID)){

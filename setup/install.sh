@@ -1,4 +1,26 @@
 #!/bin/bash
+if [ "$1" = "--help" ] ; then
+	        echo "
+Sets the labsystem up.
+
+Usage: $0 [--default] 
+
+  --default    runs the script always choosing the default values.
+
+" >&2
+	        exit 1
+fi
+
+if [ "$(id -u)" -ne 0 ] ; then
+	echo "Script must be run as root" >&2
+	exit 1
+fi
+
+alwaysChooseDefault=false
+if [ "$1" = "--default" ] ; then
+	alwaysChooseDefault=true
+fi
+
 clear
 echo "Welcome to the labsystem installation script."
 echo ""
@@ -6,10 +28,11 @@ echo "This script will help you with the basic settings to get your labsystem in
 echo ""
 echo "You will set up the databases and decide if you want to use SSL for login."
 echo ""
-echo "Press Enter to continue..."
-read -s
-clear
-
+if ! $alwaysChooseDefault ; then
+  echo "Press Enter to continue..."
+  read -s
+  clear
+fi
 #echo ""
 #echo "---------------------------------------------------------------------------"
 #echo ">>>> Step 0: The session information is stored file based."
@@ -66,7 +89,9 @@ setDataBaseField(){
     fi
     echo -n ": "
 
-    read $3 newValue
+    if ! $alwaysChooseDefault ; then   
+	    read $3 newValue
+    fi
     # Password with silent input? -> Add a CR
     if [ "$3" == "-s" ]
     then
@@ -133,8 +158,10 @@ setDataBase WorkingDatabase ../ini/config_demo.ini
 
 echo ""
 echo "Step 1/4 is done. Press Enter to continue..."
-read -s
-clear
+if ! $alwaysChooseDefault ; then
+  read -s
+  clear
+fi
 echo "---------------------------------------------------------------------------"
 echo ">>>> Step 2: Do you want to use SSL for login? (1=yes, 0=no)" 
 echo "(It is highly recommended that you set this to 1. You need an SSL webserver)"
@@ -146,8 +173,10 @@ setDataBaseField SSLLogin ../ini/configBase/defaultAuthentication.ini
 
 echo ""
 echo "Step 2/4 is done. Press Enter to continue..."
-read -s
-clear
+if ! $alwaysChooseDefault ; then
+  read -s
+  clear
+fi
 echo ""
 echo "---------------------------------------------------------------------------"
 echo ">>>> Step 3: We determine the Uid of php."
@@ -155,16 +184,16 @@ echo "(We assume a webserver is running on port 80 and try to determine its UID.
 echo ""
 
 echo "Determining web server UID..."
-WWWPID="$(netstat -lpnt | sed -rn 's,^tcp6?\s+\w+\s+\w+\s+\S+:80\s+\S+\s+\w+\s+([0-9]+)/\w+\s*$,\1,p')"
+WWWUID="$(getent passwd | sed -ne "s/^www[^:]*:x:\([0-9]\+\):.*/\1/p")"
 [ $? == 0 ] || exit 1
-[ -n "$WWWPID" -a "$WWWPID" -gt 0 ] || exit 2
 
-WWWUID="$(sed -rn 's/^Uid:\s+\w+\s+(\w+)\s+\w+\s+\w+\s*$/\1/p' /proc/$WWWPID/status)"
 echo "Uid of service on port 80: $WWWUID"
 echo ""
 
 echo -n "Which UID.GID do you want to set for the php writable directories? (enter for $WWWUID): "
-read newValue
+if ! $alwaysChooseDefault ; then
+  read newValue
+fi
 if [ -n "$newValue" ]
 then
   WWWUID="$newValue"
@@ -200,8 +229,10 @@ fi
 
 echo ""
 echo "Step 4/4 is done. Press Enter to continue..."
-read -s
-clear
+if ! $alwaysChooseDefault ; then
+  read -s
+  clear
+fi
 echo ""
 echo "---------------------------------------------------------------------------"
 echo ">>>> All Done." 

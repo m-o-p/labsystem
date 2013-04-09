@@ -61,6 +61,13 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-04-09
+-------------------
+  /install.sh
+    Changed to pass all parameters to:
+  /setup/install.sh
+    Added the parameter --default that omits the dialog and sets all default values keeping the transcript.
+
 2013-04-08
 -------------------
   /include/session.inc
