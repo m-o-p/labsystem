@@ -39,12 +39,17 @@ function getAllAddressesAsArray($parentAddress, &$collection){
  * @param unknown $resourceFullAddress The ID the title information should be returned for.
  */
 function getTitle($resourceFullAddress){
+  global $lng;
   $pos = strrpos($resourceFullAddress, '.');
   if ($pos != 0){
     $pos++;
   }
   $lastID = substr($resourceFullAddress, $pos);
-  return $GLOBALS[strtolower($lastID[0]).'DBI']->getMenuData2idx(substr($lastID,1))->title;
+  if ($element = $GLOBALS[strtolower($lastID[0]).'DBI']->getMenuData2idx(substr($lastID,1))){
+    return $element->title;
+  } else {
+    return $resourceFullAddress.': '.$lng->get("elementNotExist");
+  }
 }
 
 function startsWith($haystack, $needle)
@@ -97,67 +102,70 @@ $pge->put('<p>Hello world!</p>');
     $stopTime  = '2013-04-05 16:21:29';
 
 // Collect buckets. Each full address becomes a bucket.
-    $currentLab = $GLOBALS['lDBI']->getData2idx($labIDX);
-    $preLabBuckets = false;
-    $labBuckets = false;
+    if ($currentLab = $GLOBALS['lDBI']->getData2idx($labIDX)){
+      $preLabBuckets = false;
+      $labBuckets = false;
 
-    $allBuckets = array();
-    if (!$currentLab->noPrelab) {
-      foreach (getAllAddressesAsArray('l'.$labIDX.'.C'.$currentLab->prelabCollectionIdx, $currentLab->preLab) as $value){
-        $allBuckets[$value] = array();
+      $allBuckets = array();
+      if (!$currentLab->noPrelab) {
+        foreach (getAllAddressesAsArray('l'.$labIDX.'.C'.$currentLab->prelabCollectionIdx, $currentLab->preLab) as $value){
+          $allBuckets[$value] = array();
+        }
       }
-    }
 
-    if (!$currentLab->noLab) {
-      foreach (getAllAddressesAsArray('l'.$labIDX.'.C'.$currentLab->labCollectionIdx, $currentLab->lab) as $value){
-        $allBuckets[$value] = array();
+      if (!$currentLab->noLab) {
+        foreach (getAllAddressesAsArray('l'.$labIDX.'.C'.$currentLab->labCollectionIdx, $currentLab->lab) as $value){
+          $allBuckets[$value] = array();
+        }
       }
-    }
 
-    $allBuckets['system'] = array();
+      $allBuckets['system'] = array();
 
-// Buckets are there. The keys are the element addresses.
+  // Buckets are there. The keys are the element addresses.
 
-    // The logger pushed all potential closes (35) from the children to the parents.
-    // 1) Unnecessary ones should be deleted from the DB.
-    // 2) The parents should push potential close events to their children as "last resort"
+      // The logger pushed all potential closes (35) from the children to the parents.
+      // 1) Unnecessary ones should be deleted from the DB.
+      // 2) The parents should push potential close events to their children as "last resort"
 
-// Sort all events to their matching bucket:
-    $result = $Logger->myDBC->mkSelect("*, UNIX_TIMESTAMP(timestamp) as timestampInt", $Logger->myTable, 'resourceID LIKE "l'.$labIDX.'%" OR resourceID="system"'); // TODO: Add date and user restrictions.
-    $labFragmentID = 'l'.$labIDX.'~'; // The ~occurs on check events when the context is unknown (only the lab is known).
-    while($resArray = mysql_fetch_array($result)){
-      if (startswith($resArray['resourceID'], $labFragmentID)){
-        foreach( $allBuckets as $key=>$value){
-          if(endswith($key, substr($resArray['resourceID'], strlen($labFragmentID)))){
-            $allBuckets[$key][] = $resArray;
+  // Sort all events to their matching bucket:
+      $result = $Logger->myDBC->mkSelect("*, UNIX_TIMESTAMP(timestamp) as timestampInt", $Logger->myTable, 'resourceID LIKE "l'.$labIDX.'%" OR resourceID="system"'); // TODO: Add date and user restrictions.
+      $labFragmentID = 'l'.$labIDX.'~'; // The ~occurs on check events when the context is unknown (only the lab is known).
+      while($resArray = mysql_fetch_array($result)){
+        if (startswith($resArray['resourceID'], $labFragmentID)){
+          foreach( $allBuckets as $key=>$value){
+            if(endswith($key, substr($resArray['resourceID'], strlen($labFragmentID)))){
+              $allBuckets[$key][] = $resArray;
+            }
+          }
+        }else{
+          if (array_key_exists($resArray['resourceID'], $allBuckets)){
+            $allBuckets[$resArray['resourceID']][] = $resArray;
+          }else{
+            $allBuckets['l'.$labIDX][] = $resArray;
           }
         }
-      }else{
-        if (array_key_exists($resArray['resourceID'], $allBuckets)){
-          $allBuckets[$resArray['resourceID']][] = $resArray;
-        }else{
-          $allBuckets['l'.$labIDX][] = $resArray;
-        }
       }
+
+  // Generate some output:
+      // Invariant: $allBuckets contains all resourceIDs as keys sorted by occurrence.
+      //                        The values are arrays of the events for the resource sorted by time.
+      // getTitle($resourceFullAddress) can be used to get the title of a resource.
+      // $url->link2('/pages/view.php?address='.$key) links to the resource.
+      //
+      // Traversing could be:
+      //
+      //     foreach( $allBuckets as $key=>$value){
+      //       $pge->put('<li><a href="'.$url->link2('/pages/view.php?address='.$key).'">'.$key.'</a>: '.getTitle($key).'<ul>');
+      //       foreach ($value as $logEntry){
+      //         $pge->put('<li>'.date('r', $logEntry['timestampInt']).': '.$logEntry['action']."\t -&gt; ".$logEntry['idx'].': '.$logEntry['resourceID'].': '.$logEntry['referrerID'].': '.$logEntry['teamNr']);
+      //       }
+      //       $pge->put('</ul>');
+      //     }
+
+      require('timeTracking/listView.inc');
+    }else{
+      $pge->put("<div class=\"labsys_mop_note\">\nl".$labIDX.': '.$lng->get("elementNotExist")."\n</div>");
     }
-
-// Generate some output:
-    // Invariant: $allBuckets contains all resourceIDs as keys sorted by occurrence.
-    //                        The values are arrays of the events for the resource sorted by time.
-    // getTitle($resourceFullAddress) can be used to get the title of a resource.
-    // $url->link2('/pages/view.php?address='.$key) links to the resource.
-    //
-    // Traversing could be:
-    //
-    //     foreach( $allBuckets as $key=>$value){
-    //       $pge->put('<li><a href="'.$url->link2('/pages/view.php?address='.$key).'">'.$key.'</a>: '.getTitle($key).'<ul>');
-    //       foreach ($value as $logEntry){
-    //         $pge->put('<li>'.date('r', $logEntry['timestampInt']).': '.$logEntry['action']."\t -&gt; ".$logEntry['idx'].': '.$logEntry['resourceID'].': '.$logEntry['referrerID'].': '.$logEntry['teamNr']);
-    //       }
-    //       $pge->put('</ul>');
-    //     }
-
-    require('timeTracking/listView.inc');
 
 $pge->put( EM::manageBottom( $id ) );
 
