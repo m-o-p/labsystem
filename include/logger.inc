@@ -185,42 +185,42 @@ class Logger{
                   'action' => $action );
     $multiRowToInsert = '("'.$what['resourceID'].'","'.$what['referrerID'].'",'.$what['teamNr'].',"'.$what['userID'].'",'.$what['action'].')';
 
-    // Create implicit closes in all parents.
-    // Rationale: A problem when evaluating the log is that we do not always get
-    // close events. Thus we have to infer them. In this step we add potential close
-    // events.
-    // In the evaluation the wrong ones get removed again so that the database gets
-    // garbage collected.
-    if (($action == logActions::cClose)
-     || ($action == logActions::pClose)
-     || ($action == logActions::pEditorSave)
-     || ($action == logActions::iStudentSave)
-     || ($action == logActions::iStudentCancel)
-     || ($action == logActions::iCorrectorSave)
-     || ($action == logActions::iCorrectorQuick)
-     || ($action == logActions::iCorrectorCancel)
-     || ($action == logActions::mSave)
-     || ($action == logActions::mClose)
-     || ($action == logActions::lClose)
-     || ($action == logActions::lPreLabFinished)
-     || ($action == logActions::lLabClose)
-     || ($action == logActions::lLabCorrected)
-     || ($action == logActions::cEditorSave)
-     || ($action == logActions::iEditorSave)
-     || ($action == logActions::mEditorSave)
-     || ($action == logActions::lEditorSave)
-      ){
-      $what['referrerID'] = $what['resourceID'];
-      $what['action'] = logActions::implicitClose;
-      $what['resourceID'] = '';
-      foreach(explode('.', $resourceID) as $nextIDtoken){
-        if ($what['resourceID'] != ''){
-          $what['resourceID'] .= '.';
-        }
-        $what['resourceID'] .= $nextIDtoken;
-        $multiRowToInsert .= ',("'.$what['resourceID'].'","'.$what['referrerID'].'",'.$what['teamNr'].',"'.$what['userID'].'",'.$what['action'].')';
-      }
-    }
+//     // Create implicit closes in all parents.
+//     // Rationale: A problem when evaluating the log is that we do not always get
+//     // close events. Thus we have to infer them. In this step we add potential close
+//     // events.
+//     // In the evaluation the wrong ones get removed again so that the database gets
+//     // garbage collected.
+//     if (($action == logActions::cClose)
+//      || ($action == logActions::pClose)
+//      || ($action == logActions::pEditorSave)
+//      || ($action == logActions::iStudentSave)
+//      || ($action == logActions::iStudentCancel)
+//      || ($action == logActions::iCorrectorSave)
+//      || ($action == logActions::iCorrectorQuick)
+//      || ($action == logActions::iCorrectorCancel)
+//      || ($action == logActions::mSave)
+//      || ($action == logActions::mClose)
+//      || ($action == logActions::lClose)
+//      || ($action == logActions::lPreLabFinished)
+//      || ($action == logActions::lLabClose)
+//      || ($action == logActions::lLabCorrected)
+//      || ($action == logActions::cEditorSave)
+//      || ($action == logActions::iEditorSave)
+//      || ($action == logActions::mEditorSave)
+//      || ($action == logActions::lEditorSave)
+//       ){
+//       $what['referrerID'] = $what['resourceID'];
+//       $what['action'] = logActions::implicitClose;
+//       $what['resourceID'] = '';
+//       foreach(explode('.', $resourceID) as $nextIDtoken){
+//         if ($what['resourceID'] != ''){
+//           $what['resourceID'] .= '.';
+//         }
+//         $what['resourceID'] .= $nextIDtoken;
+//         $multiRowToInsert .= ',("'.$what['resourceID'].'","'.$what['referrerID'].'",'.$what['teamNr'].',"'.$what['userID'].'",'.$what['action'].')';
+//       }
+//    }
 
     $this->myDBC->mkMultiRowInsert('(resourceID,referrerID,teamNr,userID,action) VALUES '.$multiRowToInsert,
         $this->myTable);
