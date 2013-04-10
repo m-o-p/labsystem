@@ -91,36 +91,38 @@ class logActions
   const pEditorOpen      = 8;
   const pEditorSave      = 9;
 
-  const iStudentOpen     = 10;
-  const iStudentSave     = 11;
-  const iStudentCancel   = 12;
-  const iCorrectorOpen   = 13;
-  const iCorrectorSave   = 14;
-  const iCorrectorQuick  = 15;
-  const iCorrectorCancel = 16;
-  const iEditorOpen      = 17;
-  const iEditorSave      = 18;
-  const iClose           = 36; // Fired by the view.php and the edit.php.
+  const iOpen            = 10;
+  const iStudentOpen     = 11;
+  const iStudentSave     = 12;
+  const iStudentCancel   = 13;
+  const iCorrectorOpen   = 14;
+  const iCorrectorSave   = 15;
+  const iCorrectorQuick  = 16;
+  const iCorrectorCancel = 17;
+  const iEditorOpen      = 18;
+  const iEditorSave      = 19;
+  const iClose           = 20; // Fired by the view.php and the edit.php.
 
-  const mOpen            = 19;
-  const mSave            = 20;
-  const mClose           = 21; // Fired when a m was the last page visited and now another one is shown
-  const mCheck           = 22;
-  const mIsCorrectAnswer = 23; // Fired immediately after mCheck
-  const mIsWrongAnswer   = 24; // Fired immediately after mCheck
-  const mEditorOpen      = 25;
-  const mEditorSave      = 26;
+  const mOpen            = 21;
+  const mClose           = 22; // Fired when a m was the last page visited and now another one is shown
+  const mStudentOpen     = 23;
+  const mStudentSave     = 24;
+  const mCheck           = 25;
+  const mIsCorrectAnswer = 26; // Fired immediately after mCheck
+  const mIsWrongAnswer   = 27; // Fired immediately after mCheck
+  const mEditorOpen      = 28;
+  const mEditorSave      = 29;
 
-  const lOpen            = 27; // Fired when allQ is shown or other l pages
-  const lClose           = 28; // Fired when a l was the last page visited and now another one is shown
-  const lPreLabFinished  = 29;
-  const lLabOpen         = 30; // Fired again when reopened
-  const lLabClose        = 31;
-  const lLabCorrected    = 32;
-  const lEditorOpen      = 33;
-  const lEditorSave      = 34;
+  const lOpen            = 30; // Fired when allQ is shown or other l pages
+  const lClose           = 31; // Fired when a l was the last page visited and now another one is shown
+  const lPreLabFinished  = 32;
+  const lLabOpen         = 33; // Fired again when reopened
+  const lLabClose        = 34;
+  const lLabCorrected    = 35;
+  const lEditorOpen      = 36;
+  const lEditorSave      = 37;
 
-  const implicitClose    = 35; // A close the function for evaluating the data infers from the data.
+  const implicitClose    = 38; // A close the function for evaluating the data infers from the data.
 }
 
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );

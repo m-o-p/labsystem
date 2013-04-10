@@ -287,7 +287,7 @@ class LmElement extends Element{
                                            )."\" onclick='isDirty=false'>\n".
                "</FORM>\n";
                if ($isGettingAnswered){
-                 $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::mOpen);
+                 $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::mStudentOpen);
                }
      }
      if ( $this->isAnswered && ($this->answerExplanation != "") )
@@ -315,6 +315,8 @@ class LmElement extends Element{
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
     }
+
+    $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::mOpen);
 
     if ($this->question == ""){ return "'()"; exit; }
 
@@ -637,7 +639,7 @@ class LmElement extends Element{
     // store the new dataset
     $this->mcDBI->setData4( $usr->uid, $this->idx, $this->displayPermutation, $this->previousAnswersArray );
 
-    $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::mSave);
+    $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::mStudentSave);
 
     // One could also display the page here but that way it is left to the normal mechanism...
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
