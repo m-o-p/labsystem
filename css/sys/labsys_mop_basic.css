@@ -29,7 +29,7 @@ body {
                       font-family: verdana, sans-serif; 
                       text-align:justify; 
 }
-input, textarea, fieldset { /* round edges on the buttons and inputs */
+input, textarea, fieldset, .labsys_mop_l_ePubLinkBox { /* round edges on the buttons and inputs */
                       border-radius: 0.3em;
       }
 /* Break long lines: */
@@ -622,6 +622,15 @@ fieldset{
                       padding-right: 8em;
                       font-style: italic;
                       font-size: 0.9em;
+  }
+  
+  .labsys_mop_l_ePubLinkBox{ /* One data row on the element's manage and the collection structure site. */
+                    padding:  1em;
+                    margin: 1em 8em 1em 8em;
+                    font-size: 0.7em;
+                    border: solid 1px #ddd;
+                    font-style: italic;
+                    background-color: #eee;
   }
   
   .labsys_mop_l_status_userhead{ /* Used for the line containing the user name in top of all lab's status */

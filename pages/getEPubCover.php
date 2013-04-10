@@ -30,7 +30,18 @@ $myCG = new LSE_Util_CoverImageGenerator();
 require( '../include/setupEpubFrontMatter.inc');
 $myCG->setSrcImagePath( $epubConfig['coverImage'] );
 $myCG->setDstImagePath($file);
+// Cover text:
 $myCG->setText( $cfg->get('SystemTitle') );
+if ( $GLOBALS['url']->available('address') ){
+  $address = $GLOBALS['url']->get('address'); // address provided
+  require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0}; $num = substr( $firstFinal, 1);
+  if ($id == 'l'){
+    require( "../php/getDBIbyID.inc" ); /* -> $DBI */
+    if ( $element = $DBI->getMenuData2idx( $num ) ){
+      $myCG->setText( $element->title );
+    }
+  }
+}
 $myCG->generate();
 header("Content-length: ".filesize($file));
 header("Content-type: ".mime_content_type($file));

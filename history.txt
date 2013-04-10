@@ -61,6 +61,14 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-04-10
+-------------------
+  /css/sys/labsys_mop_basic.css
+  /include/classes/elements/LlElement.inc
+  /pages/getEPubCover.php
+    If epub is enabled in the config a link to the chapter epub is shown on the TOC page of each lab now.
+    It shows the cover and the note.
+
 2013-04-09
 -------------------
   /install.sh

@@ -178,13 +178,25 @@ class LlElement extends Element{
   * @return string            The html representation of the TOC.
   */
   function showTOC( $fullAddress, $extParagraph ){
-    global $lng;
+    global $lng, $cfg, $usr, $url;
 
     $myRet = '<div class="labsys_mop_l_comment">'."\n".
              returnHTML( $this->comment ).
              "</div>\n";
     if ( $this->preLabIsVisible2Me ) $myRet .= $this->preLab->show( $fullAddress.".C".$this->prelabCollectionIdx, ( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
     if ( $this->labIsVisible2Me ) $myRet .= $this->lab->show( $fullAddress.".C".$this->labCollectionIdx, ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
+
+    // ePub
+    $allowEpub         = $cfg->doesExist('allowEpubDownload') && ($cfg->get('allowEpubDownload') == "1");
+    if ($allowEpub && $usr->isOfKind( IS_USER )){
+      $myRet .= "<div class=\"labsys_mop_l_ePubLinkBox\">\n".
+          '<a href="'.$url->link2( '../pages/view.php?address=l'.$this->idx.'.epub' ).'">'.
+          '<img src="'.$url->link2( '../pages/getEPubCover.php?address=l'.$this->idx ).'" width="75px" style="float: left; padding-right: 1em;" />
+                '.( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'
+                <div style="clear: left;"></div>
+                </div>';
+    }
+
     return $myRet;
   }
 
