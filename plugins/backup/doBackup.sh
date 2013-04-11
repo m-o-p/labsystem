@@ -15,5 +15,5 @@ DBPASSWD=""
 MONTH="$(date '+%Y-%m')"
 mkdir -p "${FOLDER}/${MONTH}" || qwe "cannot create ${FOLDER}/${MONTH}"
 
-echo "Backing up $DBNAME to ${FOLDER}/${MONTH}/$(date '+%F_%H-%M-%S')_${DBNAME}.sql.gz."
+echo "Backing up $DBNAME to ${FOLDER}/${MONTH}/$(date '+%F_%H-%M-%S')_${DBNAME}.sql.gz." >&1
 mysqldump -u"$DBUSER" -p"$DBPASSWD" "$DBNAME" | gzip > "${FOLDER}/${MONTH}/$(date '+%F_%H-%M-%S')_${DBNAME}.sql.gz"

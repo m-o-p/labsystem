@@ -14,5 +14,5 @@ FOLDER="$1"
 MONTH="$(date '+%Y-%m')"
 mkdir -p "${FOLDER}/FULL" || qwe "cannot create ${FOLDER}/FULL"
 
-echo "Backing up all-databases to ${FOLDER}/FULL/$(date '+%F_%H-%M-%S').sql.gz."
+echo "Backing up all-databases to ${FOLDER}/FULL/$(date '+%F_%H-%M-%S').sql.gz." >&1
 mysqldump -u"$DBUSER" -p"$DBPASSWD" --all-databases | gzip > "${FOLDER}/FULL/$(date '+%F_%H-%M-%S').sql.gz"
