@@ -8,10 +8,10 @@ echo "Backup all necessary DBs..." >&2
 
 if [ "$(date '+%d')" = 11 ]
 then
-        echo "Doing a full backup." >&2
+        echo "Doing a full backup." >&1
 	./doFullBackup.sh "$DESTINATIONFOLDER"
 else
-        echo "Doing a partial backup."
+        echo "Doing a partial backup." >&1
 
 	# iLab1
 	./doBackup.sh ilab_2013ss_data "$DESTINATIONFOLDER"
