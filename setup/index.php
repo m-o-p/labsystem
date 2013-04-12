@@ -46,7 +46,7 @@ if ( !file_exists( 'information.txt' ) ){
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title>Installating labsystem.m-o-p.de...</title>
+    <title>Installing labsystem.m-o-p.de...</title>
   </head>
   <body style="margin: 1em; background-color: #89897c; font-family: Verdana, Sans-Serif;">
   <div style="width: 40em; background-color: #ffffff; color: #000000; padding: 1em;">
@@ -62,7 +62,7 @@ if ( !file_exists( 'information.txt' ) ){
     <br>
     <a href="../ini/config_'.$_GET['config'].'.ini" target="_blank"><button style="width: 100%">Is my ini file protected?</button></a><br><br>
     A new page will open. If you do not get an access denied warning but see the config file with your passwords, everyone can access it. <br>
-    You have to make the ini directory read protected for the webserver then! (see install instructions and your webserver\'s manual for details.)
+    You have to make the ini directory read protected for the web server then! (see install instructions and your web server\'s manual for details.)
   </p>
   <pre>
 ');
@@ -604,6 +604,17 @@ echo( '
   <br>
   You can also change the values in your php.ini which affects all hosts on the machine then.
 ');
+
+
+say_title('Adding new config to backup.txt for backup');
+$instanceID = $configPrefix.$GLOBALS['url']->get("config");
+$oldBackupTXT = file_get_contents("../backup.txt");
+if( strpos($oldBackupTXT,$_GET['id']) !== false) {
+  $oldBackupTXT .= PHP_EOL.$instanceID;
+  say_done();
+}else{
+  say_skipped();
+}
 
 /* C: AFTER INSTALLATION NOTES */
 say_toptitle( 'Installation done!' ); /***********************************/
