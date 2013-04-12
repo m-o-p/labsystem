@@ -61,6 +61,26 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-04-12
+-------------------
+    Changes on the backup strategy.
+    The backup happens now via a php script:
+  /php/cliDoInstanceBackup.php
+    This script gets invoked by:
+  /backup.sh
+    reads out the
+  /backup.txt
+    The first line determines the backup directory.
+    The following lines determine the instances to be backuped.
+  /setup/install.sh
+    Provides a comfortable setup dialog for the backup script and places it in cron.daily.
+    The plugins also have a good setup now.
+    If you include new plugins just place them into the plugin directory in a sub folder.
+    Add a #readme.txt and an install.sh and the install script of the labsystem automatically
+    will prompt for the new plugin.
+    
+    THANKS TO FELIX KUPERJANS FOR THE MILLIONS OF HELPING HANDS WITH THE SHELL SCRIPTS!
+    
 2013-04-10
 -------------------
   /css/sys/labsys_mop_basic.css

@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -22,7 +22,7 @@
 * This module loads the configuration file (contains global variables like database, title, ...).
 * The active configuration is selected the parameter $_GET["config"].
 *
-* In the given config file you can include other config files by using the 
+* In the given config file you can include other config files by using the
 * include = "../ini/configA.ini, ../ini/configB.ini, "
 * field.
 * As you can see many files can be included.
@@ -44,43 +44,52 @@ require_once( INCLUDE_DIR."/classes/Rom.inc" );
 
 // use the hostname prefix as base for the config?
   $configPrefix='';
-  /* An interesting feature is to use name based hosts 
+  /* An interesting feature is to use name based hosts
    * to select the proper configuration files.
    *
    * In the following script the $_GET['config'] gets
    * rewritten according to the hostname.
    *
-   * As configuration for /include/configuration.inc the following 
-   * file is used. 
-   * 
+   * As configuration for /include/configuration.inc the following
+   * file is used.
+   *
    * Note the big letters of the hostnames.
    * Its content is:
    * HOSTNAME     =  "configprefix"
    * ILAB         =  "ilab_"
    * ILAB2        = "ilab2_"
    */
-  $h2cFile = "../ini/host2config.ini";
-  if ( !file_exists( $h2cFile ) ) { trigger_error( $h2cFile.' missing! (config-file)' , E_USER_ERROR ); exit; }; // no configuration there
-  $h2c = new Rom( parse_ini_file( $h2cFile ) );
-  $subHost = strtoupper( substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.') ) );
-  if ($h2c->doesExist( $subHost )) $configPrefix=$h2c->get( $subHost );
-  // to always add the infix of the hostname the following code may help:
-  // $configPrefix=strtolower(substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.'))).'_';
-// /use the hostname prefix as base for the config?
+  if (php_sapi_name() != 'cli'){
+    // normal call via URL
+      $h2cFile = "../ini/host2config.ini";
+      if ( !file_exists( $h2cFile ) ) { trigger_error( $h2cFile.' missing! (config-file)' , E_USER_ERROR ); exit; }; // no configuration there
+      $h2c = new Rom( parse_ini_file( $h2cFile ) );
+      $subHost = strtoupper( substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.') ) );
+      if ($h2c->doesExist( $subHost )) $configPrefix=$h2c->get( $subHost );
+      // to always add the infix of the hostname the following code may help:
+      // $configPrefix=strtolower(substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.'))).'_';
+    // /use the hostname prefix as base for the config?
 
 
-if ( $GLOBALS['url']->available("config") )
-  $configFile = "../ini/config_".$configPrefix.$GLOBALS['url']->get("config").".ini";
-else
-  $configFile = "../ini/config_demo.ini";
-  
+    if ( $GLOBALS['url']->available("config") )
+      $configFile = "../ini/config_".$configPrefix.$GLOBALS['url']->get("config").".ini";
+    else
+      $configFile = "../ini/config_demo.ini";
+  } else {
+    // CLI mode -> take config from command line:
+    if ($argc < 2){
+      echo('Configuration file not specified.'.PHP_EOL);
+      exit;
+    }
+    $configFile = "../ini/config_".$configPrefix.$argv[1].".ini";
+  }
 $currentConfig = $configFile;
 
 $configData = array('include' => $configFile);
 while ( $configData['include'] != '' ){
   $nextConfigs2Include = explode(',', $configData['include']);
   $configData['include'] = ''; // clear field, might be refilled in the parsing process
-  
+
   foreach ( $nextConfigs2Include as $configFile ){
     $configFile = trim( $configFile ); // remove white spaces at borders
     if ( !file_exists( $configFile ) ) // File there?
