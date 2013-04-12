@@ -158,7 +158,7 @@ setDataBase WorkingDatabase ../ini/config_demo.ini
 
 
 echo ""
-echo "Step 1/4 is done. Press Enter to continue..."
+echo "Step 1/5 is done. Press Enter to continue..."
 if ! $alwaysChooseDefault ; then
   read -s
   clear
@@ -229,11 +229,47 @@ then
 fi
 
 echo ""
-echo "Step 4/4 is done. Press Enter to continue..."
+echo "Step 4/5 is done. Press Enter to continue..."
 if ! $alwaysChooseDefault ; then
   read -s
   clear
 fi
+
+echo ""
+echo "---------------------------------------------------------------------------"
+echo ">>>> Step 5: Plugins."
+echo "You can extend the system with various plugins."
+echo "You will be prompted for all of them that contain an installation script (install.sh) now."
+echo "Alternatively you can go to their directory and call the install.sh from"
+echo "your shell or call the installAll.sh in the plugin directory."
+echo ""
+for plugin in $(ls -1 ./plugins) ; do
+  # display #readme.txt
+  [ -r "./plugins/$plugin/#readme.txt" ] && cat "./plugins/$plugin/#readme.txt"
+  if [ -x "./plugins/$plugin/install.sh" ] ; then
+    while true; do
+      if ! $alwaysChooseDefault ; then
+        read -p "Do you wish to install this program?" yn
+      else
+        yn="y"
+      fi
+      case $yn in
+      [Yy]* ) ( cd "./plugins/$plugin" && "./install.sh" ) ; break ;;
+      [Nn]* ) break ;;
+      * ) echo "Please answer y or n." ;;
+      esac
+    done
+  fi
+done
+
+echo ""
+echo "Step 5/5 is done. Press Enter to continue..."
+if ! $alwaysChooseDefault ; then
+read -s
+clear
+fi
+
+
 echo ""
 echo "---------------------------------------------------------------------------"
 echo ">>>> All Done." 
