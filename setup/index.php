@@ -606,11 +606,14 @@ echo( '
 ');
 
 
-say_title('Adding new config to backup.txt for backup');
 $instanceID = $configPrefix.$GLOBALS['url']->get("config");
-$oldBackupTXT = file_get_contents("../backup.txt");
-if( strpos($oldBackupTXT,$_GET['id']) !== false) {
-  $oldBackupTXT .= PHP_EOL.$instanceID;
+$fileName = "../backup.txt";
+say_toptitle('Adding new config '.$instanceID.' to the backup.txt for backup'); /***********************************/
+$oldBackupTXT = file_get_contents($fileName);
+echo($instanceID.' --> '.$fileName.'... ' );
+if( strpos($oldBackupTXT,$instanceID) === false) {
+  $oldBackupTXT .= $instanceID.PHP_EOL;
+  file_put_contents($fileName, $oldBackupTXT);
   say_done();
 }else{
   say_skipped();
