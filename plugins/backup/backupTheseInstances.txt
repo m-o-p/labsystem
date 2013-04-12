@@ -1,4 +1,0 @@
-ilab_2013ss
-ilab2_2013ss
-ilab_2013_dev
-lab2_2013dev

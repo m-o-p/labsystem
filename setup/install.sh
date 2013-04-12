@@ -158,7 +158,7 @@ setDataBase WorkingDatabase ../ini/config_demo.ini
 
 
 echo ""
-echo "Step 1/5 is done. Press Enter to continue..."
+echo "Step 1/6 is done. Press Enter to continue..."
 if ! $alwaysChooseDefault ; then
   read -s
   clear
@@ -173,7 +173,7 @@ cp ../ini/configBase/defaultAuthentication.ini ../ini/configBase/defaultAuthenti
 setDataBaseField SSLLogin ../ini/configBase/defaultAuthentication.ini
 
 echo ""
-echo "Step 2/5 done. Press Enter to continue..."
+echo "Step 2/6 done. Press Enter to continue..."
 if ! $alwaysChooseDefault ; then
   read -s
   clear
@@ -201,6 +201,13 @@ then
 fi
 
 echo ""
+echo "Step 3/6 is done. Press Enter to continue..."
+if ! $alwaysChooseDefault ; then
+	read -s
+	clear
+fi
+
+echo ""
 echo "---------------------------------------------------------------------------"
 echo ">>>> Step 4: We set some directories to be writable by php."
 echo "(Files in these directories will be edited or created from within the php.)"
@@ -222,6 +229,9 @@ for x in UploadDirectory exportImportDir importPictureDir importFilesDir SystemR
 ownDirectory css ../css/
 rm ../css/.htaccess
 
+echo "Reowning the /backup.txt to the webserver user to make it editable by PHP."
+chown $WWWUID ../backup.txt
+
 # Session data path given? Create it...
 if [ -n "$session_data_save_path" ]
 then
@@ -229,7 +239,7 @@ then
 fi
 
 echo ""
-echo "Step 4/5 is done. Press Enter to continue..."
+echo "Step 4/6 is done. Press Enter to continue..."
 if ! $alwaysChooseDefault ; then
   read -s
   clear
@@ -237,7 +247,58 @@ fi
 
 echo ""
 echo "---------------------------------------------------------------------------"
-echo ">>>> Step 5: Plugins."
+echo ">>>> Step 5: Backup."
+echo "The labsystem brings a backup script that can run daily and backup your current configurations."
+echo "Which instances are backuped and where to is controlled by the backup.txt in the labsystem"
+echo "directory."
+echo ""
+echo "It is recomended to run regular backups on the databases."
+echo ""
+    while true; do
+	if ! $alwaysChooseDefault ; then
+		echo ""
+		read -p "Do you want to setup the backup [y/n]?" yn
+	else
+		yn="y"
+	fi
+	case $yn in
+		[Yy]* ) 
+			BACKUPDIR=$( head -n 1 ../backup.txt )
+			if [ -z "$BACKUPDIR" ] ; then
+				BACKUPDIR="/srv/labsystem-backup"
+				echo "$BACKUPDIR" >../backup.txt
+			fi
+			echo -n "To which directory do you want to backup? (enter for $BACKUPDIR): "
+			if ! $alwaysChooseDefault ; then
+				read newValue
+			fi 
+			if [ -n "$newValue" ]
+        		then
+				BACKUPDIR="$newValue"
+        		fi
+			if [ ! -d "$BACKUPDIR" ] ; then
+				echo "Warning: $BACKUPDIR does not exist." >&2
+			fi
+			sed -i -e "1 s|.*|$BACKUPDIR|" ../backup.txt
+			ln -fs "$( readlink -f ../backup.sh )" /etc/cron.daily/labsystem-backup
+			echo "Linked backup script in /etc/cron.daily/labsystem-backup for daily run." 
+		break ;;
+		[Nn]* ) break ;;
+		* ) echo "Please answer y or n." ;;
+	esac
+	done
+
+echo ""
+echo "Step 5/6 is done. Press Enter to continue..."
+if ! $alwaysChooseDefault ; then
+	read -s
+	clear
+fi
+
+
+echo ""
+echo "---------------------------------------------------------------------------"
+echo ">>>> Step 6: Plugins."
 echo "You can extend the system with various plugins."
 echo "You will be prompted for all of them that contain an installation script (install.sh) now."
 echo "Alternatively you can go to their directory and call the install.sh from your shell."
@@ -278,7 +339,7 @@ for plugin in $(ls -1 ../plugins) ; do
 done
 
 echo ""
-echo "Step 5/5 is done. Press Enter to continue..."
+echo "Step 6/6 is done. Press Enter to continue..."
 if ! $alwaysChooseDefault ; then
 read -s
 clear
