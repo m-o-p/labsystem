@@ -173,7 +173,7 @@ cp ../ini/configBase/defaultAuthentication.ini ../ini/configBase/defaultAuthenti
 setDataBaseField SSLLogin ../ini/configBase/defaultAuthentication.ini
 
 echo ""
-echo "Step 2/4 is done. Press Enter to continue..."
+echo "Step 2/5 done. Press Enter to continue..."
 if ! $alwaysChooseDefault ; then
   read -s
   clear
@@ -240,25 +240,40 @@ echo "--------------------------------------------------------------------------
 echo ">>>> Step 5: Plugins."
 echo "You can extend the system with various plugins."
 echo "You will be prompted for all of them that contain an installation script (install.sh) now."
-echo "Alternatively you can go to their directory and call the install.sh from"
-echo "your shell or call the installAll.sh in the plugin directory."
+echo "Alternatively you can go to their directory and call the install.sh from your shell."
 echo ""
-for plugin in $(ls -1 ./plugins) ; do
+for plugin in $(ls -1 ../plugins) ; do
+  echo ""
+  echo "---------------------------------------------------------------------------"
+  echo "$plugin"
+  echo "---------------------------------------------------------------------------"
+  echo ""
   # display #readme.txt
-  [ -r "./plugins/$plugin/#readme.txt" ] && cat "./plugins/$plugin/#readme.txt"
-  if [ -x "./plugins/$plugin/install.sh" ] ; then
+  [ -r "../plugins/$plugin/#readme.txt" ] && cat "../plugins/$plugin/#readme.txt"
+  if [ -x "../plugins/$plugin/install.sh" ] ; then
     while true; do
       if ! $alwaysChooseDefault ; then
-        read -p "Do you wish to install this program?" yn
+	echo ""
+        read -p "Do you wish to install this program [y/n]?" yn
       else
         yn="y"
       fi
       case $yn in
-      [Yy]* ) ( cd "./plugins/$plugin" && "./install.sh" ) ; break ;;
+      [Yy]* ) ( cd "../plugins/$plugin" && "./install.sh" ) ; break ;;
       [Nn]* ) break ;;
       * ) echo "Please answer y or n." ;;
       esac
     done
+  else
+    echo ""
+    echo "No automatic installation script (install.sh) found or it is not executable."
+    echo "Please install the plugin manually."
+    echo ""
+    echo "Press Enter to continue..."
+    if ! $alwaysChooseDefault ; then
+	    read -s
+	    clear
+    fi
   fi
 done
 
