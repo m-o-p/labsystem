@@ -61,6 +61,18 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-04-13
+-------------------
+  /php/changeMyRights.php
+    Can be called as script now to change one's rights.
+    I introduce this for the demo system.
+    It allows a call /php/changeMyRights.php?config=demo&inside=true&newrights=1&redirectto=../pages/accessibleLabs.php for instance.
+    This sets the rights to IS_USER and redirects to the accessible labs page.
+    This will be used in the demo system to change the roles...
+  /include/page_layout.inc
+    Shortened the text showing the page creation time in the footer.
+    Otherwise it was two lines on an iPhone for instance.
+
 2013-04-12
 -------------------
     Changes on the backup strategy.

@@ -247,8 +247,8 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
         $mtime = explode(" ",$mtime);
         $mtime = $mtime[1] + $mtime[0];
         $endtime = $mtime;
-        $totaltime = ($endtime - $pagecreation_starttime);
-        echo "This page was created in ".$totaltime." seconds | ";
+        $totaltime = round( ($endtime - $pagecreation_starttime), 4);
+        echo '<span style="color:#888">*:'.$totaltime."sec | </span>";
 
           $cfg->say("BottomFooter");
           /**
