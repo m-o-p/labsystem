@@ -49,6 +49,7 @@ if ( !$returnEpub && $usr->isOfKind( IS_USER )) $pge->put(  "<div class=\"labsys
                                         "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" )
               : '' )."</div>\n" );
 if ($returnEpub){
+  $GLOBALS['Logger']->logToDatabase('accessibleLabs', logActions::ePubLoad);
   // echo("initializing ePub<br>");
   //TODO: Call functions to tell ePub export that multiple labs come now.
   $epubExporter = LSE_Exporter::getInstance();

@@ -61,6 +61,24 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-04-18
+-------------------
+  /include/classes/elements/LlElement.inc
+    The  picture link contains the image dimensions now where available.
+    Epub downloads are logged now.
+  /pages/accessibleLabs.php
+    Added epub logging.
+  /include/logger.inc
+    Added a new class for the epub downloads.
+  /include/page_layout.inc
+    Added an icon and functionality for enabling tinyMCE as wysiwyg.
+  /ini/configBase/defaultCourseBehaviour.ini
+    Disabled logging by default.
+  /ini/configBase/defaultSystemLayout.ini
+    Added a parameter for tinyMCE.
+  /pages/myRights.php
+    The numerical value of the current rights is displayed as well now.
+
 2013-04-13
 -------------------
   /php/changeMyRights.php

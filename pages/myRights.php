@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -53,9 +53,9 @@ $data = $urDBI->getData4( $_SESSION["uid"] );
 $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myRightsEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/changeMyRights.php")."\">\n".
            "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
            "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/myRights.php\">\n".
-           "<fieldset><legend>".$lng->get("rights")."</legend>\n".
+           "<fieldset><legend>".$lng->get("rights").' ('.$_SESSION["userRights"].")</legend>\n".
            "<div class=\"labsys_mop_in_fieldset\">\n" );
-// user's possible rights      
+// user's possible rights
   for ($i=2; $i<=MAX_USER_ROLE; $i=$i<<1)
     if ( $usr->isOfKind( $i, $usr->userRights ) ||  // is the user having this right
                                                     // only SU in not licensed mode (-> wont b
@@ -63,10 +63,10 @@ $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myRightsEdit\" METHOD=\"P
          $usr->isOfKind( $i, $data['rights'] )      // is the user able to have this right
         )
       $pge->put( rightsBox( "UR_".$i, $i, $usr->userRights, false )."<label for=\"UR_".$i."\" class=\"labsys_mop_input_field_label\">".$lng->get("Explain_UR_".$i)."</label><br>\n" );
-    
+
 $pge->put( "</div>\n".
            "</fieldset>\n".
-           "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".            
+           "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
            "</FORM>"
           );
 

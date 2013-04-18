@@ -123,6 +123,8 @@ class logActions
   const lEditorSave      = 37;
 
   const implicitClose    = 38; // A close the function for evaluating the data infers from the data.
+
+  const ePubLoad         = 39;
 }
 
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );

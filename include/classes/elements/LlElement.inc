@@ -728,6 +728,7 @@ class LlElement extends Element{
       return; // Nothing to do.
     }
 
+    $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::ePubLoad);
 
     include_once(INCLUDE_DIR . '/../plugins/LSE/Exporter.php');
 
@@ -1212,7 +1213,7 @@ class LlElement extends Element{
             '<a name="uploadMaterial"></a>'."\n". // anchor for retrieving after saving
             "<fieldset><legend>".$lng->get('uploadMaterial')."</legend>\n".
             $lng->get('uploadMaterialNote').
-            $this->getUploadInterface( $cfg->get('importPictureDir').$this->uniqueID, '&lt;img src=&quot;%1$s%2$s&quot; alt=&quot;%2$s&quot; /&gt;' ).
+            $this->getUploadInterface( $cfg->get('importPictureDir').$this->uniqueID, '&lt;img src=&quot;%1$s%2$s&quot; %3$salt=&quot;%2$s&quot; /&gt;' ).
             $this->getUploadInterface( $cfg->get('importFilesDir').$this->uniqueID, '&lt;a href=&quot;%1$s%2$s&quot;&gt;%2$s&lt;/a&gt;' ).
             "</fieldset>\n".
 
@@ -1275,7 +1276,10 @@ class LlElement extends Element{
                     '<input type="checkbox" name="deleteFileNames'.$pathID.'[]" value="'.$pathInfo['basename'].'" />'.
                     '<a href="'.$myPath.'/'.$file['fileName'].'">'.
                     $pathInfo['basename'].
-                    '</a> '.EB::link2Content( sprintf( ( substr_count( $strFormat, '%s' ) != 2 ? $strFormat : '%s%s' ), $myPath.'/', $file['fileName'] ) ).
+                    '</a> '.EB::link2Content( sprintf( ( substr_count( $strFormat, '%s' ) != 2 ? $strFormat : '%s%s' ),
+                                              $myPath.'/',
+                                              $file['fileName'],
+                                              (($imageSize = getimagesize($myPath.'/'.$file['fileName'])) != 0 ? htmlentities($imageSize[3]).' ' : '') ) ).
                     ' <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.'</li>'."\n";
       }
       $retHTML .= '</ul>';

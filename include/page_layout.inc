@@ -90,7 +90,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     </script>
 
 <?PHP /* TinyMCE (WYSIWYG-Editor) integration */
-    if ($url->available('tinyMCE'))
+    if ($cfg->doesExist('tinyMCE') && ($cfg->get('tinyMCE') == 'TRUE') && $url->available('tinyMCE'))
       echo('
     <script language="javascript" type="text/javascript" src="../plugins/tiny_mce/tiny_mce.js"></script>
     <script language="javascript" type="text/javascript">
@@ -204,9 +204,22 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
             echo( ' ]'.
                   '</span> ' );
           }
+
+          // date
+          echo(date( $lng->get("DateFormat") ));
+
+          // wysiwyg
+          if ($usr->isOfKind( IS_USER ) && $cfg->doesExist('tinyMCE') && ($cfg->get('tinyMCE') == 'TRUE')){
+            echo(' | ');
+            if ($url->available('tinyMCE')){
+              echo('<a href="'.str_replace( '&tinyMCE=true', '', $_SERVER['REQUEST_URI'] ).'" style="color:#0f0"><img src="../syspix/button_wysiwyg_off_20x10.gif" width="20px" height="10px" style="border:0" alt="wysiwig on" title="+wysiwyg"></a>');
+            } else {
+              echo('<a href="'.$_SERVER['REQUEST_URI'].'&tinyMCE=true" style="color:#f00"><img src="../syspix/button_wysiwyg_on_20x10.gif" width="20px" height="10px" style="border:0" alt="wysiwig off" title="-wysiwyg"></a>');
+            }
+          }
+
           // language selector
-          echo(date( $lng->get("DateFormat") ).
-               ' | <a href="'.$url->link2('../pages/selectSysLng.php').'">'.$runningSystemLanguage.'</a>' // link to language selector (from /include/language.inc)
+          echo(' | <a href="'.$url->link2('../pages/selectSysLng.php').'">'.$runningSystemLanguage.'</a>' // link to language selector (from /include/language.inc)
                );
         ?>
       </td></tr>
