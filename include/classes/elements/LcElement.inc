@@ -152,11 +152,15 @@ class LcElement extends Element{
   * @return               HTML-representation of the not found notice.
   */
   function notFoundVisibleNote( $fullAddress ){
-    global $lng;
-    return "<div class=\"labsys_mop_note\">\n".
-           "<b>".$lng->get("elNotFoundVisible")."</b> (".$fullAddress."):\n".
-           $this->getFormattedStructureString().
-           "</div>\n";
+    global $lng, $usr;
+    if ($usr->isLoggedIn()){
+      return "<div class=\"labsys_mop_note\">\n".
+             "<b>".$lng->get("elNotFoundVisible")."</b> (".$fullAddress."):\n".
+             $this->getFormattedStructureString().
+             "</div>\n";
+    } else {
+      return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
+    }
   }
 
   /**

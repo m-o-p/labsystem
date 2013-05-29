@@ -61,6 +61,11 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-05-29
+-------------------
+  /include/classes/elements/LcElement.inc
+    If a user is not logged in and wants to see a protected collection he gets the note to log in first now.
+  
 2013-04-18
 -------------------
   /include/classes/elements/LlElement.inc
