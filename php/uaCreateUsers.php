@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -41,29 +41,29 @@ if ( !isset( $_POST['REDIRECTTO'] ) ||
      }
 
 if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
-     !( isset($_POST['SESSION_ID']) && 
-      ($_POST['SESSION_ID'] != "") && 
-      ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */   
+     !( isset($_POST['SESSION_ID']) &&
+      ($_POST['SESSION_ID'] != "") &&
+      ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */
    ){
       trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
       exit;
      }
 
 // new Interface to the userDB
-  $userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 
-                              $cfg->get('UserDatabaseUserName'), 
-                              $cfg->get('UserDatabasePassWord'), 
+  $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
+                              $cfg->get('UserDatabaseUserName'),
+                              $cfg->get('UserDatabasePassWord'),
                               $cfg->get('UserDatabaseName'));
 
 // 1) The users subscriptions:
 // which courses exist?
-  // ask for the couseID fields starting with _                         
+  // ask for the couseID fields starting with _
   // list all columns
   $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
   $courseArray = Array();
   while( $data = mysql_fetch_array( $result ) )
     if ( substr( $data[0], 0, 1 ) == '_' ) array_push( $courseArray, $data[0] );
-    
+
   // create update string
   $updateString = "";
   for( $i=0; $i<count( $courseArray ); $i++ ){
@@ -75,12 +75,12 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
 
 // 2) Create the users:
   $newUsers = explode( "\n", $_POST['MAILADDRESSES'] );
-  
+
   foreach( $newUsers as $value ){
     // Each line is $name, $prename, $email, ...
     $value = str_replace( "\r", '', $value ); // remove anyother newline signs!
     if ( $value == '' ) continue; // jump over empty ones
-    
+
     $entries = explode( ',', $value );
     foreach($entries as $key=>$toDo){
       $entries[$key] = trim($toDo); // remove spaces
@@ -93,21 +93,21 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
 // generate new Password:
     srand((double)microtime()*1000000);
     $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
-    
-    $userDBC->mkInsert( $cfg->get('UserDBField_username')."='".$entries[2]."', ".
-                        $cfg->get('UserDBField_name')."='".$entries[0]."', ".
-                        $cfg->get('UserDBField_forename')."='".$entries[1]."', ".
+
+    $userDBC->mkInsert( $cfg->get('UserDBField_username')."='".trim($entries[2])."', ".
+                        $cfg->get('UserDBField_name')."='".trim($entries[0])."', ".
+                        $cfg->get('UserDBField_forename')."='".trim($entries[1])."', ".
                         $cfg->get('UserDBField_password')."='".sha1( $newPW )."', ".
-                        $cfg->get('UserDBField_email')."='".$entries[2]."', ".
+                        $cfg->get('UserDBField_email')."='".trim($entries[2])."', ".
                         $cfg->get('UserDBField_uid')."='".md5( uniqid( rand() ) )."'".
                         $updateString,
                         $cfg->get('UserDatabaseTable') );
 
   }
-  
+
 // note
   $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
-  
+
   makeLogEntry( 'useradmin', 'new users created' );
 
 // redirect
