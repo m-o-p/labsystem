@@ -1764,9 +1764,6 @@ class LlElement extends Element{
   */
   function reMapUidTeam( $uid, $team ){
     global $lng, $url;
-    // update all input assignments
-    $this->mapAllLabInputs( $uid, $team );
-
     // update the status record
     $labStatus = $this->usDBI->getData4( $uid );
     if ( $labStatus["currentTeam"] != $team ) // changes?
@@ -1782,6 +1779,9 @@ class LlElement extends Element{
                               $labStatus['labGivenCredits'],        // $givenCredits
                               $labStatus['labPossibleCredits'],     // $possibleCredits
                               $lng->get("userReMapped")." (".$team.")" );          // $history
+
+    // update all input assignments
+    $this->mapAllLabInputs( $uid, $team );
 
     // recheck the prelab... as new team
     $_POST['REDIRECTTO'] = $url->get('redirectTo');

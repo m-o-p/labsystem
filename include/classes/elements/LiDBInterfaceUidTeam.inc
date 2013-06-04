@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -19,7 +19,7 @@
  */
 
 /**
-* This is the interface to the working databse's "input_answers_uid_team" table 
+* This is the interface to the working databse's "input_answers_uid_team" table
 * which holds the mapping between UID and TEAM.
 */
 
@@ -29,7 +29,7 @@
 * his because of this mapping.
 *
 * This mapping can not be done with the LlDBInterfaceUidStatus.inc beacause the
-* input doesn't know (and shouldn't) to ehich lab it belongs.
+* input doesn't know (and shouldn't) to which lab it belongs.
 *
 * Also a mapping inside the input answer would have been more unflexible because
 * then either the query would have got much more difficult or the number of
@@ -49,7 +49,7 @@ class LiDBInterfaceUidTeam {
     $this->myDBC   = new Wdbc();
     $this->myTable = "input_answers_uid_team";
   }
-  
+
   /**
   * Returns the team to the given uid and iIdx.
   * @param $uid               The user's unique identifier.
@@ -68,7 +68,7 @@ class LiDBInterfaceUidTeam {
       return $data['team'];
     }
   }
-  
+
   /**
   * Stores the mapping (uid, iIdx)->team into the database.
   * @param $uid               The user's unique identifier.

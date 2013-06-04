@@ -1016,8 +1016,9 @@ class LiElement extends Element{
   */
   function mapInput( $uid, $team ){
     global $lng;
-    if ( $this->utDBI->getData4( $uid, $this->idx, 0 ) != $team ) // changes?
-      $this->utDBI->setData4( $uid, $this->idx, $team, $lng->get("userReMapped") );
+    if ( $this->utDBI->getData4( $uid, $this->idx, 0 ) != $team ){ // changes?
+      $this->utDBI->setData4( $uid, $this->idx, $team, $lng->get("userReMapped").' ('.$team.')' );
+    }
     $this->loadUserData4( $team ); // necessary to create an answer
   }
 
