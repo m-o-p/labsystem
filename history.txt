@@ -61,6 +61,11 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-06-10
+-------------------
+  /include/classes/ElementButtons.inc
+    The Link2Element links correctly to elements within a c-page now by adding the c-page as link destination and the full address as fraction. This simplifies linking to inline elements correctly.
+
 2013-05-29
 -------------------
   /include/classes/elements/LcElement.inc

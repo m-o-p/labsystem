@@ -85,9 +85,17 @@ class EB{ /* ElementButtons */
   */
   function link2Element( $address ){
     global $lng;
+    // When the address contains a small c the link should be ....c...#$address
+    $posc = strpos($address, 'c');
+    $fragment = '';
+    if ($posc){
+      $posDot = strpos($address, '.', $posc);
+      $fragment = '#'.$address;
+      $address = substr($address, 0, $posDot);
+    }
     return EB::mkHiddenDiv( "../pages/view.php?address=".$address."&amp;amp;&#x005F;_LINKQUERY__",
                             "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
-                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__&quot;&gt;Link to '.$address.'&lt;/a&gt;" onClick="this.select();">' );
+                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__'.$fragment.'&quot;&gt;Link to '.$address.'&lt;/a&gt;" onClick="this.select();">' );
   }
 
   /**
