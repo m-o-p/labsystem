@@ -139,7 +139,7 @@ class LlDBInterface {
   function setData( &$eL, $createNew = false ){
     global $usr, $cfg, $lng;
     tidyHTML( $eL->comment );
-    $toSet =  "uniqueID='".$this->myDBC->escapeString($eL->uniqueID)."', ".
+    $toSet =  "uniqueID='".$this->myDBC->escapeString( preg_replace( '/[^\da-z|^-]+/i','_',$eL->uniqueID) )."', ".
               "title='".$this->myDBC->escapeString($eL->title)."', ".
               "authors='".$this->myDBC->escapeString($eL->authors)."', ".
               "comment='".$this->myDBC->escapeString($eL->comment)."', ".
