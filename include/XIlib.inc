@@ -384,7 +384,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     $fileName = validFilename( $fileName );
     if ($doCopy){
       // Here the move to server should happen...
-      $itWorked = (file_exists($localFileWithPath) && copy( $localFileWithPath, $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName ))
+      $itWorked = (file_exists(str_replace( ' ', '%20', $localFileWithPath)) && copy( str_replace( ' ', '%20', $localFileWithPath), str_replace( ' ', '%20', $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName )))
       or trigger_error("Can't copy file [".htmlentities($localFileWithPath).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
       $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                   $localFileWithPath.
