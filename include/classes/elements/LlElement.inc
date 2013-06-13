@@ -1213,7 +1213,9 @@ class LlElement extends Element{
             '<a name="uploadMaterial"></a>'."\n". // anchor for retrieving after saving
             "<fieldset><legend>".$lng->get('uploadMaterial')."</legend>\n".
             $lng->get('uploadMaterialNote').
+            '<h5>'.$lng->get('imageUploadHeader').'</h5>'.
             $this->getUploadInterface( $cfg->get('importPictureDir').$this->uniqueID, '&lt;img src=&quot;%1$s%2$s&quot; %3$salt=&quot;%2$s&quot; /&gt;' ).
+            '<h5>'.$lng->get('fileUploadHeader').'</h5>'.
             $this->getUploadInterface( $cfg->get('importFilesDir').$this->uniqueID, '&lt;a href=&quot;%1$s%2$s&quot;&gt;%2$s&lt;/a&gt;' ).
             "</fieldset>\n".
 

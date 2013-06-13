@@ -90,8 +90,10 @@ class EB{ /* ElementButtons */
     $fragment = '';
     if ($posc){
       $posDot = strpos($address, '.', $posc);
-      $fragment = '#'.$address;
-      $address = substr($address, 0, $posDot);
+      if ($posDot != 0){
+        $fragment = '#'.$address;
+        $address = substr($address, 0, $posDot);
+      }
     }
     return EB::mkHiddenDiv( "../pages/view.php?address=".$address."&amp;amp;&#x005F;_LINKQUERY__",
                             "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",

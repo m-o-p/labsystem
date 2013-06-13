@@ -245,6 +245,8 @@ prelabStatusNote    = "Diese Benutzer (in <b>Reihenfolge des Beendens</b>) haben
 
 uniqueIDnote        = "Dieser Bezeichner wird verwendet, wenn Sie das Lab exportieren. Er muss f&uuml;r jedes Lab eindeutig sein, da er verwendet wird, das Modul ins SVN einzuchecken. Am besten verwenden Sie für Ihre Institution und Ihren Kurs ein Prefix (z.B. TUM_ilab1_Statis_routing). Achtung: wenn Sie diesen Bezeichner ändern, wird das Modul unter dem neuen bezeichner exportiert und es besteht kein Bezug zum alten Bezeichner mehr."
 uploadMaterialNote  = "Hier k&ouml;nnen Sie Bilder und andere Dateien, die Sie im Lab verwenden wollen verwalten. Der Speicherort ist importFilesDir (in der Konfiguration definierbar) / uniqueID (oben definiert)."
+imageUploadHeader   = "<u>Bilder</u> bitte hier hochladen:"
+fileUploadHeader    = "<u>Andere Dateien</u> bitte hier hochladen:"
 abstractNote        = "Diese Kurzfassung wird auf der Übersichtsseite jedes Moduls sowie auf der Übersichtsseite aller installierten Lernmodule angezeigt."
 
 ; uaMyData.php
