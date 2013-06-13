@@ -1316,6 +1316,7 @@ class LlElement extends Element{
 //     echo( "End: file".$pathID."<br>\n");
 
     if (!empty($_FILES['file'.$pathID]['size'])) {
+      $_FILES['file'.$pathID]['name'] = sanitizeFileName( $_FILES['file'.$pathID]['name'] );
       //echo ('moving '.$_FILES['file'.$pathID]['tmp_name'].' to '.$myPath.'/'.$_FILES['file'.$pathID]['name']."<br>\n" );
       move_uploaded_file($_FILES['file'.$pathID]['tmp_name'], $myPath.'/'.$_FILES['file'.$pathID]['name'])
       or trigger_error("Error moving uploaded file ".$myPath.'/'.$_FILES['file'.$pathID]['name'], E_USER_ERROR);

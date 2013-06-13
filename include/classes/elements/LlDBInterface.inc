@@ -66,9 +66,7 @@ class LlDBInterface {
       return new LlElement( $data['idx'],                                   // $idx
                             // create a new ID if there is none (makes sure it is always shown and saved later...)
                             ( !isset($data['uniqueID']) || (($data['uniqueID'] == '') && $data['idx'] != 1) ) ?
-                              preg_replace( '/[^\da-z|^-]+/i',
-                                            '_',
-                                            $_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() ))
+                              sanitizeFileName( $_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() ))
                               : $this->myDBC->unEscapeString($data['uniqueID']),                  // $uniqueID
                             $this->myDBC->unEscapeString($data['title']),                   // $title
                             ( isset( $data['authors'] ) ? // helpful for compatibility issues as the field is new

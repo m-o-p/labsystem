@@ -211,4 +211,13 @@ function html2txt( $HTMLcontent ){
 
   return preg_replace($search, $replace, $HTMLcontent);
 }
+
+/**
+ * Removes all dangerous characters from a filename. Used for uploaded files and directory names.
+ * @param unknown $fileName To be sanitized.
+ * @return mixed The sanitized file name.
+ */
+function sanitizeFileName( $fileName ){
+  return preg_replace( '/[^\da-z.-]+/i', '_', $fileName );
+}
 ?>
