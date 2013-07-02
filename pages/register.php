@@ -124,6 +124,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
       }
 
   // switch to the user for successfull field replacement.
+    srand((double)microtime()*1000000);
     $usr->uid         = md5( $_POST['EMAIL'].uniqid( rand() ) );
     $usr->userName    = $_POST['EMAIL'];
     $usr->foreName    = $_POST['FORENAME'];
@@ -144,7 +145,6 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
    else{ // email is new => create new entry
 
     // generate new Password:
-        srand((double)microtime()*1000000);
         $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
 
         $userDBC->mkInsert( $customFields.
