@@ -270,9 +270,9 @@ function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true,
  */
   /** helper functions */
   /**
-   * Maps the element to its mapping element or returns the emlement if no maping exists.
+   * Maps the element to its mapping element or returns the element if no mapping exists.
    * @param string $oldID  Element ID to be mapped.
-   * @return string        The nes ID of the given element.
+   * @return string        The new ID of the given element.
    */
   function mapIt( $oldID, &$IDmappingArray ){
     $ID = strtolower( $oldID[0] ); // make ID small letter (big and small c's...
@@ -283,26 +283,15 @@ function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true,
   /** end of functions */
 
 function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
-	$HTMLcode= preg_replace_callback(  '#(?=address=|\#)'. // Assertion "must be preceded by" (link or anchor usage...
-                                     '(l'.$labNumber.')'.              // Just replace things for the current lab
-                                     '((?:\.[m, i, p, c, C]\pN)*)'.
-                                     '#', // '{address=l, #l}(?P<data>(\.\p{LN})+)'
-                                     create_function(
-                                      '$matches',
-                                      /**
-                                       * The callback for preg_replace_callback.
-                                       * It splits the elements and does the mapping for each element.
-                                       *
-                                       * @param array $matches  The matching array by evaluating the preg.
-                                       * @return string         The replacement for the text.
-                                       */
-                                      '
-                                        $parts = explode( ".", $matches[0] );
-                                        foreach ( $parts as $key=>$value )
-                                          $parts[ $key ] = mapIt( $value, $IDmappingArray );
-                                        return implode ( ".", $parts );
-                                      '
-                                     ),
+  $GLOBALS['mappingTmp'] = $IDmappingArray; // hack to hand it in the callback :/
+	$HTMLcode= preg_replace_callback(  '#(?:\#|address\=)(l'.$labNumber.'(\.[mipcC][0-9]*)*)#', // '{address=l, #l}(?P<data>(\.\p{LN})+)'
+                                       function ($matches){
+                                         $parts = explode( ".", $matches[1] );
+                                         foreach ( $parts as $key=>$value ){
+                                           $parts[ $key ] = mapIt( $value, $GLOBALS['mappingTmp'] );
+                                         }
+                                         return implode ( ".", $parts );
+                                       },
                                      $HTMLcode
                                      );
 }
@@ -710,10 +699,12 @@ function getLabsFromDirectory( $directory ){
 $usedClasses = array(); // has to be initialized for each export
 function updateUsedClasses( $content ){
   preg_replace_callback( '#\<[^\>]*class[^\>]*=[^\>]*[",\']([^>]*)[",\']#i',
-                         create_function(
-                          '$matches',
-                          'global $usedClasses; if (!in_array($matches[1], $usedClasses)) $usedClasses[] = trim($matches[1]);'
-                         ),
+                         function ($matches){
+                           global $usedClasses;
+                           if (!in_array($matches[1], $usedClasses)){
+                             $usedClasses[] = trim($matches[1]);
+                           }
+                         },
                          $content
                          );
 }
@@ -735,20 +726,20 @@ function parseStyleSheet( $styleSheetTxt, &$tagArray, &$definitionsArray ){
 
   // 1) Separate $tagNames and $styleDefinitions (preserve everything in here)
   preg_replace_callback(   '#(((?<!{).)*){.*?}#s',
-                           create_function(
-                            '$matches',
-                            'global $tagNamesTmp, $styleDefinitionsTmp; $tagNamesTmp[] = $matches[1]; $styleDefinitionsTmp[] = $matches[0];' // print_r($matches); echo("<br><br>");'
-                           ),
+                           function($matches){
+                             global $tagNamesTmp, $styleDefinitionsTmp;
+                             $tagNamesTmp[] = $matches[1];
+                             $styleDefinitionsTmp[] = $matches[0];
+                           },
                            $styleSheetTxt
                            );
 
   // 2) Remove comments from $tagNames
   foreach ( $tagNamesTmp as $key=>$value )
     $tagNamesTmp[$key] = preg_replace_callback(  '#(\/\*.*\*\/)#s',
-                                                 create_function(
-                                                  '$matches',
-                                                  'return "";'
-                                                 ),
+                                                 function($matches){
+                                                   return '';
+                                                 },
                                                  $value
                                                  );
 

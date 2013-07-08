@@ -76,15 +76,13 @@ class EB{ /* ElementButtons */
   }
 
   /**
-  * This button contains the url of the given element with all necessary values for integrating it on a page.
-  * So you can copy the elements address and paste it into a page element.
-  *
-  * @param $address  The element's address.
-  *
-  * @return          The button's html-code.
-  */
-  function link2Element( $address ){
-    global $lng;
+   * Returns the link URL to this element (used by the all questions page in the LlElement)
+   *
+   * @param $address  The element's address.
+   *
+   * @return          The button's html-code.
+   */
+  function getLink2ElementURL( $address ){
     // When the address contains a small c the link should be ....c...#$address
     $posc = strpos($address, 'c');
     $fragment = '';
@@ -95,9 +93,23 @@ class EB{ /* ElementButtons */
         $address = substr($address, 0, $posDot);
       }
     }
+    return '../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__'.$fragment;
+  }
+
+  /**
+  * This button contains the url of the given element with all necessary values for integrating it on a page.
+  * So you can copy the elements address and paste it into a page element.
+  *
+  * @param $address  The element's address.
+  *
+  * @return          The button's html-code.
+  */
+  function link2Element( $address ){
+    global $lng;
+
     return EB::mkHiddenDiv( "../pages/view.php?address=".$address."&amp;amp;&#x005F;_LINKQUERY__",
                             "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
-                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;../pages/view.php?address='.$address.'&amp;amp;&#x005F;_LINKQUERY__'.$fragment.'&quot;&gt;Link to '.$address.'&lt;/a&gt;" onClick="this.select();">' );
+                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;'.EB::getLink2ElementURL( $address ).'&quot;&gt;Link to '.$address.'&lt;/a&gt;" onClick="this.select();">' );
   }
 
   /**

@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -60,11 +60,13 @@ elseif( $url->get( 'function' ) == 'del' ){
     exit;
   }
 // new Interface to the userDB
-  $userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 
-                              $cfg->get('UserDatabaseUserName'), 
-                              $cfg->get('UserDatabasePassWord'), 
+  $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
+                              $cfg->get('UserDatabaseUserName'),
+                              $cfg->get('UserDatabasePassWord'),
                               $cfg->get('UserDatabaseName'));
-                                
+
+  makeLogEntry( "UserAdmin", "delete user", $url->get( 'param' ) );
+
   if ( !$userDBC->mkDelete( $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_uid')."='".$url->get( 'param' )."'" ) )
     $text = $userDBC->reportErrors();
   else $text = $url->get( 'param' ).": ".$lng->get( "deleted" );

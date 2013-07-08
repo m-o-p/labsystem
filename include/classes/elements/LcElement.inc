@@ -298,7 +298,7 @@ class LcElement extends Element{
       if ( \$newParam['myRetVal'] != '' )
         \$parameter['myRetVal'] .=  \"<div class=\\\"labsys_mop_contentArea\\\">\\n\".
                                     // header inclusive link to the enclosing element (this)
-                                    '<div class=\"labsys_mop_h2\">'.( \$elParagraph != '' ?  \$elParagraph.'. '  : '' ).\$element->title.' '.EB::link2Element( \$elementAddr ).\"</div>\\n\".
+                                    '<div class=\"labsys_mop_h2\"><a href=\"'.str_replace( array('&#x005F;','&amp;'), array('_', '&'), EB::getLink2ElementURL( \$elementAddr ) ).'\">'.( \$elParagraph != '' ?  \$elParagraph.'. '  : '' ).\$element->title.'</a> '.EB::link2Element( \$elementAddr ).\"</div>\\n\".
                                     \"</div>\\n\".
                                     \$newParam['myRetVal'];
     }";

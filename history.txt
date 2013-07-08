@@ -61,6 +61,18 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-07-08
+-------------------
+  /include/classes/ElementButtons.inc
+    The link to an element can be obtained independent of the button now.
+  /include/classes/elements/LlElement.inc
+  /include/classes/elements/LcElement.inc
+    The headers are links to the respective page containing the question on the all questions page now.
+  /include/XIlib.inc
+    Fixed the regex for replacing the element IDs in the HTML codes of the exported and imported elements.
+  /php/uaManageUsersExecute.php
+    Deletion of users should be logged now.
+
 2013-06-10
 -------------------
   /include/classes/ElementButtons.inc
