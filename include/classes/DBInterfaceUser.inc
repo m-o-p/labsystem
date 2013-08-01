@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -39,7 +39,7 @@
 *                                                  I could also have used the idx field but for any reason
 *                                                  someone might want to change the order and then I had the
 *                                                  problem...
-*    _labws0405                     bool        These flags are also found in the config*.ini.       
+*    _labws0405                     bool        These flags are also found in the config*.ini.
 *    _labss05                       bool        They qualify the user to log in and to get rights set.
 *    takes_part_at_the_xy_seminar   bool
 *
@@ -47,7 +47,7 @@
 *
 * The uid field is the unique identifier!
 *   - It must be unique
-*   - It must be persistent 
+*   - It must be persistent
 * Because it is used as connector between the user database and the internal rights database.
 * Inside the labsystem the user is only identified by this UID.
 *
@@ -73,13 +73,13 @@ class DBInterfaceUser
   function DBInterfaceUser( ){
     global $cfg;
 
-    $this->myDBC = new DBConnection($cfg->get("UserDatabaseHost"), 
-                                    $cfg->get("UserDatabaseUserName"), 
-                                    $cfg->get("UserDatabasePassWord"), 
+    $this->myDBC = new DBConnection($cfg->get("UserDatabaseHost"),
+                                    $cfg->get("UserDatabaseUserName"),
+                                    $cfg->get("UserDatabasePassWord"),
                                     $cfg->get("UserDatabaseName"));
     $this->queryResult = false;
-  }  
-  
+  }
+
   /**
   * This method does the authentication. If successfull some userdata are returned.
   * @param $username          The user's loginname.
@@ -104,8 +104,8 @@ class DBInterfaceUser
     if ( mysql_num_rows( $result ) != 1 )
       return false; // not found/ error
     $resArray = mysql_fetch_array( $result );
-    
-    // The field names are taken from the config*.ini file    
+
+    // The field names are taken from the config*.ini file
     $what = $cfg->get("UserDBField_name")." AS name, ".
             $cfg->get("UserDBField_forename")." AS forename, ".
             $cfg->get("UserDBField_email")." AS email, ".
@@ -126,7 +126,7 @@ class DBInterfaceUser
                     "userName" => $username );
     }
   }
-  
+
   /**
   * Returns some userdata to the given UID or false.
   * @param $uid     The user's unique identifier.
@@ -166,7 +166,7 @@ class DBInterfaceUser
                     "userName" => $resArray["username"] );
     }
   }
-  
+
 
   var $queryResult;
   /**
@@ -187,16 +187,16 @@ class DBInterfaceUser
 
     $this->queryResult = $this->myDBC->mkSelect( $what, $from, $where, $orderBy );
   }
-  
+
   /**
    * Returns the amount of returned datasets from the query;
-   * 
+   *
    * @return  amount of returned datasets from the query
    */
   function allSize(){
     return $this->myDBC->datasetsIn( $this->queryResult );
   }
-  
+
   /**
   * Returns the next result of the getAllData() query or false (no more results).
   * @return Array(  "name" => string,
@@ -214,10 +214,10 @@ class DBInterfaceUser
                                                                               "userName" => $resArray["username"] );
     return false;
   }
-  
+
   /**
   * Returns an Array( description => database key, ... ).
-  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ... 
+  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ...
   * The first entry is the default soring key.
   * This is used for the order by selector on top of the manage page.
   *
@@ -227,7 +227,8 @@ class DBInterfaceUser
     global $lng, $cfg;
     return Array( $lng->get("surName")  => $cfg->get("UserDBField_name"),
                   $lng->get("foreName") => $cfg->get("UserDBField_forename"),
-                  $lng->get("userName") => $cfg->get("UserDBField_username")
+                  $lng->get("userName") => $cfg->get("UserDBField_username"),
+                  $lng->get('lastRegistered') => 'last_registered'
                  );
   }
 }

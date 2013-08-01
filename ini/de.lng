@@ -259,6 +259,7 @@ uaNewUsrsSubscript  = "Die neu angelegten Benutzer werden diesen Kursen zugeordn
 uaUnassignedNote    = "Sie haben sich für einen Kurs angemeldet sind aber <b>noch nicht zugewiesen</b>. <br>Daher finden Sie unten eine Liste anderer Teilnehmer, die auch f&uuml;r den Kurs registriert aber noch nicht zugeteilt sind in der Reihenfolge der Anmeldung. <br>Da &uuml;blicher Weise nicht alle Studirenden teilnehmen ist es nicht schlimm, wenn Sie auf der Warteliste stehen."
 uaWithdrawNote      = "Wenn SIe sich entscheiden, doch nicht am Kurs teilnehmen zu wollen dr&uuml;cken Sie bitte den folgenden Knopf. Sie k&ouml;nnen sich bei Bedarf danach erneut registrieren, landen dann aber am Ende der Liste."
 uaWithdrawButtonText= "Ich bin mir sicher, dass ich nicht am Kurs teilnehmen und anderen Studierenden diese Chance geben m&ouml;chte."
+lastRegistered      = "Datum der letzten Registrierung"
 
 ; register.php
 registerNote        = "Please fill out the fields below to register for the course."

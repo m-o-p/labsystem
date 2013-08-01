@@ -259,6 +259,7 @@ uaNewUsrsSubscript  = "The new users will have these subscriptions."
 uaUnassignedNote    = "You have currently registered for a course and <b>you are not assigned yet</b>. <br>Below you find a list of the other people who registered in the order of the registration. <br>Please keep in mind that usually not all students participate so do not worry if you are on a waiting list place only."
 uaWithdrawNote      = "If you decide to withdraw your registration you can press the following button. You can register later again but you will be added at the end of the list then."
 uaWithdrawButtonText= "I am sure I want to withdraw my registration and free my place for another student."
+lastRegistered      = "date of last registration"
 
 ; register.php
 registerNote        = "Please fill out the fields below to register for the course."

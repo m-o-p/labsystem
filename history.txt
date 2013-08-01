@@ -79,6 +79,9 @@ Feature Requests:
     Added Strings explaining the new functionality.
   /pages/uaMyData.php
     Shows other _unassigned users for the same course if I am unassigned.
+    
+  /include/classes/DBInterfaceUser.inc
+    Added last_registered as sort criterion.
   
 2013-07-08
 -------------------
