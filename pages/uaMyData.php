@@ -91,22 +91,72 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                                  $cfg->get('UserDBField_email'),
                                  $cfg->get('UserDBField_uid'),
                                  $cfg->get('UserDBField_password'),
+                                 'last_registered',
                                  'labsys_mop_last_change',
                                  'registerFor'
                                 );
-     foreach ( $data as $key => $value )
-      if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ) /* do nothing */;
-      else $pge->put(
-                     // new key
-                        '<label for="labsys_mop_'.$key.'" class="labsys_mop_input_field_label_top">'.$key.'</label>'."\n".
-                        '<input tabindex="'.$pge->nextTab++.'" type="text" id="labsys_mop_'.$key.'" name="LABSYS_MOP_'.$key.'" class="labsys_mop_input_fullwidth" value="'.htmlentities( $value ).'" onchange="isDirty=true">'."\n"
-                     );
+     foreach ( $data as $key => $value ){
+        if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ){ /* do nothing */;
+        }else{
+          $pge->put(
+                       // new key
+                          '<label for="labsys_mop_'.$key.'" class="labsys_mop_input_field_label_top">'.$key.'</label>'."\n".
+                          '<input tabindex="'.$pge->nextTab++.'" type="text" id="labsys_mop_'.$key.'" name="LABSYS_MOP_'.$key.'" class="labsys_mop_input_fullwidth" value="'.htmlentities( $value ).'" onchange="isDirty=true">'."\n"
+                       );
+        }
+     }
 
      $pge->put( "</div>\n".
                 "</fieldset>\n".
                 "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
                 "</FORM>"
                );
+
+     // handle withdraw...
+     if (isset($_POST['WithDrawMe']) && $_POST['WithDrawMe']==session_id()){
+       // update the values
+       $userDBC->mkUpdate( "`_unassigned`=0",
+           $cfg->get('UserDatabaseTable'),
+           $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ?  $usr->theSeeingUid()  : $usr->uid  )."'"
+       );
+       $data['_unassigned']=0;
+     }
+
+     if ($data['_unassigned']==1&&$data['registerFor']==$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')'){
+       // Show all other registered people...
+       // unassigned note
+       if ( $lng->get("uaUnassignedNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("uaUnassignedNote")."</div>\n" );
+
+       // participants list:
+       $result = $userDBC->mkSelect( $cfg->get('UserDBField_name').','.$cfg->get('UserDBField_forename'),
+           $cfg->get('UserDatabaseTable'),
+           '`_unassigned`=1&&`registerFor`="'.$data['registerFor'].'"',
+           '`last_registered` ASC'
+       );
+       $pge->put("<table class=\"uaOtherParticipantsTable\">\n");
+       $pge->put("<tr><th style=\"text-align:right\">#</th><th>".$lng->get('surName').', '.$lng->get('foreName')."</th></tr>");
+       $counter=0;
+       $maxPlaces = ($cfg->doesExist('maxRegistrations') ? $cfg->get('maxRegistrations') : 0);
+       while($nextRegistree=mysql_fetch_assoc( $result )){
+         $counter++;
+         $pge->put("<tr><td style=\"text-align:right\">".
+                   $counter.
+                   ($counter<=$maxPlaces ? '<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">' : '<img src="../syspix/fullPlace_11x12.gif" width="11" height="12" alt="X">').
+                   "</td><td>".htmlentities($nextRegistree[$cfg->get('UserDBField_name')].', '.$nextRegistree[$cfg->get('UserDBField_forename')]).'</td></tr>'."\n");
+       }
+       $pge->put("</table>\n");
+
+       // withdraw note
+       if ( $lng->get("uaWithdrawNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("uaWithdrawNote")."</div>\n" );
+
+       // withdraw button
+       $pge->put("<FORM class=\"labsys_mop_std_form\" style=\"text-align:center\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"#\">");
+       $pge->put("<input type=\"hidden\" name=\"WithDrawMe\" value=\"".session_id()."\">\n");
+       $pge->put('<input tabindex="'.$pge->nextTab++.'" type="submit" class="labsys_mop_button" style="background-color:#faa" value="'.htmlentities( $lng->get('uaWithdrawButtonText') ).'" '.
+           "onClick='return confirmLink(this, \"".$lng->get('uaWithdrawButtonText')."\");'".
+           '>'."\n");
+       $pge->put("</FORM>");
+     }
 
 // focus
      $pge->put(

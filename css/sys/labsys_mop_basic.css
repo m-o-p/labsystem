@@ -258,6 +258,21 @@ height:auto
                     vertical-align: top;
   }
 
+/******************************* ../pages/uaMyData.php *******************************/
+  table .uaOtherParticipantsTable{
+    margin-left: 5em;
+  }
+  table .uaOtherParticipantsTable tr{
+    margin:0.2em;
+    background-color:#eee;
+  }
+  table .uaOtherParticipantsTable tr:nth-child(even) {
+    margin:0.2em;
+    background-color: #ddd;
+}
+  table .uaOtherParticipantsTable tr td{
+    padding:0.2em;
+  }
 /******************************* form element styles *******************************/
 .labsys_mop_input{
                     margin: 1px;

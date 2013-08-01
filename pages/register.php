@@ -114,6 +114,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
                                 $cfg->get('UserDBField_email'),
                                 $cfg->get('UserDBField_uid'),
                                 $cfg->get('UserDBField_password'),
+                                'last_registered',
                                 'labsys_mop_last_change'
                                );
     foreach ( $_POST as $key => $value )
@@ -156,6 +157,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
                             $cfg->get('UserDBField_password')."='".crypt( $newPW, $usr->uid )."', ".
                             $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $usr->mailAddress )."', ".
                             $cfg->get('UserDBField_uid')."='".$userDBC->escapeString( $usr->uid )."', ".
+                            "last_registered=".date('%Y-%m-%d %H:%i:%s').
                             $UA_CourseID.'=1',
                             $cfg->get('UserDatabaseTable') );
 
@@ -252,6 +254,7 @@ else{ // no data posted or errors found
                                  $cfg->get('UserDBField_email'),
                                  $cfg->get('UserDBField_uid'),
                                  $cfg->get('UserDBField_password'),
+                                 'last_registered',
                                  'labsys_mop_last_change',
                                  'registerFor'
                                 );

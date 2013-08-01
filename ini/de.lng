@@ -256,6 +256,9 @@ uaUnPwRemNote       = "Wenn Sie ein registrierter Benutzer sind, k&ouml;nnen Sie
 uaManageUsrNote     = "Um die Benutzerdaten zu &auml;ndern, auf die Benutzer klicken. (Sie m&uuml;ssen Korrektor sein!).<br />Die Zuordnungen zu den Kursen k&ouml;nnen auf dieser Seite vorgenommen werden."
 uaCreateUsrNote     = "Sie k&ouml;nnen Benutzer anlegen, indem Sie eine Liste mit <b>Nachname, Vorname, Emailadresse</b> in das Feld eintragen (<b>Ein Nutzer pro Zeile!</b>).<br />Die Benutzer werden dann mit Emailadresse als Benutzernamen und einem generierten Passwort angelegt.<br />Beides k&ouml;nnen sie auf der Passwort und/ oder Benutzernamenvergessen-Seite anfordern und dann dort auch &auml;ndern. Das hat den Seiteneffekt, dass die unvollst&auml;ndigen Benutzerdaten vervollst&auml;ndigt werden m&uuml;ssen zum Speichern...<br/>Meistens ist die <b>Selbstregistrierung &uuml;ber register.php</b> das geeignetere Mittel, um Teilnehmer hinzu zu f&uuml;gen. Dort werden gleich alle Stammdaten vom Teilnehmer abgefragt."
 uaNewUsrsSubscript  = "Die neu angelegten Benutzer werden diesen Kursen zugeordnet."
+uaUnassignedNote    = "Sie haben sich für einen Kurs angemeldet sind aber <b>noch nicht zugewiesen</b>. <br>Daher finden Sie unten eine Liste anderer Teilnehmer, die auch f&uuml;r den Kurs registriert aber noch nicht zugeteilt sind in der Reihenfolge der Anmeldung. <br>Da &uuml;blicher Weise nicht alle Studirenden teilnehmen ist es nicht schlimm, wenn Sie auf der Warteliste stehen."
+uaWithdrawNote      = "Wenn SIe sich entscheiden, doch nicht am Kurs teilnehmen zu wollen dr&uuml;cken Sie bitte den folgenden Knopf. Sie k&ouml;nnen sich bei Bedarf danach erneut registrieren, landen dann aber am Ende der Liste."
+uaWithdrawButtonText= "Ich bin mir sicher, dass ich nicht am Kurs teilnehmen und anderen Studierenden diese Chance geben m&ouml;chte."
 
 ; register.php
 registerNote        = "Please fill out the fields below to register for the course."

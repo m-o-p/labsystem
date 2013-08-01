@@ -61,6 +61,25 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+
+2013-08-01
+-------------------
+  Registration Process
+    Added `last_registered` to the userDB for storing the registration date.
+    Unassigned users see a list of other registrees for their course on the myData page now AND can withdraw their registration.
+
+  /setup/index.php
+    Added the row for `last_registered`.
+  /pages/register.php
+    Sets the date properly now.
+  /css/sys/labsys_mop_basic.css
+    Added styles for the table of registered users.
+  /ini/en.lng
+  /ini/de.lng
+    Added Strings explaining the new functionality.
+  /pages/uaMyData.php
+    Shows other _unassigned users for the same course if I am unassigned.
+  
 2013-07-08
 -------------------
   /include/classes/ElementButtons.inc
