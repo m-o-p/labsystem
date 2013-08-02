@@ -140,6 +140,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
    if ($userDBC->datasetsIn( $result ) > 0) // yes => just update the interest
     $userDBC->mkUpdate( $customFields.
                         'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\', '.
+                        "last_registered='".date('Y-m-d H:i:s')."', ".
                         '_unassigned=1',
                         $cfg->get('UserDatabaseTable'),
                         'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $_POST['EMAIL'] )."')" );
@@ -157,7 +158,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
                             $cfg->get('UserDBField_password')."='".crypt( $newPW, $usr->uid )."', ".
                             $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $usr->mailAddress )."', ".
                             $cfg->get('UserDBField_uid')."='".$userDBC->escapeString( $usr->uid )."', ".
-                            "last_registered=".date('%Y-%m-%d %H:%i:%s').
+                            "last_registered='".date('Y-m-d H:i:s')."', ".
                             $UA_CourseID.'=1',
                             $cfg->get('UserDatabaseTable') );
 
