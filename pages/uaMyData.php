@@ -122,19 +122,27 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
        $data['_unassigned']=0;
      }
 
-     if ($data['_unassigned']==1&&$data['registerFor']==$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')'){
+     if ($usr->isOfKind( IS_DB_USER_ADMIN )){
+       $data['_unassigned']=1;
+       $data['registerFor']=$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')';
+     }
+
+     if (($data['_unassigned']==1&&$data['registerFor']==$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')')){
        // Show all other registered people...
+       $pge->put('<h2 style="margin-top: 3em" class="labsys_mop_h2">'.$data['registerFor']."</h2>\n");
+
        // unassigned note
        if ( $lng->get("uaUnassignedNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("uaUnassignedNote")."</div>\n" );
 
        // participants list:
-       $result = $userDBC->mkSelect( $cfg->get('UserDBField_name').','.$cfg->get('UserDBField_forename'),
+       $result = $userDBC->mkSelect( $cfg->get('UserDBField_name').','.$cfg->get('UserDBField_forename').',`desiredTeamPartner`',
            $cfg->get('UserDatabaseTable'),
            '`_unassigned`=1&&`registerFor`="'.$data['registerFor'].'"',
            '`last_registered` ASC'
        );
+
        $pge->put("<table class=\"uaOtherParticipantsTable\">\n");
-       $pge->put("<tr><th style=\"text-align:right\">#</th><th>".$lng->get('surName').', '.$lng->get('foreName')."</th></tr>");
+       $pge->put("<tr><th style=\"text-align:right\">#</th><th>".$lng->get('surName').', '.$lng->get('foreName')."</th><th>".$lng->get('team')."</th></tr>");
        $counter=0;
        $maxPlaces = ($cfg->doesExist('maxRegistrations') ? $cfg->get('maxRegistrations') : 0);
        while($nextRegistree=mysql_fetch_assoc( $result )){
@@ -142,7 +150,10 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
          $pge->put("<tr><td style=\"text-align:right\">".
                    $counter.
                    ($counter<=$maxPlaces ? '<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">' : '<img src="../syspix/fullPlace_11x12.gif" width="11" height="12" alt="X">').
-                   "</td><td>".htmlentities($nextRegistree[$cfg->get('UserDBField_name')].', '.$nextRegistree[$cfg->get('UserDBField_forename')]).'</td></tr>'."\n");
+                   "</td>
+                    <td>".htmlentities($nextRegistree[$cfg->get('UserDBField_name')].', '.$nextRegistree[$cfg->get('UserDBField_forename')]).'</td>
+                    <td>'.(isset($nextRegistree['desiredTeamPartner']) && $nextRegistree['desiredTeamPartner']!=''? htmlentities($nextRegistree['desiredTeamPartner']):'').'</td>
+                    </tr>'."\n");
        }
        $pge->put("</table>\n");
 
