@@ -135,14 +135,14 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
        if ( $lng->get("uaUnassignedNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("uaUnassignedNote")."</div>\n" );
 
        // participants list:
-       $result = $userDBC->mkSelect( $cfg->get('UserDBField_name').','.$cfg->get('UserDBField_forename').',`desiredTeamPartner`',
+       $result = $userDBC->mkSelect( $cfg->get('UserDBField_name').','.$cfg->get('UserDBField_forename').',`desiredTeamPartner`,`last_registered`',
            $cfg->get('UserDatabaseTable'),
            '`_unassigned`=1&&`registerFor`="'.$data['registerFor'].'"',
            '`last_registered` ASC'
        );
 
        $pge->put("<table class=\"uaOtherParticipantsTable\">\n");
-       $pge->put("<tr><th style=\"text-align:right\">#</th><th>".$lng->get('surName').', '.$lng->get('foreName')."</th><th>".$lng->get('team')."</th></tr>");
+       $pge->put("<tr><th style=\"text-align:right\">#</th><th>".$lng->get('surName').', '.$lng->get('foreName')."</th><th>".$lng->get('team')."</th><th></th></tr>");
        $counter=0;
        $maxPlaces = ($cfg->doesExist('maxRegistrations') ? $cfg->get('maxRegistrations') : 0);
        while($nextRegistree=mysql_fetch_assoc( $result )){
@@ -153,6 +153,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                    "</td>
                     <td>".htmlentities($nextRegistree[$cfg->get('UserDBField_name')].', '.$nextRegistree[$cfg->get('UserDBField_forename')]).'</td>
                     <td>'.(isset($nextRegistree['desiredTeamPartner']) && $nextRegistree['desiredTeamPartner']!=''? htmlentities($nextRegistree['desiredTeamPartner']):'').'</td>
+                    <td>'.$nextRegistree['last_registered'].'</td>
                     </tr>'."\n");
        }
        $pge->put("</table>\n");
