@@ -65,8 +65,8 @@ class LmElement extends Element{
     global $usr;
     $this->elementId                = "m";
     $this->idx                      = $idx;
-    $this->title                    = preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
-                                        trim(strip_tags(returnHTML( // remove [HTML] etc.
+    $this->title                    = trim(strip_tags(preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
+                                        returnHTML( // remove [HTML] etc.
                                           substr( $question, 0, 50 )
                                         )))
                                       );
@@ -747,7 +747,7 @@ class LmElement extends Element{
             ( $disabled ?  "</span>"  : '' ).
               showRightsHorizontal( $prefix, $this->visibleFor, $disabled ).
             " ".
-              cutHTMLText( $this->idx.": ".returnEditable($this->question), $cfg->get("maxCharMngRowTitleShort") );
+              cutHTMLText( $this->title, $cfg->get("maxCharMngRowTitleShort") );
   }
 }
 ?>
