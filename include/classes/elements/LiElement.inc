@@ -112,9 +112,9 @@ class LiElement extends Element{
     $this->elementId                = "i";
     $this->idx                      = $idx;
     $this->title                    = preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
-                                        returnHTML( // remove [HTML] etc.
+                                        trim(strip_tags(returnHTML( // remove [HTML] etc.
                                           substr( $question, 0, 50 )
-                                        )
+                                        )))
                                       );
     $this->matchingMenu             = "";                         // will be handled by ->getMatchingMenu();
     $this->question                 = $question;
