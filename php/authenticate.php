@@ -87,6 +87,7 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
     $_SESSION["userRights"]  = (intval($_SESSION["userRights"]) | IS_USER_RIGHTS_EDITOR);
 
   makeLogEntry( 'system', 'login' );
+  makeLogEntry( 'system', 'loginLog');
   $GLOBALS['Logger']->logToDatabase('system', logActions::login);
 // Link to the after login page from the config file or to
   if ( isset( $_POST['REDIRECTTO'] ) ) header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );

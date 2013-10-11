@@ -25,6 +25,8 @@
 * @author     Marc-Oliver Pahl
 * @copyright  Marc-Oliver Pahl 2011
 * @version    2.0
+*
+* If the operation if loginLog
 */
 function makeLogEntry( $group, $operation, $resource='' ){
   global $cfg, $configPrefix;
@@ -35,7 +37,8 @@ function makeLogEntry( $group, $operation, $resource='' ){
 
   if ( !file_exists($cfg->get('logDir')))
     mkdir($cfg->get('logDir'), 0755, true) or trigger_error("Error creating folder ".$cfg->get('logDir'), E_USER_ERROR);
-  $theLogFile = $cfg->get('logDir').( substr( $cfg->get('logDir'), -1 ) != '/' ? '/' : '' ).$configPrefix.$GLOBALS['url']->get('config').'_'.date("Y-m-d").'.log';
+  $theLogFile = $cfg->get('logDir').( substr( $cfg->get('logDir'), -1 ) != '/' ? '/' : '' ).
+                ($operation != 'loginLog' ? $configPrefix.$GLOBALS['url']->get('config').'_'.date("Y-m-d") : 'allLogins').'.log';
 
   if ( !(
       $logFile = fopen( $theLogFile, 'a+' )     // w ^= write and create (if not exist)
@@ -44,6 +47,8 @@ function makeLogEntry( $group, $operation, $resource='' ){
     $url->put( 'sysalert='.$GLOBALS['lng']->get('errorOpeningFile').' ('.$theLogFile.')' );
 
   $logEntry = date("Y-m-d\tH:i:s")."\t".
+      $configPrefix.$GLOBALS['url']->get('config')."\t".
+      ($operation == 'loginLog' ? $_SERVER['REMOTE_ADDR']."\t" : '').
       $_SESSION['uid']."\t".
       $_SESSION['surName']."\t".
       $_SESSION['foreName']."\t".
