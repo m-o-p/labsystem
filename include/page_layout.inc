@@ -237,7 +237,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
                     "onmouseout='javascript:this.className=\"labsys_mop_ableMenu\";' ".
                     "onClick='javascript:location.href=\"".$link."\";' >".
                "<a href=\"".$link."\">".
-               ( $menuVisible ? "&gt;<br>&gt;" : "&lt;<br>&lt;" ).
+               ( $menuVisible ? "&gt;<br><img src=\"../syspix/button_view_structure_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view_structure\" title=\"".$lng->get("explainTOC")."\">" : "&lt;<br><img src=\"../syspix/button_view_structure_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view_structure\" title=\"".$lng->get("explainTOC")."\">" ).
                "</a></td>");
         ?>
         <td class="labsys_mop_menu<?php if (!$menuVisible) echo("_hidden"); ?>">

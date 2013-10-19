@@ -96,7 +96,7 @@ height:auto
   .labsys_mop_ableMenu { /* the row you can show/ hide the menu */
                       width: 18px;
                       padding: 0px;
-                      vertical-align: middle;
+                      vertical-align: top;
                       text-align: center;
                       font-size: 0.75em;
                       border-right: solid 1px #89897c;
@@ -104,7 +104,7 @@ height:auto
   .labsys_mop_ableMenuhover {
                       width: 18px;
                       padding: 0px;
-                      vertical-align: middle;
+                      vertical-align: top;
                       text-align: center;
                       font-size: 0.75em;
                       border-right: solid 1px #89897c;
