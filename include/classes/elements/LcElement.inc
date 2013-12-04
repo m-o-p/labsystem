@@ -319,12 +319,13 @@ class LcElement extends Element{
     if ($usr->isOfKind(IS_CONTENT_EDITOR) &&
     $url->available('insert') &&
     $url->available('insertAt') &&
-    $url->get('insertAt') == $fullAddress
+    $url->get('insertAt') == $this->idx
     ){
       // inserts an element of the given type at the end of the collection
       $url->rem('insert');
       $url->rem('insertAt');
       $this->insertNew( $GLOBALS['url']->get('insert') );
+      echo("[".$this->elementId.$this->idx."]: ".$url->get('insertAt')."==".$fullAddress."<br>");
     }
   }
   /**

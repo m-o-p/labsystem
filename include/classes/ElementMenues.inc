@@ -202,10 +202,10 @@ class EM{ /* ElementMenues */
                 ( $url->available('insert') && $url->available('insertAt') && // we are inserting -> place anchor
                   $url->get('insertAt') == $fullAddress ? '<a name="atInsert"></a>' : '' ).
                 '<div class="labsys_mop_elements_menu_c_edit_bottom">'.
-                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress.'&insert=p').'#atInsert">&nbsp; *p &nbsp;</a>&nbsp; '.
-                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress.'&insert=m').'#atInsert">&nbsp; *m &nbsp;</a>&nbsp;  '.
-                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress.'&insert=i').'#atInsert">&nbsp; *i &nbsp;</a>&nbsp;  '.
-                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress.'&insert=c').'#atInsert">&nbsp; *c &nbsp;</a>&nbsp;  '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$eC->idx.'&insert=p').'#atInsert">&nbsp; *p &nbsp;</a>&nbsp; '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$eC->idx.'&insert=m').'#atInsert">&nbsp; *m &nbsp;</a>&nbsp;  '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$eC->idx.'&insert=i').'#atInsert">&nbsp; *i &nbsp;</a>&nbsp;  '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$eC->idx.'&insert=c').'#atInsert">&nbsp; *c &nbsp;</a>&nbsp;  '.
                 ( $eC->elementId != 'C' ? '' : '<a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress).'&insert=C#atInsert">&nbsp; *C &nbsp;</a>&nbsp;  ' ).
                 "\n".
                 '</div>').
