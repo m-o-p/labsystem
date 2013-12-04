@@ -61,7 +61,17 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-12-04
+-------------------
+Now new elements can be added to the view view and not only to the edit view by one click. This should make the content creation process faster.
 
+/include/classes/ElementMenues.inc
+  Added the buttons.
+/include/classes/elements/BCElement.inc
+  Added the handler and set the elementID to "C".
+/include/classes/elements/LcElement.inc
+  Added the handler.
+  
 2013-08-01
 -------------------
   Registration Process

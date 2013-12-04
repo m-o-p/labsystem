@@ -40,6 +40,7 @@ class BCElement extends LcElement{
   */
   function BCElement( $idx, $title, $contents, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false, $isInLab=false ){
     parent::LcElement( $idx, $title, $contents, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl, $isInLab );
+    $this->elementId = 'C';
   }
 
 // The next functions are used for the element's view page. *************************************************
@@ -133,6 +134,8 @@ class BCElement extends LcElement{
     global $lng, $cDBI, $usr, $url;
 
     if ( !$this->isVisible() ){ return $this->notFoundVisibleNote( $fullAddress ); exit; }
+
+   $this->handleInsertElement( $fullAddress );
 
    // Address splitting.
     $parentAddr = $fullAddress;

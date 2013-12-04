@@ -195,10 +195,22 @@ class EM{ /* ElementMenues */
   * @return               The html code of the menu.
   */
   function viewBottomCollection( &$eC, $fullAddress, $prevAddress=false, $nextAddress=false, $topAddress=false ){
-    global $usr, $lng;
-    if ($usr->isOfKind( IS_CONTENT_EDITOR ))
-        return EM::viewTopCollection( $eC, $fullAddress, $prevAddress, $nextAddress, $topAddress, "_edit_bottom" ); // only if navigation is present show bottom menu
-    else if ($prevAddress || $nextAddress)
+    global $usr, $lng, $url;
+    if ($usr->isOfKind( IS_CONTENT_EDITOR )){
+      // only if navigation is present show bottom menu
+        return ($url->get('address') != $fullAddress ? '' :
+                ( $url->available('insert') && $url->available('insertAt') && // we are inserting -> place anchor
+                  $url->get('insertAt') == $fullAddress ? '<a name="atInsert"></a>' : '' ).
+                '<div class="labsys_mop_elements_menu_c_edit_bottom">'.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress.'&insert=p').'#atInsert">&nbsp; *p &nbsp;</a>&nbsp; '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress.'&insert=m').'#atInsert">&nbsp; *m &nbsp;</a>&nbsp;  '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress.'&insert=i').'#atInsert">&nbsp; *i &nbsp;</a>&nbsp;  '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress.'&insert=c').'#atInsert">&nbsp; *c &nbsp;</a>&nbsp;  '.
+                ( $eC->elementId != 'C' ? '' : '<a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$fullAddress).'&insert=C#atInsert">&nbsp; *C &nbsp;</a>&nbsp;  ' ).
+                "\n".
+                '</div>').
+                EM::viewTopCollection( $eC, $fullAddress, $prevAddress, $nextAddress, $topAddress, "_edit_bottom" );
+    }else if ($prevAddress || $nextAddress){
         return "<div class=\"labsys_mop_elements_menu_c\">\n".
                (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
                (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
@@ -206,6 +218,7 @@ class EM{ /* ElementMenues */
                EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress ).
                "</div>\n".
                "\n\n\t<!-- *************************stop of c-element************************* -->\n\n";
+    }
   }
 
   /**
@@ -321,7 +334,6 @@ class EM{ /* ElementMenues */
     global $lng, $url;
     return  "<div class=\"labsys_mop_elements_menu_c\">\n".
             ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-            "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
             EB::viewStructure( $fullAddress ).
             EB::link2Element(  $fullAddress ).
             EB::view(   $fullAddress ).

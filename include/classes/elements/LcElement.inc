@@ -310,6 +310,24 @@ class LcElement extends Element{
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /**
+   * Handles the inserts that happen when the edit buttons to insert new *p *i *m *c *C
+   * are pressed.
+   *
+   */
+  function handleInsertElement( $fullAddress ){
+    global $usr,$url;
+    if ($usr->isOfKind(IS_CONTENT_EDITOR) &&
+    $url->available('insert') &&
+    $url->available('insertAt') &&
+    $url->get('insertAt') == $fullAddress
+    ){
+      // inserts an element of the given type at the end of the collection
+      $url->rem('insert');
+      $url->rem('insertAt');
+      $this->insertNew( $GLOBALS['url']->get('insert') );
+    }
+  }
+  /**
   * Returns the element's HTML-representation in the way the VIEWER should see it.
   *
   * @param $fullAddress     The element's full address (p.e. C23.c42.p13)
@@ -318,9 +336,11 @@ class LcElement extends Element{
   * @return string          The html code of the element's view view.
   */
   function show( $fullAddress, $extParagraph="" ){
-    global $lng, $usr;
+    global $lng, $usr,$url;
 
     if ( !$this->isVisible() ){ return $this->notFoundVisibleNote( $fullAddress ); exit; }
+
+    $this->handleInsertElement( $fullAddress );
 
    // Address splitting.
     $parentAddr = $fullAddress;
@@ -331,7 +351,6 @@ class LcElement extends Element{
     if ( count( $myAddrArray ) > 1 ) $scndLast  = $myAddrArray[ count( $myAddrArray )-2 ]; else $scndLast = "";
 
     $myRetVal = '';
-
    // structure
         if ( ($last == 'structure') && ($scndLast == $me) && $usr->isOfKind( IS_CONTENT_EDITOR ) )
                 $myRetVal .= "<div class=\"labsys_mop_contentArea\">".
@@ -817,12 +836,14 @@ class LcElement extends Element{
   * Inserts a new element of type $elementID using the [ID]1 element as template.
   *
   * @param $elementID     ID of the element to be created (e{p,m,i,c}).
+  * @return The index of the new element.
   */
   function insertNew( $elementID ){
     global $cDBI;
     $newIdx = createNew( $elementID );
     $this->contents = $this->contents.' '.$elementID.$newIdx;
     $cDBI->setData( $this );
+    return $newIdx;
   }
 
 }
