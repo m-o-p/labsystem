@@ -325,7 +325,6 @@ class LcElement extends Element{
       $url->rem('insert');
       $url->rem('insertAt');
       $this->insertNew( $GLOBALS['url']->get('insert') );
-      echo("[".$this->elementId.$this->idx."]: ".$url->get('insertAt')."==".$fullAddress."<br>");
     }
   }
   /**
