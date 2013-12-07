@@ -1268,6 +1268,7 @@ class LlElement extends Element{
       // List existing files and allow deleting existing files:
       $retHTML .= '<img class="labsys_mop_i_arrow" src="../syspix/delete-arrow.gif" alt="delete" /><input type="submit" class="labsys_mop_button" name="fileDelete" value="'.$lng->get('deleteFile').'">'.
                   '<ul class="labsys_mop_i_file_list">'."\n";
+
       foreach ($files as $file) {
         // List files. If isGettingAnswered with delete button.
         $pathInfo = pathinfo($file['fileName']);
@@ -1292,9 +1293,10 @@ class LlElement extends Element{
     $max_post = (int)(ini_get('post_max_size'));
     $memory_limit = (int)(ini_get('memory_limit'));
     $upload_mb = min($max_upload, $max_post, $memory_limit);
-    $retHTML .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" name=\"file".$pathID."\">\n".
-                "<input type=\"submit\" class=\"labsys_mop_button\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>'."\n".
-                '</div></div>';
+    $retHTML .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" multiple name=\"file".$pathID."\">\n".
+        "<input type=\"submit\" class=\"labsys_mop_button\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>'."\n";
+
+    $retHTML .= '</div></div>';
 
     return $retHTML;
   }
