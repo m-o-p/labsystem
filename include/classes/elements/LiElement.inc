@@ -308,7 +308,7 @@ class LiElement extends Element{
       $max_post = (int)(ini_get('post_max_size'));
       $memory_limit = (int)(ini_get('memory_limit'));
       $upload_mb = min($max_upload, $max_post, $memory_limit);
-      $ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" multiple name=\"file\" \">".
+      $ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" multiple name=\"file[]\" \">".
               "<input type=\"submit\"  class=\"labsys_mop_button\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>';
     }
     $ret .= '</div>';
@@ -867,9 +867,11 @@ class LiElement extends Element{
   private function handleUploadedFiles(){
     global $url, $lng, $usr;
     if ($this->hasFileUpload){
-      if (!empty($_FILES['file']['size'])) {
-        $this->uaDBI->uploadFile($_POST['TEAM'], $this->idx, $_FILES['file']['tmp_name'], $_FILES['file']['name']);
-        $this->history = $_FILES['file']['name'].' uploaded';
+      if (!empty($_FILES['file']['size'][0])) {
+        for($moreFiles = count($_FILES['file'.$pathID]['size'])-1; $moreFiles>=0; $moreFiles--){
+          $this->uaDBI->uploadFile($_POST['TEAM'], $this->idx, $_FILES['file']['tmp_name'][$moreFiles], $_FILES['file']['name'][$moreFiles]);
+          $this->history = $_FILES['file']['name'][$moreFiles].' uploaded';
+        }
       } else if (!empty($_POST['deleteFileNames'])) {
  	      foreach ($_POST['deleteFileNames'] as $fileName) {
           $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName);

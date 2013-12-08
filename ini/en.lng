@@ -199,7 +199,7 @@ noiLockNote         = "Your team has currently opened another question for answe
 noFilesYet          = "No files uploaded yet."
 fileList            = "List of uploaded files"
 deleteFile          = "Delete selected files"
-upload              = "Upload file"
+upload              = "Upload files"
 hasFileUpload       = "Activate attach files option (file upload)"
 options             = "Options"
 

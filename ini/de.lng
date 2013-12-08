@@ -199,7 +199,7 @@ noiLockNote         = "Es ist bereits eine andere Frage zur Beantwortung gešffne
 noFilesYet          = "Keine hochgeladenen Dateien vorhanden."
 fileList            = "Hochgeladene Dateien"
 deleteFile          = "Markierte Dateien l&ouml;schen"
-upload              = "Datei hochladen"
+upload              = "Dateien hochladen"
 hasFileUpload       = "M&ouml;glichkeit zum Dateianhang aktivieren"
 options             = "Optionen"
 

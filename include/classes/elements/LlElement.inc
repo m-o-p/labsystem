@@ -1293,7 +1293,7 @@ class LlElement extends Element{
     $max_post = (int)(ini_get('post_max_size'));
     $memory_limit = (int)(ini_get('memory_limit'));
     $upload_mb = min($max_upload, $max_post, $memory_limit);
-    $retHTML .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" multiple name=\"file".$pathID."\">\n".
+    $retHTML .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" multiple name=\"file".$pathID."[]\">\n".
         "<input type=\"submit\" class=\"labsys_mop_button\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>'."\n";
 
     $retHTML .= '</div></div>';
@@ -1317,12 +1317,14 @@ class LlElement extends Element{
 //     print_r( $_POST );
 //     echo( "End: file".$pathID."<br>\n");
 
-    if (!empty($_FILES['file'.$pathID]['size'])) {
-      $_FILES['file'.$pathID]['name'] = sanitizeFileName( $_FILES['file'.$pathID]['name'] );
-      //echo ('moving '.$_FILES['file'.$pathID]['tmp_name'].' to '.$myPath.'/'.$_FILES['file'.$pathID]['name']."<br>\n" );
-      move_uploaded_file($_FILES['file'.$pathID]['tmp_name'], $myPath.'/'.$_FILES['file'.$pathID]['name'])
-      or trigger_error("Error moving uploaded file ".$myPath.'/'.$_FILES['file'.$pathID]['name'], E_USER_ERROR);
-      $history .= $_FILES['file'.$pathID]['name'].' uploaded; ';
+    if (!empty($_FILES['file'.$pathID]['size'][0])) {
+      for($moreFiles = count($_FILES['file'.$pathID]['size'])-1; $moreFiles>=0; $moreFiles--){
+        $_FILES['file'.$pathID]['name'][$moreFiles] = sanitizeFileName( $_FILES['file'.$pathID]['name'][$moreFiles] );
+        //echo ('moving '.$_FILES['file'.$pathID]['tmp_name'].' to '.$myPath.'/'.$_FILES['file'.$pathID]['name']."<br>\n" );
+        move_uploaded_file($_FILES['file'.$pathID]['tmp_name'][$moreFiles], $myPath.'/'.$_FILES['file'.$pathID]['name'][$moreFiles])
+        or trigger_error("Error moving uploaded file ".$myPath.'/'.$_FILES['file'.$pathID]['name'][$moreFiles], E_USER_ERROR);
+        $history .= $_FILES['file'.$pathID]['name'][$moreFiles].' uploaded; ';
+      }
     } else if (!empty($_POST['deleteFileNames'.$pathID])) {
       foreach ($_POST['deleteFileNames'.$pathID] as $fileName) {
         //echo( 'deleting '.$myPath.'/'.$fileName."<br>\n" );
