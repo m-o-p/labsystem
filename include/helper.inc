@@ -220,4 +220,12 @@ function html2txt( $HTMLcontent ){
 function sanitizeFileName( $fileName ){
   return preg_replace( '/[^\da-z.-]+/i', '_', $fileName );
 }
+
+/**
+ * These links are used for the arrow navigation in /include/page_layout.inc at the bottom.
+ * They are set by EB::prev, EB::next, and EB::TOC.
+ */
+$linkToPreviousPage = "#";
+$linkToNextPage = "#";
+$linkToTOCPage = "#";
 ?>

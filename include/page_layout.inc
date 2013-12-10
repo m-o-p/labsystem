@@ -279,4 +279,25 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
       echo("<script language=\"JavaScript\">\n<!-- \nalert( '".addslashes( htmlspecialchars_decode( $SYSALERT ) )."' ); \n//-->\n</script>");
     }
   ?>
+  <script language="JavaScript">
+<!--
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    switch (evt.altKey && evt.keyCode) {
+        case 37: // left
+            this.location.href="<?php echo($linkToPreviousPage); ?>";
+            break;
+        case 39: // right
+            this.location.href="<?php echo($linkToNextPage); ?>";
+            break;
+        case 38: // up
+            this.location.href="<?php echo($linkToTOCPage); ?>";
+            break;
+        case 40: // back
+            window.history.back();
+            break;
+    }
+};
+-->
+</script>
 </HTML>

@@ -314,6 +314,7 @@ class EB{ /* ElementButtons */
            ;
   }
 
+
   /**
   * This button is used for navigation inside a collection.
   * Link to the next page.
@@ -323,8 +324,9 @@ class EB{ /* ElementButtons */
   * @return          The button's html-code.
   */
   function prev( $address ){
-    global $lng, $url;
+    global $lng, $url, $linkToPreviousPage; // Links are defined in /include/helper.inc
     $link = $url->link2( "../pages/view.php?address=".$address );
+    $linkToPreviousPage = $url->rawLink2( "../pages/view.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_previous_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"previous\" title=\"".$lng->get("explainPrev")."\">" );
   }
 
@@ -337,8 +339,9 @@ class EB{ /* ElementButtons */
   * @return          The button's html-code.
   */
   function next( $address ){
-    global $lng, $url;
+    global $lng, $url, $linkToNextPage; // Links are defined in /include/helper.inc
     $link = $url->link2( "../pages/view.php?address=".$address );
+    $linkToNextPage = $url->rawLink2( "../pages/view.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_next_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"next\" title=\"".$lng->get("explainNext")."\">" );
   }
 
@@ -351,8 +354,9 @@ class EB{ /* ElementButtons */
   * @return          The button's html-code.
   */
   function toc( $address ){
-    global $lng, $url;
+    global $lng, $url, $linkToTOCPage; // Links are defined in /include/helper.inc
     $link = $url->link2( "../pages/view.php?address=".$address );
+    $linkToTOCPage = $url->rawLink2( "../pages/view.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_toc_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"TOC\" title=\"".$lng->get("explainTOC")."\">" );
   }
 

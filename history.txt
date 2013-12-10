@@ -61,6 +61,15 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2013-12-10
+-------------------
+/include/classes/ElementButtons.inc
+/include/helper.inc
+/include/page_layout.inc
+/ini/de.lng
+/ini/en.lng
+  Added functionality to browse pages using the keys [ALT]+the arrows right, left, up, and down.
+  
 2013-12-04
 -------------------
 Now new elements can be added to the view view and not only to the edit view by one click. This should make the content creation process faster.
