@@ -453,9 +453,9 @@ explainViewStructure= "View the element's structure..."
 explainHistory      = "This element's history..."
 explainMailLink2    = "Mail a link to this element..."
 explainSaveElement  = "Save the current Element..."
-explainNext         = "next page&gt;&gt; [shift+-&gt;]"
-explainPrev         = "&lt;&lt;previous page [shift+&lt;-]"
-explainTOC          = "table of contents... [shift+UP]"
+explainNext         = "next page&gt;&gt; [shift+ctrl+-&gt;]"
+explainPrev         = "&lt;&lt;previous page [shift+ctrl+&lt;-]"
+explainTOC          = "table of contents... [shift+ctrl+UP]"
 
 ;l
 exAllowedToAnswer   = "Is the user allowed to answer?"
