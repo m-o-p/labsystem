@@ -283,7 +283,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 <!--
 document.onkeydown = function(evt) {
     evt = evt || window.event;
-    switch (evt.shiftKey && evt.ctrlKey && evt.keyCode) {
+    switch (evt.altKey && evt.ctrlKey && evt.keyCode) {
         case 37: // left
             this.location.href="<?php echo($linkToPreviousPage); ?>";
             break;

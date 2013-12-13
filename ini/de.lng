@@ -453,9 +453,9 @@ explainViewStructure= "Struktur des Elements..."
 explainHistory      = "Die Vergangenheit des Elements..."
 explainMailLink2    = "Einen Link zu diesem Element per Mail verschicken..."
 explainSaveElement  = "Das aktuelle Element speichern..."
-explainNext         = "n&auml;chste Seite&gt;&gt;  [shift+ctrl+-&gt;]"
-explainPrev         = "&lt;&lt;vorherige Seite  [shift+ctrl+&lt;-]"
-explainTOC          = "Inhalt... [shift+ctrl+hoch]"
+explainNext         = "n&auml;chste Seite&gt;&gt;  [ctrl+alt+-&gt;]"
+explainPrev         = "&lt;&lt;vorherige Seite  [ctrl+alt+&lt;-]"
+explainTOC          = "Inhalt... [ctrl+alt+hoch]"
 
 ;l
 exAllowedToAnswer   = "Darf der Benutzer antworten?"
