@@ -104,12 +104,12 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function link2Element( $address ){
+  function link2Element( $address, &$el=false ){
     global $lng;
 
     return EB::mkHiddenDiv( "../pages/view.php?address=".$address."&amp;amp;&#x005F;_LINKQUERY__",
                             "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
-                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;'.EB::getLink2ElementURL( $address ).'&quot;&gt;Link to '.$address.'&lt;/a&gt;" onClick="this.select();">' );
+                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;'.EB::getLink2ElementURL( $address ).'&quot;&gt;'.($el && ($el->title != "") ? $el->title : 'Link to '.$address).'&lt;/a&gt;" onClick="this.select();">' );
   }
 
   /**
