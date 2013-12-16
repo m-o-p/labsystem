@@ -62,6 +62,8 @@ class LlElement extends Element{
 
   var $userIsViewing;         // is a user or a corrector or example solution viewer watching?
 
+  var $lastUploadedFile;      // used to jump to the last uploaded file
+
   /**
   * The constructor.
   *
@@ -162,6 +164,8 @@ class LlElement extends Element{
                                       ( !$this->userIsViewing || $visiblePerSchedule ) &&  // is it visible by a schedule?
                                       ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) ); // in collection restriction fulfilled?
     $this->serializationArray       = array( 'idx', 'uniqueID', 'title', 'authors', 'comment', 'prelabCollectionIdx', 'labCollectionIdx', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'visibleOnlyInCollection', 'history' );  // see Element.inc for details
+
+    $this->lastUploadedFile         = false;
   }
 
 // The next functions are used for the element's view page. *************************************************
@@ -1210,7 +1214,6 @@ class LlElement extends Element{
             "</fieldset>\n".
 
            // material upload
-            '<a name="uploadMaterial"></a>'."\n". // anchor for retrieving after saving
             "<fieldset><legend>".$lng->get('uploadMaterial')."</legend>\n".
             $lng->get('uploadMaterialNote').
             '<h5>'.$lng->get('imageUploadHeader').'</h5>'.
@@ -1277,7 +1280,7 @@ class LlElement extends Element{
 
         $retHTML .= '<li>'.
                     '<input type="checkbox" name="deleteFileNames'.$pathID.'[]" value="'.$pathInfo['basename'].'" />'.
-                    '<a href="'.$myPath.'/'.$file['fileName'].'">'.
+                    '<a name="'.urlencode($file['fileName']).'" href="'.$myPath.'/'.$file['fileName'].'">'.
                     $pathInfo['basename'].
                     '</a> '.EB::link2Content( sprintf( ( substr_count( $strFormat, '%s' ) != 2 ? $strFormat : '%s%s' ),
                                               $myPath.'/',
@@ -1324,6 +1327,9 @@ class LlElement extends Element{
         move_uploaded_file($_FILES['file'.$pathID]['tmp_name'][$moreFiles], $myPath.'/'.$_FILES['file'.$pathID]['name'][$moreFiles])
         or trigger_error("Error moving uploaded file ".$myPath.'/'.$_FILES['file'.$pathID]['name'][$moreFiles], E_USER_ERROR);
         $history .= $_FILES['file'.$pathID]['name'][$moreFiles].' uploaded; ';
+        if (!$this->lastUploadedFile){
+          $this->lastUploadedFile=$_FILES['file'.$pathID]['name'][$moreFiles];
+        }
       }
     } else if (!empty($_POST['deleteFileNames'.$pathID])) {
       foreach ($_POST['deleteFileNames'.$pathID] as $fileName) {
@@ -1408,7 +1414,7 @@ class LlElement extends Element{
     $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("lNumber")." ".$newLab->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ).( isset($history) ? '#uploadMaterial' : '' ) );
+    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ).( $this->lastUploadedFile ? '#'.urlencode($this->lastUploadedFile) : '' ) );
   }
 
 // The next functions are used for the element's manage page. ***********************************************
