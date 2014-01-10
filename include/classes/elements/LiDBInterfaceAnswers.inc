@@ -75,7 +75,7 @@ class LiDBInterfaceAnswers {
           return false;
           exit;
         }
-        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">['.$lng->get('lastChange').']</a>'."\n".$backupHistory;
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'#userAnswer'.$iIdx.'">['.$lng->get('lastChange').']</a>'."\n".$backupHistory;
       }
       return Array( "answer" => $this->myDBC->unEscapeString( $data['answer'] ),
                     "comment" => $this->myDBC->unEscapeString( $data['comment'] ),
