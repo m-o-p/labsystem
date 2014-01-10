@@ -257,15 +257,14 @@ class LiElement extends Element{
   */
   function showAnswer( $isGettingAnswered=false ){
     global $cfg, $pge;
-    $anchor='<a name="userAnswer'.$this->idx.'"></a>';
-    if ( $isGettingAnswered ) return  $anchor."<textarea  tabindex=\"".$pge->nextTab++."\" ".
+    if ( $isGettingAnswered ) return  "<textarea  tabindex=\"".$pge->nextTab++."\" ".
                                                   'name="ANSWER" '.
                                                   'class="labsys_mop_textarea" '.
                                                   'rows="'.$cfg->get("DefaultIAnswerRows").'"'.
                                                   ' onchange="isDirty=true">'.
                                                   htmlentities( $this->userAnswer ).
                                                   "</textarea>\n";
-                         else if ( $this->userAnswer != "" ) return $anchor."<div class=\"labsys_mop_textarea\">".
+                         else if ( $this->userAnswer != "" ) return "<div class=\"labsys_mop_textarea\">".
                                                                     $this->returnPREformatted( $this->userAnswer ).
                                                                     "</div>\n";
                               else return "";
@@ -446,7 +445,7 @@ class LiElement extends Element{
         $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iStudentOpen);
       }
 
-      $ret =   "<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
+      $ret =   '<a name="i'.$this->idx.'"></a>'."<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
                "<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
                "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && !$isInCorrection) ?
                                       // link for the corrector to unlock... (-> see description above method)

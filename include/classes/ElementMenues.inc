@@ -243,7 +243,7 @@ class EM{ /* ElementMenues */
     global $lng;
 
     return "<div class=\"labsys_mop_elements_menu_i_answer_history\">\n".
-           EB::history( $eI->answerHistory, "userAnswer".$eI->idx, true ).
+           EB::history( $eI->answerHistory, 'i'.$eI->idx, true ).
            "</div>\n";
   }
 
