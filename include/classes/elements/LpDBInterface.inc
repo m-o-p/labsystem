@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -35,12 +35,12 @@ require_once( INCLUDE_DIR."/classes/elements/LpElement.inc" );
 class LpDBInterface {
   var $myDBC;
   var $myTable;
-  
+
   function LpDBInterface(){
     $this->myDBC   = new Ddbc();
     $this->myTable = "pages";
   }
-  
+
   /**
   * Returns the LpElement specified by $idx.
   * Calling this method is the normal way to get an instance of the fitting element.
@@ -56,13 +56,30 @@ class LpDBInterface {
   * @return LpElement
   */
   function getData2idx( $idx, $isInColl=false ){
-    global $cfg;
+    global $cfg,$url,$lng;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       //trigger_error( mysql_error(). "pge with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
-    }else
+    }else{
+      // load old version...
+      $myId = 'p';
+      if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
+      $url->available('historicVersion') &&
+      strpos($url->get('historicVersion'), $myId.$idx.'-') !== FALSE){
+        $historyIdx = substr($url->get('historicVersion'), strpos($url->get('historicVersion'),'-')+1);
+        $backupIdx = $data['idx'];
+        $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
+        if ( !($data = mysql_fetch_array( $result )) ){
+          trigger_error( mysql_error(). $myId." backup with idx not found: ".$idx, E_USER_WARNING );
+          return false;
+          exit;
+        }
+        $data['idx'] = $backupIdx;
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">'.$lng->get('lastChange').'</a>'."\n".$data['history'];
+      }
+
       return new LpElement( $data['idx'],                                 // $idx
                             $this->myDBC->unEscapeString($data['title']),                 // $title
                             $this->myDBC->unEscapeString($data['contents']),              // $contents
@@ -72,6 +89,7 @@ class LpDBInterface {
                             $data['history'],                             // $history
                             $isInColl                                     // $isInColl
                           );
+    }
   }
 
   /**
@@ -88,7 +106,7 @@ class LpDBInterface {
   *                           passed to the real constructor.
   *
   * @return LpElement         Only partially filled with data!
-  */  
+  */
   function getMenuData2idx( $idx, $isInColl=false ){
     global $cfg;
     $result = $this->myDBC->mkSelect( "idx, title, matching_menu, visible_for, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
@@ -107,14 +125,14 @@ class LpDBInterface {
                             $isInColl                                     // $isInColl
                           );
   }
-  
+
   /**
   * !$createNew: Stores the data into the database. Position specified by $eP->idx.
   *  $createNew: Creates a new dataset and returns its index in the database.
   *
   * @param $eP  The LpElement to store.
   * @param $createNew  Shall a new element be created in the DB?
-  * @return !$createNew: possible error 
+  * @return !$createNew: possible error
   *          $createNew: int The idx of the newly created element.
   */
   function setData( &$eP, $createNew = false ){
@@ -126,23 +144,30 @@ class LpDBInterface {
               "visible_for=".$eP->visibleFor.", ".
               "visible_only_in_collection=".( $eP->visibleOnlyInCollection ?  1 :  0  ).', ';
 
+    $element = $eP;
+    $element->history = ( $element->history[0] == ']' ?
+                          substr( $element->history, 1 ) : // import... -> no stamping please
+                          date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName."\n".( $createNew ? '' : $element->history)
+                        );
+    // versioning
+    if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1'){
+      $versionedIdx = $this->myDBC->mkInsertReturnIDX( $toSet.
+          "history='".$this->myDBC->escapeString( $element->history )."'",
+          'bak_'.$this->myTable );
+      $element->history = '@@'.$versionedIdx.' '.$element->history;
+    }
+
     if ( $createNew )
       return $this->myDBC->mkInsertReturnIDX( $toSet.
-                                              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).' '.$lng->get("dataSetCreated")."\\n' )", 
+                                              "history='".$this->myDBC->escapeString( $element->history )."'",
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     ( $eP->history != '' ?
-                                        ( $eP->history[0] == ']' ?
-                                            'history=\''.substr( $eP->history, 1 )."'" : // import... -> no stamping please
-                                            "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n".$this->myDBC->escapeString( $eP->history )."' )" ) 
-                                        : // if the program changed the history: take it
-                                        "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n', ".$this->myTable.".history )"
-                                     ), 
-                                     $this->myTable, 
-                                     "idx=".$eP->idx );
+          'history=\''.$this->myDBC->escapeString($element->history)."'",
+                                     $this->myTable,
+                                     "idx=".$element->idx );
   }
-  
+
   /**
   * Deletes the element with $idx from the database.
   *
@@ -152,8 +177,8 @@ class LpDBInterface {
   function deleteData( $idx ){
     return $this->myDBC->mkDelete( $this->myTable, "idx='".$idx."'" );
   }
-  
-  
+
+
   var $queryResult;
   /**
   * Queries for all elements. P.e. used at the manage page.
@@ -165,22 +190,22 @@ class LpDBInterface {
     if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
     $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "", $orderBy );
   }
-  
+
   /**
    * Returns the amount of returned datasets from the query;
-   * 
+   *
    * @return  amount of returned datasets from the query
    */
   function allSize(){
     return $this->myDBC->datasetsIn( $this->queryResult );
   }
-  
+
   /**
   * Returns the next element from the getAllData() query or false (no more results).
   *
   * @return LpElement
   * @return FALSE     If no more datasets are available.
-  */  
+  */
   function getNextData(){
     if ( $data = mysql_fetch_array($this->queryResult) )
       return new LpElement( $data['idx'],                                 // $idx
@@ -194,15 +219,15 @@ class LpDBInterface {
                           );
     return false;
   }
-  
+
   /**
   * Returns an Array( description => database key, ... ).
-  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ... 
+  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ...
   * The first entry is the default soring key.
   * This is used for the order by selector on top of the manage page.
   *
   * @return array An array of pairs ( description, database key ).
-  */ 
+  */
   function sortableByArray(){
     global $lng;
     return Array( $lng->get("title")            => "title",

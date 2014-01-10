@@ -542,7 +542,7 @@ class LcElement extends Element{
                                     ( isset( $_POST["VISIBLE_DURING_SCHED"] ) && $_POST["VISIBLE_DURING_SCHED"] == 1 ),
                                     ( isset( $_POST["VISIBLE_AFTER_FIRST_SCHED"] ) && $_POST["VISIBLE_AFTER_FIRST_SCHED"] == 1 ),
                                     ( $_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1" ),
-                                    ""
+                                    $this->history
                                    );
 
     // if $_POST["SAVEASNEW"] is set the element is saved as new element

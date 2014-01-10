@@ -585,7 +585,7 @@ class LmElement extends Element{
                                         $correctMask,
                                         $userRights,
                                         ($_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1"),
-                                        ""
+                                        $this->history
                                        );
 
     // if $_POST["SAVEASNEW"] is set the element is saved as new element

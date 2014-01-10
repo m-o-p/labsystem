@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -35,12 +35,12 @@ require( INCLUDE_DIR."/classes/elements/LcElement.inc" );
 class LcDBInterface {
   var $myDBC;
   var $myTable;
-  
+
   function LcDBInterface(){
     $this->myDBC   = new Ddbc();
     $this->myTable = "collections";
   }
-  
+
   /**
   * Returns the LcElement specified by $idx.
   * Calling this method is the normal way to get an instance of the fitting element.
@@ -58,14 +58,30 @@ class LcDBInterface {
   * @return LcElement
   */
   function getData2idx( $idx, $isInColl=false, $isInLab=false ){
-    global $cfg;
+    global $cfg,$url,$lng;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){ 
+    if ( !($data = mysql_fetch_array( $result )) ){
       trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
-      if ( $data['contents'] == '' ) $data['contents'] = 'p1 m1 i1'; // if empty fill with standard filler
+      // load old version...
+      $myId = 'c';
+      if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
+      $url->available('historicVersion') &&
+      strpos($url->get('historicVersion'), $myId.$idx.'-') !== FALSE){
+        $historyIdx = substr($url->get('historicVersion'), strpos($url->get('historicVersion'),'-')+1);
+        $backupIdx = $data['idx'];
+        $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
+        if ( !($data = mysql_fetch_array( $result )) ){
+          trigger_error( mysql_error(). $myId." backup with idx not found: ".$idx, E_USER_WARNING );
+          return false;
+          exit;
+        }
+        $data['idx'] = $backupIdx;
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">'.$lng->get('lastChange').'</a>'."\n".$data['history'];
+      }
+      //if ( $data['contents'] == '' ) $data['contents'] = 'p1 m1 i1'; // if empty fill with standard filler
       return new LcElement( $data['idx'],                                 // $idx
                             $this->myDBC->unEscapeString($data['title']),                 // $title
                             $this->myDBC->unEscapeString($data['contents']),              // $contents
@@ -80,7 +96,7 @@ class LcDBInterface {
                           );
     }
   }
-  
+
   /**
   * For the menu only a little amount of data is needed so here only that stuff is loaded.
   *
@@ -99,7 +115,7 @@ class LcDBInterface {
   function getMenuData2idx( $idx, $isInColl=false, $isInLab=false ){
     global $cfg;
     $result = $this->myDBC->mkSelect( "idx, title, contents, matching_menu, visible_before_first_sched, visible_during_sched, visible_after_first_sched, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){ 
+    if ( !($data = mysql_fetch_array( $result )) ){
       //trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
@@ -117,14 +133,14 @@ class LcDBInterface {
                             $isInLab                                      // $isInLab
                           );
   }
-  
+
   /**
   * !$createNew: Stores the data into the database. Position specified by $eC->idx.
   *  $createNew: Creates a new dataset and returns its index in the database.
   *
   * @param $eC  The LcElement to store.
   * @param $createNew  Shall a new element be created in the DB?
-  * @return !$createNew: possible error 
+  * @return !$createNew: possible error
   *          $createNew: int The idx of the newly created element.
   */
   function setData( &$eC, $createNew = false ){
@@ -137,21 +153,28 @@ class LcDBInterface {
               ", visible_during_sched=".( $eC->visibleDuringSched ?  "1" :  "0"  ).
               ", visible_after_first_sched=".( $eC->visibleAfter1stSched ?  "1" :  "0"  ).', ';
 
+    $element = $eC;
+    $element->history = ( $element->history[0] == ']' ?
+                          substr( $element->history, 1 ) : // import... -> no stamping please
+                          date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName."\n".( $createNew ? '' : $element->history)
+                        );
+    // versioning
+    if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1'){
+      $versionedIdx = $this->myDBC->mkInsertReturnIDX( $toSet.
+          "history='".$this->myDBC->escapeString( $element->history )."'",
+          'bak_'.$this->myTable );
+      $element->history = '@@'.$versionedIdx.' '.$element->history;
+    }
+
     if ( $createNew )
       return $this->myDBC->mkInsertReturnIDX( $toSet.
-                                              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).' '.$this->myDBC->escapeString( $lng->get("dataSetCreated") )."\\n' )", 
+                                              "history='".$this->myDBC->escapeString( $element->history )."'",
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     ( $eC->history != '' ?
-                                        ( $eC->history[0] == ']' ?
-                                            'history=\''.substr( $eC->history, 1 )."'" : // import... -> no stamping please
-                                            "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n".$this->myDBC->escapeString( $eC->history )."' )" )
-                                        : // if the program changed the history: take it
-                                        "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n', ".$this->myTable.".history )"
-                                     ), 
-                                     $this->myTable, 
-                                     "idx=".$eC->idx );
+          'history=\''.$this->myDBC->escapeString($element->history)."'",
+                                     $this->myTable,
+                                     "idx=".$element->idx );
   }
 
   /**
@@ -162,9 +185,9 @@ class LcDBInterface {
   */
   function deleteData( $idx ){
     return $this->myDBC->mkDelete( $this->myTable, "idx='".$idx."'" );
-  }  
-  
-  
+  }
+
+
   var $queryResult;
   /**
   * Queries for all elements. P.e. used at the manage page.
@@ -176,22 +199,22 @@ class LcDBInterface {
     if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
     $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "", $orderBy );
   }
-  
+
   /**
    * Returns the amount of returned datasets from the query;
-   * 
+   *
    * @return  amount of returned datasets from the query
    */
   function allSize(){
     return $this->myDBC->datasetsIn( $this->queryResult );
   }
-    
+
   /**
   * Returns the next element from the getAllData() query or false (no more results).
   *
   * @return LcElement
   * @return FALSE     If no more datasets are available.
-  */  
+  */
   function getNextData(){
     if ($data = mysql_fetch_array($this->queryResult))
       return new LcElement( $data['idx'],                                 // $idx
@@ -208,15 +231,15 @@ class LcDBInterface {
                           );
     return false;
   }
-  
+
   /**
   * Returns an Array( description => database key, ... ).
-  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ... 
+  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ...
   * The first entry is the default soring key.
   * This is used for the order by selector on top of the manage page.
   *
   * @return array An array of pairs ( description, database key ).
-  */  
+  */
   function sortableByArray(){
     global $lng;
     return Array( $lng->get("title")            => "title",

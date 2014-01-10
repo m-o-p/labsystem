@@ -111,13 +111,30 @@ class LsDBInterface {
   * @return LsElement
   */
   function getData2idx( $idx, $isInColl=false ){
-    global $cfg;
+    global $cfg,$url,$lng;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       //trigger_error( mysql_error(). "mc with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
+      // load old version...
+      $myId = 's';
+      if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
+      $url->available('historicVersion') &&
+      strpos($url->get('historicVersion'), $myId.$idx.'-') !== FALSE){
+        $historyIdx = substr($url->get('historicVersion'), strpos($url->get('historicVersion'),'-')+1);
+        $backupIdx = $data['idx'];
+        $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
+        if ( !($data = mysql_fetch_array( $result )) ){
+          trigger_error( mysql_error(). $myId." backup with idx not found: ".$idx, E_USER_WARNING );
+          return false;
+          exit;
+        }
+        $data['idx'] = $backupIdx;
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">'.$lng->get('lastChange').'</a>'."\n".$data['history'];
+      }
+
       return new LsElement( $data['idx'],                   // $idx
                             $data['id'],                    // $id
                             $data['num'],                   // $num
@@ -183,21 +200,28 @@ class LsDBInterface {
               "stop='".date("YmdHis", $eS->stop )."', ".
               "comment='".$this->myDBC->escapeString($eS->comment)."', ";
 
+    $element = $eS;
+    $element->history = ( $element->history[0] == ']' ?
+                          substr( $element->history, 1 ) : // import... -> no stamping please
+                          date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName."\n".( $createNew ? '' : $element->history)
+                        );
+    // versioning
+    if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1'){
+      $versionedIdx = $this->myDBC->mkInsertReturnIDX( $toSet.
+          "history='".$this->myDBC->escapeString( $element->history )."'",
+          'bak_'.$this->myTable );
+      $element->history = '@@'.$versionedIdx.' '.$element->history;
+    }
+
     if ( $createNew )
       return $this->myDBC->mkInsertReturnIDX( $toSet.
-                                              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).' '.$lng->get("dataSetCreated")."\\n' )",
+                                              "history='".$this->myDBC->escapeString( $element->history )."'",
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     ( $eS->history != '' ?
-                                        ( $eS->history[0] == ']' ?
-                                            'history=\''.substr( $eS->history, 1 )."'" : // import... -> no stamping please
-                                            "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n".$this->myDBC->escapeString( $eS->history )."' )" )
-                                        : // if the program changed the history: take it
-                                        "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n', ".$this->myTable.".history )"
-                                     ),
+          'history=\''.$this->myDBC->escapeString($element->history)."'",
                                      $this->myTable,
-                                     "idx=".$eS->idx );
+                                     "idx=".$element->idx );
   }
 
   /**

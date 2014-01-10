@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -35,12 +35,12 @@ require( INCLUDE_DIR."/classes/elements/LmElement.inc" );
 class LmDBInterface {
   var $myDBC;
   var $myTable;
-  
+
   function LmDBInterface(){
     $this->myDBC   = new Ddbc();
     $this->myTable = "multiple_choices";
   }
-  
+
   /**
   * Returns the LmElement specified by $idx.
   * Calling this method is the normal way to get an instance of the fitting element.
@@ -56,13 +56,30 @@ class LmDBInterface {
   * @return LmElement
   */
   function getData2idx( $idx, $isInColl=false ){
-    global $cfg;
+    global $cfg,$url,$lng;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       //trigger_error( mysql_error(). "mc with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
+      // load old version...
+      $myId = 'm';
+      if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
+      $url->available('historicVersion') &&
+      strpos($url->get('historicVersion'), $myId.$idx.'-') !== FALSE){
+        $historyIdx = substr($url->get('historicVersion'), strpos($url->get('historicVersion'),'-')+1);
+        $backupIdx = $data['idx'];
+        $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
+        if ( !($data = mysql_fetch_array( $result )) ){
+          trigger_error( mysql_error(). $myId." backup with idx not found: ".$idx, E_USER_WARNING );
+          return false;
+          exit;
+        }
+        $data['idx'] = $backupIdx;
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">'.$lng->get('lastChange').'</a>'."\n".$data['history'];
+      }
+
       return new LmElement( $data['idx'],                                         // $idx
                             $this->myDBC->unEscapeString($data['question']),                      // $question
                             unserialize( $this->myDBC->unEscapeString($data['answer_array']) ),   // $answerArray
@@ -75,7 +92,7 @@ class LmDBInterface {
                           );
     }
   }
-  
+
   /**
   * For the menu only a little amount of data is needed so here only that stuff is loaded.
   *
@@ -111,14 +128,14 @@ class LmDBInterface {
                           );
     }
   }
-  
+
   /**
   * !$createNew: Stores the data into the database. Position specified by $eM->idx.
   *  $createNew: Creates a new dataset and returns its index in the database.
   *
   * @param $eM  The LmElement to store.
   * @param $createNew  Shall a new element be created in the DB?
-  * @return !$createNew: possible error 
+  * @return !$createNew: possible error
   *          $createNew: int The idx of the newly created element.
   */
   function setData( &$eM, $createNew = false ){
@@ -127,7 +144,7 @@ class LmDBInterface {
     if ($cfg->get('tidyHTML') == 'TRUE'){
       tidyHTML( $eM->question );
       tidyHTML( $eM->answerExplanation );
-      foreach ( $eM->answerArray as &$value ){ tidyHTML($value); }   
+      foreach ( $eM->answerArray as &$value ){ tidyHTML($value); }
     }
 
     $toSet =  "question='".$this->myDBC->escapeString($eM->question)."', ".
@@ -137,23 +154,30 @@ class LmDBInterface {
               "visible_for=".$eM->visibleFor.", ".
               "visible_only_in_collection=".( $eM->visibleOnlyInCollection ?  1 :  0 ).', ';
 
+    $element = $eM;
+    $element->history = ( $element->history[0] == ']' ?
+                          substr( $element->history, 1 ) : // import... -> no stamping please
+                          date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName."\n".( $createNew ? '' : $element->history)
+                        );
+    // versioning
+    if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1'){
+      $versionedIdx = $this->myDBC->mkInsertReturnIDX( $toSet.
+          "history='".$this->myDBC->escapeString( $element->history )."'",
+          'bak_'.$this->myTable );
+      $element->history = '@@'.$versionedIdx.' '.$element->history;
+    }
+
     if ( $createNew )
       return $this->myDBC->mkInsertReturnIDX( $toSet.
-                                              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).' '.$this->myDBC->escapeString( $lng->get("dataSetCreated") )."\\n' )", 
+                                              "history='".$this->myDBC->escapeString( $element->history )."'",
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     ( $eM->history != '' ? 
-                                        ( $eM->history[0] == ']' ?
-                                            'history=\''.substr( $eM->history, 1 )."'" : // import... -> no stamping please
-                                            "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n".$this->myDBC->escapeString( $eM->history )."' )" ) 
-                                        : // if the program changed the history: take it
-                                        "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n', ".$this->myTable.".history )"
-                                     ), 
-                                     $this->myTable, 
-                                     "idx=".$eM->idx );
+          'history=\''.$this->myDBC->escapeString($element->history)."'",
+                                     $this->myTable,
+                                     "idx=".$element->idx );
   }
- 
+
   /**
   * Deletes the element with $idx from the database.
   *
@@ -163,8 +187,8 @@ class LmDBInterface {
   function deleteData( $idx ){
     return $this->myDBC->mkDelete( $this->myTable, "idx='".$idx."'" );
   }
-  
-    
+
+
   var $queryResult;
   /**
   * Queries for all elements. P.e. used at the manage page.
@@ -176,22 +200,22 @@ class LmDBInterface {
     if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
     $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "", $orderBy );
   }
-  
+
   /**
    * Returns the amount of returned datasets from the query;
-   * 
+   *
    * @return  amount of returned datasets from the query
    */
   function allSize(){
     return $this->myDBC->datasetsIn( $this->queryResult );
   }
-  
+
   /**
   * Returns the next element from the getAllData() query or false (no more results).
   *
   * @return LmElement
   * @return FALSE     If no more datasets are available.
-  */  
+  */
   function getNextData(){
     if ( $data = mysql_fetch_array($this->queryResult) )
       return new LmElement( $data['idx'],                                         // $idx
@@ -209,7 +233,7 @@ class LmDBInterface {
 
   /**
   * Returns an Array( description => database key, ... ).
-  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ... 
+  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ...
   * The first entry is the default soring key.
   * This is used for the order by selector on top of the manage page.
   *

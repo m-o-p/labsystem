@@ -601,6 +601,8 @@ function notStared( $value ){
  */
 function processElement( &$element, &$mappingArray, $labNumber, $isImport=false ){
   global $usr;
+  // Remove versioning links from history...
+  $element->history = preg_replace('/^@@([\d]*) (.*)/m', '$2', $element->history);
   switch ( $element->elementId ){
 /*******************************************************
 ToDo: the elements are loaded now. The data is in the respective fields.

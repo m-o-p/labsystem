@@ -52,7 +52,7 @@ class EM{ /* ElementMenues */
             EB::delete( $fullAddress ).
             EB::manageElements().
             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
-            EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress ).
+            EB::history( $theEl->history, $fullAddress ).
             "</div>\n";
     else return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n";
   }
@@ -72,7 +72,7 @@ class EM{ /* ElementMenues */
     else
       return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
              EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
-             EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress ).
+             EB::history( $theEl->history, $fullAddress ).
              "</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
   }
@@ -137,7 +137,7 @@ class EM{ /* ElementMenues */
             EB::printView( $fullAddress.".all" ).
             EB::manageElements().
             EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
-            EB::history( $lng->get($elShortcut."Number").$eL->idx.":<hr>".$eL->history, $fullAddress ).
+            EB::history( $eL->history, $fullAddress ).
             "</div>\n";
     else return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
                 EB::link2epub( $fullAddress ).
@@ -176,7 +176,7 @@ class EM{ /* ElementMenues */
                EB::printView( $fullAddress.".all" ).
                EB::manageElements().
                EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
-               EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress );
+               EB::history( $eC->history, $fullAddress );
     else $menu .= EB::printView( $fullAddress.".all" );
 
     return "\n\n\t<!-- *************************start of c-element************************* -->\n\n".
@@ -215,7 +215,7 @@ class EM{ /* ElementMenues */
                (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
                (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
                (   $nextAddress ?                    EB::next( $nextAddress )  : '' ).
-               EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress ).
+               EB::history( $eC->history, $fullAddress ).
                "</div>\n".
                "\n\n\t<!-- *************************stop of c-element************************* -->\n\n";
     }
@@ -267,7 +267,7 @@ class EM{ /* ElementMenues */
             EB::delete( $fullAddress ).
             EB::manageElements().
             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
-            EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress ).
+            EB::history( $theEl->history, $fullAddress ).
             "</div>\n";
   }
   /**
@@ -341,7 +341,7 @@ class EM{ /* ElementMenues */
             EB::delete( $fullAddress ).
             EB::manageElements().
             EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
-            EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress ).
+            EB::history( $eC->history, $fullAddress ).
             "</div>\n";
   }
 
@@ -374,7 +374,7 @@ class EM{ /* ElementMenues */
             EB::delete(         "C".$eC->idx ).
             EB::viewStructure(  "C".$eC->idx ).
             EB::manageElements().
-            EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, "p1", true );
+            EB::history( $eC->history, "p1", true );
   }
 
   /**
@@ -409,7 +409,7 @@ class EM{ /* ElementMenues */
     return  EB::link2Element(  $elShortcut.$theEl->idx, $theEl ).
             EB::view(   $elShortcut.$theEl->idx ).
             EB::delete( $elShortcut.$theEl->idx ).
-            EB::history( $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $elShortcut.$theEl->idx );
+            EB::history( $theEl->history, $elShortcut.$theEl->idx );
   }
 
   /**
@@ -448,7 +448,7 @@ class EM{ /* ElementMenues */
             EB::edit(           "c".$eC->idx ).
             EB::delete(         "c".$eC->idx ).
             EB::manageElements().
-            EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, "c".$eC->idx );
+            EB::history( $eC->history, "c".$eC->idx );
   }
 
 // I N  C O L L E C T I O N  O V E R V I E W
@@ -466,7 +466,7 @@ class EM{ /* ElementMenues */
            EB::edit(          $fullAddress ).
            EB::createNew(     $elShortcut  ).
            EB::delete(        $fullAddress ).
-           EB::history(     $lng->get($elShortcut."Number").$theEl->idx.":<hr>".$theEl->history, $fullAddress );
+           EB::history(     $theEl->history, $fullAddress );
   }
 
   /**
@@ -506,7 +506,7 @@ class EM{ /* ElementMenues */
            EB::edit( $fullAddress ).
            EB::createNew( "c" ).
            EB::delete( $fullAddress ).
-           EB::history( $lng->get("cNumber").$eC->idx.":<hr>".$eC->history, $fullAddress );
+           EB::history( $eC->history, $fullAddress );
   }
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -65,14 +65,14 @@ class Url
       }
     }
   }
-  
+
   /**
   * Empties the current querystring.
   */
   function clearQueryString(){
     $this->queryString = "";
   }
-  
+
   /**
   * Returns a value from the current queryString, the current QS (oldQueryString) or the new one (newQueryString).
   * @param $key   The identifier of the element whos value should be returned.
@@ -97,27 +97,27 @@ class Url
               }
     else return '';
   }
-  
+
   /**
   * Is $key present in current queryString?
-  * @param $key   The identifier of the element whos value should be returned.
+  * @param $key   The identifier of the element who's value should be returned.
   */
   function available( $key ){
     return isset( $_GET[$key] ) || ( isset($_SESSION["uid"]) && // Session running?
                                      ( ($key == 'sysinfo') || ($key == 'sysalert') ) &&
-                                     isset($_SESSION[$key]) && 
+                                     isset($_SESSION[$key]) &&
                                      ($_SESSION[$key] != '')
                                     ); // If session is running the cookie can be used for transport;
   }
-  
+
   /**
   * Removes the given string (p.e. foo=bar) from the new QueryString ($querySting).
   * @param $string  The text to be removed.
   */
-  function rem( $string ){ 
+  function rem( $string ){
     $this->queryString = str_replace( '&'.$string, '', $this->queryString );
   }
-  
+
   /**
   * Copys the given $key with its value to the new queryString. If not present the $key is added without value ( = void ).
   * @param $key     The key to be preserved.
@@ -125,12 +125,12 @@ class Url
   function preserve( $key ){
     if ( isset( $_GET[$key] ) ) {
       if ( $_GET[$key] == '' )
-        $this->put( $key ); 
-      else 
+        $this->put( $key );
+      else
         $this->put( $key."=".$_GET[$key] );
     }
   }
-  
+
   /**
   * Rewrites the url by adding the necessary surroundings ( p.e. inside, config= ) set by preserve etc. .
   * This is used for header redirects.
@@ -146,7 +146,7 @@ class Url
          else
           return $destUrl.'?'.$this->get('newQueryStringRaw'); // not found
   }
-  
+
   /**
    * Also replaces ampersands for correct HTML-Representation.
    *

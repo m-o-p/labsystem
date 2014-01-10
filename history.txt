@@ -61,6 +61,35 @@ Feature Requests:
        - URL install aufrufen
          - Passwort &auml;ndern!
 
+2014-01-10
+-------------------
+ElementButtons.inc
+ElementMenues.inc
+BCDBInterface.inc
+LcDBInterface.inc
+LcElement.inc
+LiDBInterface.inc
+LiElement.inc
+LlDBInterface.inc
+LlElement.inc
+LmDBInterface.inc
+LmElement.inc
+LpDBInterface.inc
+LpElement.inc
+LsDBInterface.inc
+LsElement.inc
+Url.inc
+XIlib.inc
+defaultCourseBehaviour.ini
+sql_new_ddb_collections_tbl.sql
+sql_new_ddb_input_tbl.sql
+sql_new_ddb_lab_tbl.sql
+sql_new_ddb_multiple_choices_tbl.sql
+sql_new_ddb_pages_tbl.sql
+sql_new_wdb_schedules_tbl.sql
+Implemented the versioning. So far only for advisor content.
+It can be enabled by setting the config variable: versioning              = "1"
+
 2013-12-10
 -------------------
 /include/classes/ElementButtons.inc

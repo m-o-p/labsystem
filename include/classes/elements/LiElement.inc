@@ -755,7 +755,7 @@ class LiElement extends Element{
                                 $_POST['POSSIBLE_CREDITS'],
                                 $userRights,
                                 ($_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1"),
-                                ""
+                                $this->history
                                );
     $newInput->hasFileUpload = $_POST['HAS_FILE_UPLOAD'];
 

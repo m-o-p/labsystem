@@ -56,13 +56,30 @@ class LlDBInterface {
   * @return LlElement
   */
   function getData2idx( $idx, $isInColl=false ){
-    global $cfg;
+    global $cfg,$url,$lng;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       // trigger_error( mysql_error(). "lab with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
-    }else
+    }else{
+      // load old version...
+      $myId = 'l';
+      if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
+      $url->available('historicVersion') &&
+      strpos($url->get('historicVersion'), $myId.$idx.'-') !== FALSE){
+        $historyIdx = substr($url->get('historicVersion'), strpos($url->get('historicVersion'),'-')+1);
+        $backupIdx = $data['idx'];
+        $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
+        if ( !($data = mysql_fetch_array( $result )) ){
+          trigger_error( mysql_error(). $myId." backup with idx not found: ".$idx, E_USER_WARNING );
+          return false;
+          exit;
+        }
+        $data['idx'] = $backupIdx;
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">'.$lng->get('lastChange').'</a>'."\n".$data['history'];
+      }
+
       return new LlElement( $data['idx'],                                   // $idx
                             // create a new ID if there is none (makes sure it is always shown and saved later...)
                             ( !isset($data['uniqueID']) || (($data['uniqueID'] == '') && $data['idx'] != 1) ) ?
@@ -83,6 +100,7 @@ class LlDBInterface {
                             $data['history'],                               // $history
                             $isInColl                                       // $isInColl
                           );
+    }
   }
 
   /**
@@ -149,21 +167,28 @@ class LlDBInterface {
               ", visible_during_sched=".( $eL->visibleDuringSched ?  "1" :  "0"  ).
               ", visible_after_first_sched=".( $eL->visibleAfter1stSched ?  "1" :  "0"  ).', ';
 
+    $element = $eL;
+    $element->history = ( $element->history[0] == ']' ?
+                          substr( $element->history, 1 ) : // import... -> no stamping please
+                          date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName."\n".( $createNew ? '' : $element->history)
+                        );
+    // versioning
+    if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1'){
+      $versionedIdx = $this->myDBC->mkInsertReturnIDX( $toSet.
+          "history='".$this->myDBC->escapeString( $element->history )."'",
+          'bak_'.$this->myTable );
+      $element->history = '@@'.$versionedIdx.' '.$element->history;
+    }
+
     if ( $createNew )
       return $this->myDBC->mkInsertReturnIDX( $toSet.
-                                              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).' '.$this->myDBC->escapeString( $lng->get("dataSetCreated") )."\\n' )",
+                                              "history='".$this->myDBC->escapeString( $element->history )."'",
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-                                     ( $eL->history != '' ?
-                                        ( $eL->history[0] == ']' ?
-                                            'history=\''.substr( $eL->history, 1 )."'" : // import... -> no stamping please
-                                            "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).': '.$this->myDBC->escapeString( $eL->history )."\\n', ".$this->myTable.".history )" )
-                                        : // if the program changed the history: take it
-                                        "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName )."\\n', ".$this->myTable.".history )"
-                                     ),
+          'history=\''.$this->myDBC->escapeString($element->history)."'",
                                      $this->myTable,
-                                     "idx=".$eL->idx );
+                                     "idx=".$element->idx );
   }
 
   /**

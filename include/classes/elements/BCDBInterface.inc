@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -41,7 +41,7 @@ class BCDBInterface extends LcDBInterface {
   function BCDBInterface(){
     $this->LcDBInterface();
   }
-  
+
   /* The following functions have to return a BCElement instead of an LcElement.
      Since the member variables are identical a typecast would perfectly do the job.
      But this typecasts are not possible in this php version.
@@ -50,13 +50,30 @@ class BCDBInterface extends LcDBInterface {
   */
   function getData2idx( $idx, $isInColl=false, $isInLab=false ){
     //Something like "" return (BCElement) parent::getData2idx( $idx );""
-    global $cfg;
+    global $cfg,$url,$lng;
     $result = $this->myDBC->mkSelect( "*", "collections", "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){ 
+    if ( !($data = mysql_fetch_array( $result )) ){
       trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
-    }else
+    }else{
+      // load old version...
+      $myId = 'C';
+      if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
+      $url->available('historicVersion') &&
+      strpos($url->get('historicVersion'), $myId.$idx.'-') !== FALSE){
+        $historyIdx = substr($url->get('historicVersion'), strpos($url->get('historicVersion'),'-')+1);
+        $backupIdx = $data['idx'];
+        $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
+        if ( !($data = mysql_fetch_array( $result )) ){
+          trigger_error( mysql_error(). $myId." backup with idx not found: ".$idx, E_USER_WARNING );
+          return false;
+          exit;
+        }
+        $data['idx'] = $backupIdx;
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">'.$lng->get('lastChange').'</a>'."\n".$data['history'];
+      }
+
       return new BCElement( $data['idx'],                                 // $idx
                             stripslashes($data['title']),                 // $title
                             stripslashes($data['contents']),              // $contents
@@ -69,8 +86,9 @@ class BCDBInterface extends LcDBInterface {
                             $isInColl,                                    // $isInColl
                             $isInLab                                      // $isInLab
                           );
+    }
   }
-  
+
   /**
   * For the menu only a little amount of data is needed so here only that stuff is loaded.
   *
@@ -89,7 +107,7 @@ class BCDBInterface extends LcDBInterface {
   function getMenuData2idx( $idx, $isInColl=false, $isInLab=false ){
     global $cfg;
     $result = $this->myDBC->mkSelect( "idx, title, contents, matching_menu, visible_before_first_sched, visible_during_sched, visible_after_first_sched, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){ 
+    if ( !($data = mysql_fetch_array( $result )) ){
       //trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
@@ -107,14 +125,14 @@ class BCDBInterface extends LcDBInterface {
                             $isInLab                                      // $isInLab
                           );
   }
-  
-  
+
+
   /**
   * Returns the next element from the getAllData() query or false (no more results).
   *
   * @return BCElement
   * @return FALSE     If no more datasets are available.
-  */  
+  */
   function getNextData(){
     // Something like ""return (BCElement) parent::getNextData();""
     if ($data = mysql_fetch_array($this->queryResult))
