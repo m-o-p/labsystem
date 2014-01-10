@@ -732,9 +732,12 @@ class LcElement extends Element{
   * @return             An array of all visible elements.
   */
   function getMyVisibleElements(){
-    $structureArray = explode( " ", $this->getStructure() );
-    $retArray = Array();
 
+    $retArray = Array();
+    if ($this->getStructure() == ''){
+      return $retArray;
+    }
+    $structureArray = explode( " ", $this->getStructure() );
     foreach( $structureArray as $value )
       if ($value{0} == "*") continue; // not visible
       else array_push ($retArray, $value);
