@@ -56,7 +56,7 @@ class LlDBInterface {
   * @return LlElement
   */
   function getData2idx( $idx, $isInColl=false ){
-    global $cfg,$url,$lng;
+    global $cfg,$url,$lng,$usr;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       // trigger_error( mysql_error(). "lab with idx not found: ".$idx, E_USER_WARNING );
@@ -65,19 +65,20 @@ class LlDBInterface {
     }else{
       // load old version...
       $myId = 'l';
-      if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
+      if ($usr->isOfKind( IS_CONTENT_EDITOR ) && $cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
       $url->available('historicVersion') &&
       strpos($url->get('historicVersion'), $myId.$idx.'-') !== FALSE){
         $historyIdx = substr($url->get('historicVersion'), strpos($url->get('historicVersion'),'-')+1);
         $backupIdx = $data['idx'];
+        $backupHistory = $data['history'];
         $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
         if ( !($data = mysql_fetch_array( $result )) ){
-          trigger_error( mysql_error(). $myId." backup with idx not found: ".$idx, E_USER_WARNING );
+          trigger_error( mysql_error(). 'Version '.$historyIdx.' of '.$myId.$idx.' not found.', E_USER_WARNING );
           return false;
           exit;
         }
         $data['idx'] = $backupIdx;
-        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">'.$lng->get('lastChange').'</a>'."\n".$data['history'];
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">['.$lng->get('lastChange').']</a>'."\n".$backupHistory;
       }
 
       return new LlElement( $data['idx'],                                   // $idx
@@ -168,9 +169,9 @@ class LlDBInterface {
               ", visible_after_first_sched=".( $eL->visibleAfter1stSched ?  "1" :  "0"  ).', ';
 
     $element = $eL;
-    $element->history = ( $element->history[0] == ']' ?
+    $element->history = trim( $element->history[0] == ']' ?
                           substr( $element->history, 1 ) : // import... -> no stamping please
-                          date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName."\n".( $createNew ? '' : $element->history)
+                          date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName.( $createNew ? '' : "\n".$element->history)
                         );
     // versioning
     if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1'){

@@ -50,7 +50,7 @@ class BCDBInterface extends LcDBInterface {
   */
   function getData2idx( $idx, $isInColl=false, $isInLab=false ){
     //Something like "" return (BCElement) parent::getData2idx( $idx );""
-    global $cfg,$url,$lng;
+    global $cfg,$url,$lng,$usr;
     $result = $this->myDBC->mkSelect( "*", "collections", "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
@@ -59,19 +59,20 @@ class BCDBInterface extends LcDBInterface {
     }else{
       // load old version...
       $myId = 'C';
-      if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
+      if ($usr->isOfKind( IS_CONTENT_EDITOR ) && $cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
       $url->available('historicVersion') &&
       strpos($url->get('historicVersion'), $myId.$idx.'-') !== FALSE){
         $historyIdx = substr($url->get('historicVersion'), strpos($url->get('historicVersion'),'-')+1);
         $backupIdx = $data['idx'];
+        $backupHistory = $data['history'];
         $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
         if ( !($data = mysql_fetch_array( $result )) ){
-          trigger_error( mysql_error(). $myId." backup with idx not found: ".$idx, E_USER_WARNING );
+          trigger_error( mysql_error(). 'Version '.$historyIdx.' of '.$myId.$idx.' not found.', E_USER_WARNING );
           return false;
           exit;
         }
         $data['idx'] = $backupIdx;
-        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">'.$lng->get('lastChange').'</a>'."\n".$data['history'];
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">['.$lng->get('lastChange').']</a>'."\n".$backupHistory;
       }
 
       return new BCElement( $data['idx'],                                 // $idx
