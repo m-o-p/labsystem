@@ -111,7 +111,7 @@ class LsDBInterface {
   * @return LsElement
   */
   function getData2idx( $idx, $isInColl=false ){
-    global $cfg,$url,$lng;
+    global $cfg,$url,$lng,$usr;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       //trigger_error( mysql_error(). "mc with idx not found: ".$idx, E_USER_WARNING );
