@@ -257,14 +257,15 @@ class LiElement extends Element{
   */
   function showAnswer( $isGettingAnswered=false ){
     global $cfg, $pge;
-    if ( $isGettingAnswered ) return  "<textarea  tabindex=\"".$pge->nextTab++."\" ".
+    $anchor='<a name="userAnswer'.$this->idx.'"></a>';
+    if ( $isGettingAnswered ) return  $anchor."<textarea  tabindex=\"".$pge->nextTab++."\" ".
                                                   'name="ANSWER" '.
                                                   'class="labsys_mop_textarea" '.
                                                   'rows="'.$cfg->get("DefaultIAnswerRows").'"'.
                                                   ' onchange="isDirty=true">'.
                                                   htmlentities( $this->userAnswer ).
                                                   "</textarea>\n";
-                         else if ( $this->userAnswer != "" ) return "<div class=\"labsys_mop_textarea\">".
+                         else if ( $this->userAnswer != "" ) return $anchor."<div class=\"labsys_mop_textarea\">".
                                                                     $this->returnPREformatted( $this->userAnswer ).
                                                                     "</div>\n";
                               else return "";
@@ -841,7 +842,7 @@ class LiElement extends Element{
         // makeLogEntry( 'i', 'saved', $this->idx );
         $this->removeLock();
       }
-      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->isClosed, $this->isCorrected, $this->history );
+      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->isClosed, $this->isCorrected, $this->answerHistory );
     } else{ // You are only allowed to answer one question at the same time.
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
@@ -853,7 +854,7 @@ class LiElement extends Element{
             $_POST['ANSWER'] = $lng->get( 'noiLockNote' )."\r\n\r\n- - - - -\r\n\r\n".
                                $_POST['ANSWER']."\r\n\r\n- - - - -\r\n\r\n".
                                $existingData["answer"];
-            $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'] );
+            $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->isClosed, $this->isCorrected, $this->answerHistory );
     }
 
     $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentSave);
@@ -927,7 +928,7 @@ class LiElement extends Element{
     }
 
     if (!isset($_POST['cancel'])){ // cancel? -> do nothing
-      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ), true, isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1 );
+      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ), true, isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1, $this->answerHistory );
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorSave, $_POST['TEAM']);
     }else{
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorCancel, $_POST['TEAM']);
@@ -987,7 +988,7 @@ class LiElement extends Element{
     global $usr, $lng;
     $this->loadUserData4( $teamNumber );
     $this->removeLock();
-    if (!$this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, true, false, $lng->get("closesInput")  );
+    if (!$this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, true, false, $lng->get("closesInput")."\n".$this->answerHistory  );
     $this->isClosed = true;
     $this->isCorrected = false;
     //makeLogEntry( 'i', 'closed', 'i'.$this->idx );
@@ -1003,7 +1004,7 @@ class LiElement extends Element{
   function reOpenInput( $teamNumber ){
     global $usr, $lng;
     $this->loadUserData4( $teamNumber );
-    if ($this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, false, false, $lng->get("reOpensInput")  );
+    if ($this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, false, false, $lng->get("reOpensInput")."\n".$this->answerHistory  );
     $this->isClosed = false;
     $this->isCorrected = false;
   }

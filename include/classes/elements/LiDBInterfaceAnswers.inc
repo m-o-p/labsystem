@@ -50,7 +50,7 @@ class LiDBInterfaceAnswers {
   *                 "history" => string,
   */
   function getData4( $team, $iIdx, $createNewRecord ){
-    global $cfg, $usr, $lng;
+    global $cfg, $usr, $lng, $url;
 
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "team='".$team."' && i_idx='".$iIdx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
@@ -63,6 +63,20 @@ class LiDBInterfaceAnswers {
                     "isCorrected" => false,
                     "history" => "" );
     }else{
+      // load old version...
+      if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
+      $url->available('answerVersion') &&
+      strpos($url->get('answerVersion'), 'userAnswer'.$iIdx.'-') !== FALSE){
+        $historyIdx = substr($url->get('answerVersion'), strpos($url->get('answerVersion'),'-')+1);
+        $backupHistory = $data['history'];
+        $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."' && team='".$team."' && i_idx='".$iIdx."'" );
+        if ( !($data = mysql_fetch_array( $result )) ){
+          trigger_error( mysql_error(). 'Version '.$historyIdx.' of your answer could not be found.', E_USER_ERROR );
+          return false;
+          exit;
+        }
+        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">['.$lng->get('lastChange').']</a>'."\n".$backupHistory;
+      }
       return Array( "answer" => $this->myDBC->unEscapeString( $data['answer'] ),
                     "comment" => $this->myDBC->unEscapeString( $data['comment'] ),
                     "givenCredits" => ($data['given_credits']/100),
@@ -84,13 +98,26 @@ class LiDBInterfaceAnswers {
   * @param $history           If present this is set after the user's name.
   */
   function setData4( $team, $iIdx, $answer="", $givenCredits="0", $comment="", $closed=false, $corrected=false, $history = "" ){
-    global $usr;
+    global $usr,$cfg;
     $toSet = "answer='".$this->myDBC->escapeString($answer)."', ".
-             "comment='".$this->myDBC->escapeString($comment)."', ".
-             "given_credits='".($givenCredits*100)."', ". // *100 to relize a float
-             "closed=".( $closed ?  "1" :  "0"  ).", ".
-             "corrected=".( $corrected ?   "1" :  "0"  ).", ".
-             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
+        "comment='".$this->myDBC->escapeString($comment)."', ".
+        "given_credits='".($givenCredits*100)."', ". // *100 to relize a float
+        "closed=".( $closed ?  "1" :  "0"  ).", ".
+        "corrected=".( $corrected ?   "1" :  "0"  ).", ";
+
+    $history = trim(
+        date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName."\n".$history
+    );
+    // versioning
+    if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1'){
+      $versionedIdx = $this->myDBC->mkInsertReturnIDX( $toSet.
+          "i_idx='".$iIdx."', team='".$team."', ".
+          "history='".$this->myDBC->escapeString( $history )."'",
+          'bak_'.$this->myTable );
+      $history = '**'.$versionedIdx.' '.$history;
+    }
+
+    $toSet .= "history='".$this->myDBC->escapeString( $history )."'";
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "i_idx='".$iIdx."' && team='".$team."'" );
   }
 
