@@ -764,6 +764,9 @@ class LcElement extends Element{
   * This function is non-recursive.
   */
   function getParagraphArray(){
+    if ($this->getStructure() == ""){
+      return Array();
+    }
     $structureArray = explode( " ", $this->getStructure() );
 
     $arrayText = "";
@@ -844,7 +847,7 @@ class LcElement extends Element{
   function insertNew( $elementID ){
     global $cDBI;
     $newIdx = createNew( $elementID );
-    $this->contents = $this->contents.' '.$elementID.$newIdx;
+    $this->contents = trim($this->contents.' '.$elementID.$newIdx);
     $cDBI->setData( $this );
     return $newIdx;
   }
