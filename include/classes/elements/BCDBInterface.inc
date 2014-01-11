@@ -72,7 +72,7 @@ class BCDBInterface extends LcDBInterface {
           exit;
         }
         $data['idx'] = $backupIdx;
-        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">['.$lng->get('lastChange').']</a>'."\n".$backupHistory;
+        $data['history'] = preg_replace('/^(@@'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
 
       return new BCElement( $data['idx'],                                 // $idx

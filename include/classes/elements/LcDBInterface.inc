@@ -80,7 +80,7 @@ class LcDBInterface {
           exit;
         }
         $data['idx'] = $backupIdx;
-        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'">['.$lng->get('lastChange').']</a>'."\n".$backupHistory;
+        $data['history'] = preg_replace('/^(@@'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
       //if ( $data['contents'] == '' ) $data['contents'] = 'p1 m1 i1'; // if empty fill with standard filler
       return new LcElement( $data['idx'],                                 // $idx

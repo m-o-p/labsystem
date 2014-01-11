@@ -1074,6 +1074,11 @@ fieldset{
                     text-align: left;
   }
   
+  /* The currently selected historic version */
+  div.labsys_mop_history .selectedVersion{
+                    text-decoration:underline;
+                    color:#f00
+  }
   div.labsys_mop_history hr{
                     height: 1px;
   }

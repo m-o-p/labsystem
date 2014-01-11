@@ -66,7 +66,7 @@ class LiDBInterfaceAnswers {
       // load old version...
       if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1' &&
       $url->available('answerVersion') &&
-      strpos($url->get('answerVersion'), 'userAnswer'.$iIdx.'-') !== FALSE){
+      strpos($url->get('answerVersion'), 'i'.$iIdx.'-') !== FALSE){
         $historyIdx = substr($url->get('answerVersion'), strpos($url->get('answerVersion'),'-')+1);
         $backupHistory = $data['history'];
         $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."' && team='".$team."' && i_idx='".$iIdx."'" );
@@ -75,7 +75,7 @@ class LiDBInterfaceAnswers {
           return false;
           exit;
         }
-        $data['history'] = '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address') ).'#userAnswer'.$iIdx.'">['.$lng->get('lastChange').']</a>'."\n".$backupHistory;
+        $data['history'] = preg_replace('/^(\*\*'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
       return Array( "answer" => $this->myDBC->unEscapeString( $data['answer'] ),
                     "comment" => $this->myDBC->unEscapeString( $data['comment'] ),
