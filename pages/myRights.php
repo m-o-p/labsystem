@@ -62,7 +62,7 @@ $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myRightsEdit\" METHOD=\"P
                                                     // able to change cause script checks!
          $usr->isOfKind( $i, $data['rights'] )      // is the user able to have this right
         )
-      $pge->put( rightsBox( "UR_".$i, $i, $usr->userRights, false )."<label for=\"UR_".$i."\" class=\"labsys_mop_input_field_label\">".$lng->get("Explain_UR_".$i)."</label><br>\n" );
+      $pge->put( rightsBox( "UR_".$i, $i, $usr->userRights, false )."<label for=\"UR_".$i."\" class=\"labsys_mop_input_field_label\">".$lng->get("Explain_UR_".$i)." ($i)</label><br>\n" );
 
 $pge->put( "</div>\n".
            "</fieldset>\n".
