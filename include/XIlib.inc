@@ -284,13 +284,13 @@ function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true,
 
 function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
   $GLOBALS['mappingTmp'] = $IDmappingArray; // hack to hand it in the callback :/
-	$HTMLcode= preg_replace_callback(  '#(?:\#|address\=)(l'.preg_quote($labNumber).'(\.[mipcC][0-9]*)*)#', // '{address=l, #l}(?P<data>(\.\p{LN})+)'
+  $HTMLcode= preg_replace_callback(  '/(#|address=)(l'.preg_quote($labNumber).'[0-9]*(?:\.[mipcC][0-9]*)*)/s', // '{address=l, #l}(?P<data>(\.\p{LN})+)'
                                        function ($matches){
-                                         $parts = explode( ".", $matches[1] );
+                                         $parts = explode( ".", $matches[2] );
                                          foreach ( $parts as $key=>$value ){
                                            $parts[ $key ] = mapIt( $value, $GLOBALS['mappingTmp'] );
                                          }
-                                         return implode ( ".", $parts );
+                                         return $matches[1].implode ( ".", $parts );
                                        },
                                      $HTMLcode
                                      );
@@ -323,8 +323,8 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
   function validFilename($string = ''){
    // Replace all weird characters with dashes
    $string = preg_replace('/[^\w\-~_\.]+/u', '-', $string);
-   // Only allow one dash separator at a time (and make string lowercase)
-   return mb_strtolower(preg_replace('/--+/u', '-', $string), 'UTF-8');
+   // Only allow one dash separator at a time
+   return preg_replace('/--+/u', '-', $string);
   }
 
   /** For Export:
@@ -349,11 +349,11 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
 
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
-    $localFileWithPath = preg_replace_callback(  '#[="](http(s)?://)?'.preg_quote($_SERVER['SERVER_NAME']).'(.*)#',
+    $localFileWithPath = preg_replace_callback(  '/=["|\'](?:http(?:s?)\:\/\/)?('.preg_quote($_SERVER['SERVER_NAME']).')\/(.*)/',
                                                  create_function(
                                                                 '$matches',
                                                                 // only replace it if something follows. Links to the server itself may be intended...
-                                                                'return ( (strlen($matches[3]) > 1) ? "..".$matches[3] : $matches[0] );'
+                                                                'return ( (strlen($matches[2]) > 0) ? \'"../\'.$matches[2] : $matches[0] );'
                                                                ),
                                                  $localFileWithPath );
 
@@ -726,12 +726,24 @@ function parseStyleSheet( $styleSheetTxt, &$tagArray, &$definitionsArray ){
   $tagNamesTmp = array();
   $styleDefinitionsTmp = array();
 
+  // remove all comments:
+ $styleSheetTxt = preg_replace("/(\/\*[^\/]*\*\/)/s", '', $styleSheetTxt);
+
   // 1) Separate $tagNames and $styleDefinitions (preserve everything in here)
-  preg_replace_callback(   '#(((?<!{).)*){.*?}#s',
+  preg_replace_callback(   '/\s*(([^{]*)\s*{[^}]*})/s',//#(((?<!{).)*){.*?}#s',
                            function($matches){
                              global $tagNamesTmp, $styleDefinitionsTmp;
-                             $tagNamesTmp[] = $matches[1];
-                             $styleDefinitionsTmp[] = $matches[0];
+                             $tag=trim($matches[2]);
+                             $definition=$matches[1];
+                             $existsAtPosition = array_search($tag, $tagNamesTmp);
+                             if ($existsAtPosition === FALSE){
+                               // new
+                               $tagNamesTmp[] = $tag;
+                               $styleDefinitionsTmp[] = $definition;
+                             }else{
+                               // as in the browser use the last definition...
+                               $styleDefinitionsTmp[$existsAtPosition] = $definition;
+                             }
                            },
                            $styleSheetTxt
                            );

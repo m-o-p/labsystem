@@ -90,7 +90,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
               $nextElement->initFromSerialized( file_get_contents( $importBaseDir.$importDataDirectory.$importFileName ) ); // init the next element
           }
 
-          processElement( $nextElement, $labElementArray, 1, true );
+          processElement( $nextElement, $labElementArray, 2, true );
 
         // renumber element
           $nextElement->idx = substr( $newID, 1);
@@ -120,13 +120,16 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           $notAlreadyThereTagsHashes = array_diff( $importStylesHashed, $existingStylesHashed );
 
           $newStyles = array();
-          foreach( $notAlreadyThereTagsHashes as $values )
+          foreach( $notAlreadyThereTagsHashes as $values ){
             $newStyles[] = $importStyleDefinitions[ $importStyleMapping[$values] ];
+          }
           // add the data to the file
           if ( count($newStyles) > 0 ){
-            array_unshift( $newStyles, "\n\n".'/* Following styles imported by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r').' */' );
-            file_put_contents( $cfg->get( "UserStyleSheet" ), join($newStyles), FILE_APPEND | LOCK_EX);
-            $pge->put(  '<pre>'.htmlentities(implode( "<br>\n", $newStyles ))."</pre>\n".
+            array_unshift( $newStyles, "\n\n".'/* From here imported by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.')'."\n".
+                                       ' * with l'.$labToImport->idx.': '.$labToImport->title.
+                                       "\n * on ".date('r')."\n*/" );
+            file_put_contents( $cfg->get( "UserStyleSheet" ), implode("\n\n", $newStyles), FILE_APPEND | LOCK_EX);
+            $pge->put(  '<pre>'.htmlentities(implode( "\n", $newStyles ))."</pre>\n".
                         '<div class="labsys_mop_elements_menu_l">'.
                         'user_styles.css <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import">'.
                         $cfg->get( "UserStyleSheet" ).
@@ -268,7 +271,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
             $stylesToExport[] = $styleDefinitions[ $index ];
 
       fileWrite(  'css/user_styles.css',
-                  join( $stylesToExport ),
+                  implode( "\n\n", $stylesToExport ),
                   $GLOBALS['exportUID'] );
       $pge->put(  '<pre>'.htmlentities(implode( "\n", $stylesToExport ))."</pre>\n".
                   '<div class="labsys_mop_elements_menu_l">user_styles.css'.
