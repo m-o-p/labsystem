@@ -284,7 +284,7 @@ function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true,
 
 function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
   $GLOBALS['mappingTmp'] = $IDmappingArray; // hack to hand it in the callback :/
-	$HTMLcode= preg_replace_callback(  '#(?:\#|address\=)(l'.$labNumber.'(\.[mipcC][0-9]*)*)#', // '{address=l, #l}(?P<data>(\.\p{LN})+)'
+	$HTMLcode= preg_replace_callback(  '#(?:\#|address\=)(l'.preg_quote($labNumber).'(\.[mipcC][0-9]*)*)#', // '{address=l, #l}(?P<data>(\.\p{LN})+)'
                                        function ($matches){
                                          $parts = explode( ".", $matches[1] );
                                          foreach ( $parts as $key=>$value ){
@@ -349,7 +349,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
 
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
-    $localFileWithPath = preg_replace_callback(  '#(http(s)?://)?'.$_SERVER['SERVER_NAME'].'(.*)#',
+    $localFileWithPath = preg_replace_callback(  '#[="](http(s)?://)?'.preg_quote($_SERVER['SERVER_NAME']).'(.*)#',
                                                  create_function(
                                                                 '$matches',
                                                                 // only replace it if something follows. Links to the server itself may be intended...
