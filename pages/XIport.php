@@ -126,7 +126,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           // add the data to the file
           if ( count($newStyles) > 0 ){
             array_unshift( $newStyles, "\n\n".'/* From here imported by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.')'."\n".
-                                       ' * with l'.$labToImport->idx.': '.$labToImport->title.
+                                       ' * with l'.$newLabId.': '.$labToImport->title.
                                        "\n * on ".date('r')."\n*/" );
             file_put_contents( $cfg->get( "UserStyleSheet" ), implode("\n\n", $newStyles), FILE_APPEND | LOCK_EX);
             $pge->put(  '<pre>'.htmlentities(implode( "\n", $newStyles ))."</pre>\n".
