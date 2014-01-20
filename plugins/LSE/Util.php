@@ -9,16 +9,16 @@ class LSE_Util
         $separator = ".";
         return explode($separator, $string);
     }
-    
+
     public static function getTypeFromPart($string)
     {
         if (strlen($string) < 2) {
             return $string;
         }
-        
+
         return substr($string, 0, 1);
     }
-    
+
     /**
      * Returns the type from Id
      * @param string $id
@@ -29,10 +29,10 @@ class LSE_Util
         if (!count($idParts)) return false;
         return self::getTypeFromPart( $idParts[ count($idParts) - 1]);
     }
-    
+
     /**
      * Checks whether given parentTypes are the immediate parent of element identified by fullId
-     * 
+     *
      * @param string $fullId
      * @param array|string $parentType
      */
@@ -43,12 +43,12 @@ class LSE_Util
         }
         $parts = self::getIdParts($fullId);
         if (($numOfParts = count($parts)) < 2) return false;
-        
+
         $parentId = $parts[ $numOfParts - 2 ];
         $actualParentType = self::getTypeFromPart($parentId);
         return (in_array($actualParentType, $parentType));
     }
-    
+
     /**
      * Formats incorrect HTML in string and returns a well formatted valid HTML
      *
@@ -61,16 +61,16 @@ class LSE_Util
         $string = utf8_encode($string);
         // Debug when HTML errors occur...
         // echo( '<br><hr>'.htmlentities( $string ).'<hr><br>' );
-        $string = preg_replace_callback('/(href[\s]*=[\s]*["\'])(\.\.\/.*)["\']/U', 
-        array('LSE_Util', 'relativeToAbsoluteURI'), $string); 
-        
+        $string = preg_replace_callback('/(href[\s]*=[\s]*["\'])(\.\.\/.*)(["\'])/U',
+        array('LSE_Util', 'relativeToAbsoluteURI'), $string);
+
         $domDoc = new DOMDocument();
         $domDoc->recover = true;
         $domDoc->strictErrorChecking = false;
-        
+
         libxml_use_internal_errors(true);
-        
-        // we need to wrap it inside div because by default if we just put normal text, it is wrapped inside 
+
+        // we need to wrap it inside div because by default if we just put normal text, it is wrapped inside
         // a p tag eg, if string is "a <p>b</p> c" then result string would be "<p>a </p><p>b</p> c" Note last c is
         // not enclosed in p. Strange
         $domDoc->loadHTML("<div>$string</div>");
@@ -86,7 +86,7 @@ class LSE_Util
 //            var_dump(debug_backtrace());
 //        return $result;
     }
-    
+
     public static function get_inner_html( $node )
     {
         $innerHTML= '';
@@ -94,22 +94,22 @@ class LSE_Util
         foreach ($children as $child) {
             $innerHTML .= $child->ownerDocument->saveXML( $child );
         }
-    
+
         return $innerHTML;
     }
-    
+
     public static function getFullURI()
     {
         $pageURL = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https://" : "http://";
         if ($_SERVER["SERVER_PORT"] != "80") {
             $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-        } 
+        }
         else {
             $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
         }
         return $pageURL;
     }
-    
+
     public static function relativeToAbsoluteURI( $matches, $baseUrl = NULL )
     {
         if ( $baseUrl == NULL ) {
@@ -118,9 +118,9 @@ class LSE_Util
         $relativeUrl = $matches[2];
         require_once('LSE/includes/url_to_absolute.php');
         $absoluteUrl =  htmlspecialchars(url_to_absolute( $baseUrl, $relativeUrl ), ENT_COMPAT, 'ISO-8859-1', FALSE);
-        return $matches[1] . $absoluteUrl . '"';
+        return $matches[1] . $absoluteUrl . $matches[3];
     }
-    
+
     public static function fileExists($filename, $useIncludePath = null)
     {
         if (!$useIncludePath) {
@@ -136,19 +136,19 @@ class LSE_Util
             return false;
         }
     }
-    
+
     public static function string_decode($string)
     {
         // return $string;
         return html_entity_decode($string, ENT_COMPAT, 'UTF-8');
     }
-    
+
     public static function string_encode($string)
     {
         return $string;
 //        return htmlentities($string, ENT_COMPAT, 'UTF-8');
     }
-    
+
     public static function handleLoadHtmlError($errors, $doc, $id = null) {
         $output = '';
         if ($id) $output .= 'You have error in ' . $id . (isset($_GET['config']) ? " [<a href='../pages/edit.php?config=".$_GET['config']."&inside=true&address=".$id."'>edit</a>]" : '' )."\n";

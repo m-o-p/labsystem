@@ -46,4 +46,5 @@ $myCG->generate();
 header("Content-length: ".filesize($file));
 header("Content-type: ".mime_content_type($file));
 readfile($file);
+unlink($file);
 ?>
