@@ -124,13 +124,22 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
         else $customFields .= $key."=CONCAT( '".$userDBC->escapeString( $value )." | ', ".$key.' ), ';
       }
 
-  // switch to the user for successfull field replacement.
+  // switch to the user for successful field replacement.
     srand((double)microtime()*1000000);
     $usr->uid         = md5( $_POST['EMAIL'].uniqid( rand() ) );
     $usr->userName    = $_POST['EMAIL'];
     $usr->foreName    = $_POST['FORENAME'];
     $usr->surName     = $_POST['NAME'];
     $usr->mailAddress = $_POST['EMAIL'];
+
+    // log the registration:
+    $_SESSION['surName']=$usr->surName;
+    $_SESSION['foreName']=$usr->foreName;
+    $_SESSION['userName']=$usr->userName;
+    $_SESSION['uid']='foo';
+    $_SESSION['currentTeam']='';
+    $_SESSION['userRights']=0;
+    makeLogEntry( "system", "register", $configPrefix.$GLOBALS['url']->get('config') );
 
   // Is this email already registered?
    $result = $userDBC->mkSelect( "*",
