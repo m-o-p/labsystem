@@ -283,12 +283,11 @@ else{ // no data posted or errors found
                                   );
      $registrations = $userDBC->datasetsIn( $result ); // number of registrations under this courseID
      $max = ($cfg->doesExist('maxRegistrations') ? $cfg->get('maxRegistrations') : $registrations + $DEFAULT_PLACES);
-     $remaining = $max - $registrations;
-     if ($remaining<0) $remaining = 0;
+     $fullplaces = min($registrations, $max);
      $icons = '';
-     for ($i=0; $i<$registrations; $i++) $icons.='<img src="../syspix/fullPlace_11x12.gif" width="11" height="12" alt="X">';
-     for ($i=0; $i<$remaining; $i++) $icons.='<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">';
-     for ($i=$registrations-$max; $i>0; $i--) $icons.='<img src="../syspix/waitingPlace_11x12.gif" width="11" height="12" alt="+" title="on waiting list...">';
+     for ($i=0; $i<$fullplaces; $i++) $icons.='<img src="../syspix/fullPlace_11x12.gif" width="11" height="12" alt="X">';
+     for (; $i<$max; $i++) $icons.='<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">';
+     for (; $i<$registrations; $i++) $icons.='<img src="../syspix/waitingPlace_11x12.gif" width="11" height="12" alt="+" title="on waiting list...">';
 
      $pge->put( "</div>\n".
                 "</fieldset>\n".
