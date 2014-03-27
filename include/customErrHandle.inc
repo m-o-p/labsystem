@@ -78,13 +78,16 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
          );
 
 // the error msg
-    echo( "[Fatal error] <b>$errstr</b><br /><br />\n".
+    echo( "<p>[Fatal error] <b>$errstr</b><br /><br />\n".
           "<span style=\"font-size: 0.9em;\">  On line $errline of file $errfile".
           ", PHP " . PHP_VERSION . " (" . PHP_OS . ")</span><br />\n".
-          "aborting...<br />\n" );
+          "aborting...</p>" );
 
 // the back link
     echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px gray;"><a href="javascript: history.back();">&lt; b a c k</a></div>' );
+
+// support ticket link
+    echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px gray;"><a href="http://sourceforge.net/p/labsystem/bugtracker/new/">open a support ticket &gt;</a></div>' );
 
     echo( '</div>' );
     echo( '<div style="color: #666666; font-family: Verdana, Sans-serif; font-size: 2em; text-align: right;">'.

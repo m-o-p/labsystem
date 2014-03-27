@@ -261,14 +261,18 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
         $mtime = $mtime[1] + $mtime[0];
         $endtime = $mtime;
         $totaltime = round( ($endtime - $pagecreation_starttime), 4);
-        echo '<span style="color:#888">*:'.$totaltime."sec | </span>";
+
+        echo '<span style="color:#888">*:'.$totaltime.'sec '.
+            '<a href="http://sourceforge.net/p/labsystem/bugtracker/new/" title="'.
+            $lng->get("newTicket").'">[?!]</a> '.
+             '| </span>';
 
           $cfg->say("BottomFooter");
           /**
             *   Please keep the link to the project page here to enable other people to find and use the system...
             *   Thank you!
             */
-          echo(' &copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem"></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
+          echo('&copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem"></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
                $_SERVER['SERVER_NAME'].'" target="_blank">mop</a> 2005-2014'); // Please do not remove this acknowledgement to me thanks!
         ?>
       </td></tr>

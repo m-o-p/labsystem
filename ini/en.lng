@@ -25,7 +25,7 @@ Content-Language   = "en" ; take an international language identifier since it i
 
 DateFormat         = "r" ; formatstring for all dates (-> php-function date() )
 
-
+newTicket          = "open new support ticket"
 
 ;; strings that have to be present for each element ***************************************************
 pNumber             = "page number "
