@@ -150,7 +150,9 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
     $userDBC->mkUpdate( $customFields.
                         'registerFor=\''.$cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\', '.
                         "last_registered='".date('Y-m-d H:i:s')."', ".
-                        '_unassigned=1',
+                        '_unassigned=1, '.
+                        "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $cfg->get('User_courseID').' ('.$configPrefix.$GLOBALS['url']->get('config').')\'' ).
+                                         "\\n', ".$this->myTable.".history )",
                         $cfg->get('UserDatabaseTable'),
                         'UPPER('.$cfg->get('UserDBField_email').")=UPPER('".$userDBC->escapeString( $_POST['EMAIL'] )."')" );
    else{ // email is new => create new entry

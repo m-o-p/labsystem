@@ -214,6 +214,7 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                  `last_registered` datetime NOT NULL COMMENT "Stores when the last registration happened for this address (for giving the places in the right order)",
                  '.$cfg->get("User_courseID").' tinyint(1) NOT NULL default \'1\',
                  `labsys_mop_last_change` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                 `history` text NOT NULL,
                  `_unassigned` tinyint(1) NOT NULL,
                  PRIMARY KEY  ( '.$cfg->get("UserDBField_username").' ),
                  UNIQUE KEY (`'.$cfg->get("UserDBField_uid").'`),

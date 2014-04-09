@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -40,10 +40,10 @@
 // $orderBy: The value (DB field) used with the DB-queries.
 
 if ( isset( $_POST['orderBy'] ) ) $orderByKey = $_POST['orderBy'];                      // 1st $_POST['orderBy']
-elseif ( !$GLOBALS['url']->available('orderBy') || 
+elseif ( !$GLOBALS['url']->available('orderBy') ||
          !array_key_exists( $orderByKey = stripslashes( $GLOBALS['url']->get('orderBy') ), $sortArray ) ) // 2nd $_GET['orderBy']
           $orderByKey = key( $sortArray );                                              // 3rd default (the first el of $sortArray)
-  
+
 if ( isset( $_POST['asc'] ) ) $asc = !( $_POST['asc'] == "desc" );
  elseif ( $GLOBALS['url']->available('asc') )  $asc = !( $GLOBALS['url']->get('asc') == "desc" );
  else $asc = true;
@@ -51,7 +51,7 @@ if ( isset( $_POST['asc'] ) ) $asc = !( $_POST['asc'] == "desc" );
 if (!isset($restrictToArray)) $restrictToKey = '';
 else{
   if ( isset( $_POST['restrictTo'] ) ) $restrictToKey = $_POST['restrictTo'];                      // 1st $_POST['restrictTo']
-  elseif ( !$GLOBALS['url']->available('restrictTo') || 
+  elseif ( !$GLOBALS['url']->available('restrictTo') ||
            !array_key_exists( $restrictToKey = stripslashes( $GLOBALS['url']->get('restrictTo') ), $restrictToArray ) ) // 2nd $_GET['restrictTo']
             $restrictToKey = key( $restrictToArray );                                              // 3rd default (the first el of $restrictToArray)
 }
@@ -62,6 +62,11 @@ $GLOBALS['url']->put( 'restrictTo='.$restrictToKey );
 
 // sorting select
 $sorter = "<FORM class=\"labsys_mop_sort_form\" NAME=\"sort_options\" METHOD=\"POST\" ACTION=\"".$GLOBALS['url']->rawLink2( $_SERVER['PHP_SELF'].( $GLOBALS['url']->available('address') ? '?address='.$GLOBALS['url']->get('address') : '?address=none' ).( isset($startFrom) ? '&amp;startFrom='.$startFrom.'&amp;frameSize='.$frameSize : '' ) )."\">\n";
+
+if (isset($showSearchField)){
+  $sorter .=$lng->get('restrictTo').
+  '<input name="searchField" onChange="document.sort_options.submit();" tabindex="'.$pge->nextTab++.( isset($_POST['searchField']) ? ' value="'.$_POST['searchField'].'"' : '').'/>';
+}
 
 if (isset($restrictToArray)){
   $sorter .=$lng->get('restrictTo').
@@ -83,5 +88,5 @@ $sorter .='</select> '.
 
 // below the $orderBy is assumed to be the key for the DB-query
 // translate to db fields
-  $orderBy = $sortArray[ $orderByKey ]; 
+  $orderBy = $sortArray[ $orderByKey ];
 ?>

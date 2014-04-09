@@ -151,8 +151,8 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                    $counter.
                    ($counter<=$maxPlaces ? '<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">' : '<img src="../syspix/fullPlace_11x12.gif" width="11" height="12" alt="X">').
                    "</td>
-                    <td>".htmlentities($nextRegistree[$cfg->get('UserDBField_name')].', '.$nextRegistree[$cfg->get('UserDBField_forename')]).'</td>
-                    <td>'.(isset($nextRegistree['desiredTeamPartner']) && $nextRegistree['desiredTeamPartner']!=''? htmlentities($nextRegistree['desiredTeamPartner']):'').'</td>
+                    <td>".$nextRegistree[$cfg->get('UserDBField_name')].', '.$nextRegistree[$cfg->get('UserDBField_forename')].'</td>
+                    <td>'.(isset($nextRegistree['desiredTeamPartner']) && $nextRegistree['desiredTeamPartner']!=''? $nextRegistree['desiredTeamPartner']:'').'</td>
                     <td>'.$nextRegistree['last_registered'].'</td>
                     </tr>'."\n");
        }
