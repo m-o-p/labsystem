@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -58,7 +58,7 @@ class Menu{
   var $subMenuIndenter; // used to indent submenu entries...
   var $maxCharsPerMenuEntry; // The menu entry will be cut after so many character (the title (hover) will stay the full title)
   var $gotOneMenuEntry; // gets true if a menu entry got highlighted
-  
+
   /**
   * The menu is based on stylesheet entries. You can have totally different looking menus.
   * Just create a new instance of this object with other underlying stylesheet classes.
@@ -81,9 +81,9 @@ class Menu{
     $this->subMenuIndenter = "";
     $this->gotOneMenuEntry = false;
   }
-  
+
   /**
-  * This is added in front of the title to indent submenus. 
+  * This is added in front of the title to indent submenus.
   * Stylesheet features could also be used for that but they would have to surround the entries
   * and even more important the calculation in cutTitle would have to deal with the number of
   * surrounding stylesheet tags -> too much unnecessary work.
@@ -91,7 +91,7 @@ class Menu{
   /*private*/ function forSubmenuAdd(){
     return "&nbsp; &nbsp;";
   }
-  
+
   /**
   * Starts a submenu with given stuff as first entry.
   * To non-absolute urls ( characterized by their beginning with "http://" ) the current environment is added (like config=...).
@@ -106,7 +106,7 @@ class Menu{
     $this->subMenuIndenter .= $this->forSubmenuAdd();
     return $val;
   }
-  
+
   /**
   * This function gets called to mark the end of a submenu.
   */
@@ -128,19 +128,19 @@ class Menu{
   function entry( $strText, $link, $isOn=false, $dontClose=false ){
     $this->gotOneMenuEntry |= $isOn;
     // The second possibility of setting a menu active is by its title:
-    global $pge; if ( !$isOn && 
+    global $pge; if ( !$isOn &&
                       !$this->gotOneMenuEntry &&
-                      ( ( $GLOBALS['url']->available('address') && ( "../pages/view.php?address=".$GLOBALS['url']->get('address') == $link ) ) 
+                      ( ( $GLOBALS['url']->available('address') && ( "../pages/view.php?address=".$GLOBALS['url']->get('address') == $link ) )
                         || // this link
                         ( !$GLOBALS['url']->available('address') && ( $strText == $pge->matchingMenu ) )
                        )
                      ) $isOn = true;
 
     // If not absolute link add url stuff.
-    if ( !(strtoupper( substr( $link, 0, 4 ) ) == 'HTTP' && 
+    if ( !(strtoupper( substr( $link, 0, 4 ) ) == 'HTTP' &&
            (strpos( $link, $_SERVER[ 'SERVER_NAME' ].'/pages/login.php' ) === false) // pages within the system should be linked with additional tags...
            ) ) $link = $GLOBALS['url']->link2( $link );
-                     
+
     if ( $isOn ){ // All states should be on.
       $cssCellClassOn    = $this->cssCellClassOn;
       $cssCellClassOff   = $this->cssCellClassOn;
@@ -156,7 +156,7 @@ class Menu{
             "<a class=\"".$cssCellClassOff."\" href=\"".$link."\" ".( ( strpos( $link, "http://" ) !== false ) ? 'target="_blank" ' : '' )."title=\"".$strText."\">".cutHTMLText( $this->subMenuIndenter.$strText, $this->maxCharsPerMenuEntry )."</a>".
             ( !$dontClose ?  '</li>'  : '' )."\n";
   }
-  
+
   /**
   * Creates a title. (Not hoverable and only for grouping purposes).
   * @param $strText   The titles text.
@@ -165,7 +165,7 @@ class Menu{
   */
   function title( $strText ){
     return "\t<li class=\"".$this->cssCellClassTitle."\">".$strText."</li>\n";
-  }  
+  }
 
   /**
   * Creates a spacer (empty menu entry).

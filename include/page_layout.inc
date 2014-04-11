@@ -166,6 +166,13 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 <!-- ************************* start of top sysinfo ************************* -->
       <tr><td colspan="3" class="labsys_mop_topSysinfo">
         <?php
+        // login / logout
+        if ($usr->isOfKind( IS_USER )){
+          echo('[<a class="labsys_mop_logout" href="'.$url->link2($labsystem_LogOutLink).'">'.$usr->userName.' '.$lng->get( "MnuEntryLogOut" ).'</a>] ');
+        }else{
+          echo('[<a class="labsys_mop_login" href="'.$url->link2($labsystem_LogInLink).'">'.$lng->get( "MnuEntryLogIn" ).'</a>] ');
+        }
+
           if ( isset($SYSINFO) )  echo("<span class=\"labsys_mop_systeminfo\">".$SYSINFO."</span> ");
           if ( isset($SYSALERT) ) echo("<span class=\"labsys_mop_systemalert\">".$SYSALERT."</span> ");
           // seeing someone

@@ -224,6 +224,9 @@ height:auto
                                           background-color: #D5D5D5; /* otherwhise the parent elements bg is used */
                                           padding-top: 1px; /* the margin of te <li> gets to the bottom! -> this = Replacement */
     }    
+    
+    a.labsys_mop_login{color:0a0;}
+    a.labsys_mop_logout{color:a00;}
 
       
 /******************************* ../pages/login.php *******************************/
