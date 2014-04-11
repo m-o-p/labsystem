@@ -226,6 +226,7 @@ parseErrNumNotEx    = "<<<ERROR<<<: [id][num] [num] das ELEMENT mit diesr Nummer
 ; login.php
 TxtLogInPage        = "Als Teilnehmer des <i>__SYSTEMTITLE__</i> kann man sich hier einloggen..."
 NoteLogInPage       = "<b>Benutzername und/ oder Passwort vergessen?</b><br />- sollen ge&auml;ndert werden?<br /><br />&nbsp;Kein Problem, einfach dem <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>Link</a> folgen..."
+StayLoggedIn        = "Eingeloggt bleiben"
 
 ; manageUsers.php
 NoteUserRightsPage  = "<b>Weitere Einstellungen</b> k&ouml;nnen in der <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>Benutzerverwaltung</a>...<br>Wenn Sie den Mauszeiger &uuml;ber die <b>schwarzen Pfeile</b> rechts neben den K&auml;sten bewegen erhalten sie eine <b>Erkl&auml;rung</b> zum Feld.<br /><b>&Auml;nderungen an einem (auch Ihrem) Account werden erst durch erneutes Einloggen oder einen &Auml;nderung auf der meineRechte-Seite wirksam!"

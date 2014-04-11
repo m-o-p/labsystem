@@ -56,7 +56,11 @@ $pge->put('
 
   <tr>
   <td class="labsys_mop_buttonCell" colspan="2">
-  <input TABINDEX="3" type="submit" name="login" class="labsys_mop_button" value="'.$lng->get("MnuEntryLogIn").'">
+    <label for=\"stayLoggedIn" class="labsys_mop_input_field_label_right">
+    '.$lng->get("StayLoggedIn").'
+    </label>
+    <input TABINDEX="4" type="checkbox" name="stayLoggedIn" class="labsys_mop_button">
+    <input TABINDEX="4" type="submit" name="login" class="labsys_mop_button" value="'.$lng->get("MnuEntryLogIn").'">
   </td>
   </tr>
 

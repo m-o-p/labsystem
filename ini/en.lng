@@ -224,6 +224,7 @@ parseErrNumNotEx    = "<<<ERROR<<<: [id][num] [num] ELEMENT WITH NUM NOT EXISTIN
 ; login.php
 TxtLogInPage        = "This is the login page. If you are a participant of the <i>__SYSTEMTITLE__</i>, you can log in here..."
 NoteLogInPage       = "<b>You forgot your password and/ or your username?</b><br />You want to change your data?<br /><br />&nbsp;No problem, just follow the <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>link</a>..."
+StayLoggedIn        = "Stay logged in"
 
 ; manageUsers.php
 NoteUserRightsPage  = "<b>Other settings</b> might be done at the <a href='__LINK2ADMIN_USER_INTERFACE__' target='_blank'>user administration page</a>...<br />If you move your mouse cursor over the <b>black arrows</b> you get an <b>explanation</b> of the checkbox on its left.<br /><b>Changes to your account</b> will take effect if you activate them in &quot;my rights&quot; or if you log out and in again."

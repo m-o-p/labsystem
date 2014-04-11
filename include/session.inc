@@ -27,8 +27,8 @@
 * @version    1.0
 */
 
-if ( !$GLOBALS['url']->available("inside") &&    // if user is not logged in, we don't need that
-     !isset( $NEWSESSION ) ) return; // but if we just authenticated and want to start!
+// if ( !$GLOBALS['url']->available("inside") &&    // if user is not logged in, we don't need that
+//      !isset( $NEWSESSION ) ) return; // but if we just authenticated and want to start!
 
 if ( $GLOBALS['url']->available("config") ) session_name ( $url->get("config") );
 /* This allows users to log on for different configurations with different cookies.
@@ -36,19 +36,20 @@ if ( $GLOBALS['url']->available("config") ) session_name ( $url->get("config") )
    because some settings (p.e. seeingUID for correcting) might not exist in the other config's DBs...
  */
 
-// per default file based session management is enabled with current phps...
-// require( INCLUDE_DIR."/php_session_management.inc"); /** store the session variables in the table instead of a cookie or url */
+// // per default file based session management is enabled with current phps...
+// // require( INCLUDE_DIR."/php_session_management.inc"); /** store the session variables in the table instead of a cookie or url */
 
 if ( isset( $NEWSESSION ) ) {
-  $url->put("inside=true");
-  session_regenerate_id(true);
-}else
-  $url->preserve("inside"); /* The presence of this tag in the url has two effects:
-                             *  - not all that stuff got to be loaded (but could be)
-                             *  - if one doesn't log ou you are not automatically in if cookie is set
-                             *    because as soon as you log in, you override the cookie.
-                             *    (Of course one can add ?inside=true to the url and will still be in).
-                             */
+//   $url->put("inside=true");
+   session_regenerate_id(true);
+}
+// }else
+//   $url->preserve("inside"); /* The presence of this tag in the url has two effects:
+//                              *  - not all that stuff got to be loaded (but could be)
+//                              *  - if one doesn't log ou you are not automatically in if cookie is set
+//                              *    because as soon as you log in, you override the cookie.
+//                              *    (Of course one can add ?inside=true to the url and will still be in).
+//                              */
 
 session_start();
 
