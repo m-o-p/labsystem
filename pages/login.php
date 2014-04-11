@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -39,29 +39,29 @@ $pge->put("<div class=\"labsys_mop_h2\">".$pge->title."</div>\n".
 if ( $GLOBALS['url']->available('redirectTo') )
   // Cause authenticate.php to redirect to that page instead of the default one from the config.
   // Happens if you have a link to a special page but are not logged in. So after log on you get directed there...
-  $pge->put('<input type="hidden" name="REDIRECTTO" value="'.$url->get('redirectTo').'">');
+  $pge->put('<input type="hidden" name="REDIRECTTO" value="'.trim(preg_replace('/\s+/', '', $url->get('redirectTo'))).'">');
 
 $pge->put('
   <table class="labsys_mop_loginTable" align="center">
-  
+
   <tr>
   <td class="labsys_mop_keyCell" width="50%">'.$lng->get("userName").'</td>
   <td class="labsys_mop_inputFieldCell" width="50%"><input TABINDEX="1" type="text" name="USERNAME" id="USERNAME" class="labsys_mop_input_fullwidth" value=""></td>
   </tr>
-  
+
   <tr>
   <td class="labsys_mop_keyCell">'.$lng->get("passWord").'</td>
   <td class="labsys_mop_inputFieldCell"><input TABINDEX="2" type="password" name="PASSWORD" maxlength="255" class="labsys_mop_input_fullwidth" value=""></td>
   </tr>
-  
+
   <tr>
   <td class="labsys_mop_buttonCell" colspan="2">
   <input TABINDEX="3" type="submit" name="login" class="labsys_mop_button" value="'.$lng->get("MnuEntryLogIn").'">
   </td>
   </tr>
-  
+
   </table>
-  
+
   </FORM>
   <p class="labsys_mop_note">'.$lng->get("NoteLogInPage").'</p>');
 
