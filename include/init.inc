@@ -88,7 +88,7 @@ $labsystem_LogInLink = ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin
     'https://'.$_SERVER[ 'SERVER_NAME' ].preg_replace_callback( '#(\S*pages\/)[^\?]*(\?\S*)#',
         create_function(
             '$matches',
-            'return $matches[1]."login.php".$matches[2];'
+            'return $matches[1]."login.php";'
         ),
         $_SERVER["REQUEST_URI"]
     ) :
