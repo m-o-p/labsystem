@@ -165,7 +165,7 @@ height:auto
     .labsys_mop_menu ul li {
                                           margin-bottom: 1px;
                                           border-radius: 0.3em;
-                                          white-space:nowrap; 
+                                          white-space:nowrap;
                                           overflow:hidden;
                                           width:180px;
                                           text-overflow:ellipsis;
@@ -192,8 +192,11 @@ height:auto
                                           padding-left: 7px;
                                           padding-right: 7px;
                                           text-decoration: none;
+                                          width:166px;
+                                          white-space:nowrap; 
+                                          overflow:hidden;
+                                          text-overflow:ellipsis;
                                           display: block; /* full width clickable FireFox! */
-                                          width:180px;
     }
     .labsys_mop_menu ul li a.on {
                                           color: #ffffff;
@@ -393,6 +396,10 @@ fieldset{
                     padding: 5px 5px 5px 5px;
                     font-size: 0.8em;
                     background-color: #FFA07A; /* lightsalomon */
+  }
+  .labsys_mop_u_row .courseList{
+                   font-size:0.7em;
+                   color:#555
   }
   
   /* p element */

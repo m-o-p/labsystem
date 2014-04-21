@@ -69,6 +69,7 @@ require_once( INCLUDE_DIR."/classes/DBConnection.inc" );
 class DBInterfaceUser
 {
   var $myDBC;
+  var $myTable;
 
   function DBInterfaceUser( ){
     global $cfg;
@@ -78,6 +79,7 @@ class DBInterfaceUser
                                     $cfg->get("UserDatabasePassWord"),
                                     $cfg->get("UserDatabaseName"));
     $this->queryResult = false;
+    $this->myTable = $cfg->get("UserDatabaseTable");
   }
 
   /**
@@ -96,7 +98,7 @@ class DBInterfaceUser
     global $cfg;
     // Load the salt...
     $what = $cfg->get("UserDBField_uid")."  AS uid"; // as salt
-    $from = $cfg->get("UserDatabaseTable");
+    $from = $this->myTable;
     // mysql_real_escape_string() against SQL-Injection!
     $where= $cfg->get("UserDBField_username")."='".Ddbc::escapeString($username)."' && ".
             $cfg->get("User_courseID")."='1'";
@@ -144,7 +146,7 @@ class DBInterfaceUser
             $cfg->get("UserDBField_email")." AS email, ".
             $cfg->get("UserDBField_uid")."  AS uid, ".
             $cfg->get("UserDBField_username")." AS username";
-    $from = $cfg->get("UserDatabaseTable");
+    $from = $this->myTable;
     $where= $cfg->get("UserDBField_uid")."='".$uid."' && ".
             $cfg->get("User_courseID")."='1'";
     $result = $this->myDBC->mkSelect( $what, $from, $where );
@@ -181,7 +183,7 @@ class DBInterfaceUser
             $cfg->get("UserDBField_email")." AS email, ".
             $cfg->get("UserDBField_uid")."  AS uid, ".
             $cfg->get("UserDBField_username")." AS username";
-    $from = $cfg->get("UserDatabaseTable");
+    $from = $this->myTable;
     $where= $cfg->get("User_courseID")."='1'";
     if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
 
