@@ -112,7 +112,7 @@ height:auto
   }
     
   .labsys_mop_menu { /* the menu's backrow when visible */
-                      width: 180px;
+                      width:180px;
                       vertical-align: top;
                       border-right: solid 1px #89897c;
   }
@@ -165,6 +165,15 @@ height:auto
     .labsys_mop_menu ul li {
                                           margin-bottom: 1px;
                                           border-radius: 0.3em;
+                                          white-space:nowrap; 
+                                          overflow:hidden;
+                                          width:180px;
+                                          text-overflow:ellipsis;
+    }
+    
+    .labsys_mop_menu ul li:hover{
+                                          text-overflow:inherit;
+                                          overflow:visible;
     }
     
     .labsys_mop_menu ul li.title {
@@ -184,7 +193,7 @@ height:auto
                                           padding-right: 7px;
                                           text-decoration: none;
                                           display: block; /* full width clickable FireFox! */
-                                          width: 100%;
+                                          width:180px;
     }
     .labsys_mop_menu ul li a.on {
                                           color: #ffffff;

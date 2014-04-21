@@ -56,7 +56,6 @@ class Menu{
   var $cssCellClassTitle;
   var $cssCellClassSpacer;
   var $subMenuIndenter; // used to indent submenu entries...
-  var $maxCharsPerMenuEntry; // The menu entry will be cut after so many character (the title (hover) will stay the full title)
   var $gotOneMenuEntry; // gets true if a menu entry got highlighted
 
   /**
@@ -77,7 +76,6 @@ class Menu{
     $this->cssCellClassHover = $cssCellClassHover;
     $this->cssCellClassTitle = $cssCellClassTitle;
     $this->cssCellClassSpacer = $cssCellClassSpacer;
-    $this->maxCharsPerMenuEntry = $cfg->get("maxCharsPerMenuEntry");
     $this->subMenuIndenter = "";
     $this->gotOneMenuEntry = false;
   }
@@ -151,9 +149,9 @@ class Menu{
       $cssCellClassHover = $this->cssCellClassHover;
     }
     return  "\t<li class=\"".$cssCellClassOff."\">".
-    /* The Linktext is cut by ../include/helper.inc->cutHTMLText( , $this->maxCharsPerMenuEntry ).
+    /* The Linktext is cut by the stylesheet.
     *  The title tag contains the whole title so on  mouseover the user gets it. */
-            "<a class=\"".$cssCellClassOff."\" href=\"".$link."\" ".( ( strpos( $link, "http://" ) !== false ) ? 'target="_blank" ' : '' )."title=\"".$strText."\">".cutHTMLText( $this->subMenuIndenter.$strText, $this->maxCharsPerMenuEntry )."</a>".
+            "<a  class=\"".$cssCellClassOff."\" href=\"".$link."\" ".( ( strpos( $link, "http://" ) !== false ) ? 'target="_blank" ' : '' )."title=\"".$strText."\">".$this->subMenuIndenter.$strText."</a>".
             ( !$dontClose ?  '</li>'  : '' )."\n";
   }
 
