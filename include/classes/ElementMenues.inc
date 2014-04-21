@@ -45,7 +45,10 @@ class EM{ /* ElementMenues */
      return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
             "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
             ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-            "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span> \n".
+            '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
+            "<span class=\"labsys_mop_element_description_in_header\">".
+            $fullAddress.
+            "</span></a>\n".
             EB::link2Element( $fullAddress, $theEl ).
             EB::edit( $fullAddress ).
             EB::createNew( $elShortcut ).
@@ -128,7 +131,10 @@ class EM{ /* ElementMenues */
      return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
             "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
             ( $eL->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-            "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span> \n".
+            '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
+            "<span class=\"labsys_mop_element_description_in_header\">".
+            $fullAddress.
+            "</span></a>\n".
             EB::link2Element( $fullAddress, $eL ).
             EB::edit( $fullAddress ).
             EB::createNew( $elShortcut ).
@@ -166,7 +172,10 @@ class EM{ /* ElementMenues */
              (   $nextAddress ?                    EB::next( $nextAddress )  : '' );
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
       $menu  = ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-               "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
+               '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
+               "<span class=\"labsys_mop_element_description_in_header\">".
+               $fullAddress.
+               "</span></a>\n".
                $menu.
                EB::viewStructure( $fullAddress ).
                EB::link2Element( $fullAddress, $eC ).
