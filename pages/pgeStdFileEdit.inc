@@ -106,7 +106,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n".
           '   <input type="hidden" name="SESSION_ID" value="'.session_id().'">'."\n".
           '   <textarea TABINDEX="'.$pge->nextTab++.'" id="fc" name="FILECONTENT" class="labsys_mop_textarea" rows="'.$cfg->get("DefaultTextareaRows").'" onchange="isDirty=true">'."\n");
 
-$pge->put( htmlentities( file_get_contents($file2edit) ) );
+$pge->put( htmlentities( file_get_contents($file2edit), ENT_QUOTES | ENT_IGNORE  ) );
 
 if ( $editAllAvailableFiles ){
   $fileNameProposal = substr( $fileName, strlen($filePrefix), strlen( $fileName ) - strlen($fileExtension) - strlen($filePrefix) );

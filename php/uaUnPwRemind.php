@@ -106,7 +106,7 @@ else{
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
   }
 
-  $url->put( "sysinfo=".$lng->get('MailHasBeenSent').' '.htmlentities( $senderAddr )/*.' '.$newPW*/ );
+  $url->put( "sysinfo=".$lng->get('MailHasBeenSent').' '.htmlentities( $senderAddr, ENT_QUOTES | ENT_IGNORE  )/*.' '.$newPW*/ );
 }
 
 // redirect

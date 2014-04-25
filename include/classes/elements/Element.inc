@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -36,12 +36,12 @@
          $this->matchingMenu             = $this->title; // what will ge the element's menu entry
          $this->visibleFor               = $visibleFor;
          $this->visibleOnlyInCollection  = $visibleOnlyInCollection;
-         $this->history                  = $history; 
+         $this->history                  = $history;
 
          $this->elementsAdditionalVariable1 = $v1;
          $this->elementsAdditionalVariable2 = $v2;
        }
-       
+
        function showEdit( $fullAddress ){
          return "your element's edit page html code";
        }
@@ -83,18 +83,18 @@ class Element{
   var $matchingMenu;            // If present this will get the element's menu entry.
   var $visibleOnlyInCollection; // Is the element visible "standalone" or only aggregated in a collection.
   var $history;                 // The element's history.
-  
+
   var $IamVisible;              // Am I visible? At initializantion this variable should be set according to the user's rights etc.
-  
+
   var $serializationArray;      // This array is used for serialization and unserialization. It contains all variable names to be (un-)serialized as value.
-  
+
   /**
   * Is the element visible?
   * @return BOOL  Is the element visible?
   */
   function isVisible(){
     global $usr;
-    return  $this->IamVisible 
+    return  $this->IamVisible
             || $usr->isOfKind( IS_CONTENT_EDITOR ); /* contents editors are able to view any page */
   }
 
@@ -117,7 +117,7 @@ class Element{
     }
     return $output;
   }
-  
+
   /**
   * UnSerializes the element.
   *
@@ -157,10 +157,10 @@ class Element{
             if (!next( $inputLines )) break;
       }
     // catch error
-    if ( !current( $inputLines ) ) trigger_error( htmlentities($closeTag).' missing when unserializing: '.htmlentities($serializedData), E_USER_ERROR );
+    if ( !current( $inputLines ) ) trigger_error( htmlentities($closeTag, ENT_QUOTES | ENT_IGNORE ).' missing when unserializing: '.htmlentities($serializedData, ENT_QUOTES | ENT_IGNORE ), E_USER_ERROR );
     }
   }
-  
+
   /**
   * Is called by the ../menu.inc to build this element's menu entry.
   * @param $fullAddress     The element's full address (p.e. C12.c4.p13)
@@ -173,7 +173,7 @@ class Element{
     if ( $this->isVisible() ) return $menu2Populate->entry( ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, $isActive );
                          else return "";
   }
-  
+
   /**
   * Called to get the elements matching menu ( -> getMenu() ).
   * @return string $this->mathingMenu or $this->title if ($this->matchingMenu == "").
@@ -203,7 +203,7 @@ class Element{
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
     }
-    
+
     return $this->contents;
   }
 
@@ -215,7 +215,7 @@ class Element{
   * @param $_GET["saveAsNew"] If $_GET["saveAsNew"] is set the save as new checkbox on the edit page should be set
   * @param $fullAddress       The element's full address (p.e. C23.c42.p13)
   * @return string            The html code of the element's edit view.
-  */  
+  */
   function showEdit( $fullAddress ){
     return "Editing functionality!";
   }
@@ -225,12 +225,12 @@ class Element{
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
   *
   * This function must be overriden in order to give the user the ability to save the element he edited in the view above.
-  */  
+  */
   /*static*/ function save(){
     echo( "saving..." );
     // You have to make a header redirect after saving.
   }
-  
+
 
 // The next functions are used for the element's manage page. ***********************************************
 
@@ -274,7 +274,7 @@ class Element{
 
     return $retVal."| ".$this->title;
   }
-  
+
   /**
   * Displays the element's properties for the manage page.
   * Just integrates the getPropertyRow() into a labsys_mop_".$this->elementId."_row style division.
@@ -288,7 +288,7 @@ class Element{
             eval( "return EM::manageRow_".$this->elementId."( \$this );" ).
             "</div>\n";
   }
-  
+
   /**
   * Displays the element's properties for the manage page.
   * Just integrates the getPropertyRow() into a labsys_mop_".$this->elementId."_row style division.
@@ -304,7 +304,7 @@ class Element{
             EB::history( $lng->get($this->elementId."Number").$this->idx.":<hr>".$this->history, $this->elementId.$this->idx ).
             "</div>\n";
   }
-  
+
 // If this element gets aggregated inside a collection the following rows are taken *************************
 
   /**
@@ -335,7 +335,7 @@ class Element{
               $address." ".$lng->get("doesNotExist").
             "</div>\n";
   }
-  
+
   /**
   * Splits the Address given in &$parentAddr into $parentAddr part and $myAddr part.
   * p.e. I am c12, $fullAddress = l2.C3.c12.m2 -> $parentAddr = "l2.C3.", $myAddr = Array( [0]=>"c12", [1]=>"m2" );

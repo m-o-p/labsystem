@@ -116,7 +116,7 @@ class LpElement extends Element{
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Lp',
         $fullAddress,
-//        htmlentities( $this->contents ),
+//        htmlentities( $this->contents , ENT_QUOTES | ENT_IGNORE ),
         $this->getePubContents( $paragraph ),
         array(
             'title'   => returnHTML( ( $paragraph != "" ?  $paragraph.'. '  : '' ).$this->title ),

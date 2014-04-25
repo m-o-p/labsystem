@@ -1859,7 +1859,7 @@ setup.php:197
   /php/getFirstLastFinal.inc: SQL-injection was possible through "address=" field 
      in URL. Check via Ddbc::escapeString() implemented.
   /include/page_layout.inc: Crossside-Scripting was easily possible via the syserror
-    and sysinfo-messages. htmlEntities() enabled.
+    and sysinfo-messages. htmlentities() enabled.
   /include/classes/DBInterfaceUser.inc: authenticate: $username gets escapeStringed now.
  
 ------------------------------------

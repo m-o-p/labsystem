@@ -36,7 +36,7 @@ $ERRORMAIL_RECEIVER = ''; // If you enter a valid email address here and you hav
 function displayError( $cssColor, $html ){
     echo( '<div>'.
           '<span style="color: '.$cssColor.'; font-size: 1.2em; font-weight: bold;">!</span> '.
-          htmlentities($html).
+          htmlentities($html, ENT_QUOTES | ENT_IGNORE).
           '</div>' );
 }
 /**
@@ -53,16 +53,15 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
 {
   if ( defined ( 'E_STRICT' ) && ($errno == constant ( 'E_STRICT' ) ) ) return; // ignore php5 warnings of missing public etc.
 
-  $errno = htmlentities( $errno );
-  $errstr = htmlentities( $errstr );
-  $errfile = htmlentities( $errfile );
-  $errline = htmlentities( $errline );
+  $errno = htmlentities( $errno, ENT_QUOTES | ENT_IGNORE  );
+  $errstr = htmlentities( $errstr, ENT_QUOTES | ENT_IGNORE  );
+  $errfile = htmlentities( $errfile, ENT_QUOTES | ENT_IGNORE );
+  $errline = htmlentities( $errline, ENT_QUOTES | ENT_IGNORE );
   switch ($errno) {
   case E_USER_ERROR: // most severe case gets whole page...
     echo( '<html>'.
           '<head><title>labsys.m-o-p.de-error: ['.$errno.'] '.$errstr.'</title></head>'.
-          '<body style="background-color: #444444; padding: 2em;">'
-         );
+          '<body style="background-color: #444444; padding: 2em;">' );
 
     echo( '<div style="color: #666666; font-family: Verdana, Sans-serif; font-size: 5em; margin-bottom:-0.4em;">'.
           'ATTENTION'.

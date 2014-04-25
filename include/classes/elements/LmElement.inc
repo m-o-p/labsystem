@@ -400,7 +400,7 @@ class LmElement extends Element{
       parseHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
       //$pge->replaceConstants( $this->answerArray[ $this->displayPermutation[$i] ] ); // Process custon fields
       $answerArray[] = $this->answerArray[ $this->displayPermutation[$i] ] ;
-      // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ $this->displayPermutation[$i] ] ).'<br>' );
+      // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ $this->displayPermutation[$i] ], ENT_QUOTES | ENT_IGNORE ).'<br>' );
     }
 
     $epubExporter->save('Lm',

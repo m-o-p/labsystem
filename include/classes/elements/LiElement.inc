@@ -262,7 +262,7 @@ class LiElement extends Element{
                                                   'class="labsys_mop_textarea" '.
                                                   'rows="'.$cfg->get("DefaultIAnswerRows").'"'.
                                                   ' onchange="isDirty=true">'.
-                                                  htmlentities( $this->userAnswer ).
+                                                  htmlentities( $this->userAnswer, ENT_QUOTES | ENT_IGNORE  ).
                                                   "</textarea>\n";
                          else if ( $this->userAnswer != "" ) return "<div class=\"labsys_mop_textarea\">".
                                                                     $this->returnPREformatted( $this->userAnswer ).

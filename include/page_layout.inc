@@ -56,10 +56,10 @@
 */
 
 // alert/ info data may come via url or via set $SYS{INFO, ALERT}
-if ( $url->available('sysinfo') ) if ( isset($SYSINFO) ) $SYSINFO .= htmlentities( html_entity_decode( $url->get('sysinfo') ) );
-                                                 else $SYSINFO  = htmlentities( html_entity_decode( $url->get('sysinfo') ) );
-if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlentities( html_entity_decode( $url->get('sysalert') ) );
-                                                   else $SYSALERT  = htmlentities( html_entity_decode( $url->get('sysalert') ) );
+if ( $url->available('sysinfo') ) if ( isset($SYSINFO) ) $SYSINFO .= htmlentities( html_entity_decode( $url->get('sysinfo') ), ENT_QUOTES | ENT_IGNORE );
+                                                 else $SYSINFO  = htmlentities( html_entity_decode( $url->get('sysinfo') ), ENT_QUOTES | ENT_IGNORE );
+if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlentities( html_entity_decode( $url->get('sysalert') ), ENT_QUOTES | ENT_IGNORE );
+                                                   else $SYSALERT  = htmlentities( html_entity_decode( $url->get('sysalert') ), ENT_QUOTES | ENT_IGNORE );
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -90,7 +90,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     </script>
 
 <?PHP /* TinyMCE (WYSIWYG-Editor) integration */
-    if ($cfg->doesExist('tinyMCE') && ($cfg->get('tinyMCE') == 'TRUE') && $url->available('tinyMCE'))
+    if ($cfg->doesExist('tinyMCE') && ($cfg->get('tinyMCE') == 'TRUE') && $url->available('tinyMCE') )
       echo('
     <script language="javascript" type="text/javascript" src="../plugins/tiny_mce/tiny_mce.js"></script>
     <script language="javascript" type="text/javascript">
@@ -170,7 +170,14 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
         if ($usr->isOfKind( IS_USER )){
           echo('[<a class="labsys_mop_logout" href="'.$url->link2($labsystem_LogOutLink).'">'.$usr->userName.' '.$lng->get( "MnuEntryLogOut" ).'</a>] ');
         }else{
+          $isNoMenu = $url->available('nomenu');
+          if ($isNoMenu){
+            $url->rem('nomenu=true');
+          }
           echo('[<a class="labsys_mop_login" href="'.$url->link2($labsystem_LogInLink).'">'.$lng->get( "MnuEntryLogIn" ).'</a>] ');
+          if ($isNoMenu){
+            $url->put('nomenu=true');
+          }
         }
 
           if ( isset($SYSINFO) )  echo("<span class=\"labsys_mop_systeminfo\">".$SYSINFO."</span> ");

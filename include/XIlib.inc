@@ -103,7 +103,7 @@ function persistElement( &$element, $labUID, $isImport=false ){
 
   	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
   	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
-  	htmlentities($element->title).
+  	htmlentities($element->title, ENT_QUOTES | ENT_IGNORE ).
            ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> '.
   	$fileName.
            ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
@@ -112,7 +112,7 @@ function persistElement( &$element, $labUID, $isImport=false ){
     $element->history = ']'.$element->history; // add sign for indicating not to stamp data
     $GLOBALS[ $element->elementId."DBI" ]->setData( $element );
   	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
-  	htmlentities($element->title).
+  	htmlentities($element->title, ENT_QUOTES | ENT_IGNORE ).
            ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
   	$element->elementId.$element->idx.
            "</div>\r\n";
@@ -374,7 +374,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     if ($doCopy){
       // Here the move to server should happen...
       $itWorked = (file_exists(str_replace( ' ', '%20', $localFileWithPath)) && copy( str_replace( ' ', '%20', $localFileWithPath), str_replace( ' ', '%20', $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName )))
-      or trigger_error("Can't copy file [".htmlentities($localFileWithPath).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
+      or trigger_error("Can't copy file [".htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
       $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                   $localFileWithPath.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
@@ -404,7 +404,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     if ( !file_exists($destDir)){ mkdir($destDir, 0755, true) or trigger_error("Can't create directory ".$destDir, E_USER_ERROR); }
 
     (file_exists($file2importWithPath) && copy( $file2importWithPath, $destDir.$fileName ) )
-    or trigger_error("Can't copy file from '".htmlentities($file2importWithPath)."' to '".$destDir.$fileName, E_USER_WARNING);
+    or trigger_error("Can't copy file from '".htmlentities($file2importWithPath, ENT_QUOTES | ENT_IGNORE )."' to '".$destDir.$fileName, E_USER_WARNING);
     $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                 ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
                 $fileName.

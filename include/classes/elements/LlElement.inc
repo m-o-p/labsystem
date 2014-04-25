@@ -1285,7 +1285,7 @@ class LlElement extends Element{
                     '</a> '.EB::link2Content( sprintf( ( substr_count( $strFormat, '%s' ) != 2 ? $strFormat : '%s%s' ),
                                               $myPath.'/',
                                               $file['fileName'],
-                                              (($imageSize = getimagesize($myPath.'/'.$file['fileName'])) != 0 ? htmlentities($imageSize[3]).' ' : '') ) ).
+                                              (($imageSize = getimagesize($myPath.'/'.$file['fileName'])) != 0 ? htmlentities($imageSize[3], ENT_QUOTES | ENT_IGNORE ).' ' : '') ) ).
                     ' <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.'</li>'."\n";
       }
       $retHTML .= '</ul>';

@@ -115,11 +115,11 @@ $counter=0;
 $checkAll = $GLOBALS['url']->available('checkAll');
 
 $allSupporterInputs = "";
-foreach( $allSupporter as $key => $value ) $allSupporterInputs .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value=\"".htmlentities($value)."\"".( $checkAll || isset($_POST['MAIL2_'.$counter]) ?  " checked=\"checked\" "  : '' )." onchange='isDirty=true'>".
+foreach( $allSupporter as $key => $value ) $allSupporterInputs .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value=\"".htmlentities($value, ENT_QUOTES | ENT_IGNORE )."\"".( $checkAll || isset($_POST['MAIL2_'.$counter]) ?  " checked=\"checked\" "  : '' )." onchange='isDirty=true'>".
                                                                   "<label for=\"MAIL2_".$counter."\" class=\"labsys_mop_input_field_label\">".$key."</label><br />\n";
 $allOtherInputs = "";
 if ( $usr->isOfKind( IS_ALL_MAILER ) )
-  foreach( $allOther as $key => $value ) $allOtherInputs         .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value=\"".htmlentities($value)."\"".( $checkAll || isset($_POST['MAIL2_'.$counter]) ?  " checked=\"checked\" "  : '' ).
+  foreach( $allOther as $key => $value ) $allOtherInputs         .= "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"MAIL2_".++$counter."\" name=\"MAIL2_".$counter."\" value=\"".htmlentities($value, ENT_QUOTES | ENT_IGNORE )."\"".( $checkAll || isset($_POST['MAIL2_'.$counter]) ?  " checked=\"checked\" "  : '' ).
   ($key[0]=='#' ? " onclick='document.getElementById(\"mailViaBcc\").checked=true'":'')." onchange='isDirty=true'>".
                                                                     "<label for=\"MAIL2_".$counter."\" class=\"labsys_mop_input_field_label\">".$key."</label><br />\n";
 

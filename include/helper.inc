@@ -120,13 +120,13 @@ function parseHTML( &$object ){
 //    $object = preg_replace('/ ([\w\s])/', '&nbsp;\\1', nl2br( htmlspecialchars( $object ) ) );
 //    $object = nl2br( htmlspecialchars( $object ) );
     $object = str_replace(array('  ', "\t"), array('&nbsp; ', '&nbsp; &nbsp; '),
-                           nl2br( htmlentities( $object ) )
+                           nl2br( htmlentities( $object, ENT_QUOTES | ENT_IGNORE  ) )
               );
   }
 }
 
 function tidyHTML( &$string ){
-  if ( ($GLOBALS['cfg']->get('tidyHTML') == 'TRUE') && // tidying is configured on via config file option
+  if ( ($GLOBALS['cfg']->get('tidyHTML') == 'TRUE' ) && // tidying is configured on via config file option
        ( substr( $string, 0, 6 ) == '[HTML]' ) &&  // this is and HTML element
        class_exists( 'tidy' ) ){ // tidy exists on this system
     if (!isset( $GLOBALS['tidy'] )) $GLOBALS['tidy'] = new tidy();
@@ -153,7 +153,7 @@ function returnHTML( $object ){
 * @return $string The altered $text.
 */
 function returnEditable( $text ){ /* removes anything with special purpose for editing */
-  return str_replace( "_", "&#x005F;", htmlspecialchars( $text ) );
+  return str_replace( "_", "&#x005F;", htmlentities( $text, ENT_QUOTES | ENT_IGNORE ) );
 }
 
 /**

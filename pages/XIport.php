@@ -129,7 +129,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                                        ' * with l'.$newLabId.': '.$labToImport->title.
                                        "\n * on ".date('r')."\n*/" );
             file_put_contents( $cfg->get( "UserStyleSheet" ), implode("\n\n", $newStyles), FILE_APPEND | LOCK_EX);
-            $pge->put(  '<pre>'.htmlentities(implode( "\n", $newStyles ))."</pre>\n".
+            $pge->put(  '<pre>'.htmlentities(implode( "\n", $newStyles ), ENT_QUOTES | ENT_IGNORE )."</pre>\n".
                         '<div class="labsys_mop_elements_menu_l">'.
                         'user_styles.css <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import">'.
                         $cfg->get( "UserStyleSheet" ).
@@ -273,7 +273,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       fileWrite(  'css/user_styles.css',
                   implode( "\n\n", $stylesToExport ),
                   $GLOBALS['exportUID'] );
-      $pge->put(  '<pre>'.htmlentities(implode( "\n", $stylesToExport ))."</pre>\n".
+      $pge->put(  '<pre>'.htmlentities(implode( "\n", $stylesToExport ), ENT_QUOTES | ENT_IGNORE )."</pre>\n".
                   '<div class="labsys_mop_elements_menu_l">user_styles.css'.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                   "</div>\r\n" );
