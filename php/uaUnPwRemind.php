@@ -74,10 +74,24 @@ else{
                         $cfg->get('UserDBField_uid')."='".$data[ $cfg->get('UserDBField_uid') ]."'"
                        );
 
+    // find out where the user can log in:
+    $groupMemberships = '';
+    $result = $userDBC->mkSelect( '*',
+        $cfg->get('UserDatabaseTable'),
+        $cfg->get('UserDBField_uid').'="'.$data[ 'uid' ].'"'
+    );
+    while( $memberData = mysql_fetch_assoc( $result ) ){
+      foreach ($memberData as $key=>$value){
+        if($key[0]=='_'&&$value==1){
+          $groupMemberships.=substr($key,1).'; ';
+        }
+      }
+    }
+
     // send the reminding mail
     // switch to the user for successfull field replacement.
-    if (!$usr->isOfKind( IS_CORRECTOR )){
-      $usr->userRights += IS_CORRECTOR; // only correctors can load user data...
+    if (!$usr->isOfKind( IS_USER )){
+      $usr->userRights += IS_USER; // only correctors can load user data...
     }
     $requestingUsr = $usr->getUserInformation($data[ 'uid' ]);
     $usr->userName    = $requestingUsr['userName'];
@@ -98,6 +112,7 @@ else{
          $mailPage->contents."\r\n\r\n".
          $lng->get('userName').': '.$data[ $cfg->get('UserDBField_username') ]."\r\n".
          $lng->get('passWord').': '.$newPW."\r\n".
+         $lng->get('YouAreMemberOf').': '.$groupMemberships."\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
          "\r\n",
          "From: ".$senderAddr."\r\n".

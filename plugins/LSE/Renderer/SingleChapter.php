@@ -45,7 +45,7 @@ class LSE_Renderer_SingleChapter implements LSE_Renderer_Interface
             $view = new SPT_View();
             $view->assign($vars);
             $coverPage = $view->render(LSE_ROOT . '/templates/coverpage.phtml', true);
-            $this->_plugin->addChapter( 'coverpage', 'coverpage.html', $coverPage, FALSE);
+            $this->_plugin->addChapter( 'coverpage', 'CoverPageInner.html', $coverPage, FALSE);
             
             unlink($dstPath);
         }
