@@ -297,6 +297,7 @@ stop                = "Ende"
 ;; manage users
 foreName            = "Vorname"
 surName             = "Nachname"
+YouAreMemberOf      = "Mitgliedschaften"
 
 
 ;; field descriptors **********************************************************************************

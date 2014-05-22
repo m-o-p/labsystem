@@ -301,6 +301,7 @@ surName             = "surName"
 ; login.php
 userName            = "userName"
 passWord            = "password"
+YouAreMemberOf      = "You are member of"
 
 ; sendMail.php
 roundmail           = "roundmail"

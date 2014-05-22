@@ -354,3 +354,27 @@ echo "You are done now. Please browse to http://[yourHostNameAndPathToTheLabsyst
 echo ""
 echo "Enjoy the system!"
 echo ""
+cat << EOF
+Make sure to protect the necessary directories in your webserver configuration such as:
+
+
+<Directory /srv/www/ilab.net.in.tum.de/htdocs/courses>
+php_flag engine off
+</Directory>
+<Directory /srv/www/ilab.net.in.tum.de/htdocs/courses/teamUploads>
+Order Deny,Allow
+Deny from All
+</Directory>
+<Directory /srv/www/ilab.net.in.tum.de/htdocs/include>
+Order Deny,Allow
+Deny from All
+</Directory>
+<Directory /srv/www/ilab.net.in.tum.de/htdocs/ini>
+Order Deny,Allow
+Deny from All
+</Directory>
+<Directory /srv/www/ilab.net.in.tum.de/htdocs/sessiondata>
+Order Deny,Allow
+Deny from All
+</Directory>
+EOF
