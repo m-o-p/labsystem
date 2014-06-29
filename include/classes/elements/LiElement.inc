@@ -198,7 +198,7 @@ class LiElement extends Element{
         returnHTML( $text )
         :
         '<pre style="width: 100%; border: 0; padding: 0; margin: 0; background-color: transparent; display: inline;">'.
-        htmlspecialchars( $text ).
+        htmlentities($text, ENT_QUOTES | ENT_IGNORE ).
         '</pre>' );
   }
 
