@@ -70,12 +70,14 @@ class LiDBInterfaceAnswers {
         $historyIdx = substr($url->get('answerVersion'), strpos($url->get('answerVersion'),'-')+1);
         $backupHistory = $data['history'];
         $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."' && team='".$team."' && i_idx='".$iIdx."'" );
-        if ( !($data = mysql_fetch_array( $result )) ){
-          trigger_error( mysql_error(). 'Version '.$historyIdx.' of your answer could not be found.', E_USER_ERROR );
-          return false;
-          exit;
+        if ( !($data2 = mysql_fetch_array( $result )) ){
+          //trigger_error( mysql_error(). 'Version '.$historyIdx.' of the answer to i'.$iIdx.'could not be found for team '.$team, E_USER_WARNING );
+          // Could just not load history... no big deal
+        }else{
+          // Found a history -> replace the content
+          $data = $data2;
+          $data['history'] = preg_replace('/^(\*\*'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
         }
-        $data['history'] = preg_replace('/^(\*\*'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
       return Array( "answer" => $this->myDBC->unEscapeString( $data['answer'] ),
                     "comment" => $this->myDBC->unEscapeString( $data['comment'] ),
