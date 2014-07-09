@@ -122,7 +122,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
         save_callback : "myCustomSave",
         // Labsystems stylesheet to format the content correctly
         content_css : "'.$cfg->get("UserStyleSheet").'",
-        theme : "advanced",
+        theme : "'.( $usr->isOfKind( IS_CONTENT_EDITOR ) ? 'advanced':'simple' ).'",
         // hinders tinyMCE from putting <p> around [HTML]
         forced_root_block : ""
       });

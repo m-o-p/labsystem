@@ -159,13 +159,19 @@ class LiElement extends Element{
   * @param $teamNumber  The number of the team data should be loaded of.
   */
   function loadUserData4( $teamNumber=0 ){
-    global $usr, $cfg;
+    global $usr, $cfg, $url;
     if ( $teamNumber != 0 ){
       $this->getDataOfTeam = $teamNumber;
       $answerData          = $this->uaDBI->getData4( $teamNumber,
                                                      $this->idx,
                                                      $teamNumber != 0 );
       $this->userAnswer    = $answerData["answer"];
+
+      // if WYSIWYG editing was enabled and the answer contained <script>alert(1);</script> before, the script is getting enabled. To prevent this:
+      if ($url->available('tinyMCE') && ($this->userAnswer != '') && (substr($this->userAnswer, 0, 6) !== '[HTML]')){
+        $this->userAnswer = htmlentities($this->userAnswer, ENT_QUOTES | ENT_IGNORE );
+      }
+
       $this->answerComment = $answerData["comment"];
       $this->givenCredits  = $answerData["givenCredits"];
       $this->isClosed      = $answerData["isClosed"];
@@ -829,6 +835,10 @@ class LiElement extends Element{
       // One could also display the page here but that way it is left to the normal mechanism...
       header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
       exit;
+    }
+
+    if ((substr($_POST['ANSWER'], 0, 4) === '[MD]') || ((substr($_POST['ANSWER'], 0, 6) === '[HTML]') && !$url->available('tinyMCE'))){
+      $_POST['ANSWER'] = '!'.$_POST['ANSWER'];
     }
 
     if ( $this->lockIsSetTo == $this->idx ){
