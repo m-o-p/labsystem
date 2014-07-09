@@ -115,14 +115,14 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
       tinyMCE.init({
         // only fields called "CONTENTS" should get TinyMCEed
         mode : "exact",
-        elements : "CONTENTS, ANSWER",
+        elements : "CONTENTS",
         // Should the user be asked if TinyMCE should get started? (onClick)
         ask : false,
         setupcontent_callback : "myCustomSetupContent",
         save_callback : "myCustomSave",
         // Labsystems stylesheet to format the content correctly
         content_css : "'.$cfg->get("UserStyleSheet").'",
-        theme : "'.( $usr->isOfKind( IS_CONTENT_EDITOR ) ? 'advanced':'simple' ).'",
+        theme : "advanced",
         // hinders tinyMCE from putting <p> around [HTML]
         forced_root_block : ""
       });
@@ -223,7 +223,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
           echo(date( $lng->get("DateFormat") ));
 
           // wysiwyg
-          if ($usr->isOfKind( IS_USER ) && $cfg->doesExist('tinyMCE') && ($cfg->get('tinyMCE') == 'TRUE')){
+          if ($usr->isOfKind( IS_CONTENT_EDITOR ) && $cfg->doesExist('tinyMCE') && ($cfg->get('tinyMCE') == 'TRUE')){
             echo(' | ');
             if ($url->available('tinyMCE')){
               echo('<a href="'.str_replace( '&tinyMCE=true', '', $_SERVER['REQUEST_URI'] ).'" style="color:#0f0"><img src="../syspix/button_wysiwyg_off_20x10.gif" width="20px" height="10px" style="border:0" alt="wysiwig on" title="+wysiwyg"></a>');

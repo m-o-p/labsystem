@@ -166,12 +166,6 @@ class LiElement extends Element{
                                                      $this->idx,
                                                      $teamNumber != 0 );
       $this->userAnswer    = $answerData["answer"];
-
-      // if WYSIWYG editing was enabled and the answer contained <script>alert(1);</script> before, the script is getting enabled. To prevent this:
-      if ($url->available('tinyMCE') && ($this->userAnswer != '') && (substr($this->userAnswer, 0, 6) !== '[HTML]')){
-        $this->userAnswer = htmlentities($this->userAnswer, ENT_QUOTES | ENT_IGNORE );
-      }
-
       $this->answerComment = $answerData["comment"];
       $this->givenCredits  = $answerData["givenCredits"];
       $this->isClosed      = $answerData["isClosed"];
@@ -837,7 +831,7 @@ class LiElement extends Element{
       exit;
     }
 
-    if ((substr($_POST['ANSWER'], 0, 4) === '[MD]') || ((substr($_POST['ANSWER'], 0, 6) === '[HTML]') && !$url->available('tinyMCE'))){
+    if ((substr($_POST['ANSWER'], 0, 4) === '[MD]') || (substr($_POST['ANSWER'], 0, 6) === '[HTML]')){
       $_POST['ANSWER'] = '!'.$_POST['ANSWER'];
     }
 
