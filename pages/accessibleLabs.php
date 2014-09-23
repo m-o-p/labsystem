@@ -134,6 +134,7 @@ foreach ( $accessibleLabs as $value ){
       $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ).'');
     }
   }else{
+    parseHTML( $value->comment );
     $pge->put('
 <tr>
   <td width="75" class="labIndexNumber">
