@@ -162,7 +162,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
           $insertString = '';
           foreach ( $row AS $key => $val ) {
             if (strpos($key, $ignorePrefix) !== 0){
-              $insertString .= (empty($insertString)?'':',').$key.'="'.$userDBC->escapeString(($key!='last_registered' ? $val : date('r',strtotime($val)) )).'"';
+              $insertString .= (empty($insertString)?'':',').$key.'='.($key!='last_registered' ? '"'.$userDBC->escapeString($val).'"' : 'FROM_UNIXTIME('.strtotime($val).')');
             }
           }
           foreach ($subscribedCourses as $value){
