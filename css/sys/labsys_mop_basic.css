@@ -757,7 +757,13 @@ fieldset{
                     border: solid 1px #aaaaaa;
                     height: 4px;
   }
-  .labsys_mop_l_status_percentBarDiv img{ /* the bar is an img with a transparent gif. */
+  .labsys_mop_l_status_percentStickDiv{ /* shown in the lab status table below the percent value */
+                    text-align: left;
+                    background-color: #eeeeee;
+                    border: solid 1px #aaaaaa;
+                    height: 4px;
+  }
+  .labsys_mop_l_status_percentBarDiv img, .labsys_mop_l_status_percentStickDiv img{ /* the bar is an img with a transparent gif. */
                     margin: 0px; 
                     border: none;
                     height: 100%;
@@ -1134,4 +1140,15 @@ fieldset{
   }
   
   .labsys_mop_content .registerPlacesLeft img {
+  }
+  
+  .labsys_mop_content .createUserimportPreview{
+    border: solid 1px #888;
+    font-size: 0.6em
+  }
+  .labsys_mop_content .createUserimportPreview tr td {
+    border: solid 1px #aaa
+  }
+  .labsys_mop_content .createUserimportPreview tr:nth-child(even) {background: #CCC}
+  .labsys_mop_content .createUserimportPreview tr:nth-child(odd) {background: #FFF}
   }

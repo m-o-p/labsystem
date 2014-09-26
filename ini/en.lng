@@ -255,7 +255,7 @@ uaMyDataNote        = "Here you can change your personal data.<br />Provide a <b
 uaMyPwNote          = "Here you can change your password."
 uaUnPwRemNote       = "As member you can receive a mail with your login <b>username</b> and a <b>new password</b> from this page.<br />Just enter the mailaddress you provided to the system."
 uaManageUsrNote     = "You can edit the user's by clicking on them. (You have to be able to correct for that!).<br />You can change the subsciptions to the courses here."
-uaCreateUsrNote     = "You can create the users her by entering a <b>list of surname, forename, mailaddress (one line per user!)</b> in the field below.<br />The users will get the mailadress as username and a generated password.<br />Since the data is not mailed to them and their dataset is incomplete they are supposed to <b>request username and password from the reminder page</b> and to change/ enter their data after that.<br/>Normally the <b>self registration over register.php</b> should be the method of choice as it directly fills all data."
+uaCreateUsrNote     = "You can create new users here by pasting a CSV below.<br />The first row is the header row. You must <b>insert the field names given below at the right positions</b> in you CSV header!<br>After submitting you get a preview on the parsed data.<br>The users will get the mail address as user name and no password.<br />Their dataset is incomplete and they are supposed to <b>request username and password from the reminder page</b> and to change/ enter their data after that.<br/>Normally the <b>self registration over register.php</b> should be the method of choice as it directly fills all data."
 uaNewUsrsSubscript  = "The new users will have these subscriptions."
 uaUnassignedNote    = "You have currently registered for a course and <b>you are not assigned yet</b>. <br>Below you find a list of the other people who registered in the order of the registration. <br>Please keep in mind that usually not all students participate so do not worry if you are on a waiting list place only."
 uaWithdrawNote      = "If you decide to withdraw your registration you can press the following button. You can register later again but you will be added at the end of the list then."
@@ -322,7 +322,7 @@ newPWreType         = "retype new password"
 lastChange          = "last change"   ;; timestamp of last change of the dataset in the user.db
 
 ; uaCreateUsers.php
-mailaddressesNewUsr = "Enter the following comma separated data one user per line: &quot;<b>surname, forename, mail address</b>&quot; of the users you want to create. Put <b>one user's data per line</b>."
+mailaddressesNewUsr = "Paste your <b>CSV</b> and <b>insert the given table fields in your first header row at the right places!</b> You will get a preview after clicking the button once."
 
 ;p
 inputTitle          = "<b>Title</b> (e.g. the title of your element is used for the browser's caption.)"
