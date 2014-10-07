@@ -127,6 +127,9 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
         } else {
           // data line
           $values = str_getcsv($line);
+          foreach($values as &$value){
+            $value=trim($value);
+          }
           $datarow = array_combine( $headerFields, $values );
           array_push( $data, $datarow );
         }
@@ -148,7 +151,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
           $pge->put('<td>'.$participantNumber++.'</td>');
           foreach ( $row AS $key => $val ) {
             if (strpos($key, $ignorePrefix) !== 0){
-              $pge->put('<td>'.($key!='last_registered' ? $val : date('r',strtotime($val)) ).'</td>');
+              $pge->put('<td><pre>'.($key!='last_registered' ? $val : date('r',strtotime($val)) ).'</pre></td>');
             }
           }
           $pge->put('<td>'.implode(', ', $subscribedCourses).'</td>');
