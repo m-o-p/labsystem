@@ -278,6 +278,7 @@ fileSelectNote      = "You are able to edit all files of this kind and save new 
 
 ;; names for the order by selector ********************************************************************
 restrictTo          = "Restrict to "
+searchFor           = "Search for "
 orderBy             = "Order by "
 team                = "team"
 rights              = "rights"

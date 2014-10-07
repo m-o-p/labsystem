@@ -280,6 +280,7 @@ fileSelectNote      = "Sie k&ouml;nnen alle Dateien dieses Typs editieren und ne
 
 ;; names for the order by selector ********************************************************************
 restrictTo          = "beschr&auml;nkt auf "
+searchFor           = "Suchen nach "
 orderBy             = "geordnet nach "
 team                = "Team"
 rights              = "Rechte"
