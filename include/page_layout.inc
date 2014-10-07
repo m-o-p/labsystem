@@ -19,8 +19,8 @@
  */
 
 // For utf-8 support:
-//header('Content-type: text/html; charset=utf-8');
-//header('Content-type: text/html; charset=iso-8859-1');
+header('Content-type: text/html; charset=utf-8');
+//header('Content-type: text/html; charset=iso-8859-1'); // Seems to fix problems with Umlauten for the moment?!
 
 /**
 * This is the systems page layout.
@@ -56,16 +56,16 @@
 */
 
 // alert/ info data may come via url or via set $SYS{INFO, ALERT}
-if ( $url->available('sysinfo') ) if ( isset($SYSINFO) ) $SYSINFO .= htmlentities( html_entity_decode( $url->get('sysinfo') ), ENT_QUOTES | ENT_IGNORE );
-                                                 else $SYSINFO  = htmlentities( html_entity_decode( $url->get('sysinfo') ), ENT_QUOTES | ENT_IGNORE );
-if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlentities( html_entity_decode( $url->get('sysalert') ), ENT_QUOTES | ENT_IGNORE );
-                                                   else $SYSALERT  = htmlentities( html_entity_decode( $url->get('sysalert') ), ENT_QUOTES | ENT_IGNORE );
+if ( $url->available('sysinfo') ) if ( isset($SYSINFO) ) $SYSINFO .= htmlentities( html_entity_decode( $url->get('sysinfo') ) );
+                                                 else $SYSINFO  = htmlentities( html_entity_decode( $url->get('sysinfo') ) );
+if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlentities( html_entity_decode( $url->get('sysalert') ) );
+                                                   else $SYSALERT  = htmlentities( html_entity_decode( $url->get('sysalert') ) );
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
   <HEAD>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="Content-Language" content="<?php $lng->say("Content-Language"); ?>">
     <meta name="generator" content="labsystem.m-o-p.de">
     <link rel="stylesheet" type="text/css" href="<?php $cfg->say("SystemStyleSheet"); ?>">

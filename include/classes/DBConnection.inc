@@ -49,6 +49,7 @@ class DBConnection{
   */
   function DBConnection( $host, $user, $password, $dataBase ){
     $this->link = mysql_pconnect( $host, $user, $password, 2/*CLIENT_FOUND_ROWS*/ );
+    mysql_set_charset('utf8', $this->link);
     /*
 "Note: When using UPDATE, MySQL will not update columns where the
 new value is the same as the old value. This creates the
