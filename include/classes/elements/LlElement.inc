@@ -168,6 +168,34 @@ class LlElement extends Element{
     $this->lastUploadedFile         = false;
   }
 
+  /**
+   * Called for retrieving the color of the bar that indicates the success.
+   * (via $cfg->percentageFailed = red -> 100% green)
+   * @param unknown $percentage        The value to be shown out of [0..1].
+   * @param unknown $percentageFailed  The value the bar gets red if below.
+   * @return string                    The color as RGB hex value.
+   */
+  function getSuccessIndicatorColor( $percentage, $percentageFailed ){
+    // $p2 = $percentage - $percentageFailed mapped on [0..1] for coloring.
+    // The color varies from #ff0000 ( $p2 =   0% ) (red)
+    //                  over #ffff99 ( $p2 =  50% ) (yellow)
+    //                    to #00ff00 ( $p2 = 100% ) (green)
+    $p2 = ( $percentage - $percentageFailed )/
+    ( 1 - $percentageFailed );
+    if ( $p2 < 0 ) $p2 = 0;
+    elseif ( $p2 > 1 ) $p2 = 1;
+    $move = $p2 * 511;
+    if ( $move < 255 ){ // move to yellow
+      $moveRed   = 0;
+      $moveGreen = $move;
+    }else{ // move to green
+      $moveRed   = $move-256;
+      $moveGreen = 255;
+    }
+
+    return substr( '0'.dechex( 255-$moveRed ), -2 ).substr( '0'.dechex( $moveGreen ), -2 ).'00';
+  }
+
 // The next functions are used for the element's view page. *************************************************
 
 // helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - -
@@ -213,18 +241,23 @@ class LlElement extends Element{
   */
   function showAllPrelabMultipleChoices( $fullAddress ){
     global $lng, $pge, $url, $cfg, $usr;
-    $myRetVal =  $this->preLab->showAllElementsOfType( "m", $fullAddress.".C".$this->prelabCollectionIdx, $lng->get("lPrefixPreLab") );
 
-    if ( !$this->preLabIsFinished && $this->userIsViewing ) // the "check prelab" button
-      $myRetVal .=  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l".$this->idx)."\">\n".
+    if ( !$this->preLabIsFinished && $this->userIsViewing ){ // the "check prelab" button
+      $myRetVal =  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l".$this->idx)."\">\n".
                     "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab()\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
                     "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
                     "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n". // to check whether the call is valid
                     "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
                     "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
                      "value=\"".$lng->get("checkPrelab")."\">\n".
+                     $this->preLab->showAllElementsOfType( "m", $fullAddress.".C".$this->prelabCollectionIdx, $lng->get("lPrefixPreLab") ).
+                     "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
+                     "value=\"".$lng->get("checkPrelab")."\">\n".
                     "</FORM>\n".
                     ( $lng->get("prelabCheckNote") != "" ? "<div class=\"labsys_mop_note\">\n".$lng->get("prelabCheckNote").$cfg->get("MCAnsweringAttempts")."</div>\n" : '');
+    }else{
+      $myRetVal =  $this->preLab->showAllElementsOfType( "m", $fullAddress.".C".$this->prelabCollectionIdx, $lng->get("lPrefixPreLab") );
+    }
 
     return $myRetVal;
   }
@@ -363,7 +396,7 @@ class LlElement extends Element{
   * @return string      The bar's html-code.
   */
   function percentBar( $percentage, $percentageFailed, $style="labsys_mop_l_status_percentBarDiv" ){
-    $color = getSuccessIndicatorColor( $percentage, $percentageFailed );
+    $color = LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed );
 
     return "<div class=\"".$style."\">".
            "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; width: ".round($percentage*100)."%\"></img>".
@@ -383,39 +416,11 @@ class LlElement extends Element{
    */
   function percentStick( $percentage, $percentageFailed, $bw=FALSE ){
     $style="labsys_mop_l_status_percentStickDiv";
-    $color = ($bw ? '000' : getSuccessIndicatorColor( $percentage, $percentageFailed ));
+    $color = ($bw ? '000' : LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed ));
 
     return "<div class=\"".$style."\">".
         "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; height: ".round($percentage*100)."%\"></img>".
         "</div>\n";
-  }
-
-  /**
-   * Called for retrieving the color of the bar that indicates the success.
-   * (via $cfg->percentageFailed = red -> 100% green)
-   * @param unknown $percentage        The value to be shown out of [0..1].
-   * @param unknown $percentageFailed  The value the bar gets red if below.
-   * @return string                    The color as RGB hex value.
-   */
-  function getSuccessIndicatorColor( $percentage, $percentageFailed ){
-    // $p2 = $percentage - $percentageFailed mapped on [0..1] for coloring.
-    // The color varies from #ff0000 ( $p2 =   0% ) (red)
-    //                  over #ffff99 ( $p2 =  50% ) (yellow)
-    //                    to #00ff00 ( $p2 = 100% ) (green)
-    $p2 = ( $percentage - $percentageFailed )/
-    ( 1 - $percentageFailed );
-    if ( $p2 < 0 ) $p2 = 0;
-    elseif ( $p2 > 1 ) $p2 = 1;
-    $move = $p2 * 511;
-    if ( $move < 255 ){ // move to yellow
-      $moveRed   = 0;
-      $moveGreen = $move;
-    }else{ // move to green
-      $moveRed   = $move-256;
-      $moveGreen = 255;
-    }
-
-    return substr( '0'.dechex( 255-$moveRed ), -2 ).substr( '0'.dechex( $moveGreen ), -2 ).'00';
   }
 
   /**

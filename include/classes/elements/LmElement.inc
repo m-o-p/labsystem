@@ -286,6 +286,16 @@ class LmElement extends Element{
                                             $lng->get("giveAnswer")
                                            )."\" onclick='isDirty=false'>\n".
                "</FORM>\n";
+// Show check up button
+       $ret .= "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=".$GLOBALS['firstFinal'])."\">\n".
+               "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab()\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
+               "<input type=\"hidden\" name=\"IDX\" value=\"".substr($GLOBALS['firstFinal'],1)."\">\n".            // needed by ../php/executeCommandOnElement.php
+               "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n". // to check whether the call is valid
+               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."#".$fullAddress."\">\n".
+               "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
+               "value=\"".$lng->get("checkPrelab")."\">\n".
+               "</FORM>\n";
+// /Show check up button
                if ($isGettingAnswered){
                  $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::mStudentOpen);
                }
