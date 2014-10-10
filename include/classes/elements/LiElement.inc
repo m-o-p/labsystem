@@ -198,7 +198,7 @@ class LiElement extends Element{
         returnHTML( $text )
         :
         '<pre style="width: 100%; border: 0; padding: 0; margin: 0; background-color: transparent; display: inline;">'.
-        htmlentities($text, ENT_QUOTES | ENT_IGNORE ).
+        htmlentities( $text ).
         '</pre>' );
   }
 
@@ -262,7 +262,7 @@ class LiElement extends Element{
                                                   'class="labsys_mop_textarea" '.
                                                   'rows="'.$cfg->get("DefaultIAnswerRows").'"'.
                                                   ' onchange="isDirty=true">'.
-                                                  htmlentities( $this->userAnswer, ENT_QUOTES | ENT_IGNORE  ).
+                                                  htmlentities( $this->userAnswer ).
                                                   "</textarea>\n";
                          else if ( $this->userAnswer != "" ) return "<div class=\"labsys_mop_textarea\">".
                                                                     $this->returnPREformatted( $this->userAnswer ).
@@ -670,7 +670,7 @@ class LiElement extends Element{
             "</div>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
-
+            $this->show($fullAddress).
           // element options
             "<fieldset><legend>".$lng->get("options")."</legend>\n".
               "<div>".

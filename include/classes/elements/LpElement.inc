@@ -116,7 +116,7 @@ class LpElement extends Element{
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Lp',
         $fullAddress,
-//        htmlentities( $this->contents , ENT_QUOTES | ENT_IGNORE ),
+//        htmlentities( $this->contents ),
         $this->getePubContents( $paragraph ),
         array(
             'title'   => returnHTML( ( $paragraph != "" ?  $paragraph.'. '  : '' ).$this->title ),
@@ -174,7 +174,7 @@ class LpElement extends Element{
             "</textarea>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
-
+            $this->show($fullAddress).
           // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
               "<label for=\"mM\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputMatchingMnu")."</label>".

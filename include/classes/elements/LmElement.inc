@@ -400,7 +400,7 @@ class LmElement extends Element{
       parseHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
       //$pge->replaceConstants( $this->answerArray[ $this->displayPermutation[$i] ] ); // Process custon fields
       $answerArray[] = $this->answerArray[ $this->displayPermutation[$i] ] ;
-      // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ $this->displayPermutation[$i] ], ENT_QUOTES | ENT_IGNORE ).'<br>' );
+      // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ ).'<br>' );
     }
 
     $epubExporter->save('Lm',
@@ -494,7 +494,7 @@ class LmElement extends Element{
             "</textarea>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
-
+            $this->show($fullAddress).
           // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
               "<table width=\"100%\"><tr><td valign=\"top\" width=\"40%\">\n".

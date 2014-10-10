@@ -363,13 +363,48 @@ class LlElement extends Element{
   * @return string      The bar's html-code.
   */
   function percentBar( $percentage, $percentageFailed, $style="labsys_mop_l_status_percentBarDiv" ){
+    $color = getSuccessIndicatorColor( $percentage, $percentageFailed );
+
+    return "<div class=\"".$style."\">".
+           "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; width: ".round($percentage*100)."%\"></img>".
+           "</div>\n";
+  }
+
+  /**
+   * Called by showTableResults to show the percentage sticks indicating the reached points per question.
+   * The percentage is shown via bar length and color
+   * (via $cfg->percentageFailed = red -> 100% green)
+   *
+   * @param $percentage       The value to be shown out of [0..1].
+   * @param $percentageFailed The value the bar gets red if below.
+   * @param $bw               If set the color of the bar is black (used for uncorrected answers).
+   *
+   * @return string      The bar's html-code.
+   */
+  function percentStick( $percentage, $percentageFailed, $bw=FALSE ){
+    $style="labsys_mop_l_status_percentStickDiv";
+    $color = ($bw ? '000' : getSuccessIndicatorColor( $percentage, $percentageFailed ));
+
+    return "<div class=\"".$style."\">".
+        "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; height: ".round($percentage*100)."%\"></img>".
+        "</div>\n";
+  }
+
+  /**
+   * Called for retrieving the color of the bar that indicates the success.
+   * (via $cfg->percentageFailed = red -> 100% green)
+   * @param unknown $percentage        The value to be shown out of [0..1].
+   * @param unknown $percentageFailed  The value the bar gets red if below.
+   * @return string                    The color as RGB hex value.
+   */
+  function getSuccessIndicatorColor( $percentage, $percentageFailed ){
     // $p2 = $percentage - $percentageFailed mapped on [0..1] for coloring.
     // The color varies from #ff0000 ( $p2 =   0% ) (red)
     //                  over #ffff99 ( $p2 =  50% ) (yellow)
     //                    to #00ff00 ( $p2 = 100% ) (green)
     $p2 = ( $percentage - $percentageFailed )/
-          ( 1 - $percentageFailed );
-        if ( $p2 < 0 ) $p2 = 0;
+    ( 1 - $percentageFailed );
+    if ( $p2 < 0 ) $p2 = 0;
     elseif ( $p2 > 1 ) $p2 = 1;
     $move = $p2 * 511;
     if ( $move < 255 ){ // move to yellow
@@ -380,11 +415,7 @@ class LlElement extends Element{
       $moveGreen = 255;
     }
 
-    $color = substr( '0'.dechex( 255-$moveRed ), -2 ).substr( '0'.dechex( $moveGreen ), -2 ).'00';
-
-    return "<div class=\"".$style."\">".
-           "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; width: ".round($percentage*100)."%\"></img>".
-           "</div>\n";
+    return substr( '0'.dechex( 255-$moveRed ), -2 ).substr( '0'.dechex( $moveGreen ), -2 ).'00';
   }
 
   /**
@@ -508,6 +539,7 @@ class LlElement extends Element{
         $previousMembersname = $userData["name"].", ".$userData["foreName"]; // to output one's name only once (summary page)
 
        // show which are corrected
+       // Use the backlinks to the questions from the cache...
         if ( $labStatus['labClosed'] && !$labStatus['labCorrected'] && ($labStatus['whichCorrected'] != "") &&
              ( ($labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR ) )
             ){
@@ -1285,7 +1317,7 @@ class LlElement extends Element{
                     '</a> '.EB::link2Content( sprintf( ( substr_count( $strFormat, '%s' ) != 2 ? $strFormat : '%s%s' ),
                                               $myPath.'/',
                                               $file['fileName'],
-                                              (($imageSize = getimagesize($myPath.'/'.$file['fileName'])) != 0 ? htmlentities($imageSize[3], ENT_QUOTES | ENT_IGNORE ).' ' : '') ) ).
+                                              (($imageSize = getimagesize($myPath.'/'.$file['fileName'])) != 0 ? htmlentities( $imageSize[3] ).' ' : '') ) ).
                     ' <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.'</li>'."\n";
       }
       $retHTML .= '</ul>';
@@ -1847,7 +1879,7 @@ class LlElement extends Element{
           exit;
          }
 
-    // Validity (session ID) is checked by the calling script yet.
+    // Validity (session ID) is checked by the calling script already.
 
     $is2bClosed = $this->isAfter1stSched && !$this->isInSched; // should the lab be closed?
 

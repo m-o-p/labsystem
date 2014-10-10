@@ -439,7 +439,7 @@ class LcElement extends Element{
               ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=c">&nbsp; *c &nbsp;</a>'.
               ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=C">&nbsp; *C &nbsp;</a>'.
               "\n".
-
+              $this->showStructure($fullAddress).
              // properties
               "<fieldset><legend>".$lng->get("properties")."</legend>\n".
                // matching menu

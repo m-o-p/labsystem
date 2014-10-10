@@ -157,7 +157,7 @@ class Element{
             if (!next( $inputLines )) break;
       }
     // catch error
-    if ( !current( $inputLines ) ) trigger_error( htmlentities($closeTag, ENT_QUOTES | ENT_IGNORE ).' missing when unserializing: '.htmlentities($serializedData, ENT_QUOTES | ENT_IGNORE ), E_USER_ERROR );
+    if ( !current( $inputLines ) ) trigger_error( htmlentities( $closeTag ).' missing when unserializing: '.htmlentities( $serializedData ), E_USER_ERROR );
     }
   }
 
