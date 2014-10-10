@@ -805,6 +805,7 @@ fieldset{
                     table-layout: fixed; /* causes the sizes to be fixed (not content related) */
                     padding: 5px;
                     border-spacing: 10px;
+                    width:100%
   }  
   .labsys_mop_m_answers_table_row {
   }
