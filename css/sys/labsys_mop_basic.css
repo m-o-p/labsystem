@@ -40,6 +40,10 @@ pre {
     white-space: -o-pre-wrap; /* Opera 7 */
     word-wrap: break-word; /* Internet Explorer 5.5+ */
     font-family: monospace;
+                      border-top-left-radius: 5px;
+                      border-top-right-radius: 5px;
+                      border-bottom-left-radius: 5px;
+                      border-bottom-right-radius: 5px;
 }
 a {                   text-decoration:none; color: #0065BD;}
 a:hover {             text-decoration:underline; color: #0065BD;}
@@ -65,7 +69,11 @@ height:auto
                       padding: 0px;
                       border-spacing: 0px;
                       background-color: #D5D5D5;
-  }
+                      border-top-left-radius: 5px;
+                      border-top-right-radius: 5px;
+                      border-bottom-left-radius: 5px;
+                      border-bottom-right-radius: 5px;
+}
   
   .labsys_mop_topmostHeader { /* for stuff like url (taken from ../ini/config*.ini: TopmostHeader) */
                       color: #222222; 

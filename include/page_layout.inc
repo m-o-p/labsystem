@@ -65,8 +65,6 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
   <HEAD>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta http-equiv="Content-Language" content="<?php $lng->say("Content-Language"); ?>">
     <meta name="generator" content="labsystem.m-o-p.de">
     <link rel="stylesheet" type="text/css" href="<?php $cfg->say("SystemStyleSheet"); ?>">
     <?PHP if ( $cfg->doesExist('SysOverridingSheet') )
@@ -278,7 +276,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 
         echo '<span style="color:#888">*:'.$totaltime.'sec '.
             '<a href="http://sourceforge.net/p/labsystem/bugtracker/new/" title="'.
-            $lng->get("newTicket").'">[?!]</a> '.
+            $lng->get("newTicket").'"><img src="../syspix/bug.gif" width="10" height="9" onmouseover="this.setAttribute(\'src\', \'../syspix/bug_hover.gif\')" onmouseout="this.setAttribute(\'src\', \'../syspix/bug.gif\')"></a> '.
              '| </span>';
 
           $cfg->say("BottomFooter");
@@ -286,7 +284,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
             *   Please keep the link to the project page here to enable other people to find and use the system...
             *   Thank you!
             */
-          echo('&copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem"></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
+          echo(' &copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem"></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
                $_SERVER['SERVER_NAME'].'" target="_blank">mop</a> 2005-2014'); // Please do not remove this acknowledgement to me thanks!
         ?>
       </td></tr>
