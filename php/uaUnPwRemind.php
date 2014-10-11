@@ -105,7 +105,7 @@ else{
     $pge->replaceConstants($mailPage->title);
     $pge->replaceConstants($mailPage->contents);
 
-    require_once '../include/classes/mailFunctionality.inc';
+    require_once '../include/classes/MailFunctionality.inc';
     $mailFunc->sendMail('', $usr->mailAddress, $mailPage->title, $mailPage->contents.PHP_EOL.PHP_EOL.
          $lng->get('userName').': '.$data[ $cfg->get('UserDBField_username') ].PHP_EOL.
          $lng->get('passWord').': '.$newPW.PHP_EOL.PHP_EOL.

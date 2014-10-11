@@ -83,7 +83,7 @@ class LlElement extends Element{
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
   function LlElement( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
-    global $CDBI, $usr, $sDBI, $cfg;
+    global $CDBI, $usr, $sDBI, $cfg, $lng;
     $this->elementId                = "l";
 
     $this->idx                      = $idx;
@@ -150,7 +150,18 @@ class LlElement extends Element{
            !$this->labIsClosed &&
            $this->isAfter1stSched && !$this->isInSched &&
            ($permissions['currentTeam'] != '') // is there a record for this lab?
-          ) $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
+          ){
+        $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
+        // send an email if this just got closed
+        if ($this->isAfter1stSched && !$this->isInSched){
+          require_once '../include/classes/MailFunctionality.inc';
+          $mailFunc->mail2groupWithRights( IS_CORRECTOR,
+                                           $this->title,
+                                           'l'.$this->idx.': '.$this->title.PHP_EOL.
+                                           $lng->get('labClosedExplain').PHP_EOL.
+                                           $_SERVER["REQUEST_URI"] );
+        }
+      }
 
     }else{ // time consuming loading is not necessary since it is not visible anyway...
       $this->preLab                   = false;
