@@ -39,7 +39,7 @@ class MailFunctionality{
     $urDBI->getAllData();
     // iterate over all users that have rights
     while( $userRightsData = $urDBI->getNextData() ){
-      if (($userRightsData["rights"] & $accessRightsMask) == $accessRightsMask) {
+      if (ElementUser::isOfKind($accessRightsMask, $userRightsData["rights"])) {
         $userData = $uDBI->getData4( $userRightsData["uid"] );
         $this->sendMail('', $userData['eMail'], $subject, $text);
       }
