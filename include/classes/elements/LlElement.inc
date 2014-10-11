@@ -158,7 +158,7 @@ class LlElement extends Element{
           $mailFunc->mail2groupWithRights( IS_CORRECTOR,
                                            $this->title,
                                            'l'.$this->idx.': '.$this->title.PHP_EOL.
-                                           $lng->get('labClosedExplain').PHP_EOL.
+                                           $lng->get('team').' '.$usr->currentTeam.': '.$lng->get('labClosedExplain').PHP_EOL.
                                            $_SERVER["REQUEST_URI"] );
         }
       }
