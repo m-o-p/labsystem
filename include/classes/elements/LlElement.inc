@@ -243,18 +243,18 @@ class LlElement extends Element{
     global $lng, $pge, $url, $cfg, $usr;
 
     if ( !$this->preLabIsFinished && $this->userIsViewing ){ // the "check prelab" button
-      $myRetVal =  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l".$this->idx)."\">\n".
-                    "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab()\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
-                    "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
-                    "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n". // to check whether the call is valid
-                    "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
-                    "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
-                     "value=\"".$lng->get("checkPrelab")."\">\n".
-                     $this->preLab->showAllElementsOfType( "m", $fullAddress.".C".$this->prelabCollectionIdx, $lng->get("lPrefixPreLab") ).
-                     "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
-                     "value=\"".$lng->get("checkPrelab")."\">\n".
-                    "</FORM>\n".
-                    ( $lng->get("prelabCheckNote") != "" ? "<div class=\"labsys_mop_note\">\n".$lng->get("prelabCheckNote").$cfg->get("MCAnsweringAttempts")."</div>\n" : '');
+      $preLabCheckUpButton =  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l".$this->idx)."\">\n".
+                              "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab()\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
+                              "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
+                              "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n". // to check whether the call is valid
+                              "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
+                               "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
+                               "value=\"".$lng->get("checkPrelab")."\">\n".
+                              "</FORM>\n".
+                              ( $lng->get("prelabCheckNote") != "" ? "<div class=\"labsys_mop_note\">\n".$lng->get("prelabCheckNote").$cfg->get("MCAnsweringAttempts")."</div>\n" : '');
+      $myRetVal = $preLabCheckUpButton.
+                  $this->preLab->showAllElementsOfType( "m", $fullAddress.".C".$this->prelabCollectionIdx, $lng->get("lPrefixPreLab") ).
+                  $preLabCheckUpButton;
     }else{
       $myRetVal =  $this->preLab->showAllElementsOfType( "m", $fullAddress.".C".$this->prelabCollectionIdx, $lng->get("lPrefixPreLab") );
     }
