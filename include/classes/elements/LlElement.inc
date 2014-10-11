@@ -159,7 +159,7 @@ class LlElement extends Element{
                                            $this->title,
                                            'l'.$this->idx.': '.$this->title.PHP_EOL.
                                            $lng->get('team').' '.$usr->currentTeam.': '.$lng->get('labClosedExplain').PHP_EOL.
-                                           $_SERVER["REQUEST_URI"] );
+                                           'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"] );
         }
       }
 
