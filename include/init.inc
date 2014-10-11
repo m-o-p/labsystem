@@ -27,6 +27,9 @@
 * @version    1.0
 */
 
+// include strong passwords for PHP < 5.5.0:
+require '../plugins/password.php';
+
 // time measurement
 $mtime = microtime();
 $mtime = explode(" ",$mtime);

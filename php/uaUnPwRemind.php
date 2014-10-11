@@ -69,7 +69,7 @@ else{
     $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
 
     // set the new password
-    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".crypt( $newPW, $data['uid'] )."'",  // the UID is used as salt
+    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".password_hash( $newPW, PASSWORD_DEFAULT )."'",
                         $cfg->get('UserDatabaseTable'),
                         $cfg->get('UserDBField_uid')."='".$data[ $cfg->get('UserDBField_uid') ]."'"
                        );
@@ -83,7 +83,7 @@ else{
     while( $memberData = mysql_fetch_assoc( $result ) ){
       foreach ($memberData as $key=>$value){
         if($key[0]=='_'&&$value==1){
-          $groupMemberships.=substr($key,1).'; ';
+          $groupMemberships.=substr($key,1).PHP_EOL;
         }
       }
     }
@@ -105,23 +105,14 @@ else{
     $pge->replaceConstants($mailPage->title);
     $pge->replaceConstants($mailPage->contents);
 
-    $senderAddr = $cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].'>';
-
-    mail( $usr->mailAddress,
-         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/,
-         $mailPage->contents."\r\n\r\n".
-         $lng->get('userName').': '.$data[ $cfg->get('UserDBField_username') ]."\r\n".
-         $lng->get('passWord').': '.$newPW."\r\n".
-         $lng->get('YouAreMemberOf').': '.$groupMemberships."\r\n".
-         eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
-         "\r\n",
-         "From: ".$senderAddr."\r\n".
-         "X-Mailer: PHP/".phpversion()."\r\n".
-         'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
-         eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
+    require_once '../include/classes/mailFunctionality.inc';
+    $mailFunc->sendMail('', $usr->mailAddress, $mailPage->title, $mailPage->contents.PHP_EOL.PHP_EOL.
+         $lng->get('userName').': '.$data[ $cfg->get('UserDBField_username') ].PHP_EOL.
+         $lng->get('passWord').': '.$newPW.PHP_EOL.PHP_EOL.
+         $lng->get('YouAreMemberOf').': '.PHP_EOL.$groupMemberships);
   }
 
-  $url->put( "sysinfo=".$lng->get('MailHasBeenSent').' '.htmlentities( $senderAddr, ENT_QUOTES | ENT_IGNORE  )/*.' '.$newPW*/ );
+  $url->put( "sysinfo=".$lng->get('MailHasBeenSent').' '.$cfg->get('SystemTitle') /*.' '.$newPW*/ );
 }
 
 // redirect

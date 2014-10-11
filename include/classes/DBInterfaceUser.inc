@@ -96,31 +96,26 @@ class DBInterfaceUser
   */
   function authenticate( $username, $password ){
     global $cfg;
-    // Load the salt...
-    $what = $cfg->get("UserDBField_uid")."  AS uid"; // as salt
-    $from = $this->myTable;
-    // mysql_real_escape_string() against SQL-Injection!
-    $where= $cfg->get("UserDBField_username")."='".Ddbc::escapeString($username)."' && ".
-            $cfg->get("User_courseID")."='1'";
-    $result = $this->myDBC->mkSelect( $what, $from, $where );
-    if ( mysql_num_rows( $result ) != 1 )
-      return false; // not found/ error
-    $resArray = mysql_fetch_array( $result );
-
     // The field names are taken from the config*.ini file
+    $from = $this->myTable;
     $what = $cfg->get("UserDBField_name")." AS name, ".
             $cfg->get("UserDBField_forename")." AS forename, ".
             $cfg->get("UserDBField_email")." AS email, ".
-            $cfg->get("UserDBField_uid")."  AS uid";
+            $cfg->get("UserDBField_uid")."  AS uid, ".
+            $cfg->get("UserDBField_password")." AS password";
     // mysql_real_escape_string() against SQL-Injection!
     $where= $cfg->get("UserDBField_username")."='".$this->myDBC->escapeString( Ddbc::escapeString($username) )."' && ".
-            $cfg->get("UserDBField_password")."='".$this->myDBC->escapeString( crypt( $password, $resArray['uid'] ) )."' && ".  // the UID is used as salt
             $cfg->get("User_courseID")."='1'";
     $result = $this->myDBC->mkSelect( $what, $from, $where );
     if ( mysql_num_rows( $result ) != 1 )
       return false; // not found/ error
     else{
-      $resArray = mysql_fetch_array( $result );
+      // entry found
+      $myPWdata = mysql_fetch_array($result);
+      if ( !password_verify($password, $myPWdata['password']) ){
+        return false; // not correct
+      }
+      $resArray = $myPWdata;
       return Array( "name"     => $resArray["name"],
                     "foreName" => $resArray["forename"],
                     "eMail"    => $resArray["email"],

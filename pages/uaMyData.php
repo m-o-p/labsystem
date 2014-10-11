@@ -93,7 +93,9 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                                  $cfg->get('UserDBField_password'),
                                  'last_registered',
                                  'labsys_mop_last_change',
-                                 'registerFor'
+                                 'registerFor',
+                                 'history',
+                                 'matrikelnummer'
                                 );
      foreach ( $data as $key => $value ){
         if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ){ /* do nothing */;
@@ -101,7 +103,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
           $pge->put(
                        // new key
                           '<label for="labsys_mop_'.$key.'" class="labsys_mop_input_field_label_top">'.$key.'</label>'."\n".
-                          '<input tabindex="'.$pge->nextTab++.'" type="text" id="labsys_mop_'.$key.'" name="LABSYS_MOP_'.$key.'" class="labsys_mop_input_fullwidth" value="'.htmlentities( $value, ENT_QUOTES | ENT_IGNORE  ).'" onchange="isDirty=true">'."\n"
+                          '<input tabindex="'.$pge->nextTab++.'" type="text" id="labsys_mop_'.$key.'" name="LABSYS_MOP_'.$key.'" class="labsys_mop_input_fullwidth" value="'.htmlentities( $value ).'" onchange="isDirty=true">'."\n"
                        );
         }
      }
@@ -151,8 +153,8 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                    $counter.
                    ($counter<=$maxPlaces ? '<img src="../syspix/freePlace_11x12.gif" width="11" height="12" alt="O">' : '<img src="../syspix/fullPlace_11x12.gif" width="11" height="12" alt="X">').
                    "</td>
-                    <td>".htmlentities( $nextRegistree[$cfg->get('UserDBField_name')], ENT_QUOTES | ENT_IGNORE ).', '.htmlentities( $nextRegistree[$cfg->get('UserDBField_forename')], ENT_QUOTES | ENT_IGNORE).'</td>
-                    <td>'.(isset($nextRegistree['desiredTeamPartner']) && $nextRegistree['desiredTeamPartner']!=''? htmlentities( $nextRegistree['desiredTeamPartner'], ENT_QUOTES | ENT_IGNORE ):'').'</td>
+                    <td>".htmlentities( $nextRegistree[$cfg->get('UserDBField_name')] ).', '.htmlentities( $nextRegistree[$cfg->get('UserDBField_forename')] ).'</td>
+                    <td>'.(isset($nextRegistree['desiredTeamPartner']) && $nextRegistree['desiredTeamPartner']!=''? htmlentities( $nextRegistree['desiredTeamPartner'] ):'').'</td>
                     <td>'.$nextRegistree['last_registered'].'</td>
                     </tr>'."\n");
        }
@@ -164,7 +166,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
        // withdraw button
        $pge->put("<FORM class=\"labsys_mop_std_form\" style=\"text-align:center\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"#\">");
        $pge->put("<input type=\"hidden\" name=\"WithDrawMe\" value=\"".session_id()."\">\n");
-       $pge->put('<input tabindex="'.$pge->nextTab++.'" type="submit" class="labsys_mop_button" style="background-color:#faa" value="'.htmlentities( $lng->get('uaWithdrawButtonText') , ENT_QUOTES | ENT_IGNORE ).'" '.
+       $pge->put('<input tabindex="'.$pge->nextTab++.'" type="submit" class="labsys_mop_button" style="background-color:#faa" value="'.htmlentities( $lng->get('uaWithdrawButtonText') ).'" '.
            "onClick='return confirmLink(this, \"".$lng->get('uaWithdrawButtonText')."\");'".
            '>'."\n");
        $pge->put("</FORM>");
