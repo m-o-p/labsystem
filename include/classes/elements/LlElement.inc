@@ -154,9 +154,9 @@ class LlElement extends Element{
         $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
         // send an email if this just got closed
         if ($this->isAfter1stSched && !$this->isInSched){
-          require_once '../include/classes/MailFunctionality.inc';
+          require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
           $mailFunc->mail2groupWithRights( IS_CORRECTOR,
-                                           $this->title.' '.$lng->get('labClosed'),
+                                           $this->title.' '.$lng->get('labClosed').' ('.$lng->get('team').' '.$usr->currentTeam.')',
                                            'l'.$this->idx.': '.$this->title.PHP_EOL.
                                            $lng->get('team').' '.$usr->currentTeam.': '.$lng->get('labClosedExplain').PHP_EOL.
                                            $url->rawLink2('http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php?address=l'.$this->idx) );
@@ -1873,6 +1873,7 @@ class LlElement extends Element{
   *  - is corrected state ( all checkmarks set? )
   */
   function updateStatus(){
+    global $url, $lng, $usr;
 
     // If you encounter problems with the statistic or want to recalculate it you have
     // to perform both following steps
@@ -1883,17 +1884,16 @@ class LlElement extends Element{
 //      $this->createPrelabFinishedStatus( $teamNumber );
 
 
-    // calculate prelab stats for EXISTING entries
-    $this->updateStatus2();
 
-
-    global $url, $lng, $usr;
     if ( !isset($_POST['IDX']) ||
          !isset($_POST['REDIRECTTO'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
+
+    // calculate prelab stats for EXISTING entries
+    $this->updateStatus2();
 
     // Validity (session ID) is checked by the calling script already.
 
@@ -1950,10 +1950,8 @@ class LlElement extends Element{
              ($labStatus['labCorrected']       != $parameter[$labStatus['currentTeam']]['areAllCorrected']) ||
              ($labStatus['labGivenCredits']    != $parameter[$labStatus['currentTeam']]['sumGivenCredits']) ||
              ($labStatus['labPossibleCredits'] != $parameter[$labStatus['currentTeam']]['sumPossibleCredits']) ||
-             (!$labStatus['labCorrected'] &&
-                 ($labStatus['whichCorrected'] != $parameter[$labStatus['currentTeam']]['correctedString'])
-             )
-            ) // yes -> save them.
+             ($labStatus['whichCorrected'] != $parameter[$labStatus['currentTeam']]['correctedString'])
+            ){ // yes -> save them.
               $this->usDBI->setData4( $labStatus['uid'],
                                       $teamJustChecked = $labStatus['currentTeam'],
                                       $labStatus['preLabFinished'],
@@ -1962,16 +1960,29 @@ class LlElement extends Element{
                                       $labStatus['preLabAllTeammFinished'],
                                       $parameter[$labStatus['currentTeam']]['areAllClosed'],
                                       $parameter[$labStatus['currentTeam']]['areAllCorrected'],
-                                      ( $labStatus['labCorrected'] ? '' : $parameter[$labStatus['currentTeam']]['correctedString']),
+                                      $parameter[$labStatus['currentTeam']]['correctedString'],
                                       $parameter[$labStatus['currentTeam']]['sumGivenCredits'],
                                       $parameter[$labStatus['currentTeam']]['sumPossibleCredits'],
                                       $lng->get("statusUpdated") ); // create my dataset
-    }
 
-    if ($labStatus['labCorrected']){
-      $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
-    }
+          if ($parameter[$labStatus['currentTeam']]['areAllCorrected']){
+            $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
+            // Collect all team's participant mail addresses
+            require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
+            $uDBI = new DBInterfaceUser();
+            $userData = $uDBI->getData4( $labStatus['uid'] );
+            // Send an email to the participants
+            require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
+            $mailFunc->sendMail(  '',
+                                  $userData['eMail'],
+                                  $this->title.' ('.$lng->get('team').' '.$labStatus['currentTeam'].'): '.$lng->get('labCorrExplain'),
+                                  $this->title.' ('.$lng->get('team').' '.$labStatus['currentTeam'].'): '.
+                                  $lng->get('labCorrExplain').PHP_EOL.
+                                  $url->rawLink2('http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php?address=l'.$this->idx.'.labStatus') );
 
+          }
+        }
+    }
     header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
 
@@ -1984,7 +1995,6 @@ class LlElement extends Element{
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-
     // Validity (session ID) is checked by the calling script yet.
 
     $is2bClosed = $this->isAfter1stSched && !$this->isInSched; // should the lab be closed?
@@ -2032,8 +2042,8 @@ class LlElement extends Element{
               $this->usDBI->setData4( $labStatus['uid'],
                                       $labStatus['currentTeam'],
                                       $parameter2['allPreLabAnswered'], // $labStatus['preLabFinished'],
-                                     $parameter2['givenCredits'], // $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
-                                     $parameter2['possibleCredits'], // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
+                                      $parameter2['givenCredits'], // $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
+                                      $parameter2['possibleCredits'], // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
                                       $prelabFinishedByTeam, // $labStatus['preLabAllTeammFinished'],
                                       $labStatus['labClosed'],
                                       $labStatus['labCorrected'],
@@ -2043,7 +2053,7 @@ class LlElement extends Element{
                                       $lng->get("statusUpdated") ); // create my dataset
     }
 
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    //header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
   }
 }
 ?>
