@@ -506,6 +506,11 @@ confirmDelete       = "Do you really want to delete this element?"  ;; Appears i
 yesIconfirm         = "Yes, Iam sure, do it!"
 confirmSaveAs       = "Really save as"
 
+;; custom error
+thankFeedback       = "Thank you for your feedback!"
+detailedFeedBack    = "We are eager to fix this problem. Could you provide some details? What did you do that caused the error to appear?"
+submitErrorDetails  = "Press to submit your error details. Thanks!"
+
 ;; setup ******************************************************************************************
 fieldName           = "directory" ; for legend in setup
 

@@ -508,6 +508,11 @@ confirmDelete       = "Wollen Sie dieses Element wirklich l&ouml;schen?"  ;; App
 yesIconfirm         = "Ja, ich bin mir sicher!"
 confirmSaveAs       = "Wollen Sie wirklich speichern unter"
 
+;; custom error
+thankFeedback       = "Danke f&uuml;r Ihr detailliertes Feedback!"
+detailedFeedBack    = "Wir w&uuml;rden gerne verhindern, dass das aufgetretene Problem in Zukunft auftritt. K&oouml;nnen Sie weitere Details zum Fehler liefern? Was haben Sie getan, so dass der Fehler auftrat?"
+submitErrorDetails  = "Bitte dr&uuml;cken Sie diesen Knopf, um uns Ihr detailliertes Feedback zu versenden. Danke!"
+
 ;; setup ******************************************************************************************
 fieldName           = "Verzeichnis" ; Legende im Setup
 

@@ -25,7 +25,7 @@
 * @module     ../include/customErrorHandler.inc
 */
 $ERRORMAIL_RECEIVER = ''; // If you enter a valid email address here and you have mailing configured you can receive an error report
-
+$mailSent = FALSE;
 /**
 * Displays the error.
 *
@@ -36,7 +36,7 @@ $ERRORMAIL_RECEIVER = ''; // If you enter a valid email address here and you hav
 function displayError( $cssColor, $html ){
     echo( '<div>'.
           '<span style="color: '.$cssColor.'; font-size: 1.2em; font-weight: bold;">!</span> '.
-          htmlentities($html, ENT_QUOTES | ENT_IGNORE).
+          htmlentities( $html ).
           '</div>' );
 }
 /**
@@ -49,16 +49,36 @@ function displayError( $cssColor, $html ){
 * @return
 */
 
-function myErrorHandler($errno, $errstr, $errfile, $errline)
+function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
 {
+  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER, $mailSent;
   if ( defined ( 'E_STRICT' ) && ($errno == constant ( 'E_STRICT' ) ) ) return; // ignore php5 warnings of missing public etc.
 
-  $errno = htmlentities( $errno, ENT_QUOTES | ENT_IGNORE  );
-  $errstr = htmlentities( $errstr, ENT_QUOTES | ENT_IGNORE  );
-  $errfile = htmlentities( $errfile, ENT_QUOTES | ENT_IGNORE );
-  $errline = htmlentities( $errline, ENT_QUOTES | ENT_IGNORE );
+  $errno = htmlentities( $errno );
+  $errstr = htmlentities( $errstr );
+  $errfile = htmlentities( $errfile );
+  $errline = htmlentities( $errline );
+
   switch ($errno) {
   case E_USER_ERROR: // most severe case gets whole page...
+// Handle mail details
+    $errorDetailsProvided=FALSE;
+    if (!empty($ERRORMAIL_RECEIVER) &&
+        !empty($_POST['ERROR_REFERRER']) &&
+        !empty($_POST['ERROR_EXPLANATION']) &&
+        ($_POST['ERROR_EXPLANATION']!=$lng->get('detailedFeedBack'))){
+      $errorDetailsProvided=TRUE;
+      require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
+      $mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
+          $ERRORMAIL_RECEIVER,
+          $_POST['ERROR_REFERRER'],
+          nl2br(htmlentities($_POST['ERROR_EXPLANATION'])).'<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
+          FALSE,
+          FALSE,
+          'Content-type: text/html;'.PHP_EOL);
+      $mailSent = TRUE;
+    }
+
     echo( '<html>'.
           '<head><title>labsys.m-o-p.de-error: ['.$errno.'] '.$errstr.'</title></head>'.
           '<body style="background-color: #444444; padding: 2em;">' );
@@ -77,18 +97,29 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
          );
 
 // the error msg
-    echo( "<p>[Fatal error] <b>$errstr</b><br /><br />\n".
-          "<span style=\"font-size: 0.9em;\">  On line $errline of file $errfile".
-          ", PHP " . PHP_VERSION . " (" . PHP_OS . ")</span><br />\n".
-          "aborting...</p>" );
+    echo( "<p>[Fatal error] <b>$errstr</b></p>" );
 
-// the back link
-    echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px gray;"><a href="javascript: history.back();">&lt; b a c k</a></div>' );
+    // collector for additional details on the error
+    if (!empty($ERRORMAIL_RECEIVER)){
+      echo( '<form style="width:100%" action="#" method="POST">'.
+              ($errorDetailsProvided?$lng->get('thankFeedback'):'').
+              '<textarea onClick="this.select();" '.($errorDetailsProvided?'disabled="disabled"':'').'style="width:100%" tabindex="'.$pge->nextTab++.'" name="ERROR_EXPLANATION" rows="'.intval($cfg->get("sendMailBodyRows")/2).'" onchange="isDirty=true">'.
+              ($errorDetailsProvided?$_POST['ERROR_EXPLANATION']:$lng->get('detailedFeedBack')).
+              '</textarea>'.
+              '<input type="hidden" name="ERROR_REFERRER" value="['.$errno.'] '.$errstr.'">'.
+              (!$errorDetailsProvided?'<input style="width:100%" tabindex="'.$pge->nextTab++.'" type="submit" value="'.$lng->get("submitErrorDetails").'" accesskey="s" onclick="isDirty=false">':'').
+             '</form>' );
+    }
 
-// support ticket link
-    echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px gray;"><a href="http://sourceforge.net/p/labsystem/bugtracker/new/">open a support ticket &gt;</a></div>' );
 
     echo( '</div>' );
+
+// the back link
+    echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px #999;background-color:#aaa"><a href="javascript: history.back();">&lt; b a c k</a></div>' );
+
+// support ticket link
+    echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px #aaa;background-color:#bbb"><a href="http://sourceforge.net/p/labsystem/bugtracker/new/">open a support ticket &gt;</a></div>' );
+
     echo( '<div style="color: #666666; font-family: Verdana, Sans-serif; font-size: 2em; text-align: right;">'.
           'labsystem.m-o-p.de'.
           '</div>'
@@ -114,45 +145,50 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
   }
 }
 
+function getErrorReport($number, $message, $file, $line, $vars){
+  return 'URL causing the error:'.
+         'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."<br>".
+         ( isset($_SERVER['HTTP_REFERER']) ? 'Last page before:<br>'.$_SERVER['HTTP_REFERER'].'<br>' : '').
+         ( isset($_SESSION["uid"]) ? 'User experiencing the error:  '.$_SESSION["foreName"].' '.$_SESSION["surName"].' ('.$_SESSION["mailAddress"].')<br>'.
+          'Rights while error occured:   '.$_SESSION["userRights"]."<br>"
+          : '')."
+          <p>An error ($number) occurred on line
+          <strong>$line</strong> and in the <strong>file: $file.</strong>
+          <p> $message </p>".
+          "<pre>" . print_r($vars, 1) . "</pre>";
+}
+
 //This error handler sends an email with all relevant information
 function mail_error_handler($number, $message, $file, $line, $vars){
-  global $ERRORMAIL_RECEIVER;
+  global $ERRORMAIL_RECEIVER, $mailSent;
 
-  if ( isset($ERRORMAIL_RECEIVER) && $ERRORMAIL_RECEIVER != ''
-       && isset($_SESSION["mailAddress"]) ){ // mail only errors user experience that are logged in
-    $email = 'URL causing the error:<br>'.
-             'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."<br>".
-             ( isset($_SERVER['HTTP_REFERER']) ? 'Last page before:<br>'.$_SERVER['HTTP_REFERER'].'<br>' : '').
-             ( isset($_SESSION["uid"]) ? 'User experiencing the error:  '.$_SESSION["foreName"].' '.$_SESSION["surName"].' ('.$_SESSION["mailAddress"].')<br>'.
-                                         'Rights while error occured:   '.$_SESSION["userRights"]."<br>"
-                                         : '')."
-                  <p>An error ($number) occurred on line
-                  <strong>$line</strong> and in the <strong>file: $file.</strong>
-                  <p> $message </p>";
+  if (!$mailSent){
+    if ( !empty($ERRORMAIL_RECEIVER)
+         && isset($_SESSION["mailAddress"]) ){ // mail only errors user experience that are logged in
+      $email = getErrorReport($number, $message, $file, $line, $vars);
 
-    $email .= "<pre>" . print_r($vars, 1) . "</pre>";
+      $headers = 'Content-type: text/html;' . PHP_EOL;
 
-    $headers = 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-    // Email the error to someone...
-    if ( ($number !== E_NOTICE) && ($number < 2048) ){
-      if (isset($_SERVER['HTTP_FROM']) && $_SERVER['HTTP_FROM'] == 'googlebot(at)googlebot.com'){
-        // The Googlebot seems to play around with parameters causing many errors for missing (unlinked) pages.
-        // Not to get bothered by them it is excluded here.
-        // file_put_contents( '/tmp/googlebot_urls.txt', 'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."\r\n", FILE_APPEND );
-        // error_log($email, 3, '/tmp/googlebot.txt');
-      } else {
-        error_log($email, 1, $ERRORMAIL_RECEIVER, $headers);
+      // Email the error to someone...
+      if ( ($number !== E_NOTICE) && ($number < 2048) ){
+        if (isset($_SERVER['HTTP_FROM']) && $_SERVER['HTTP_FROM'] == 'googlebot(at)googlebot.com'){
+          // The Googlebot seems to play around with parameters causing many errors for missing (unlinked) pages.
+          // Not to get bothered by them it is excluded here.
+          // file_put_contents( '/tmp/googlebot_urls.txt', 'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."\r\n", FILE_APPEND );
+          // error_log($email, 3, '/tmp/googlebot.txt');
+        } else {
+          error_log($email, 1, $ERRORMAIL_RECEIVER, $headers);
+        }
       }
-    }
 
-    // Make sure that you decide how to respond to errors (on the user's side)
-    // Either echo an error message, or kill the entire project. Up to you...
-    // The code below ensures that we only "die" if the error was more than
-    // just a NOTICE.
-    //if ( ($number !== E_NOTICE) && ($number !== E_WARNING) && ($number < 2048) ) {
-    //      die("There was an error. Sorry.");
-    //}
+      // Make sure that you decide how to respond to errors (on the user's side)
+      // Either echo an error message, or kill the entire project. Up to you...
+      // The code below ensures that we only "die" if the error was more than
+      // just a NOTICE.
+      //if ( ($number !== E_NOTICE) && ($number !== E_WARNING) && ($number < 2048) ) {
+      //      die("There was an error. Sorry.");
+      //}
+    }
   }
 
   // call the "normal" graphical error handler for the user:

@@ -9,19 +9,20 @@ class MailFunctionality{
    * @param String $CCsender            Send mail via CC to sender?
    * @param String $BCC                 Send mail via BCC?
    */
-  function sendMail( $sender, $receiver, $subject, $text, $CCsender= FALSE, $BCC=FALSE ){
+  function sendMail( $sender, $receiver, $subject, $text, $CCsender= FALSE, $BCC=FALSE, $additionalHeaders='' ){
     global $cfg, $usr;
     mail( ($BCC && !empty($sender) ? $sender : $receiver), // TO
           '['.$cfg->get("SystemTitle").'] '.$subject,
-          $text."\r\n\r\n".
+          $text.PHP_EOL.
               eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
-              "\r\n",
-              ($CCsender ? 'CC: '.$sender."\r\n":''). // CC
+              PHP_EOL,
+              ($CCsender ? 'CC: '.$sender.PHP_EOL:''). // CC
               ($BCC && !empty($sender) ? $receiver : ''). // BCC
-              'From: '.(!empty($sender) ? $sender : $cfg->get('SystemTitle').' <noreply@'.$_SERVER['SERVER_NAME'].'>')."\r\n".
-              "X-Mailer: PHP/".phpversion()."\r\n".
-              'Content-Type: text/plain; charset=UTF-8'."\r\n".
-              'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
+              'From: '.(!empty($sender) ? $sender : $cfg->get('SystemTitle').' <noreply@'.$_SERVER['SERVER_NAME'].'>').PHP_EOL.
+              "X-Mailer: PHP/".phpversion().PHP_EOL.
+              (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
+              $additionalHeaders.
+              'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle").PHP_EOL. // this is for identifying a user (username must be correct...)
                   eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
   }
 
