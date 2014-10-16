@@ -71,7 +71,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
       require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
       $mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
           $ERRORMAIL_RECEIVER,
-          $_POST['ERROR_REFERRER'],
+          'Error Report: '.$_POST['ERROR_REFERRER'],
           nl2br(htmlentities($_POST['ERROR_EXPLANATION'])).'<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
           FALSE,
           FALSE,
@@ -115,7 +115,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
     echo( '</div>' );
 
 // the back link
-    echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px #999;background-color:#aaa"><a href="javascript: history.back();">&lt; b a c k</a></div>' );
+    echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px #999;background-color:#aaa"><a href="javascript:'.($mailSent?'history.go(-2);':'history.back();').'">&lt; b a c k</a></div>' );
 
 // support ticket link
     echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px #aaa;background-color:#bbb"><a href="http://sourceforge.net/p/labsystem/bugtracker/new/">open a support ticket &gt;</a></div>' );
