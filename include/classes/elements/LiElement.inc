@@ -246,18 +246,18 @@ class LiElement extends Element{
              '<textarea tabindex="'.$pge->nextTab++.'" name="CORRECTORS_NOTE" class="labsys_mop_textareaNote" rows="'.$cfg->get("DefaultICommentRows").'" onchange="isDirty=true">'.
              returnEditable( $this->correctorsNote ).
              "</textarea>\n";
-    } else if ( $this->answerComment != "" ){
+    } else {
       return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n". // anchor for retrieving after saving
-             "<div class=\"labsys_mop_i_comment\">".
-             $this->returnPREformatted( $this->answerComment ).
-             "</div>\n".
+             (empty($this->answerComment) ? '' :
+                 "<div class=\"labsys_mop_i_comment\">".
+                 $this->returnPREformatted( $this->answerComment ).
+                 "</div>\n").
              (!$usr->isSeeingSomeonesData() || empty($this->correctorsNote) ? '' :
                  '<div class="labsys_mop_i_correctorsNote">'.
                  $this->returnPREformatted( $this->correctorsNote ).
                  "</div>\n"
                  );
     }
-    else return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n"; // anchor for retrieving after saving
   }
 
   /**
