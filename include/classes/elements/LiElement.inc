@@ -334,7 +334,7 @@ class LiElement extends Element{
             ( $usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
                 "<input type=\"checkbox\" id=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" name=\"IS_CORRECTED\" value=\"1\" ".
                 "tabindex=\"".$pge->nextTab++.'"'.
-                ( $this->isCorrected || $isInCorrection ? ' checked="checked"' : '' ). // so it will be checked by default
+                ( $this->isCorrected ? ' checked="checked"' : '' ). // so it will be checked by default
                         " onchange='isDirty=true;".
                 "if(this.checked){".
                 "document.getElementById(\"imgIsCorrected-".$this->idx.'-'.$this->getDataOfTeam."\").setAttribute(\"src\", \"../syspix/labCorrected_yes_12x12.gif\");".
@@ -347,7 +347,7 @@ class LiElement extends Element{
                   "document.getElementById(\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\").value=\"".$lng->get("correct")."\"".
                 "}'>".
                         "<label for=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" class=\"labsys_mop_input_field_label_right\">".
-                                  '<img id="imgIsCorrected-'.$this->idx.'-'.$this->getDataOfTeam.'" src="../syspix/labCorrected_'.($this->isCorrected || $isInCorrection?'yes':'no').'_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
+                                  '<img id="imgIsCorrected-'.$this->idx.'-'.$this->getDataOfTeam.'" src="../syspix/labCorrected_'.($this->isCorrected ?'yes':'no').'_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
                         '</label> '
                         : ''
                       ).

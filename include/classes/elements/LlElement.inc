@@ -153,7 +153,7 @@ class LlElement extends Element{
           ){
         $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
         // send an email if this just got closed
-        if ($this->isAfter1stSched && !$this->isInSched){
+        if ($this->isAfter1stSched && !$this->isInSched && $this->idx!=1){
           require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
           $mailFunc->mail2groupWithRights( IS_CORRECTOR,
                                            $this->title.' '.$lng->get('labClosed').' ('.$lng->get('team').' '.$usr->currentTeam.')',
