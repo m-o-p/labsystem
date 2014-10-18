@@ -74,6 +74,7 @@ class LiElement extends Element{
 
   var $userAnswer;            // The user's answer to this question.
   var $answerComment;         // The correctors comment to this question.
+  var $correctorsNote;        // Comments ONLY for the correctors.
   var $givenCredits;          // The correctors given credits.
 
   var $isClosed;              // Is the user answer closed?
@@ -167,6 +168,7 @@ class LiElement extends Element{
                                                      $teamNumber != 0 );
       $this->userAnswer    = $answerData["answer"];
       $this->answerComment = $answerData["comment"];
+      $this->correctorsNote= $answerData['correctorsNote'];
       $this->givenCredits  = $answerData["givenCredits"];
       $this->isClosed      = $answerData["isClosed"];
       $this->isCorrected   = $answerData["isCorrected"];
@@ -177,12 +179,13 @@ class LiElement extends Element{
        */
       $this->lockIsSetTo   = $this->lkDBI->getData4( $this->getDataOfTeam );
     } else {
-      $this->userAnswer    = "";
-      $this->answerComment = "";
+      $this->userAnswer    = '';
+      $this->answerComment = '';
+      $this->correctorsNote= '';
       $this->givenCredits  = 0;
       $this->isClosed      = false;
       $this->isCorrected   = false;
-      $this->answerHistory = "";
+      $this->answerHistory = '';
 
       $this->lockIsSetTo   = false;
     }
@@ -235,16 +238,25 @@ class LiElement extends Element{
   */
   function showComment( $isInCorrection=false, $fullAddress='' ){
     global $usr, $pge, $cfg;
-    if ( $isInCorrection )
+    if ( $isInCorrection ){
       return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n". // anchor for retrieving after saving
              "<textarea tabindex=\"".$pge->nextTab++."\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultICommentRows")."\" onchange='isDirty=true'>".
              returnEditable( $this->answerComment ).
+             "</textarea>\n".
+             '<textarea tabindex="'.$pge->nextTab++.'" name="CORRECTORS_NOTE" class="labsys_mop_textareaNote" rows="'.$cfg->get("DefaultICommentRows").'" onchange="isDirty=true">'.
+             returnEditable( $this->correctorsNote ).
              "</textarea>\n";
-    else if ( $this->answerComment != "" )
+    } else if ( $this->answerComment != "" ){
       return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n". // anchor for retrieving after saving
              "<div class=\"labsys_mop_i_comment\">".
              $this->returnPREformatted( $this->answerComment ).
-             "</div>\n";
+             "</div>\n".
+             (!$usr->isSeeingSomeonesData() || empty($this->correctorsNote) ? '' :
+                 '<div class="labsys_mop_i_correctorsNote">'.
+                 $this->returnPREformatted( $this->correctorsNote ).
+                 "</div>\n"
+                 );
+    }
     else return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n"; // anchor for retrieving after saving
   }
 
@@ -845,7 +857,7 @@ class LiElement extends Element{
         // makeLogEntry( 'i', 'saved', $this->idx );
         $this->removeLock();
       }
-      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->isClosed, $this->isCorrected, $this->answerHistory );
+      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $this->answerHistory );
     } else{ // You are only allowed to answer one question at the same time.
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
@@ -857,7 +869,7 @@ class LiElement extends Element{
             $_POST['ANSWER'] = $lng->get( 'noiLockNote' )."\r\n\r\n- - - - -\r\n\r\n".
                                $_POST['ANSWER']."\r\n\r\n- - - - -\r\n\r\n".
                                $existingData["answer"];
-            $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->isClosed, $this->isCorrected, $this->answerHistory );
+            $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $this->answerHistory );
     }
 
     $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentSave);
@@ -931,7 +943,15 @@ class LiElement extends Element{
     }
 
     if (!isset($_POST['cancel'])){ // cancel? -> do nothing
-      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $this->userAnswer, $_POST['CREDITS'], ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ), true, isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1, $this->answerHistory );
+      $this->uaDBI->setData4( $_POST['TEAM'],
+                              $this->idx,
+                              $this->userAnswer,
+                              $_POST['CREDITS'],
+                              ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ),
+                              ( isset($_POST['CORRECTORS_NOTE']) ?  $_POST['CORRECTORS_NOTE'] :  $this->correctorsNote ),
+                              true,
+                              isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1,
+                              $this->answerHistory );
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorSave, $_POST['TEAM']);
     }else{
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorCancel, $_POST['TEAM']);
@@ -991,7 +1011,7 @@ class LiElement extends Element{
     global $usr, $lng;
     $this->loadUserData4( $teamNumber );
     $this->removeLock();
-    if (!$this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, true, false, $lng->get("closesInput")."\n".$this->answerHistory  );
+    if (!$this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, true, false, $lng->get("closesInput")."\n".$this->answerHistory  );
     $this->isClosed = true;
     $this->isCorrected = false;
     //makeLogEntry( 'i', 'closed', 'i'.$this->idx );
@@ -1007,7 +1027,7 @@ class LiElement extends Element{
   function reOpenInput( $teamNumber ){
     global $usr, $lng;
     $this->loadUserData4( $teamNumber );
-    if ($this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, false, false, $lng->get("reOpensInput")."\n".$this->answerHistory  );
+    if ($this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, false, false, $lng->get("reOpensInput")."\n".$this->answerHistory  );
     $this->isClosed = false;
     $this->isCorrected = false;
   }

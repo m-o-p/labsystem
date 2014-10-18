@@ -58,6 +58,7 @@ class LiDBInterfaceAnswers {
       if ( $createNewRecord ) $this->setData4( $team, $iIdx, "", 0, "", false, false, $lng->get("dataSetCreated") );
       return Array( "answer" => "",
                     "comment" => "",
+                    'correctorsNote' => '',
                     "givenCredits" => 0,
                     "isClosed" => false,
                     "isCorrected" => false,
@@ -81,6 +82,7 @@ class LiDBInterfaceAnswers {
       }
       return Array( "answer" => $this->myDBC->unEscapeString( $data['answer'] ),
                     "comment" => $this->myDBC->unEscapeString( $data['comment'] ),
+                    'correctorsNote' => (empty($data['correctorsNote']) ? '': $this->myDBC->unEscapeString( $data['correctorsNote'] )),
                     "givenCredits" => ($data['given_credits']/100),
                     "isClosed" => ($data['closed'] == 1),
                     "isCorrected" => ($data['corrected'] == 1),
@@ -95,14 +97,16 @@ class LiDBInterfaceAnswers {
   * @param $answer            The users answer.
   * @param $givenCredits      FLOAT of given credits (p.e. 0.75).
   * @param $comment           The correctors comment.
+  * @param $correctorsNote    A note visible only for correctors.
   * @param $closed            isClosed?
   * @param $corrected         isCorrected?
   * @param $history           If present this is set after the user's name.
   */
-  function setData4( $team, $iIdx, $answer="", $givenCredits="0", $comment="", $closed=false, $corrected=false, $history = "" ){
+  function setData4( $team, $iIdx, $answer="", $givenCredits="0", $comment="", $correctorsNote='', $closed=false, $corrected=false, $history = "" ){
     global $usr,$cfg;
     $toSet = "answer='".$this->myDBC->escapeString($answer)."', ".
         "comment='".$this->myDBC->escapeString($comment)."', ".
+        'correctorsNote="'.$this->myDBC->escapeString($correctorsNote).'",'.
         "given_credits='".($givenCredits*100)."', ". // *100 to relize a float
         "closed=".( $closed ?  "1" :  "0"  ).", ".
         "corrected=".( $corrected ?   "1" :  "0"  ).", ";
