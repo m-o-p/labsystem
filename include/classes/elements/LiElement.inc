@@ -215,7 +215,7 @@ class LiElement extends Element{
    }
 
   /**
-   * Returns the credits one cen get for the correct answer.
+   * Returns the credits one can get for the correct answer.
    *
    * @return $this->possibleCredits
    */

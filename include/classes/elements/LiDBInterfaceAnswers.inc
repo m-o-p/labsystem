@@ -55,10 +55,10 @@ class LiDBInterfaceAnswers {
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "team='".$team."' && i_idx='".$iIdx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       /* no dataset found && $createNewRecord => create a new one */
-      if ( $createNewRecord ) $this->setData4( $team, $iIdx, "", 0, "", false, false, $lng->get("dataSetCreated") );
+      if ( $createNewRecord ) $this->setData4( $team, $iIdx, "", 0, "", "", false, false, $lng->get("dataSetCreated") );
       return Array( "answer" => "",
                     "comment" => "",
-                    'correctorsNote' => '',
+                    "correctorsNote" => "",
                     "givenCredits" => 0,
                     "isClosed" => false,
                     "isCorrected" => false,
@@ -82,7 +82,7 @@ class LiDBInterfaceAnswers {
       }
       return Array( "answer" => $this->myDBC->unEscapeString( $data['answer'] ),
                     "comment" => $this->myDBC->unEscapeString( $data['comment'] ),
-                    'correctorsNote' => (empty($data['correctorsNote']) ? '': $this->myDBC->unEscapeString( $data['correctorsNote'] )),
+                    "correctorsNote" => (empty($data['correctorsNote']) ? '': $this->myDBC->unEscapeString( $data['correctorsNote'] )),
                     "givenCredits" => ($data['given_credits']/100),
                     "isClosed" => ($data['closed'] == 1),
                     "isCorrected" => ($data['corrected'] == 1),
