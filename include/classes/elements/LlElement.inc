@@ -156,10 +156,11 @@ class LlElement extends Element{
         if ($this->isAfter1stSched && !$this->isInSched && $this->idx!=1){
           require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
           $mailFunc->mail2groupWithRights( IS_CORRECTOR,
-                                           $this->title.' '.$lng->get('labClosed').' ('.$lng->get('team').' '.$usr->currentTeam.')',
+                                           $this->title.' '.$lng->get('labScheduleOverExpl').' ('.$lng->get('team').' '.$usr->currentTeam.')',
                                            'l'.$this->idx.': '.$this->title.PHP_EOL.
+                                           $lng->get('labScheduleOverExpl').PHP_EOL.
                                            $lng->get('team').' '.$usr->currentTeam.': '.$lng->get('labClosedExplain').PHP_EOL.
-                                           $url->rawLink2('http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php?address=l'.$this->idx) );
+                                           $url->rawLink2('http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php?address=l'.$this->idx.'.labStatus') );
         }
       }
 

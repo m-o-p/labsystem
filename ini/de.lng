@@ -429,6 +429,7 @@ reMapIconExplain    = "Durch Klick auf dieses Icon wird der entsprechende Benutz
 prelabAllnoFExplain = "Noch haben nicht alle Teammitglieder das PreLab beendet."
 prelabAllFinExplain = "Alle Teammitglieder haben das PreLab beendet und k&ouml;nnen jetzt das Lab sehen."
 labOpenExplain      = "Das Lab ist noch offen. Die Fragen k&ouml;nnen noch beantwortet werden."
+labScheduleOverExpl = "Die Zeit für das Lab ist abgelaufen. Dies Studierenden können nicht mehr antworten." ; sent in mail to correctors
 labClosedExplain    = "Das Lab ist geschlossen und kann korrigiert werden."
 labNoCorrExplain    = "Das Lab/ die Frage ist noch nicht korrigiert."
 labCorrExplain      = "Das Lab/ die Frage ist korrigiert."
