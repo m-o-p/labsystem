@@ -496,7 +496,7 @@ class LmElement extends Element{
             "</textarea>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
-            $this->show($fullAddress).
+
           // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
               "<table width=\"100%\"><tr><td valign=\"top\" width=\"40%\">\n".
@@ -525,12 +525,15 @@ class LmElement extends Element{
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
 
             "</FORM>\n".
+            // preview
+
             '<script language="JavaScript" type="text/javascript">
             <!--
             if (document.multipleChoiceEdit) document.multipleChoiceEdit.q.focus();
             //-->
             </script>'.
-            EM::editBottomMultipleChoice( $this, $fullAddress );
+            EM::editBottomMultipleChoice( $this, $fullAddress ).
+            $this->show($fullAddress);
   }
 
   /**

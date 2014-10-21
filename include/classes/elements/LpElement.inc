@@ -174,7 +174,7 @@ class LpElement extends Element{
             "</textarea>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
-            $this->show($fullAddress).
+
           // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
               "<label for=\"mM\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputMatchingMnu")."</label>".
@@ -206,12 +206,14 @@ class LpElement extends Element{
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
 
             "</FORM>\n".
+
             '<script language="JavaScript" type="text/javascript">
             <!--
             if (document.pageEdit) document.pageEdit.title.focus();
             //-->
             </script>'.
-            EM::editBottomPage( $this, $fullAddress );
+            EM::editBottomPage( $this, $fullAddress ).
+            $this->show($fullAddress);
   }
 
   /**

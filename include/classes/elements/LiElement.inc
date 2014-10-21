@@ -682,7 +682,6 @@ class LiElement extends Element{
             "</div>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
-            $this->show($fullAddress).
           // element options
             "<fieldset><legend>".$lng->get("options")."</legend>\n".
               "<div>".
@@ -724,7 +723,8 @@ class LiElement extends Element{
             if (document.InputEdit) document.InputEdit.question.focus();
             //-->
             </script>'.
-            EM::editBottomInput( $this, $fullAddress );
+            EM::editBottomInput( $this, $fullAddress ).
+            $this->show($fullAddress);
   }
 
   /**
