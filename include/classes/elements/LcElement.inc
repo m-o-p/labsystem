@@ -124,21 +124,25 @@ class LcElement extends Element{
   */
   function showStructure( $fullAddress, $extParagraph="" ){
 
-    $structureArray = explode( " ", $this->getStructure() );
-
     $myRetVal  = $this->showPropertyRowColl( $fullAddress, true, ( $extParagraph != "" ?  $extParagraph.". "  : '' ) ).
                  "<!-- start of group --><div class=\"labsys_mop_c_group\">\n";
 
-    foreach( $structureArray as $value ){
-      if ( $value{0} == "*" ) $value = substr( $value, 1 ); /* Cut the * since it is not important if the element is visible. */
-      $id = $value{0};
-      $num = substr( $value, 1 );
+    if (trim($this->getStructure())==false){
+      $myRetVal .= "'()";
+    }else{
+      $structureArray = explode( " ", $this->getStructure() );
 
-      $element = $GLOBALS[ $id."DBI" ]->getData2idx( $num, true, $this->isInLab );
+      foreach( $structureArray as $value ){
+        if ( $value{0} == "*" ) $value = substr( $value, 1 ); /* Cut the * since it is not important if the element is visible. */
+        $id = $value{0};
+        $num = substr( $value, 1 );
 
-      if ( !$element ) eval( "\$myRetVal .= ".( strtoupper($id) == $id ?  'B' : 'L' ).$id."Element::showNoFoundRowColl( \$id.\$num );" );
-                 else if ( ($id == "c") || ($id == "C") ) $myRetVal .= $element->showStructure( $fullAddress.".".$value, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ) );
-                                   else $myRetVal .= $element->showPropertyRowColl( $fullAddress.".".$value, true, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ).". " );
+        $element = $GLOBALS[ $id."DBI" ]->getData2idx( $num, true, $this->isInLab );
+
+        if ( !$element ) eval( "\$myRetVal .= ".( strtoupper($id) == $id ?  'B' : 'L' ).$id."Element::showNoFoundRowColl( \$id.\$num );" );
+                   else if ( ($id == "c") || ($id == "C") ) $myRetVal .= $element->showStructure( $fullAddress.".".$value, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ) );
+                                     else $myRetVal .= $element->showPropertyRowColl( $fullAddress.".".$value, true, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ).". " );
+      }
     }
 
     return $myRetVal."<!-- stop of group --></div>\n";
