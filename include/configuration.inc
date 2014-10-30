@@ -62,7 +62,9 @@ require_once( INCLUDE_DIR."/classes/Rom.inc" );
   if (php_sapi_name() != 'cli'){
     // normal call via URL
       $h2cFile = "../ini/host2config.ini";
-      if ( !file_exists( $h2cFile ) ) { trigger_error( $h2cFile.' missing! (config-file)' , E_USER_ERROR ); exit; }; // no configuration there
+      if ( !file_exists( $h2cFile ) ) {
+         trigger_error( $h2cFile.' missing! (config-file)' , E_USER_ERROR ); exit;
+      } // no configuration there
       $h2c = new Rom( parse_ini_file( $h2cFile ) );
       $subHost = strtoupper( substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.') ) );
       if ($h2c->doesExist( $subHost )) $configPrefix=$h2c->get( $subHost );
@@ -92,8 +94,11 @@ while ( $configData['include'] != '' ){
 
   foreach ( $nextConfigs2Include as $configFile ){
     $configFile = trim( $configFile ); // remove white spaces at borders
-    if ( !file_exists( $configFile ) ) // File there?
-      { trigger_error( end(explode('/', $configFile)).' missing! (config-file)' , E_USER_ERROR ); exit; }
+    if ( !file_exists( $configFile ) ){ // File there?
+        header( "Location: ".'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'] );
+        exit;
+//      { trigger_error( end(explode('/', $configFile)).' missing! (config-file)' , E_USER_ERROR ); exit; }
+    }
     $newConfigData = parse_ini_file( $configFile );
     $configData = array_merge( $newConfigData, $configData ); // existing data overwrites included data (overwrites non-numerical key/ value pairs)
     if ( isset($newConfigData['include']) ) $configData['include'] = $newConfigData['include']; // only the includes must be followed further...

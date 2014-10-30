@@ -103,7 +103,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
     if (!empty($ERRORMAIL_RECEIVER)){
       echo( '<form style="width:100%" action="#" method="POST">'.
               ($errorDetailsProvided?$lng->get('thankFeedback'):'').
-              '<textarea onClick="this.select();" '.($errorDetailsProvided?'disabled="disabled"':'').'style="width:100%" tabindex="'.$pge->nextTab++.'" name="ERROR_EXPLANATION" rows="'.intval($cfg->get("sendMailBodyRows")/2).'" onchange="isDirty=true">'.
+              '<textarea onClick="this.select();" '.($errorDetailsProvided?'disabled="disabled"':'').'style="width:100%" tabindex="'.$pge->nextTab++.'" name="ERROR_EXPLANATION" rows="'.(isset($cfg) ? intval($cfg->get("sendMailBodyRows")/2) : 3).'" onchange="isDirty=true">'.
               ($errorDetailsProvided?$_POST['ERROR_EXPLANATION']:$lng->get('detailedFeedBack')).
               '</textarea>'.
               '<input type="hidden" name="ERROR_REFERRER" value="['.$errno.'] '.$errstr.'">'.
