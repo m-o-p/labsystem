@@ -63,7 +63,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
       // load information about the lab
         $labToImport = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
-        $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/l0000002.txt') );
+        $labToImport->initFromSerialized( getFirstSerializedElementFromFile($cfg->get('exportImportDir').$subDir.'/'.EXPORT_DATA_DIR_PUBLIC.'/l.txt') );
 
       // create the mapping from the directory and create the "empty" DB objects for the elements
         $labElementArray = createIdImportMappingInitDB( $labToImport->uniqueID );
@@ -74,29 +74,58 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
       // import elements
         $importCounter = 0; // used for setting the schedules accordingly when importing
-        foreach ($labElementArray as $value=>$newID){
-          $nextElement = $GLOBALS[ $newID[0]."DBI" ]->getData2idx( substr($newID, 1) ); // load existing empty DB object
+        // Collect letters from $labElementArray
+        $elementIDsToImport = array();
+        foreach ($labElementArray as $value){
+          $myElID = $value[0];
+          if(!in_array($myElID,$elementIDsToImport)){
+            array_push($elementIDsToImport,$myElID);
+          }
+        }
 
-          $importBaseDir = $cfg->get('exportImportDir').$subDir.'/';
-          $importDataDirectory = 'data';
-          $importFileName = '/'.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt';
-          switch( $value[0] ){
-              // i and m can be stored with and without solutions.
+        $importRootDirectory = $cfg->get('exportImportDir').$subDir;
+
+        foreach( $elementIDsToImport as $currentElementID){
+          $importFile = $importRootDirectory.'/'.EXPORT_DATA_DIR_PUBLIC.'/'.$currentElementID.'.txt';
+          switch($currentElementID){
             case 'i':
             case 'm':
-              $importDataDirectory = EXPORT_DATA_DIR_PUBLIC; // default: take them from the public directory without solutions
-              if ( file_exists($importBaseDir.EXPORT_DATA_DIR_PRIVATE.$importFileName) ){ $importDataDirectory = EXPORT_DATA_DIR_PRIVATE; }// if the version with solutions exists: take it!
+              $privateImportFile = $importRootDirectory.'/'.EXPORT_DATA_DIR_PRIVATE.'/'.$currentElementID.'.txt';
+              if( file_exists($privateImportFile) ){
+                $importFile = $privateImportFile;
+              }
             default:
-              $nextElement->initFromSerialized( file_get_contents( $importBaseDir.$importDataDirectory.$importFileName ) ); // init the next element
+              // parse file
+              $serializedElement = '';
+              // Parse the file for <idx> tags
+              $handle = fopen($importFile, "r");
+              $started = FALSE;
+              if ($handle) {
+                while (($line = fgets($handle)) !== false) {
+                  if (substr($line,0,9)=='<element>'){
+                    $started=TRUE;
+                    continue;
+                  }else if ($started && substr($line,0,10)=='</element>'){
+                    // unserialize element
+                    $nextElement = $GLOBALS[ $currentElementID."DBI" ]->getData2idx( 1 ); // load existing empty DB object
+                    $nextElement->initFromSerialized($serializedElement);
+                    processElement( $nextElement, $labElementArray, 2, true );
+                    // renumber element
+                    $nextElement->idx = substr( $labElementArray[$currentElementID.$nextElement->idx], 1);;
+                    $pge->put( persistElement( $nextElement, '', true ) );
+                    $serializedElement = '';
+                    $started=FALSE;
+                    continue;
+                  } else if ($started){
+                    $serializedElement .= $line;
+                  }
+                }
+              } else {
+                // error opening the file.
+              }
+              fclose($handle);
           }
-
-          processElement( $nextElement, $labElementArray, 2, true );
-
-        // renumber element
-          $nextElement->idx = substr( $newID, 1);
-
-          $pge->put( persistElement( $nextElement, '', true ) );
-        } // /foreach
+        }
 
       // Integrate css/user_styles.css into the current user stylesheet.
         if (file_exists( $cfg->get('exportImportDir').$subDir.'/css/user_styles.css' ) ){
@@ -129,7 +158,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                                        ' * with l'.$newLabId.': '.$labToImport->title.
                                        "\n * on ".date('r')."\n*/" );
             file_put_contents( $cfg->get( "UserStyleSheet" ), implode("\n\n", $newStyles), FILE_APPEND | LOCK_EX);
-            $pge->put(  '<pre>'.htmlentities(implode( "\n", $newStyles ), ENT_QUOTES | ENT_IGNORE )."</pre>\n".
+            $pge->put(  '<pre>'.htmlentities( implode( "\n", $newStyles ), ENT_QUOTES | ENT_SUBSTITUTE )."</pre>\n".
                         '<div class="labsys_mop_elements_menu_l">'.
                         'user_styles.css <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import">'.
                         $cfg->get( "UserStyleSheet" ).
@@ -178,12 +207,12 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         deleteExportDirectory( $GLOBALS['exportUID'] ); // empty export directory
         $usedClasses = array(); // empty used styles!
 
-        fileWrite( 'images/readme.txt', 'In this directory the images are stored.', $GLOBALS['exportUID'] );
-        fileWrite( 'files/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
-        fileWrite( 'data/readme.txt', 'In this directory the serialized database data files are stored.', $GLOBALS['exportUID'] );
-        fileWrite( EXPORT_DATA_DIR_PRIVATE.'/readme_im.txt', 'In this directory the serialized i, m elements are stored WITH solutions. If you do not want to distribute them remove this directory.', $GLOBALS['exportUID'] );
-        fileWrite( EXPORT_DATA_DIR_PUBLIC.'/readme_im.txt', 'In this directory the serialized i, m elements are stored WITHOUT solutions. This version is used if the directory '.EXPORT_DATA_DIR_PRIVATE.' is not available.', $GLOBALS['exportUID'] );
-        fileWrite( 'css/readme.txt', 'In this directory the style sheets for the preview and the user_styles.css for import are stored.', $GLOBALS['exportUID'] );
+        fileAppend( 'images/readme.txt', 'In this directory the images are stored.', $GLOBALS['exportUID'] );
+        fileAppend( 'files/readme.txt', 'In this directory the data files are stored.', $GLOBALS['exportUID'] );
+        fileAppend( 'data/readme.txt', 'In this directory the serialized database data files are stored.', $GLOBALS['exportUID'] );
+        fileAppend( EXPORT_DATA_DIR_PRIVATE.'/readme_im.txt', 'In this directory the serialized i, m elements are stored WITH solutions. If you do not want to distribute them remove this directory.', $GLOBALS['exportUID'] );
+        fileAppend( EXPORT_DATA_DIR_PUBLIC.'/readme_im.txt', 'In this directory the serialized i, m elements are stored WITHOUT solutions. This version is used if the directory '.EXPORT_DATA_DIR_PRIVATE.' is not available.', $GLOBALS['exportUID'] );
+        fileAppend( 'css/readme.txt', 'In this directory the style sheets for the preview and the user_styles.css for import are stored.', $GLOBALS['exportUID'] );
 
     // get the HTML PREVIEW
         // Remove user rights
@@ -218,7 +247,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         copy( $file2importWithPath,
               $cfg->get('exportImportDir').$labToExport->uniqueID.'/css/print.css' ) or trigger_error("Can't copy file ".$file2copyWithPath, E_USER_WARNING);
       // user css gets processed below with the export as only used styles are exported
-        fileWrite( 'preview.html',
+        fileAppend( 'preview.html',
                    '
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
@@ -252,7 +281,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           $nextElement->idx = substr( $newID, 1);
           $pge->put( persistElement( $nextElement, $labToExport->uniqueID ) );
         } // /foreach
-      fileWrite(  'data/externallyLinked.txt',
+      fileAppend(  'data/externallyLinked.txt',
                   'The following external ressources are linked in this lab:'."\n".
                   implode( "\n", $GLOBALS['externallyLinkedElements'] ),
                   $GLOBALS['exportUID'] );
@@ -270,10 +299,10 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           foreach ( $tagStylePointer[$value] as $index )
             $stylesToExport[] = $styleDefinitions[ $index ];
 
-      fileWrite(  'css/user_styles.css',
+      fileAppend(  'css/user_styles.css',
                   implode( "\n\n", $stylesToExport ),
                   $GLOBALS['exportUID'] );
-      $pge->put(  '<pre>'.htmlentities(implode( "\n", $stylesToExport ), ENT_QUOTES | ENT_IGNORE )."</pre>\n".
+      $pge->put(  '<pre>'.htmlentities( implode( "\n", $stylesToExport ), ENT_QUOTES | ENT_SUBSTITUTE )."</pre>\n".
                   '<div class="labsys_mop_elements_menu_l">user_styles.css'.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                   "</div>\r\n" );

@@ -105,7 +105,7 @@ class Element{
   * @return String serializedVersionOfElement
   */
   function getSerialized(){
-    $output = '';
+    $output = '<element>'."\r\n";
     foreach ( $this->serializationArray as $value ){
       $output .= '<'.$value.'>';
       if( is_array($this->$value) ){
@@ -115,6 +115,7 @@ class Element{
       }
       $output .= '</'.$value.'>'."\r\n";
     }
+    $output.='</element>'."\r\n";
     return $output;
   }
 

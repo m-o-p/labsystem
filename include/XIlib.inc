@@ -64,15 +64,29 @@ function createIdMapping( &$labElementArray ){
 function createIdImportMappingInitDB( $labFolder ){
   global $cfg;
   $IdMapping = array();
-  $labElementsOnDisk = scandir( $cfg->get('exportImportDir').$labFolder.'/data' );
+  $labElementsOnDisk = scandir( $cfg->get('exportImportDir').$labFolder.'/'.EXPORT_DATA_DIR_PUBLIC );
   foreach ( $labElementsOnDisk as $value ){
-    if ( (strlen( $value ) < 4) || (substr($value, -4) != '.txt') || ($value[1] != '0') ) continue; // skip all uninteresting files
+    if ( (strlen( $value ) > 5) || (substr($value, -4) != '.txt') ) continue; // skip all uninteresting files
 
     $elementType = $value[0]; // get type (first letter)
-    $elementID = intval( substr($value, 1, 7) ); // get number (rest)
 
-    $newIdx = createNew( $elementType ); // creates element in DB
-    $IdMapping[$elementType.$elementID] = $elementType.$newIdx;
+    // Parse the file for <idx> tags
+    $handle = fopen($cfg->get('exportImportDir').$labFolder.'/'.EXPORT_DATA_DIR_PUBLIC.'/'.$value, "r");
+    if ($handle) {
+      while (($line = fgets($handle)) !== false) {
+        $line = trim($line);
+        if (substr($line,0,5)=='<idx>'){
+          // create mapping
+          $elementID = intval( substr($line, 5) ); // get number (rest)
+          $newIdx = createNew( $elementType ); // creates element in DB
+          $IdMapping[$elementType.$elementID] = $elementType.$newIdx;
+        }
+      }
+    } else {
+      // error opening the file.
+    }
+    fclose($handle);
+
   }
 
   return $IdMapping;
@@ -87,23 +101,26 @@ function createIdImportMappingInitDB( $labFolder ){
  */
 function persistElement( &$element, $labUID, $isImport=false ){
   if (!$isImport) { // EXPORT
-    $fileName = 'data/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // default dir
+    //$fileName = 'data/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // default dir
+    $fileName = EXPORT_DATA_DIR_PUBLIC.'/'.$element->elementId.'.txt';
     switch( $element->elementId ){
       case 'i':
       case 'm':
-        $fileName = EXPORT_DATA_DIR_PRIVATE.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
-        fileWrite( $fileName, $element->getSerialized(), $labUID ); // save full version
+        //$fileName = EXPORT_DATA_DIR_PRIVATE.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
+        $fileName = EXPORT_DATA_DIR_PRIVATE.'/'.$element->elementId.'.txt';
+        fileAppend( $fileName, $element->getSerialized(), $labUID ); // save full version
         // clear sensitive data
         if ($element->elementId == 'i') $element->exampleSolution = 'Here will be the example solution in the full data set.';
         if ($element->elementId == 'm') $element->answerExplanation = 'Here will be the answer explanation in the full data set.';
-        $fileName = EXPORT_DATA_DIR_PUBLIC.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // save "public" version.
+        //$fileName = EXPORT_DATA_DIR_PUBLIC.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // save "public" version.
+        $fileName = EXPORT_DATA_DIR_PUBLIC.'/'.$element->elementId.'.txt';
       default:
-        fileWrite( $fileName, $element->getSerialized(), $labUID );
+        fileAppend( $fileName, $element->getSerialized(), $labUID );
     }
 
   	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
   	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
-  	htmlentities($element->title, ENT_QUOTES | ENT_IGNORE ).
+  	htmlentities( $element->title ).
            ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> '.
   	$fileName.
            ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
@@ -112,7 +129,7 @@ function persistElement( &$element, $labUID, $isImport=false ){
     $element->history = ']'.$element->history; // add sign for indicating not to stamp data
     $GLOBALS[ $element->elementId."DBI" ]->setData( $element );
   	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
-  	htmlentities($element->title, ENT_QUOTES | ENT_IGNORE ).
+  	htmlentities( $element->title ).
            ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
   	$element->elementId.$element->idx.
            "</div>\r\n";
@@ -120,19 +137,19 @@ function persistElement( &$element, $labUID, $isImport=false ){
 }
 
 /**
- * Writes the $content into $fileName into $cfg->get('exportImportDir').
+ * Appends the $content into $fileName into $cfg->get('exportImportDir').
  *
  * @param $fileNameWithPath    Path and Name of the file to be created.
  * @param $content             Content to be written in the file.
  * @param string $labUID       The unique identifier of this lab (UID for export).
  * @return
  */
-function fileWrite( $fileName, $content, $labUID ) {
+function fileAppend( $fileName, $content, $labUID ) {
 	global $cfg;
 	$fileNameWithPath = $cfg->get('exportImportDir').$labUID.'/'.$fileName;
 	if ( !file_exists(dirname($fileNameWithPath)))
     mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
-	$fh = fopen($fileNameWithPath, 'w') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
+	$fh = fopen($fileNameWithPath, 'a') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
 	fwrite($fh, $content);
 	fclose($fh);
 }
@@ -374,7 +391,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     if ($doCopy){
       // Here the move to server should happen...
       $itWorked = (file_exists(str_replace( ' ', '%20', $localFileWithPath)) && copy( str_replace( ' ', '%20', $localFileWithPath), str_replace( ' ', '%20', $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName )))
-      or trigger_error("Can't copy file [".htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
+      or trigger_error("Can't copy file [".htmlentities( $localFileWithPath ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
       $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                   $localFileWithPath.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
@@ -404,7 +421,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     if ( !file_exists($destDir)){ mkdir($destDir, 0755, true) or trigger_error("Can't create directory ".$destDir, E_USER_ERROR); }
 
     (file_exists($file2importWithPath) && copy( $file2importWithPath, $destDir.$fileName ) )
-    or trigger_error("Can't copy file from '".htmlentities($file2importWithPath, ENT_QUOTES | ENT_IGNORE )."' to '".$destDir.$fileName, E_USER_WARNING);
+    or trigger_error("Can't copy file from '".htmlentities( $file2importWithPath )."' to '".$destDir.$fileName, E_USER_WARNING);
     $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                 ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
                 $fileName.
@@ -665,17 +682,48 @@ function getLabsFromDirectory( $directory ){
   for( $i=0; $i<sizeof( $subDirs ); $i++){
     if (!is_dir( $directory.$subDirs[$i] )) continue; // skip non-directories
     if ( $subDirs[$i] == '.' || $subDirs[$i] == '..' ) continue; // skip those
-    $file_name = $directory.$subDirs[$i].'/data/l0000002.txt';
+    $file_name = $directory.$subDirs[$i].'/'.EXPORT_DATA_DIR_PUBLIC.'/l.txt';
     if( file_exists($file_name) ){
       $myLelement = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
-      $myLelement->initFromSerialized( file_get_contents( $file_name ) );
+      $myLelement->initFromSerialized( getFirstSerializedElementFromFile( $file_name ) );
+
       $myLelement->title .= '&nbsp;<div class="labsys_mop_l_file_description">&nbsp;'.date ( $lng->get("DateFormat"), filemtime($file_name)).'&nbsp;</div>&nbsp;';
       $myLelement->idx = base64_encode( $subDirs[$i] ); // set the base64_encode( directory ) as ID for importable directories
       // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(
+      $myLelement->history=$myLelement->comment.PHP_EOL.$myLelement->history;
       array_push( $retArray, $myLelement );
     }
   }
   return $retArray;
+}
+
+/**
+ * Parses the first element out of the given file or the entire file.
+ * @param unknown $fileName The file to parse.
+ * @return string The serialized element.
+ */
+function getFirstSerializedElementFromFile( $fileName ){
+  $result = '';
+  // Parse the file for <idx> tags
+  $handle = fopen($fileName, "r");
+  $started = FALSE;
+  if ($handle) {
+    while (($line = fgets($handle)) !== false) {
+      if (substr($line,0,9)=='<element>'){
+        $started=TRUE;
+        continue;
+      }else if ($started && substr($line,0,10)=='</element>'){
+        $started=FALSE;
+        break;
+      } else if ($started){
+        $result .= $line;
+      }
+    }
+  } else {
+    // error opening the file.
+  }
+  fclose($handle);
+  return $result;
 }
 
 /////////////////////////////////// Stylesheet functions ////////////////////////////////////////////////////////
