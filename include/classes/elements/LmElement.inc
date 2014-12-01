@@ -333,7 +333,7 @@ class LmElement extends Element{
 
     if ( !$usr->isOfKind( IS_CORRECTOR ) ){    // Load the dynamic data from the working table.
       // "normal" usr
-      if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ) ; // example solution
+      if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && !$url->available('hideExampleSolutionInThisTab') ) ; // example solution
                                                 else $this->loadUserData4( $usr->uid ); // loads the dynamic data from the working table.
       $answers = $this->showAnswer( $fullAddress );
     }else{
