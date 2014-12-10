@@ -67,7 +67,9 @@ class LsDBInterface {
       return Array( "isBefore1stSched" => false,
                     "isInSched" => false,
                     "isAfter1stSched" => false,
-                    "notFound" => true
+                    "notFound" => true,
+                    0,
+                    0
                   );
     }else{ // at least one dataset exists for the specified element
       $isBefore1stSched = false;
@@ -89,7 +91,9 @@ class LsDBInterface {
       return Array( "isBefore1stSched"  => $isBefore1stSched,
                     "isInSched"         => $isInSched,
                     "isAfter1stSched"   => $isAfter1stSched,
-                    "notFound"          => false
+                    "notFound"          => false,
+                    "start" => $start, // for time tracking
+                    "stop" => $stop  // for time tracking
                   );
     }
   }
