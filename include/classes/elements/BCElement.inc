@@ -101,7 +101,7 @@ class BCElement extends LcElement{
                             // "C123", "C123.C234" (so it is not incremental "C123", "C234").
 
     foreach( $menuStructure as $value ){
-      if ($value{0} == "*") continue;
+      if (empty($value) || $value{0} == "*") continue;
       if ($value == "("){ array_push( $parentArray, $nextEl ); continue; }
       if ($value == ")"){ array_pop( $parentArray ); continue; }
 
