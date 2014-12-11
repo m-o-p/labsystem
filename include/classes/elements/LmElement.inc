@@ -103,7 +103,8 @@ class LmElement extends Element{
       $answerData = $this->mcDBI->getData4( $uid,
                                             $this->idx,
                                             $this->answerCount,
-                                            !$usr->isSeeingSomeonesData() );
+                                            !$usr->isSeeingSomeonesData() || $url->available('hideExampleSolutionInThisTab')
+          );
 
       $this->answerHistory        = $answerData["history"];
       $this->displayPermutation   = $answerData["permutation"];
@@ -328,12 +329,15 @@ class LmElement extends Element{
     $answers = "";
 
     if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ){
-       $answers = $this->showAnswer( $fullAddress ); // example solution
+      if ($url->available('hideExampleSolutionInThisTab')){
+        $this->loadUserData4( $usr->uid ); // empty or my answer
+      }
+      $answers = $this->showAnswer( $fullAddress ); // example solution
     }
 
     if ( !$usr->isOfKind( IS_CORRECTOR ) ){    // Load the dynamic data from the working table.
       // "normal" usr
-      if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && !$url->available('hideExampleSolutionInThisTab') ) ; // example solution
+      if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ) ; // example solution
                                                 else $this->loadUserData4( $usr->uid ); // loads the dynamic data from the working table.
       $answers = $this->showAnswer( $fullAddress );
     }else{
