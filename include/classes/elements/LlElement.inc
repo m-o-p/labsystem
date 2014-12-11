@@ -1266,7 +1266,7 @@ class LlElement extends Element{
             "<fieldset><legend>".$lng->get('uploadMaterial')."</legend>\n".
             $lng->get('uploadMaterialNote').
             '<h5>'.$lng->get('imageUploadHeader').'</h5>'.
-            $this->getUploadInterface( $cfg->get('importPictureDir').$this->uniqueID, '&lt;img src=&quot;%1$s%2$s&quot; %3$salt=&quot;%2$s&quot; /&gt;' ).
+            $this->getUploadInterface( $cfg->get('importPictureDir').$this->uniqueID, '&lt;div class=&quot;figure&quot;&gt;&lt;img src=&quot;%1$s%2$s&quot; %3$salt=&quot;%2$s&quot; /&gt;&lt;div class=&quot;caption&quot;&gt;%2$s&lt;/div&gt;&lt;/div&gt;' ).
             '<h5>'.$lng->get('fileUploadHeader').'</h5>'.
             $this->getUploadInterface( $cfg->get('importFilesDir').$this->uniqueID, '&lt;a href=&quot;%1$s%2$s&quot;&gt;%2$s&lt;/a&gt;' ).
             "</fieldset>\n".
@@ -1593,9 +1593,11 @@ class LlElement extends Element{
    // Are all multiple choice questions answered (->LmElement)?
     $parameter = Array( 'allPreLabAnswered' => true,
                         'givenCredits' => 0,
-                        'possibleCredits' => 0 );
+                        'possibleCredits' => 0,
+                        'numberOfPrelabMC' => 0 );
 
     $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
+                              "\$parameter['numberOfPrelabMC']+=1;".
                               "\$element->loadUserData4( '".$usr->uid."' ); ".
                               "if ( \$parameter[ 'allPreLabAnswered' ] &= \$element->checkUserAnswer() ){ ". // check the answer (if not closed this adds an attempt!).
                                 "\$parameter[ 'givenCredits' ] += \$element->getGivenCredits();".
@@ -1613,7 +1615,7 @@ class LlElement extends Element{
                                   true,                             // $prelabFinished
                                   $parameter[ 'givenCredits' ],     // $prelabGivenCredits
                                   $parameter[ 'possibleCredits' ],  // $prelabPossibleCredits
-                                  false,                            // $prelabAllTeammembersFinished
+                                  ($parameter[ 'numberOfPrelabMC' ] == 0), // $prelabAllTeammembersFinished
                                   false,                            // $labClosed
                                   false,                            // $labCorrected
                                   "",                               // $whichCorrected
@@ -2005,25 +2007,26 @@ class LlElement extends Element{
 
     while( ($labStatus = $this->usDBI->getNextData()) ){
 
-    $parameter2 = Array( 'allPreLabAnswered' => true,
-                        'givenCredits' => 0,
-                        'possibleCredits' => 0 );
+      // Are all multiple choice questions answered (->LmElement)?
+      $parameter2 = Array( 'allPreLabAnswered' => true,
+          'givenCredits' => 0,
+          'possibleCredits' => 0,
+          'numberOfPrelabMC' => 0 );
 
-
-    //if ( true )// echo('processing '.$labStatus['uid'].'<br />');
       $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
-                              "\$element->loadUserData4( '".$labStatus['uid']."' ); ".
-//                              "echo( '".$labStatus['uid']." - m'.\$element->idx.' - '.\$element->getGivenCredits().'/ '.\$element->getPossibleCredits().'<br>');".
-                              "if ( \$parameter[ 'allPreLabAnswered' ] &= \$element->checkUserAnswer() ){ ". // check the answer (if not closed this adds an attempt!).
-                                "\$parameter[ 'givenCredits' ] += \$element->getGivenCredits();".
-                              "}".
-                              "\$parameter[ 'possibleCredits' ] += \$element->getPossibleCredits();".
-                            "}".
-                            "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                            $parameter2 );
+          "\$parameter['numberOfPrelabMC']+=1;".
+          "\$element->loadUserData4( '".$usr->uid."' ); ".
+          "if ( \$parameter[ 'allPreLabAnswered' ] &= \$element->checkUserAnswer() ){ ". // check the answer (if not closed this adds an attempt!).
+          "\$parameter[ 'givenCredits' ] += \$element->getGivenCredits();".
+          "}".
+          "\$parameter[ 'possibleCredits' ] += \$element->getPossibleCredits();".
+          "}".
+          "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
+          $parameter2 );
 
     // check DURING and after 1st schedule if all teammates finished to set this status correctly:
-    $prelabFinishedByTeam = ( // if it is running do a check
+    $prelabFinishedByTeam = $parameter2['numberOfPrelabMC'] == 0 || // no questions
+                            ( // if it is running do a check
                                 ($this->isInSched || $this->visibleBefore1stSched) &&
                                 $this->isPrelabFinishedByAllCurrentTeammates( $labStatus['currentTeam'] )
                             ) || ( // if we did not check we take what was there
