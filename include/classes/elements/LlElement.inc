@@ -1174,6 +1174,13 @@ class LlElement extends Element{
                                 ">".$element->idx.": ".( ($element->idx == 1) ?  '-' :  $element->title )."</option>\n";
     }
 
+    $fileLinkFormattingArray = array(
+        "png"=>'&lt;div class=&quot;figure&quot;&gt;&lt;img src=&quot;%1$s%2$s&quot; %3$salt=&quot;%2$s&quot; /&gt;&lt;div class=&quot;caption&quot;&gt;%2$s&lt;/div&gt;&lt;/div&gt;',
+        "gif"=>'&lt;div class=&quot;figure&quot;&gt;&lt;img src=&quot;%1$s%2$s&quot; %3$salt=&quot;%2$s&quot; /&gt;&lt;div class=&quot;caption&quot;&gt;%2$s&lt;/div&gt;&lt;/div&gt;',
+        "jpg"=>'&lt;div class=&quot;figure&quot;&gt;&lt;img src=&quot;%1$s%2$s&quot; %3$salt=&quot;%2$s&quot; /&gt;&lt;div class=&quot;caption&quot;&gt;%2$s&lt;/div&gt;&lt;/div&gt;',
+        "jpeg"=>'&lt;div class=&quot;figure&quot;&gt;&lt;img src=&quot;%1$s%2$s&quot; %3$salt=&quot;%2$s&quot; /&gt;&lt;div class=&quot;caption&quot;&gt;%2$s&lt;/div&gt;&lt;/div&gt;',
+        "*"=>'&lt;a href=&quot;%1$s%2$s&quot;&gt;%2$s&lt;/a&gt;'
+        );
      return EM::editTopLab( $this, $fullAddress ).
             "<FORM  enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"labEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l")."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
@@ -1266,9 +1273,9 @@ class LlElement extends Element{
             "<fieldset><legend>".$lng->get('uploadMaterial')."</legend>\n".
             $lng->get('uploadMaterialNote').
             '<h5>'.$lng->get('imageUploadHeader').'</h5>'.
-            $this->getUploadInterface( $cfg->get('importPictureDir').$this->uniqueID, '&lt;div class=&quot;figure&quot;&gt;&lt;img src=&quot;%1$s%2$s&quot; %3$salt=&quot;%2$s&quot; /&gt;&lt;div class=&quot;caption&quot;&gt;%2$s&lt;/div&gt;&lt;/div&gt;' ).
+            $this->getUploadInterface( $cfg->get('importPictureDir').$this->uniqueID, $fileLinkFormattingArray ).
             '<h5>'.$lng->get('fileUploadHeader').'</h5>'.
-            $this->getUploadInterface( $cfg->get('importFilesDir').$this->uniqueID, '&lt;a href=&quot;%1$s%2$s&quot;&gt;%2$s&lt;/a&gt;' ).
+            $this->getUploadInterface( $cfg->get('importFilesDir').$this->uniqueID, $fileLinkFormattingArray ).
             "</fieldset>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
@@ -1287,7 +1294,7 @@ class LlElement extends Element{
    * $myPath      The directory the upload interface should be created for.
    * $strFormat   The link buttons link text gets filled with this. First %s gets replaced by the path, second %s by the filename.
    */
-  private function getUploadInterface( $myPath, $strFormat="%s%s" ){
+  private function getUploadInterface( $myPath, $strFormatArray=array("*"=> "%s%s") ){
     global $lng;
     // $myPath = dirname($myPath);
     $retHTML = '<div class="labsys_mop_elements_i_around"><div class="labsys_mop_i_fileUpload">'."\n".
@@ -1327,6 +1334,11 @@ class LlElement extends Element{
         $filesize = round($file['size'] / 1024).' KB';
         $fileTime = date('H:i j.n.Y', $file['timestamp']);
 
+        if (array_key_exists($pathInfo['extension'], $strFormatArray)){
+          $strFormat = $strFormatArray[$pathInfo['extension']];
+        }else{
+          $strFormat = $strFormatArray['*'];
+        }
         $retHTML .= '<li>'.
                     '<input type="checkbox" name="deleteFileNames'.$pathID.'[]" value="'.$pathInfo['basename'].'" />'.
                     '<a name="'.urlencode($file['fileName']).'" href="'.$myPath.'/'.$file['fileName'].'">'.
