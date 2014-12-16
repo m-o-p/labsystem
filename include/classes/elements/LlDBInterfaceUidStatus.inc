@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -43,7 +43,7 @@ class LlDBInterfaceUidStatus {
     $this->myTable = "lab_uid_status";
     $this->labIdx   = $labIdx;
   }
-  
+
   /**
   * Returns the team to the given uid and iIdx.
   *
@@ -58,6 +58,7 @@ class LlDBInterfaceUidStatus {
   *                 "whichCorrected" => string, // contains "ttfttt" 1,2 corrected; 3 not etc.; only present if labCorrected=false;
   *                 "labGivenCredits" => float,
   *                 "labPossibleCredits" => float,
+  *                 "detailedCredits" => string, // contains "0/3;reached/possibleCredits;..."
   *                 "history" => string );
   */
   function getData4( $uid ){
@@ -66,31 +67,33 @@ class LlDBInterfaceUidStatus {
     if ( !($data = mysql_fetch_array( $result )) ){
       /* no dataset found */
       return Array( "currentTeam" => false,
-                    "preLabFinished" => false, 
+                    "preLabFinished" => false,
                     "preLabGivenCredits" => 0,
                     "preLabPossibleCredits" => 0,
-                    "preLabAllTeammFinished" => false, 
+                    "preLabAllTeammFinished" => false,
                     "labClosed" => false,
                     "labCorrected" => false,
                     "whichCorrected" => "",
                     "labGivenCredits" => 0,
                     "labPossibleCredits" => 0,
+                    "detailedCredits" => '',
                     "history" => "" );
     }else{
       return Array( "currentTeam" => $data['current_team'],
-                    "preLabFinished" => ($data['prelab_finished'] == 1), 
+                    "preLabFinished" => ($data['prelab_finished'] == 1),
                     "preLabGivenCredits" => ($data['prelab_given_credits'] / 100),
                     "preLabPossibleCredits" => ($data['prelab_possible_credits'] / 100),
-                    "preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1), 
+                    "preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1),
                     "labClosed" => ($data['lab_closed'] == 1),
                     "labCorrected" => ($data['lab_corrected'] == 1),
                     "whichCorrected" => $data['which_corrected'],
                     "labGivenCredits" => ($data['lab_given_credits'] / 100),
                     "labPossibleCredits" => ($data['lab_possible_credits'] / 100),
+                    "detailedCredits" => (array_key_exists('detailed_credits', $data) ? $data['detailed_credits'] : ''),
                     "history" => $data['history'] );
     }
   }
-  
+
   /**
   * Stores the data into the database. Position specified by $labIdx & $uid.
   *
@@ -104,19 +107,21 @@ class LlDBInterfaceUidStatus {
   * @param $labCorrected                  Is the lab corrected?
   * @param $givenCredits                  FLOAT of given credits (p.e. 0.75).
   * @param $possibleCredits               FLOAT of possible credits.
+  * @param detailedCredits                The detailed credits (see above).
   * @param $history                       If present this is set after the user's name.
   */
-  function setData4( $uid, 
-                     $currentTeam, 
-                     $prelabFinished=false, 
+  function setData4( $uid,
+                     $currentTeam,
+                     $prelabFinished=false,
                      $prelabGivenCredits=0,
                      $prelabPossibleCredits=0,
-                     $prelabAllTeammembersFinished=false, 
+                     $prelabAllTeammembersFinished=false,
                      $labClosed=false,
                      $labCorrected=false,
                      $whichCorrected="",
                      $givenCredits=0,
                      $possibleCredits=0,
+                     $detailedCredits="",
                      $history = "" ){
     global $usr;
     $toSet = "current_team='".$currentTeam."', ".
@@ -129,10 +134,11 @@ class LlDBInterfaceUidStatus {
              "which_corrected='".$whichCorrected."', ".
              "lab_given_credits='".($givenCredits * 100)."', ".
              "lab_possible_credits='".($possibleCredits * 100)."', ".
+             "detailed_credits='".$detailedCredits."', ".
              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && uid='".$uid."'" );
   }
-  
+
   /**
   * Sets the prelab_all_teammembers_finished bit on the position specified by $labIdx & $team.
   * @param $team       The team to set the value for.
@@ -143,7 +149,7 @@ class LlDBInterfaceUidStatus {
              "history=CONCAT( NOW(), ': ".$lng->get("preLabAllTeamFin")."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && current_team='".$team."'" );
   }
-  
+
   /**
   * Sets the lab_closed bit on the position specified by $labIdx & $team.
   * @param $team       The team to set the value for.
@@ -156,7 +162,7 @@ class LlDBInterfaceUidStatus {
              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && current_team='".$team."'" );
   }
-  
+
   /**
   * Sets the lab_closed=0 an lab_corrected=0 bits on the position specified by $labIdx & $team.
   * @param $team       The team to set the value for.
@@ -171,7 +177,7 @@ class LlDBInterfaceUidStatus {
              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && current_team='".$team."'" );
   }
-  
+
   var $queryResult;
   /**
   * Queries all datasets for the lab specified by $labIdx.
@@ -182,7 +188,7 @@ class LlDBInterfaceUidStatus {
     if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
     $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "l_idx='".$this->labIdx."'", $orderBy );
   }
-  
+
   /**
   * Queries all datasets of the members one team for the lab specified by $this->labIdx.
   * @param $team  The team to be queried.
@@ -190,7 +196,7 @@ class LlDBInterfaceUidStatus {
   function getAllTeamData( $team ){
     $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "current_team='".$team."' && l_idx='".$this->labIdx."'", "" );
   }
-  
+
   /**
   * Queries all datasets of one member for the lab specified by $this->labIdx.
   * @param $uid  The id of the user to be queried.
@@ -198,7 +204,7 @@ class LlDBInterfaceUidStatus {
   function getAllUidData( $uid ){
     $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "uid='".$uid."' && l_idx='".$this->labIdx."'", "" );
   }
-  
+
   /**
   * Queries all datasets of one member for ALL LABS.
   * @param $uid  The id of the user to be queried.
@@ -207,7 +213,7 @@ class LlDBInterfaceUidStatus {
   // SELECT *, schedules.start FROM `lab_uid_status` LEFT JOIN `schedules` ON lab_uid_status.l_idx = schedules.num WHERE `uid` = "$uid" ORDER BY schedules.start, lab_uid_status.l_idx ASC
     $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable.' LEFT JOIN `schedules` ON lab_uid_status.l_idx = schedules.num', "`uid`='".$uid."' && `l_idx` != 1 GROUP BY lab_uid_status.l_idx", "schedules.start, lab_uid_status.l_idx ASC" );
   }
-  
+
   /**
   * Returns the next result of the getAllData() query or false (no more results).
   * @return Array(  "lIdx" => int,
@@ -222,6 +228,7 @@ class LlDBInterfaceUidStatus {
   *                 "whichCorrected" => string,
   *                 "labGivenCredits" => float,
   *                 "labPossibleCredits" => float,
+  *                 "detailedCredits" => string,
   *                 "history" => string );
   * @return FALSE   If no more datasets are available.
   */
@@ -230,23 +237,24 @@ class LlDBInterfaceUidStatus {
       return Array( "lIdx" => $data['l_idx'],
                     "uid" => $data['uid'],
                     "currentTeam" => $data['current_team'],
-                    "preLabFinished" => ($data['prelab_finished'] == 1), 
+                    "preLabFinished" => ($data['prelab_finished'] == 1),
                     "preLabGivenCredits" => ($data['prelab_given_credits'] / 100),
                     "preLabPossibleCredits" => ($data['prelab_possible_credits'] / 100),
-                    "preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1), 
+                    "preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1),
                     "labClosed" => ($data['lab_closed'] == 1),
                     "labCorrected" => ($data['lab_corrected'] == 1),
                     "whichCorrected" => $data['which_corrected'],
                     "labGivenCredits" => ($data['lab_given_credits'] / 100),
                     "labPossibleCredits" => ($data['lab_possible_credits'] / 100),
+                    "detailedCredits" => $data['detailed_credits'],
                     "history" => $data['history'] );
     else
       return false;
   }
-  
+
   /**
   * Returns an Array( description => database key, ... ).
-  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ... 
+  * While database key is one of the keys the data can be sorted by getAllData( $orderBy ...
   * The first entry is the default soring key.
   * This is used for the order by selector on top of the manage page.
   *

@@ -420,18 +420,23 @@ class LlElement extends Element{
    * The percentage is shown via bar length and color
    * (via $cfg->percentageFailed = red -> 100% green)
    *
-   * @param $percentage       The value to be shown out of [0..1].
-   * @param $percentageFailed The value the bar gets red if below.
+   * @param $givenCredits     The credits that were given.
+   * @param $possibleCredits  The credits that could be reached.
+   * @param $description      What to be shown as title of the image?
    * @param $bw               If set the color of the bar is black (used for uncorrected answers).
    *
    * @return string      The bar's html-code.
    */
-  function percentStick( $percentage, $percentageFailed, $bw=FALSE ){
+  function percentStick( $givenCredits, $possibleCredits, $description, $bw=FALSE ){
+    global $cfg;
+    $percentage = ($possibleCredits>0?$givenCredits/$possibleCredits : 0);
+    $percentageFailed = $cfg->get("percentageFailedPreLab");
+
     $style="labsys_mop_l_status_percentStickDiv";
     $color = ($bw ? '000' : LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed ));
 
-    return "<div class=\"".$style."\">".
-        "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; height: ".round($percentage*100)."%\"></img>".
+    return "<div class=\"".$style."\" style=\"height:".($possibleCredits*4).'px">'.
+        "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$possibleCredits."' title='".$givenCredits.'/'.$possibleCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".round($percentage*100)."%\"></img>".
         "</div>\n";
   }
 
@@ -445,7 +450,6 @@ class LlElement extends Element{
   */
   function showTableResults( $showSummation=false, $onlySummation=false ){
     global $usr, $lng, $url, $pge, $cfg, $lDBI;
-
    // The different learning units might are given only by index.
    // So for the human being I put the name (besides the index that
    // appears at the link (first row #)).
@@ -556,6 +560,46 @@ class LlElement extends Element{
         $previousMembersname = $userData["name"].", ".$userData["foreName"]; // to output one's name only once (summary page)
 
        // show which are corrected
+
+        // <Collect the references to all i-elements for click to jump to the question>
+      if (!empty($labStatus['whichCorrected']) || !empty($labStatus['detailedCredits'])){
+        $element = $lDBI->getData2idx( $labStatus['lIdx'] );
+        $parameter = Array( 'currentPage' => 'l'.$element->idx.'.C'.$element->labCollectionIdx,
+            'currentFragment' => '#l'.$element->idx.'.C'.$element->labCollectionIdx,
+            'iElementLinks' => Array(),
+            'iElementTitles' => Array(),
+            'myParentIsASmallc' => false,
+            'alreadyInSum' => Array());// some inputs might be more than one time inside the collection...
+        // p.e. I use an input for data that are reshown on a later page for comparison
+        $element->lab->extMap( "if ( (\$element->elementId == 'i') && !(in_array( \$element->idx, \$parameter['alreadyInSum'] )) ){
+                              array_push( \$parameter['alreadyInSum'], \$element->idx ); // no double count
+                              array_push( \$parameter['iElementLinks'], \$parameter['currentPage'].\$parameter['currentFragment'].'.i'.\$element->idx);
+                              array_push( \$parameter['iElementTitles'], \$element->title );
+                          }".
+            "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ){
+                              \$oldcurrentPage = \$parameter['currentPage'];
+                              \$oldFragment = \$parameter['currentFragment'];
+                              \$oldParentSmallc = \$parameter['myParentIsASmallc'];
+                              \$parameter['currentFragment'] .= '.'.\$element->elementId.\$element->idx;
+                              if (!\$parameter['myParentIsASmallc']){
+                                \$parameter['currentPage'] .= '.'.\$element->elementId.\$element->idx;
+                              }
+                              if (\$element->elementId == 'c'){
+                                \$parameter['myParentIsASmallc'] = true;
+                              }
+
+                              \$element->extMap( \$functionCode, \$parameter );
+
+                              \$parameter['currentPage'] = \$oldcurrentPage;
+                              \$parameter['currentFragment'] = \$oldFragment;
+                              \$parameter['myParentIsASmallc'] = \$oldParentSmallc;
+                          }", // recurse
+                                  $parameter );
+
+        $iElementLinks = $parameter['iElementLinks'];
+        $iElementTitles = $parameter['iElementTitles'];
+        }
+        // </ Collect the references to all i-elements for click to jump to the question>
        // Use the backlinks to the questions from the cache...
         if ( $labStatus['labClosed'] && !$labStatus['labCorrected'] && ($labStatus['whichCorrected'] != "") &&
              ( ($labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR ) )
@@ -563,11 +607,22 @@ class LlElement extends Element{
           $myRetVal .= "<div class=\"labsys_mop_l_status_whichCorrected\">\n";
           $correctedString = $labStatus['whichCorrected'];
           for( $qn=0; $qn < strlen( $correctedString ); $qn++){
-            $myRetVal .= "<img src=\"../syspix/labCorrected_".
+            $myRetVal .= '<a href="'.$url->link2('../pages/view.php?'.($usr->isOfKind( IS_CORRECTOR ) ? 'seeMe='.urlencode( $labStatus['uid'] ).'&' : '').'address='.$iElementLinks[$qn]).'">'.
+                         "<img src=\"../syspix/labCorrected_".
                          ( $correctedString[$qn] == "t" ?  "yes" :  "no"  ).
-                         "_12x12.gif\" border=\"0\" title=\"".($qn+1)." ".$lng->get("corrected")."\">";
+                         "_12x12.gif\" border=\"0\" title=\"".$iElementTitles[$qn]."\"></a>";
           }
           $myRetVal .= "</div>\n";
+        }
+
+        if (!empty($labStatus['detailedCredits']) && (($labStatus['labCorrected'] && $labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR ))){
+          $myRetVal .= '<div class="labsys_mop_l_status_percentSticksDiv">';
+          $detailedCreditsArray = explode(';', $labStatus['detailedCredits']);
+          foreach ($detailedCreditsArray as $key=>$value){
+            $creditsArray = explode('/', $value);
+            $myRetVal .= '<a href="'.$url->link2('../pages/view.php?'.($usr->isOfKind( IS_CORRECTOR ) ? 'seeMe='.urlencode( $labStatus['uid'] ).'&' : '').'address='.$iElementLinks[$key]).'">'.$this->percentStick($creditsArray[0], $creditsArray[1], $iElementTitles[$key]).'</a>';
+          }
+          $myRetVal .= '</div>';
         }
 
         $myRetVal .= "</td>".
@@ -1633,6 +1688,7 @@ class LlElement extends Element{
                                   "",                               // $whichCorrected
                                   0,                                // $givenCredits
                                   0,                                // $possibleCredits
+                                  '',                               // $detailedCredits
                                   $lng->get("preLabUserFinished")   // $history
                                  );
          $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lPreLabFinished);
@@ -1699,7 +1755,7 @@ class LlElement extends Element{
           while ( ($dataArray = $urDBI->getNextData()) ){
             $uid          = $dataArray['uid'];
            // create dataset
-            $this->usDBI->setData4( $uid, $teamNumber, true, 0, 0, true, false, false, "", 0, 0, $lng->get("userReMapped")." (".$teamNumber.")" );
+            $this->usDBI->setData4( $uid, $teamNumber, true, 0, 0, true, false, false, '', 0, 0, '', $lng->get("userReMapped")." (".$teamNumber.")" );
           }
   }
 
@@ -1854,6 +1910,7 @@ class LlElement extends Element{
                               $labStatus['whichCorrected'],         // $whichCorrected
                               $labStatus['labGivenCredits'],        // $givenCredits
                               $labStatus['labPossibleCredits'],     // $possibleCredits
+                              $labStatus['detailedCredits'],        // $detailedCredits
                               $lng->get("userReMapped")." (".$team.")" );          // $history
 
     // update all input assignments
@@ -1878,7 +1935,9 @@ class LlElement extends Element{
     $usr->seesDataOf( $uid );
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
+    if ($url->available('redirectTo')){
+      header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
+    }
   }
 
   /**
@@ -1933,6 +1992,7 @@ class LlElement extends Element{
       if ( $val != 'alreadyInSum' ) $parameter[$val] = Array( 'areAllClosed' => true,
                                                               'areAllCorrected' => true,
                                                               'correctedString' => "",
+                                                              'detailedCredits' => Array(),
                                                               'sumGivenCredits' => 0,
                                                               'sumPossibleCredits' => 0 );
 
@@ -1949,8 +2009,10 @@ class LlElement extends Element{
                                 \$parameter[\$mKey]['areAllClosed']       &= \$element->isClosed;
                                 \$parameter[\$mKey]['areAllCorrected']    &= \$element->isCorrected;
                                 \$parameter[\$mKey]['correctedString']    .= ( \$element->isCorrected ?  't' :  'f'  );
-                                if ( \$element->isCorrected ) // only add points of corrected
-                                  \$parameter[\$mKey]['sumGivenCredits']  += \$element->getGivenCredits();
+                                if ( \$element->isCorrected ){ // only add points of corrected
+                                    \$parameter[\$mKey]['sumGivenCredits']  += \$element->getGivenCredits();
+                                }
+                                array_push(\$parameter[\$mKey]['detailedCredits'], \$element->getGivenCredits().'/'.\$element->getPossibleCredits());
                                 \$parameter[\$mKey]['sumPossibleCredits'] += \$element->getPossibleCredits();
                               }
                           }".
@@ -1961,11 +2023,13 @@ class LlElement extends Element{
     $this->usDBI->getAllData( "current_team" );
     while( ($labStatus = $this->usDBI->getNextData()) ){
        // changes?
+        $detailedCredits=implode(';',$parameter[$labStatus['currentTeam']]['detailedCredits']);
         if ( ($labStatus['labClosed']          != $parameter[$labStatus['currentTeam']]['areAllClosed']) || // might happen after remapping...
              ($labStatus['labCorrected']       != $parameter[$labStatus['currentTeam']]['areAllCorrected']) ||
              ($labStatus['labGivenCredits']    != $parameter[$labStatus['currentTeam']]['sumGivenCredits']) ||
              ($labStatus['labPossibleCredits'] != $parameter[$labStatus['currentTeam']]['sumPossibleCredits']) ||
-             ($labStatus['whichCorrected'] != $parameter[$labStatus['currentTeam']]['correctedString'])
+             ($labStatus['whichCorrected'] != $parameter[$labStatus['currentTeam']]['correctedString']) ||
+             ($labStatus['detailedCredits'] != $detailedCredits)
             ){ // yes -> save them.
               $this->usDBI->setData4( $labStatus['uid'],
                                       $teamJustChecked = $labStatus['currentTeam'],
@@ -1978,6 +2042,7 @@ class LlElement extends Element{
                                       $parameter[$labStatus['currentTeam']]['correctedString'],
                                       $parameter[$labStatus['currentTeam']]['sumGivenCredits'],
                                       $parameter[$labStatus['currentTeam']]['sumPossibleCredits'],
+                                      $detailedCredits,
                                       $lng->get("statusUpdated") ); // create my dataset
 
           if ($parameter[$labStatus['currentTeam']]['areAllCorrected']){
@@ -2027,7 +2092,7 @@ class LlElement extends Element{
 
       $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
           "\$parameter['numberOfPrelabMC']+=1;".
-          "\$element->loadUserData4( '".$usr->uid."' ); ".
+          "\$element->loadUserData4( '".$labStatus['uid']."' ); ".
           "if ( \$parameter[ 'allPreLabAnswered' ] &= \$element->checkUserAnswer() ){ ". // check the answer (if not closed this adds an attempt!).
           "\$parameter[ 'givenCredits' ] += \$element->getGivenCredits();".
           "}".
@@ -2037,7 +2102,7 @@ class LlElement extends Element{
           $parameter2 );
 
     // check DURING and after 1st schedule if all teammates finished to set this status correctly:
-    $prelabFinishedByTeam = $parameter2['numberOfPrelabMC'] == 0 || // no questions
+    $prelabFinishedByTeam = ($parameter2['numberOfPrelabMC'] == 0) || // no questions
                             ( // if it is running do a check
                                 ($this->isInSched || $this->visibleBefore1stSched) &&
                                 $this->isPrelabFinishedByAllCurrentTeammates( $labStatus['currentTeam'] )
@@ -2066,6 +2131,7 @@ class LlElement extends Element{
                                       $labStatus['whichCorrected'],
                                       $labStatus['labGivenCredits'],
                                       $labStatus['labPossibleCredits'],
+                                      $labStatus['detailedCredits'],
                                       $lng->get("statusUpdated") ); // create my dataset
     }
 
