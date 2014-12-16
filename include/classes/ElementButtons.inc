@@ -109,7 +109,7 @@ class EB{ /* ElementButtons */
 
     return EB::mkHiddenDiv( "../pages/view.php?address=".$address."&amp;amp;&#x005F;_LINKQUERY__",
                             "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
-                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;'.EB::getLink2ElementURL( $address ).'&quot;&gt;'.($el && ($el->title != "") ? htmlentities(htmlentities($el->title, ENT_QUOTES | ENT_IGNORE )) : 'Link to '.$address).'&lt;/a&gt;" onClick="this.select();">' );
+                            '<input type="text" style="width: 100%" value="&lt;a href=&quot;'.EB::getLink2ElementURL( $address ).'&quot;&gt;'.($el && ($el->title != "") ? htmlentities( htmlentities($el->title )) : 'Link to '.$address).'&lt;/a&gt;" onClick="this.select();">' );
   }
 
   /**
@@ -380,7 +380,7 @@ class EB{ /* ElementButtons */
     if ( !$usr->isOfKind( IS_USER ) ){
       return;
     }
-    $link = $url->link2( '../pages/mailForm.php?subject='.urlencode( '[><] '.$subject ).'&text='.urlencode( "\r\n\r\n".'-> http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$address ) );
+    $link = $url->link2( '../pages/mailForm.php?subject='.urlencode( '[><] '.$subject ).'&text='.urlencode( "\r\n\r\n".'-> http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$address.( $usr->isOfKind(IS_CORRECTOR) && $usr->isSeeingSomeonesData() && (strrpos($_SERVER['REQUEST_URI'], 'seeMe')===false)?'&seeMe='.urlencode($usr->theSeeingUid()):'') ) );
     return EB::mkLink( $link, "<img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"next\" title=\"".$lng->get("explainMailLink2")."\">" );
   }
 }
