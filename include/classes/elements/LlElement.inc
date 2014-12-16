@@ -435,7 +435,7 @@ class LlElement extends Element{
     $style="labsys_mop_l_status_percentStickDiv";
     $color = ($bw ? '000' : LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed ));
 
-    return "<div class=\"".$style."\" style=\"height:".($possibleCredits*4).'px">'.
+    return "<div class=\"".$style."\" style=\"height:".($possibleCredits*4).'px" title="'.$givenCredits.'/'.$possibleCredits.' '.$description.'">'.
         "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$possibleCredits."' title='".$givenCredits.'/'.$possibleCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".round($percentage*100)."%\"></img>".
         "</div>\n";
   }
