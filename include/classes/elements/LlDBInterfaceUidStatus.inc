@@ -246,7 +246,7 @@ class LlDBInterfaceUidStatus {
                     "whichCorrected" => $data['which_corrected'],
                     "labGivenCredits" => ($data['lab_given_credits'] / 100),
                     "labPossibleCredits" => ($data['lab_possible_credits'] / 100),
-                    "detailedCredits" => $data['detailed_credits'],
+                    "detailedCredits" => (array_key_exists('detailed_credits', $data) ? $data['detailed_credits'] : ''),
                     "history" => $data['history'] );
     else
       return false;
