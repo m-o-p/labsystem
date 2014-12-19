@@ -2047,7 +2047,9 @@ class LlElement extends Element{
                                       $detailedCredits,
                                       $lng->get("statusUpdated") ); // create my dataset
 
-          if ($parameter[$labStatus['currentTeam']]['areAllCorrected']){
+          if ($parameter[$labStatus['currentTeam']]['areAllCorrected'] &&
+              !$labStatus['labCorrected'] //and it was not corrected before
+             ){
             $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
             // Collect all team's participant mail addresses
             require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
