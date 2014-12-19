@@ -424,20 +424,20 @@ class LlElement extends Element{
    * @param $givenCredits     The credits that were given.
    * @param $possibleCredits  The credits that could be reached.
    * @param $description      What to be shown as title of the image?
-   * @param $bw               If set the color of the bar is black (used for uncorrected answers).
    *
    * @return string      The bar's html-code.
    */
-  function percentStick( $givenCredits, $possibleCredits, $description, $bw=FALSE ){
+  function percentStick( $givenCredits, $possibleCredits, $description ){
     global $cfg;
-    $percentage = ($possibleCredits>0 && $givenCredits>0?$givenCredits/$possibleCredits : 0);
+    $percentage = ($possibleCredits>0?abs($givenCredits/$possibleCredits) : 0);
     $percentageFailed = $cfg->get("percentageFailedPreLab");
 
     $style=($givenCredits>=0?'labsys_mop_l_status_percentStickDiv':'labsys_mop_l_status_percentStickDivNegative');
-    $color = ($bw ? '000' : LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed ));
+    $barHeight=round($percentage*100);
+    $color = ($givenCredits<0 ? 'f00;position:relative;top:-'.$barHeight.'%;' : LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed ));
 
     return "<div class=\"".$style."\" style=\"height:".($possibleCredits*4).'px" title="'.$givenCredits.'/'.$possibleCredits.' '.$description.'">'.
-        "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$possibleCredits."' title='".$givenCredits.'/'.$possibleCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".round($percentage*100)."%\"></img>".
+        "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$possibleCredits."' title='".$givenCredits.'/'.$possibleCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".$barHeight."%\"></img>".
         "</div>\n";
   }
 

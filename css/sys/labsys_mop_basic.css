@@ -780,7 +780,8 @@ fieldset{
                     height:30px;
                     vertical-align:bottom
   }
-  .labsys_mop_l_status_percentStickDiv{ /* shown in the lab status table below the percent value */
+  .labsys_mop_l_status_percentStickDiv,
+  .labsys_mop_l_status_percentStickDivNegative{ /* shown in the lab status table below the percent value */
                     display:inline;
                     float:left;
                     background-color: #555;
@@ -788,25 +789,21 @@ fieldset{
                     width: 4px;
                     margin-right:1px
   }
-  @-webkit-keyframes 'blink' {
-    0% { background: rgba(255,0,0,0.5); }
-    50% { background: rgba(255,0,0,0); }
-    100% { background: rgba(255,0,0,0.5); }
-}
+
   .labsys_mop_l_status_percentStickDivNegative{ /* shown in the lab status table below the percent value */
-                    display:inline;
-                    float:left;
-                    background-color: #f00;
                     border: dotted 1px #f00;
-                    width: 8px;
-                    margin-right:1px;
-    -webkit-animation-direction: normal;
-    -webkit-animation-duration: 5s;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-name: blink;
-    -webkit-animation-timing-function: ease;  
+                    background-color:transparent
   }
-  .labsys_mop_l_status_percentStickDiv img{ /* the bar is an img with a transparent gif. */
+  .labsys_mop_l_status_percentStickDivNegative img{ /* the bar is an img with a transparent gif. */
+                    margin: 0px; 
+                    border: none;
+                    width: 95%;
+                    /* color is set in LlElement.inc */
+                    /* background-color is set in LlElement.inc */
+                    /* width is set in LlElement.inc */
+}
+
+.labsys_mop_l_status_percentStickDiv img{ /* the bar is an img with a transparent gif. */
                     margin: 0px; 
                     border: none;
                     width: 95%;
