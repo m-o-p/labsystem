@@ -120,7 +120,7 @@ function parseHTML( &$object ){
 //    $object = preg_replace('/ ([\w\s])/', '&nbsp;\\1', nl2br( htmlspecialchars( $object ) ) );
 //    $object = nl2br( htmlspecialchars( $object ) );
     $object = str_replace(array('  ', "\t"), array('&nbsp; ', '&nbsp; &nbsp; '),
-                           nl2br( htmlentities( $object, ENT_QUOTES | ENT_IGNORE  ) )
+                           nl2br( htmlentities( $object ) )
               );
   }
 }
@@ -153,7 +153,7 @@ function returnHTML( $object ){
 * @return $string The altered $text.
 */
 function returnEditable( $text ){ /* removes anything with special purpose for editing */
-  return str_replace( "_", "&#x005F;", htmlentities( $text, ENT_QUOTES | ENT_IGNORE ) );
+  return str_replace( "_", "&#x005F;", htmlentities( $text ) );
 }
 
 /**
@@ -221,6 +221,40 @@ function sanitizeFileName( $fileName ){
   return preg_replace( '/[^\da-z.-]+/i', '_', $fileName );
 }
 
+/**
+ * Generates a random name. This is used to pseudonymize names.
+ * @return unknown|string
+ */
+$vowels = array("a", "e", "o", "u");
+$consonants = array("b", "c", "d", "v", "g", "t");
+function randVowel()
+{
+  global $vowels;
+  return $vowels[array_rand($vowels, 1)];
+}
+
+function randConsonant()
+{
+  global $consonants;
+  return $consonants[array_rand($consonants, 1)];
+}
+function randomName(){
+  $length = rand(3,5);
+  $result='';
+  $lastVowel=1;
+  while($length-->0){
+    $lastVowel +=rand(0,1); // add some uncertainty
+    if ($lastVowel>=2){
+      // consonant
+      $result.=randConsonant();
+      $lastVowel=0;
+    }else{
+      $result.=randVowel();
+      $lastVowel++;
+    }
+  }
+  return ucfirst($result);
+}
 /**
  * These links are used for the arrow navigation in /include/page_layout.inc at the bottom.
  * They are set by EB::prev, EB::next, and EB::TOC.
