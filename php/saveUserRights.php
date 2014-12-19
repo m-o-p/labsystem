@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -33,15 +33,15 @@
 
 require( "../include/init.inc" );
 
-if ( !isset($_POST['REDIRECTTO'])     
+if ( !isset($_POST['REDIRECTTO'])
    ){
       trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
       exit;
      }
 
-if ( !( isset($_POST['SESSION_ID']) && 
-      ($_POST['SESSION_ID'] != "") && 
-      ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */   
+if ( !( isset($_POST['SESSION_ID']) &&
+      ($_POST['SESSION_ID'] != "") &&
+      ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */
    ){
       trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
       exit;
@@ -50,13 +50,13 @@ if ( !( isset($_POST['SESSION_ID']) &&
 // check for all user ids if data are there and save the changes if there are changes.
   require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
   require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-  
+
   $uDBi = new DBInterfaceUser();
   $uDBi->getAllData();
   while( $userData = $uDBi->getNextData() ){
     // only take present users!
     if ( !isset( $_POST[ $userData["uid"].'_present' ] ) ) continue;
-    
+
     $userRightsNew=IS_USER; // set back to minimum rights
 
    /* Wouldn't it make sense to be able to remove the IS_USER bit?
@@ -67,16 +67,20 @@ if ( !( isset($_POST['SESSION_ID']) &&
 
     $currentTeam = "";
     if ( isset( $_POST[$userData["uid"]."_team"] ) ) $currentTeam = $_POST[$userData["uid"]."_team"];
-    
+
     $urDBI = new DBInterfaceUserRights();
     $ur = $urDBI->getData4( $userData["uid"] );
-    if ( ( $userRightsNew != $ur['rights'] ) || ( $currentTeam != $ur['currentTeam'] ) ) // changes?
+    if ( ( $userRightsNew != $ur['rights'] ) || ( $currentTeam != $ur['currentTeam'] ) ){ // changes?
       $urDBI->setData4( $userData["uid"], $userRightsNew, $currentTeam );
+      if ($userData['uid']==$_SESSION["uid"]){
+        $_SESSION['userRights']=$userRightsNew; // immediately change my rights after change
+      }
+    }
   }
 
 // note
   $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
-  
+
   makeLogEntry( 'system', 'user rights saved' );
 
 // redirect
