@@ -705,10 +705,11 @@ class LlElement extends Element{
 
     // add entry to correct all users
     if( $usr->isOfKind( IS_CORRECTOR ) &&
-        ( !$usr->isSeeingSomeonesData() || ( $usr->theSeeingUid() != "all" ) ) )
-      $myRetVal .=      "<a href=\"".$url->link2("../php/executeOnLab.php?address=l".$this->idx."&function=setSeeingUID&param=".urlencode( '"all"' )."&redirectTo=".urlencode($_SERVER['REQUEST_URI']))."\">". //urlencode("../pages/view.php?address=l".$this->idx.".labStatus")
+        ( !$usr->isSeeingSomeonesData() || ( $usr->theSeeingUid() != "all" ) ) ){
+      $myRetVal .=      "<a href=\"".$url->link2("../php/executeOnLab.php?address=l".$this->idx."&function=setSeeingUID&param=".urlencode( '"all"' )."&redirectTo=".urlencode(str_replace($url->get('seeMe'),'',$_SERVER['REQUEST_URI'])))."\">". //urlencode("../pages/view.php?address=l".$this->idx.".labStatus")
                         $lng->get("showAllUsersAnswers").
                         "</a>";
+    }
 
       $myRetVal .=   "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_lab_prelab_credits\">";
