@@ -301,9 +301,10 @@ class LlElement extends Element{
                     "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".   // to check whether the call is valid
                     "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
                     "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
+                    "onClick=\"return confirmLink(this, '".( $lng->get("labCloseNote") != '' ? $lng->get("labCloseNote") : $lng->get("closeLab"))."');\" ".
                            "value=\"".$lng->get("closeLab")."\">\n".
                     "</FORM>\n".
-                    ( $lng->get("labCloseNote")!="" ? "<div class=\"labsys_mop_note\">\n".$lng->get("labCloseNote")."</div>\n" : '');
+                    ( $lng->get("labCloseNote") != '' ? "<div class=\"labsys_mop_note\">\n".$lng->get("labCloseNote")."</div>\n" : '');
 
    // The following is a slightly modified ( add amount of questions and their possibleCredits) of LcElement::showAllElementsOfType();
     $parameter = Array( 'addr' => $fullAddress.".C".$this->labCollectionIdx,
@@ -429,10 +430,10 @@ class LlElement extends Element{
    */
   function percentStick( $givenCredits, $possibleCredits, $description, $bw=FALSE ){
     global $cfg;
-    $percentage = ($possibleCredits>0?$givenCredits/$possibleCredits : 0);
+    $percentage = ($possibleCredits>0 && $givenCredits>0?$givenCredits/$possibleCredits : 0);
     $percentageFailed = $cfg->get("percentageFailedPreLab");
 
-    $style="labsys_mop_l_status_percentStickDiv";
+    $style=($givenCredits>=0?'labsys_mop_l_status_percentStickDiv':'labsys_mop_l_status_percentStickDivNegative');
     $color = ($bw ? '000' : LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed ));
 
     return "<div class=\"".$style."\" style=\"height:".($possibleCredits*4).'px" title="'.$givenCredits.'/'.$possibleCredits.' '.$description.'">'.

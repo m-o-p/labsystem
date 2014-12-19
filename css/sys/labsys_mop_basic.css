@@ -788,6 +788,24 @@ fieldset{
                     width: 4px;
                     margin-right:1px
   }
+  @-webkit-keyframes 'blink' {
+    0% { background: rgba(255,0,0,0.5); }
+    50% { background: rgba(255,0,0,0); }
+    100% { background: rgba(255,0,0,0.5); }
+}
+  .labsys_mop_l_status_percentStickDivNegative{ /* shown in the lab status table below the percent value */
+                    display:inline;
+                    float:left;
+                    background-color: #f00;
+                    border: dotted 1px #f00;
+                    width: 8px;
+                    margin-right:1px;
+    -webkit-animation-direction: normal;
+    -webkit-animation-duration: 5s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: blink;
+    -webkit-animation-timing-function: ease;  
+  }
   .labsys_mop_l_status_percentStickDiv img{ /* the bar is an img with a transparent gif. */
                     margin: 0px; 
                     border: none;
