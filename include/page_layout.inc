@@ -181,9 +181,9 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
           if ( isset($SYSINFO) )  echo("<span class=\"labsys_mop_systeminfo\">".$SYSINFO."</span> ");
           if ( isset($SYSALERT) ) echo("<span class=\"labsys_mop_systemalert\">".$SYSALERT."</span> ");
           // seeing someone
-          if ( $usr->isSeeingSomeonesData() )
+          if ( $usr->isSeeingSomeonesData() ){
             echo( '<span class="labsys_mop_seeingSomeone">'.
-                  '<a href="'.$url->link2( '../php/executeOnLab.php?address=l1&function=setSeeingUID&param=%22%22&redirectTo='.urlencode( $_SERVER['REQUEST_URI'] ) ).'">'.
+                  '<a href="'.$url->link2( '../php/executeOnLab.php?address=l1&function=setSeeingUID&param=%22%22&redirectTo='.urlencode( str_replace( urlencode($usr->theSeeingUid()), '', $_SERVER['REQUEST_URI'] ) ) ).'">'.
                   '['.$lng->get("dataOf").' '.$usr->theSeeingDescr().' '.
                   '<img src="../syspix/button_stop_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
                   '</a>'.
@@ -192,6 +192,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
                   '</a>'.
                   ' ]'.
                   '</span> ' );
+          }
           if ( $url->available('hideAnswers') )
             echo( '<span class="labsys_mop_seeingSomeone">'.
                   '['.$lng->get("dataOf").' '.
@@ -200,17 +201,33 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
                   '</a>'.
                   ' ]'.
                   '</span> ' );
+          // obfuscate user names
+          if ( $usr->isOfKind( IS_CORRECTOR ) ){
+            echo( '<span class="labsys_mop_seeingSomeone">'.
+                '['.$lng->get('pseudoNames').' ' );
+            if ( $url->available('pseudoNames') ){
+              echo('<a href="'.str_replace( '&pseudoNames=true', '', $_SERVER['REQUEST_URI'] ).'">'.
+                  '<img src="../syspix/button_paused_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'pseudoNames' ).'">'.
+                  '</a>');
+            }else
+              echo('<a href="'.$_SERVER['REQUEST_URI'].'&pseudoNames=true">'.
+                  '<img src="../syspix/button_play_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
+                  '</a>'
+              );
+            echo( ' ]'.
+                '</span> ' );
+          }
           // temporarily hide example solutions
           if ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ){
             echo( '<span class="labsys_mop_seeingSomeone">'.
                   '['.$lng->get('hideExampleSolutionInThisTab').' ' );
             if ( $url->available('hideExampleSolutionInThisTab') ){
               echo('<a href="'.str_replace( '&hideExampleSolutionInThisTab=true', '', $_SERVER['REQUEST_URI'] ).'">'.
-                   '<img src="../syspix/button_play_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
+                   '<img src="../syspix/button_paused_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
                    '</a>');
             }else
               echo('<a href="'.$_SERVER['REQUEST_URI'].'&hideExampleSolutionInThisTab=true">'.
-                   '<img src="../syspix/button_paused_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
+                   '<img src="../syspix/button_play_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'hideExampleSolutionInThisTab' ).'">'.
                    '</a>'
                    );
             echo( ' ]'.

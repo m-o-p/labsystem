@@ -141,9 +141,9 @@ MnuEntryRegister    = "registrieren"
 ; choseSysLng.php
 MnuEntrySysLng      = "Systemsprache"
 TitleSysLngSelect   = "Systemsprachauswahl"
-AvailableLng        = "Folgende Sprachen stehen zur Verfügung"
-NoteChooseSysLng    = "Klicken Sie auf den gewünschten Ländercode und das System läuft in der entsprechenden Sprache. (Dies gilt nur für das System, nicht für die Inhalte.)"
-NoteCreateOwnLng    = "Ihre Sprache fehlt? Kein Problem. Kopieren Sie einfach die folgenden Name = Wert Paare in eine Textdatei mit dem Namen [Ländercode].lng, übersetzen Sie die Strings in die gewünschte Sprache und speichern Sie diese im Systemverzeichnis des labsystems. Ab dann steht die Sprache hier zur Verfügung. Bitte stellen Sie die Sprachdatei der Community zur Verfügung. Kontaktdaten unten im System. Danke!"
+AvailableLng        = "Folgende Sprachen stehen zur Verfï¿½gung"
+NoteChooseSysLng    = "Klicken Sie auf den gewï¿½nschten Lï¿½ndercode und das System lï¿½uft in der entsprechenden Sprache. (Dies gilt nur fï¿½r das System, nicht fï¿½r die Inhalte.)"
+NoteCreateOwnLng    = "Ihre Sprache fehlt? Kein Problem. Kopieren Sie einfach die folgenden Name = Wert Paare in eine Textdatei mit dem Namen [Lï¿½ndercode].lng, ï¿½bersetzen Sie die Strings in die gewï¿½nschte Sprache und speichern Sie diese im Systemverzeichnis des labsystems. Ab dann steht die Sprache hier zur Verfï¿½gung. Bitte stellen Sie die Sprachdatei der Community zur Verfï¿½gung. Kontaktdaten unten im System. Danke!"
 
 ; s
 MnuEntrySchedule    = "Zeitplan"
@@ -190,13 +190,13 @@ uaAsUsrNmeIsUsedBy  = "als Benutzername wird schon verwendet von"
 uaNotBelong2Usr     = "wurde nicht gefunden. Die Adresse geh&ouml;rt zu keinem Benutzer..."
 
 ;unsaved changes
-discardChangesWarning = "Sie haben Ihre Änderungen auf der Seite noch nicht gespeichert. Wollen Sie die Seite wirklich verlassen?"
+discardChangesWarning = "Sie haben Ihre ï¿½nderungen auf der Seite noch nicht gespeichert. Wollen Sie die Seite wirklich verlassen?"
 
 ;i
 NotAllowedSaveLockAt= "Keine Erlaubnis zum Speichern der Antwort! Es gibt bereits ein Lock auf" ;; If the lock got placed on another answer this is not savable anymore.
 LockTakenFrom       = "Das Lock wurde von folgendem Eingabefeld genommen:" ;; " [idx of input]" gets added
 InputAlreadyClosed  = "Das Eingabefeld ist bereits geschlossen!"
-noiLockNote         = "Es ist bereits eine andere Frage zur Beantwortung gešffnet. Bitte beim Formulieren der Antworten zusammenarbeiten." ; when saving a not opened answer this text is added before the new and then the old answer.
+noiLockNote         = "Es ist bereits eine andere Frage zur Beantwortung geï¿½ffnet. Bitte beim Formulieren der Antworten zusammenarbeiten." ; when saving a not opened answer this text is added before the new and then the old answer.
 ;i upload
 noFilesYet          = "Keine hochgeladenen Dateien vorhanden."
 fileList            = "Hochgeladene Dateien"
@@ -246,11 +246,11 @@ labCloseNote        = "Durch Klick auf diesen Knopf werden <b>alle Antworten ges
 prelabCheckNote     = "Durch Klick auf diesen Knopf werden alle <b>oben gegebenen Antworten korrigiert</b>. Unbeantwortete Fragen sind mit dem <b><img src='../syspix/button_edit_13x12.gif' />-Symbol</b> markiert und <b>werden nicht &uuml;berpr&uuml;ft</b>.<br>Erst wenn alle PreLab-Fragen von allen Teammitgliedern richtig (symbolisiert durch einen gr&uuml;nen Rand) ausgef&uuml;llt wurden, wird das Lab sichtbar.<br />Zur Beantwortung steht die folgende Anzahl an Versuchen zur Verf&uuml;gung: "
 prelabStatusNote    = "Diese Benutzer (in <b>Reihenfolge des Beendens</b>) haben das PreLab schon beendet."
 
-uniqueIDnote        = "Dieser Bezeichner wird verwendet, wenn Sie das Lab exportieren. Er muss f&uuml;r jedes Lab eindeutig sein, da er verwendet wird, das Modul ins SVN einzuchecken. Am besten verwenden Sie für Ihre Institution und Ihren Kurs ein Prefix (z.B. TUM_ilab1_Statis_routing). Achtung: wenn Sie diesen Bezeichner ändern, wird das Modul unter dem neuen bezeichner exportiert und es besteht kein Bezug zum alten Bezeichner mehr."
+uniqueIDnote        = "Dieser Bezeichner wird verwendet, wenn Sie das Lab exportieren. Er muss f&uuml;r jedes Lab eindeutig sein, da er verwendet wird, das Modul ins SVN einzuchecken. Am besten verwenden Sie fï¿½r Ihre Institution und Ihren Kurs ein Prefix (z.B. TUM_ilab1_Statis_routing). Achtung: wenn Sie diesen Bezeichner ï¿½ndern, wird das Modul unter dem neuen bezeichner exportiert und es besteht kein Bezug zum alten Bezeichner mehr."
 uploadMaterialNote  = "Hier k&ouml;nnen Sie Bilder und andere Dateien, die Sie im Lab verwenden wollen verwalten. Der Speicherort ist importFilesDir (in der Konfiguration definierbar) / uniqueID (oben definiert)."
 imageUploadHeader   = "<u>Bilder</u> bitte hier hochladen:"
 fileUploadHeader    = "<u>Andere Dateien</u> bitte hier hochladen:"
-abstractNote        = "Diese Kurzfassung wird auf der Übersichtsseite jedes Moduls sowie auf der Übersichtsseite aller installierten Lernmodule angezeigt."
+abstractNote        = "Diese Kurzfassung wird auf der ï¿½bersichtsseite jedes Moduls sowie auf der ï¿½bersichtsseite aller installierten Lernmodule angezeigt."
 
 ; uaMyData.php
 uaMyDataNote        = "Hier k&ouml;nnen Sie Ihre pers&ouml;nlichen Daten &auml;ndern<br />Bitte geben Sie eine g&uuml;ltige Emailadresse an, die Sie regelm&auml;&szlig;ig abrufen, da Rundmails, vergessene Passw&ouml;rter und &auml;hnliches an diese Adresse geschickt werden..."
@@ -259,7 +259,7 @@ uaUnPwRemNote       = "Wenn Sie ein registrierter Benutzer sind, k&ouml;nnen Sie
 uaManageUsrNote     = "Um die Benutzerdaten zu &auml;ndern, auf die Benutzer klicken. (Sie m&uuml;ssen Korrektor sein!).<br />Die Zuordnungen zu den Kursen k&ouml;nnen auf dieser Seite vorgenommen werden."
 uaCreateUsrNote     = "Sie k&ouml;nnen Benutzer anlegen, indem Sie eine CSV Liste in das Feld unten eintragen.<br />Die erste Zeile ist die Headerzeile. F&uuml;gen Sie die aufgelisteten Feld Bezeichner, die sich bereits im Feld befinden passend in den Header Ihrer CSV Datei ein.<br>Die Benutzer werden dann mit Emailadresse als Benutzernamen und ein leeres Passwort angelegt.<br />Beides k&ouml;nnen sie auf der Passwort und/ oder Benutzernamenvergessen-Seite anfordern und dann dort auch &auml;ndern. Das hat den Seiteneffekt, dass die unvollst&auml;ndigen Benutzerdaten vervollst&auml;ndigt werden m&uuml;ssen zum Speichern...<br/>Meistens ist die <b>Selbstregistrierung &uuml;ber register.php</b> das geeignetere Mittel, um Teilnehmer hinzu zu f&uuml;gen. Dort werden gleich alle Stammdaten vom Teilnehmer abgefragt."
 uaNewUsrsSubscript  = "Die neu angelegten Benutzer werden diesen Kursen zugeordnet."
-uaUnassignedNote    = "Sie haben sich fŸr einen Kurs angemeldet sind aber <b>noch nicht zugewiesen</b>. <br>Daher finden Sie unten eine Liste anderer Teilnehmer, die auch f&uuml;r den Kurs registriert aber noch nicht zugeteilt sind in der Reihenfolge der Anmeldung. <br>Da &uuml;blicher Weise nicht alle Studirenden teilnehmen ist es nicht schlimm, wenn Sie auf der Warteliste stehen."
+uaUnassignedNote    = "Sie haben sich fï¿½r einen Kurs angemeldet sind aber <b>noch nicht zugewiesen</b>. <br>Daher finden Sie unten eine Liste anderer Teilnehmer, die auch f&uuml;r den Kurs registriert aber noch nicht zugeteilt sind in der Reihenfolge der Anmeldung. <br>Da &uuml;blicher Weise nicht alle Studirenden teilnehmen ist es nicht schlimm, wenn Sie auf der Warteliste stehen."
 uaWithdrawNote      = "Wenn SIe sich entscheiden, doch nicht am Kurs teilnehmen zu wollen dr&uuml;cken Sie bitte den folgenden Knopf. Sie k&ouml;nnen sich bei Bedarf danach erneut registrieren, landen dann aber am Ende der Liste."
 uaWithdrawButtonText= "Ich bin mir sicher, dass ich nicht am Kurs teilnehmen und anderen Studierenden diese Chance geben m&ouml;chte."
 lastRegistered      = "Datum der letzten Registrierung"
@@ -313,7 +313,7 @@ otherUser           = "Benutzer"         ;; legend of the rest of the mailReceiv
 yourMail            = "Ihre Mail"
 subject             = "Betreff"
 message             = "Nachricht"
-noCopy2Me           = "Keine Kopie an mich senden."
+individualMails     = "Eine individualle Mail an jeden Empfï¿½nger senden."
 mailViaBcc          = "Mailempf&auml;nger verbergen."
 
 ; uaMyData.php
@@ -412,7 +412,8 @@ checkPrelab         = "PreLab-Fragen korrigieren" ; label of the button...
 closeLab            = "Lab schlie&szlig;en"
 showAllUsersAnswers = "Antworten ALLEr BENUTZER"
 stopSeeingData      = "Ich will keine Daten von anderen mehr sehen." ;; below the user statistic page if the corrector is viewing someones data
-hideExampleSolutionInThisTab = "Musterl&ouml;sungen in diesem Tab ausblenden."
+hideExampleSolutionInThisTab = "Musterl&ouml;sungen ausblenden"
+pseudoNames         = "Pseudonamen verwenden"
 updateStatus        = "Status aktualisieren"
 statusOfAllLabs     = "Statistik aller Labs."
 ;; used on the all lab overview page:
@@ -429,7 +430,7 @@ reMapIconExplain    = "Durch Klick auf dieses Icon wird der entsprechende Benutz
 prelabAllnoFExplain = "Noch haben nicht alle Teammitglieder das PreLab beendet."
 prelabAllFinExplain = "Alle Teammitglieder haben das PreLab beendet und k&ouml;nnen jetzt das Lab sehen."
 labOpenExplain      = "Das Lab ist noch offen. Die Fragen k&ouml;nnen noch beantwortet werden."
-labScheduleOverExpl = "Die Zeit fŸr das Lab ist abgelaufen. Dies Studierenden kšnnen nicht mehr antworten." ; sent in mail to correctors
+labScheduleOverExpl = "Die Zeit fï¿½r das Lab ist abgelaufen. Dies Studierenden kï¿½nnen nicht mehr antworten." ; sent in mail to correctors
 labClosedExplain    = "Das Lab ist geschlossen und kann korrigiert werden."
 labNoCorrExplain    = "Das Lab/ die Frage ist noch nicht korrigiert."
 labCorrExplain      = "Das Lab/ die Frage ist korrigiert."
