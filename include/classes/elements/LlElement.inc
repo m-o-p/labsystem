@@ -552,7 +552,7 @@ class LlElement extends Element{
         $myRetVal .= "</td>".
                   // member's name
                      "<td class=\"labsys_mop_l_status_table_cell_name\">".
-                     ( $usr->isOfKind( IS_CORRECTOR ) ? "<a href=\"".$url->link2("../php/executeOnLab.php?address=l".$this->idx."&function=setSeeingUID&param=".urlencode( '"'.$labStatus['uid'].'"' )."&redirectTo=".urlencode($_SERVER['REQUEST_URI']))."\">" : '').
+                     ( $usr->isOfKind( IS_CORRECTOR ) ? "<a href=\"".str_replace( '&seeMe='.$url->get('seeMe'), '', $_SERVER['REQUEST_URI'] ).'&seeMe='.urlencode( $labStatus['uid'] )."\">" : '').
                      ( ($previousMembersname != $userData["name"].", ".$userData["foreName"]) ? $userData["name"].", ".$userData["foreName"]." " : '').
                      ( $usr->isOfKind( IS_CORRECTOR ) ?  "</a>"  : '' ).
                      EB::history( $userData["name"].", ".$userData["foreName"]." (".$lng->get("team")." ".$labStatus['currentTeam'].")".":<br>\n".$labStatus['history'], "l".$this->idx, true ).
@@ -706,7 +706,7 @@ class LlElement extends Element{
     // add entry to correct all users
     if( $usr->isOfKind( IS_CORRECTOR ) &&
         ( !$usr->isSeeingSomeonesData() || ( $usr->theSeeingUid() != "all" ) ) ){
-      $myRetVal .=      "<a href=\"".$url->link2("../php/executeOnLab.php?address=l".$this->idx."&function=setSeeingUID&param=".urlencode( '"all"' )."&redirectTo=".urlencode(str_replace($url->get('seeMe'),'',$_SERVER['REQUEST_URI'])))."\">". //urlencode("../pages/view.php?address=l".$this->idx.".labStatus")
+      $myRetVal .=      "<a href=\"".str_replace( '&seeMe='.$url->get('seeMe'), '', $_SERVER['REQUEST_URI'] ).'&seeMe=all'."\">". //urlencode("../pages/view.php?address=l".$this->idx.".labStatus")
                         $lng->get("showAllUsersAnswers").
                         "</a>";
     }
@@ -906,7 +906,7 @@ class LlElement extends Element{
    // if seeing someone "stop seeing" button
     if( $usr->isSeeingSomeonesData() )
       $myRetVal .=  "<div class=\"labsys_mop_button_fullwidth\">\n".
-                    "<a href=\"".$url->link2("../php/executeOnLab.php?address=l".$this->idx."&function=setSeeingUID&param=".urlencode( '""' )."&redirectTo=".urlencode("../pages/view.php?address=l".$this->idx.".labStatus"))."\">".
+                    "<a href=\"".str_replace( '&seeMe='.$url->get('seeMe'), '', $_SERVER['REQUEST_URI']) .'&seeMe=none'."\">".
                     $lng->get("stopSeeingData").
                     "</a>".
                     "</div>\n";
@@ -1924,22 +1924,6 @@ class LlElement extends Element{
     $this->updateStatus(); // links automatically
     // One could also display the page here but that way it is left to the normal mechanism...
     //header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
-  }
-
-  /**
-  * Called by ../php/executeOnLab.php.
-  * Sets the observed $uid (for correctors);
-  *
-  * @param $uid   The user's unique identifier.
-  */
-  function setSeeingUID( $uid ){
-    global $usr, $url;
-    $usr->seesDataOf( $uid );
-
-    // One could also display the page here but that way it is left to the normal mechanism...
-    if ($url->available('redirectTo')){
-      header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
-    }
   }
 
   /**

@@ -41,7 +41,7 @@ if ( !$element = $DBI->getData2idx( $num ) ){
 $pge->title        = $element->title;
 $pge->matchingMenu = $element->getMatchingMenu();
 
-if($url->available('seeMe') && $usr->isOfKind(IS_CORRECTOR)){
+if($url->available('seeMe') && $usr->isOfKind(IS_CORRECTOR) && $url->get('seeMe')!='none'){
     $usr->seesDataOf( $url->get('seeMe') );
 }
 

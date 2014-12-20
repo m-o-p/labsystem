@@ -183,7 +183,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
           // seeing someone
           if ( $usr->isSeeingSomeonesData() ){
             echo( '<span class="labsys_mop_seeingSomeone">'.
-                  '<a href="'.$url->link2( '../php/executeOnLab.php?address=l1&function=setSeeingUID&param=%22%22&redirectTo='.urlencode( str_replace( urlencode($usr->theSeeingUid()), '', $_SERVER['REQUEST_URI'] ) ) ).'">'.
+                  '<a href="'.str_replace( '&seeMe='.$url->get('seeMe'), '', $_SERVER['REQUEST_URI'] ).'">'.
                   '['.$lng->get("dataOf").' '.$usr->theSeeingDescr().' '.
                   '<img src="../syspix/button_stop_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
                   '</a>'.
