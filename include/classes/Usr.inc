@@ -33,8 +33,12 @@
 * @version    1.0
 */
 class Usr extends ElementUser{
+  private $iSeeUID;
+  private $iSeeDesc;
   function Usr(){
     $this->ElementUser( "noID", "guest", "M.", "Guest", 0, IS_GUEST, "none@localhost", time() );
+    $this->iSeeUID='';
+    $this->iSeeDesc='';
   }
 
   /**
@@ -51,7 +55,7 @@ class Usr extends ElementUser{
   */
   function isSeeingSomeonesData(){
     global $url;
-    return ( $this->isOfKind( IS_CORRECTOR ) && isset( $_SESSION['seeingUID'] ) && !($url->available('hideAnswers')) /* paused */ );
+    return ( $this->isOfKind( IS_CORRECTOR ) && !empty( $this->iSeeUID ) && !($url->available('hideAnswers')) /* paused */ );
   }
 
   /**
@@ -59,7 +63,7 @@ class Usr extends ElementUser{
   * @return The UID of the watched user or false.
   */
   function theSeeingUid(){
-    if ( $this->isSeeingSomeonesData() ) return $_SESSION['seeingUID'];
+    if ( $this->isSeeingSomeonesData() ) return $this->iSeeUID;
     else return false;
   }
 
@@ -68,7 +72,7 @@ class Usr extends ElementUser{
   * @return The description of the watched user or false.
   */
   function theSeeingDescr(){
-    if ( $this->isSeeingSomeonesData() ) return $_SESSION['seeingDESCR'];
+    if ( $this->isSeeingSomeonesData() ) return $this->iSeeDesc;
     else return false;
   }
 
@@ -80,19 +84,14 @@ class Usr extends ElementUser{
     global $lng;
     if ( !(empty($uid) || $this->isOfKind( IS_CORRECTOR ) || ((IS_DB_USER_ADMIN != 0) && $this->isOfKind( IS_DB_USER_ADMIN ))) ) return false; // only correctors can do that
 
-    if ( $uid == "" ){ /* Turn off. */
-      if ( isset( $_SESSION['seeingUID'] ) ){
-        unset( $_SESSION['seeingUID'] );
-        unset( $_SESSION['seeingDESCR'] );
-      }
-    }else{
-      if ( $uid != "all" ){ // seeing one member's answers
-                              $userData = $this->getUserInformation( $uid );
-                              $_SESSION['seeingDESCR'] = $userData["foreName"]." ".$userData["name"]." (".$userData["userName"].")";
+    if ( !empty($uid) ){
+      $this->iSeeUID = $uid;
+      if ( $this->iSeeUID != 'all' ){ // seeing one member's answers
+                              $userData = $this->getUserInformation( $this->iSeeUID );
+                              $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$userData["userName"].")";
       }else{ // seeing ALL member's answers
-                              $_SESSION['seeingDESCR'] = $lng->get("showAllUADesc");
+                              $this->iSeeDesc = $lng->get("showAllUADesc");
       }
-      $_SESSION['seeingUID'] = $uid;
     }
   }
 
