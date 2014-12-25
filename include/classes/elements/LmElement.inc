@@ -98,7 +98,7 @@ class LmElement extends Element{
   * @return       The LmDBInterfaceAnswers() or FALSE.
   */
   function loadUserData4( $uid ){
-    global $usr, $cfg;
+    global $usr, $cfg, $url;
     if ( $uid != "" ){
       $answerData = $this->mcDBI->getData4( $uid,
                                             $this->idx,
