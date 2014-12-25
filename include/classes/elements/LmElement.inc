@@ -352,7 +352,7 @@ class LmElement extends Element{
                   while ( ($nextUID = $this->mcDBI->getNextData()) ){
                     //information row
                     $userData = $usr->getUserInformation( $nextUID );
-                    $answers .= "<div class=\"labsys_mop_m_name\">".$userData["link"]."</div>\n";
+                    $answers .= "<div class=\"labsys_mop_m_name\">".$userData['foreName'].' '.$userData['name']."</div>\n";
                     // answer
                     $this->loadUserData4( $nextUID );
                     $answers .= $this->showAnswer( $fullAddress );

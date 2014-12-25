@@ -124,9 +124,7 @@ class Usr extends ElementUser{
       }
       return Array( "name"     => ($url->available('pseudoNames')? randomName():$userData["name"]),
                     "foreName" => ($url->available('pseudoNames')? randomName():$userData["foreName"]),
-                    "userName" => ($url->available('pseudoNames')? randomName():$userData["userName"]),
-                    "link"     => "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l1&function=setSeeingUID&param=".urlencode( "\"".$uid."\"" )."&redirectTo=".urlencode( $_SERVER['REQUEST_URI'] ) )."\">".
-                                  $userData["name"].", ".$userData["foreName"]."</a>"
+                    "userName" => ($url->available('pseudoNames')? randomName():$userData["userName"])
                    );
     }
   }
