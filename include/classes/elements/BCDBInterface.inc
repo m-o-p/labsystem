@@ -48,6 +48,27 @@ class BCDBInterface extends LcDBInterface {
      So later you might replace the following by:
        return (BCElement) parent:: getData2idx( $idx );
   */
+
+  /**
+   * Creates a new element of the required type using the database query result given as parameter.
+   * @param unknown $data The result of the database query.
+   * @return LcElement The new element filled with the data from the DB.
+   */
+  function createElementFromDbResult( &$data, $isInColl=false, $isInLab=false ){
+    return new BCElement( $data['idx'],                                 // $idx
+        stripslashes($data['title']),                 // $title
+        stripslashes($data['contents']),              // $contents
+        stripslashes($data['matching_menu']),         // $matchingMenu
+        ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
+        ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
+        ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
+        ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
+        $data['history'],                             // $history
+        $isInColl,                                    // $isInColl
+        $isInLab                                      // $isInLab
+    );
+  }
+
   function getData2idx( $idx, $isInColl=false, $isInLab=false ){
     //Something like "" return (BCElement) parent::getData2idx( $idx );""
     global $cfg,$url,$lng,$usr;
@@ -75,18 +96,7 @@ class BCDBInterface extends LcDBInterface {
         $data['history'] = preg_replace('/^(@@'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
 
-      return new BCElement( $data['idx'],                                 // $idx
-                            stripslashes($data['title']),                 // $title
-                            stripslashes($data['contents']),              // $contents
-                            stripslashes($data['matching_menu']),         // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                            $data['history'],                             // $history
-                            $isInColl,                                    // $isInColl
-                            $isInLab                                      // $isInLab
-                          );
+      return $this->createElementFromDbResult( $data, $isInColl, $isInLab );
     }
   }
 
@@ -134,22 +144,12 @@ class BCDBInterface extends LcDBInterface {
   * @return BCElement
   * @return FALSE     If no more datasets are available.
   */
-  function getNextData(){
-    // Something like ""return (BCElement) parent::getNextData();""
-    if ($data = mysql_fetch_array($this->queryResult))
-      return new BCElement( $data['idx'],                                 // $idx
-                            stripslashes($data['title']),                 // $title
-                            stripslashes($data['contents']),              // $contents
-                            stripslashes($data['matching_menu']),         // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                            $data['history'],                             // $history
-                            false,                                        // $isInColl
-                            false                                         // $isInLab
-                          );
-    return false;
+  function getNextData($isInColl=false, $isInLab=false){
+    if ($data = mysql_fetch_array($this->queryResult)){
+      return $this->createElementFromDbResult( $data, $isInColl, $isInLab );
+    } else {
+      return false;
+    }
   }
 }
 $GLOBALS["CDBI"] = new BCDBInterface();

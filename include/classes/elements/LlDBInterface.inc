@@ -42,6 +42,34 @@ class LlDBInterface {
   }
 
   /**
+   * Creates a new element of the required type using the database query result given as parameter.
+   * @param unknown $data The result of the database query.
+   * @return LcElement The new element filled with the data from the DB.
+   */
+  function createElementFromDbResult( &$data, $isInColl=false ){
+    return new LlElement( $data['idx'],                                   // $idx
+                          // create a new ID if there is none (makes sure it is always shown and saved later...)
+                          ( !isset($data['uniqueID']) || (($data['uniqueID'] == '') && $data['idx'] != 1) ) ?
+                            sanitizeFileName( $_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() ))
+                            : $this->myDBC->unEscapeString($data['uniqueID']),                  // $uniqueID
+                          $this->myDBC->unEscapeString($data['title']),                   // $title
+                          ( isset( $data['authors'] ) ? // helpful for compatibility issues as the field is new
+                            $this->myDBC->unEscapeString($data['authors'])
+                            : '' ),     // $authors
+                          $this->myDBC->unEscapeString($data['comment']),                 // $comment
+                          $data['prelab_collection_idx'],                 // $prelabCollectionIdx
+                          $data['lab_collection_idx'],                    // $labCollectionIdx
+                          $this->myDBC->unEscapeString($data['matching_menu']),           // $matchingMenu
+                          ($data['visible_before_first_sched'] == "1"),   // $visibleBefore1stSched
+                          ($data['visible_during_sched'] == "1"),         // $visibleDuringSched
+                          ($data['visible_after_first_sched'] == "1"),    // $visibleAfter1stSched
+                          ($data['visible_only_in_collection'] == "1"),   // $visibleOnlyInCollection
+                          $data['history'],                               // $history
+                          $isInColl                                       // $isInColl
+                         );
+  }
+
+  /**
   * Returns the LlElement specified by $idx.
   * Calling this method is the normal way to get an instance of the fitting element.
   * This might seem strange but since constructors can't be overloaded it was the better
@@ -81,26 +109,7 @@ class LlDBInterface {
         $data['history'] = preg_replace('/^(@@'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
 
-      return new LlElement( $data['idx'],                                   // $idx
-                            // create a new ID if there is none (makes sure it is always shown and saved later...)
-                            ( !isset($data['uniqueID']) || (($data['uniqueID'] == '') && $data['idx'] != 1) ) ?
-                              sanitizeFileName( $_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() ))
-                              : $this->myDBC->unEscapeString($data['uniqueID']),                  // $uniqueID
-                            $this->myDBC->unEscapeString($data['title']),                   // $title
-                            ( isset( $data['authors'] ) ? // helpful for compatibility issues as the field is new
-                              $this->myDBC->unEscapeString($data['authors'])
-                              : '' ),     // $authors
-                            $this->myDBC->unEscapeString($data['comment']),                 // $comment
-                            $data['prelab_collection_idx'],                 // $prelabCollectionIdx
-                            $data['lab_collection_idx'],                    // $labCollectionIdx
-                            $this->myDBC->unEscapeString($data['matching_menu']),           // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"),   // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),         // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),    // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"),   // $visibleOnlyInCollection
-                            $data['history'],                               // $history
-                            $isInColl                                       // $isInColl
-                          );
+      return $this->createElementFromDbResult( $data, $isInColl );
     }
   }
 
@@ -221,29 +230,12 @@ class LlDBInterface {
   * @return LiElement
   * @return FALSE     If no more datasets are available.
   */
-  function getNextData(){
-    global $cfg;
-    if ($data = mysql_fetch_array($this->queryResult))
-      return new LlElement( $data['idx'],                                   // $idx
-                            ( !isset($data['uniqueID']) || ($data['uniqueID'] == '') ) ?
-                              urlencode($_SERVER['SERVER_NAME'].'-'.$cfg->get('SystemTitle').'-course_'.md5( time() ))
-                              : $this->myDBC->unEscapeString($data['uniqueID']),                   // $uniqueID
-                            $this->myDBC->unEscapeString($data['title']),                   // $title
-                            ( isset( $data['authors'] ) ? // helpful for compatibility issues as the field is new
-                              $this->myDBC->unEscapeString($data['authors'])
-                              : '' ),                   // $authors
-                            $this->myDBC->unEscapeString($data['comment']),                 // $comment
-                            $data['prelab_collection_idx'],                 // $prelabCollectionIdx
-                            $data['lab_collection_idx'],                    // $labCollectionIdx
-                            $this->myDBC->unEscapeString($data['matching_menu']),           // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"),   // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),         // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),    // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"),   // $visibleOnlyInCollection
-                            $data['history'],                               // $history
-                            false                                           // $isInColl
-                          );
-    return false;
+  function getNextData( $isInColl=false ){
+    if ( $data = mysql_fetch_array($this->queryResult) ){
+      return $this->createElementFromDbResult($data, $isInColl);
+    }else{
+      return false;
+    }
   }
 
   /**

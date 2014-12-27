@@ -41,6 +41,27 @@ class LcDBInterface {
     $this->myTable = "collections";
   }
 
+
+  /**
+   * Creates a new element of the required type using the database query result given as parameter.
+   * @param unknown $data The result of the database query.
+   * @return LcElement The new element filled with the data from the DB.
+   */
+  function createElementFromDbResult( &$data, $isInColl=false, $isInLab=false ){
+    return new LcElement( $data['idx'],                                 // $idx
+        $this->myDBC->unEscapeString($data['title']),                 // $title
+        $this->myDBC->unEscapeString($data['contents']),              // $contents
+        $this->myDBC->unEscapeString($data['matching_menu']),         // $matchingMenu
+        ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
+        ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
+        ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
+        ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
+        $data['history'],                             // $history
+        $isInColl,                                    // $isInColl
+        $isInLab                                      // $isInLab
+    );
+  }
+
   /**
   * Returns the LcElement specified by $idx.
   * Calling this method is the normal way to get an instance of the fitting element.
@@ -83,18 +104,7 @@ class LcDBInterface {
         $data['history'] = preg_replace('/^(@@'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
       //if ( $data['contents'] == '' ) $data['contents'] = 'p1 m1 i1'; // if empty fill with standard filler
-      return new LcElement( $data['idx'],                                 // $idx
-                            $this->myDBC->unEscapeString($data['title']),                 // $title
-                            $this->myDBC->unEscapeString($data['contents']),              // $contents
-                            $this->myDBC->unEscapeString($data['matching_menu']),         // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                            $data['history'],                             // $history
-                            $isInColl,                                    // $isInColl
-                            $isInLab                                      // $isInLab
-                          );
+      return $this->createElementFromDbResult( $data, $isInColl, $isInLab );
     }
   }
 
@@ -216,21 +226,12 @@ class LcDBInterface {
   * @return LcElement
   * @return FALSE     If no more datasets are available.
   */
-  function getNextData(){
-    if ($data = mysql_fetch_array($this->queryResult))
-      return new LcElement( $data['idx'],                                 // $idx
-                            $this->myDBC->unEscapeString($data['title']),                 // $title
-                            $this->myDBC->unEscapeString($data['contents']),              // $contents
-                            $this->myDBC->unEscapeString($data['matching_menu']),         // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                            $data['history'],                             // $history
-                            false,                                        // $isInColl
-                            false                                         // $isInLab
-                          );
-    return false;
+  function getNextData($isInColl=false, $isInLab=false){
+    if ($data = mysql_fetch_array($this->queryResult)){
+      return $this->createElementFromDbResult( $data, $isInColl, $isInLab );
+    } else {
+      return false;
+    }
   }
 
   /**

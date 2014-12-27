@@ -101,6 +101,23 @@ class LsDBInterface {
 // The "normal" DBI starts here...
 
   /**
+   * Creates a new element of the required type using the database query result given as parameter.
+   * @param unknown $data The result of the database query.
+   * @return LcElement The new element filled with the data from the DB.
+   */
+  function createElementFromDbResult( &$data, $isInColl=false ){
+    return new LsElement( $data['idx'],                   // $idx
+        $data['id'],                    // $id
+        $data['num'],                   // $num
+        strtotime(  ( $data['idx'] == 1 ? 'today 0:00:00' : $data['start'] ) ),   // $start
+        strtotime(  ( $data['idx'] == 1 ? '+2 weeks 23:59:59' : $data['stop'] ) ),    // $stop
+        $this->myDBC->unEscapeString($data['comment']), // $comment
+        $this->myDBC->unEscapeString($data['history']), // $history
+        $isInColl                       // $isInColl
+    );
+  }
+
+  /**
   * Returns the LsElement specified by $idx.
   * Calling this method is the normal way to get an instance of the fitting element.
   * This might seem strange but since constructors can't be overloaded it was the better
@@ -140,15 +157,7 @@ class LsDBInterface {
         $data['history'] = preg_replace('/^(@@'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
 
-      return new LsElement( $data['idx'],                   // $idx
-                            $data['id'],                    // $id
-                            $data['num'],                   // $num
-                            strtotime(  ( $idx == 1 ? 'today 0:00:00' : $data['start'] ) ),   // $start
-                            strtotime(  ( $idx == 1 ? '+2 weeks 23:59:59' : $data['stop'] ) ),    // $stop
-                            $this->myDBC->unEscapeString($data['comment']), // $comment
-                            $this->myDBC->unEscapeString($data['history']), // $history
-                            $isInColl                       // $isInColl
-                           );
+      return $this->createElementFromDbResult($data,$isInColl);
     }
   }
 
@@ -267,18 +276,12 @@ class LsDBInterface {
   * @return LsElement
   * @return FALSE     If no more datasets are available.
   */
-  function getNextData(){
-    if ($data = mysql_fetch_array($this->queryResult))
-      return new LsElement( $data['idx'],                   // $idx
-                            $data['id'],                    // $id
-                            $data['num'],                   // $num
-                            strtotime(  $data['start'] ),   // $start
-                            strtotime(  $data['stop'] ),    // $stop
-                            $this->myDBC->unEscapeString($data['comment']), // $comment
-                            $this->myDBC->unEscapeString($data['history']), // $history
-                            false                           // $isInColl
-                           );
-    return false;
+  function getNextData( $isInColl=false ){
+    if ( $data = mysql_fetch_array($this->queryResult) ){
+      return $this->createElementFromDbResult($data, $isInColl);
+    }else{
+      return false;
+    }
   }
 
   /**

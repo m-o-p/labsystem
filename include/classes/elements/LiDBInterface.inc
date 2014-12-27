@@ -42,6 +42,25 @@ class LiDBInterface extends Ddbc{
   }
 
   /**
+   * Creates a new element of the required type using the database query result given as parameter.
+   * @param unknown $data The result of the database query.
+   * @return LcElement The new element filled with the data from the DB.
+   */
+  function createElementFromDbResult( &$data, $isInColl=false ){
+    $nEl = new LiElement( $data['idx'],                                   // $idx
+                            $this->myDBC->unEscapeString($data['question']),                // $question
+                            $this->myDBC->unEscapeString($data['example_solution']),        // $exampleSolution
+                            ($data['possible_credits'] / 100),              // float; $possibleCredits
+                            $data['visible_for'],                           // $visibleFor
+                            ($data['visible_only_in_collection'] == "1"),   // $visibleOnlyInCollection
+                            $data['history'],                               // $history
+                            $isInColl                                       // $isInColl
+                          );
+       $nEl->hasFileUpload = ( isset($data['hasFileUpload']) && $data['hasFileUpload'] == 1 );
+       return $nEl;
+  }
+
+  /**
   * Returns the LiElement specified by $idx.
   * Calling this method is the normal way to get an instance of the fitting element.
   * This might seem strange but since constructors can't be overloaded it was the better
@@ -81,17 +100,7 @@ class LiDBInterface extends Ddbc{
         $data['history'] = preg_replace('/^(@@'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
 
-      $nEl = new LiElement( $data['idx'],                                   // $idx
-                            $this->myDBC->unEscapeString($data['question']),                // $question
-                            $this->myDBC->unEscapeString($data['example_solution']),        // $exampleSolution
-                            ($data['possible_credits'] / 100),              // float; $possibleCredits
-                            $data['visible_for'],                           // $visibleFor
-                            ($data['visible_only_in_collection'] == "1"),   // $visibleOnlyInCollection
-                            $data['history'],                               // $history
-                            $isInColl                                       // $isInColl
-                          );
-       $nEl->hasFileUpload = ( isset($data['hasFileUpload']) && $data['hasFileUpload'] == 1 ? true : false );
-       return $nEl;
+      return $this->createElementFromDbResult( $data, $isInColl );
     }
   }
 
@@ -211,18 +220,12 @@ class LiDBInterface extends Ddbc{
   * @return LiElement
   * @return FALSE     If no more datasets are available.
   */
-  function getNextData(){
-    if ( $data = mysql_fetch_array($this->queryResult) )
-      return new LiElement( $data['idx'],                                   // $idx
-                            $this->myDBC->unEscapeString($data['question']),                // $question
-                            $this->myDBC->unEscapeString($data['example_solution']),        // $exampleSolution
-                            ($data['possible_credits'] / 100),              // float; $possibleCredits
-                            $data['visible_for'],                           // $visibleFor
-                            ($data['visible_only_in_collection'] == "1"),   // $visibleOnlyInCollection
-                            $data['history'],                               // $history
-                            false                                           // $isInColl
-                          );
-    return false;
+  function getNextData( $isInColl=false ){
+    if ( $data = mysql_fetch_array($this->queryResult) ){
+      return $this->createElementFromDbResult($data, $isInColl);
+    }else{
+      return false;
+    }
   }
 
   /**

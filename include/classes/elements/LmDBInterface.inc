@@ -42,6 +42,24 @@ class LmDBInterface {
   }
 
   /**
+   * Creates a new element of the required type using the database query result given as parameter.
+   * @param unknown $data The result of the database query.
+   * @return LcElement The new element filled with the data from the DB.
+   */
+  function createElementFromDbResult( &$data, $isInColl=false ){
+    return new LmElement( $data['idx'],                                         // $idx
+                          $this->myDBC->unEscapeString($data['question']),                      // $question
+                          unserialize( $this->myDBC->unEscapeString($data['answer_array']) ),   // $answerArray
+                          $this->myDBC->unEscapeString($data['answer_explanation']),            // $answerExplanation
+                          $data['correct_mask'],                                // $correctMask
+                          $data['visible_for'],                                 // $visibleFor
+                          ($data['visible_only_in_collection'] == "1"),         // $visibleOnlyInCollection
+                          $data['history'],                                     // $history
+                          $isInColl                                             // $isInColl
+                        );
+  }
+
+  /**
   * Returns the LmElement specified by $idx.
   * Calling this method is the normal way to get an instance of the fitting element.
   * This might seem strange but since constructors can't be overloaded it was the better
@@ -81,16 +99,7 @@ class LmDBInterface {
         $data['history'] = preg_replace('/^(@@'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
 
-      return new LmElement( $data['idx'],                                         // $idx
-                            $this->myDBC->unEscapeString($data['question']),                      // $question
-                            unserialize( $this->myDBC->unEscapeString($data['answer_array']) ),   // $answerArray
-                            $this->myDBC->unEscapeString($data['answer_explanation']),            // $answerExplanation
-                            $data['correct_mask'],                                // $correctMask
-                            $data['visible_for'],                                 // $visibleFor
-                            ($data['visible_only_in_collection'] == "1"),         // $visibleOnlyInCollection
-                            $data['history'],                                     // $history
-                            $isInColl                                             // $isInColl
-                          );
+      return $this->createElementFromDbResult($data,$isInColl);
     }
   }
 
@@ -217,19 +226,12 @@ class LmDBInterface {
   * @return LmElement
   * @return FALSE     If no more datasets are available.
   */
-  function getNextData(){
-    if ( $data = mysql_fetch_array($this->queryResult) )
-      return new LmElement( $data['idx'],                                         // $idx
-                            $this->myDBC->unEscapeString($data['question']),                      // $question
-                            unserialize( $this->myDBC->unEscapeString($data['answer_array']) ),   // $answerArray
-                            $this->myDBC->unEscapeString($data['answer_explanation']),            // $answerExplanation
-                            $data['correct_mask'],                                // $correctMask
-                            $data['visible_for'],                                 // $visibleFor
-                            ($data['visible_only_in_collection'] == "1"),         // $visibleOnlyInCollection
-                            $data['history'],                                     // $history
-                            false                                                 // $isInColl
-                          );
-    return false;
+  function getNextData( $isInColl=false ){
+    if ( $data = mysql_fetch_array($this->queryResult) ){
+      return $this->createElementFromDbResult($data, $isInColl);
+    }else{
+      return false;
+    }
   }
 
   /**
