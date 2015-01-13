@@ -17,5 +17,5 @@ CREATE TABLE IF NOT EXISTS `lab_uid_status` (
   PRIMARY KEY  (`idx`)
 ) AUTO_INCREMENT=2 ;
 
-INSERT INTO `lab_uid_status` (`idx`, `l_idx`, `uid`, `current_team`, `prelab_finished`, `prelab_given_credits`, `prelab_possible_credits`, `prelab_all_teammembers_finished`, `lab_closed`, `lab_corrected`, `which_corrected`, `lab_given_credits`, `lab_possible_credits`, `history`) VALUES
+INSERT INTO `lab_uid_status` (`idx`, `l_idx`, `uid`, `current_team`, `prelab_finished`, `prelab_given_credits`, `prelab_possible_credits`, `prelab_all_teammembers_finished`, `lab_closed`, `lab_corrected`, `which_corrected`, `lab_given_credits`, `lab_possible_credits`, `detailed_credits`, `history`) VALUES
 (1, 2, 'participant', 55555, 1, 100, 300, 1, 1, 0, '', 0, 0, '', '2007-09-04 18:09:15: The Tester: - lab closed -\r\n2007-09-04 18:08:19: - all teammates finished prelab -\r\n2007-09-04 18:08:19: The Tester: - user finished prelab -\r\n');
