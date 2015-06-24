@@ -68,7 +68,7 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 				while ( $memberData = mysql_fetch_assoc ( $result ) ) {
 					foreach ( $memberData as $key => $value ) {
 						if ($key [0] == '_' && $value == 1) {
-							$groupMemberships .= $_SERVER ['SERVER_NAME'] . '/?config=' . substr ( $key, 1 ) . PHP_EOL;
+							$groupMemberships .= substr ( $key, 1 ) .PHP_EOL;
 						}
 					}
 				}
