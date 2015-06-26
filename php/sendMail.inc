@@ -61,12 +61,13 @@ if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 			$where= substr($nextID,2)."='1'";
 			$result = $userDBC->mkSelect( $what, $cfg->get('UserDatabaseTable'), $where );
 			while( $data = mysql_fetch_array( $result ) ){
-				$mailFunc->sendMail($sender, $data[ 'uid' ], $_POST['SUBJECT'], $_POST['MAILTEXT']);
+				$mailFunc->sendMail($sender, $data[ 'uid' ], $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
 			}
-		}
+		} else {
 		// // Useradmin "whole course" special treatment
 
-		$mailFunc->sendMail($sender, $nextID, $_POST['SUBJECT'], $_POST['MAILTEXT']);
+			$mailFunc->sendMail($sender, $nextID, $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
+		}
 		
 		makeLogEntry( 'system', 'mail sent' );
 		

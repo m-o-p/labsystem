@@ -97,7 +97,7 @@ if ((substr ( $url->get ( 'config' ), - 9 ) == 'useradmin') && $usr->isOfKind ( 
 	$result = $userDBC->query ( 'SHOW COLUMNS FROM ' . $cfg->get ( 'UserDatabaseTable' ) );
 	while ( $data = mysql_fetch_array ( $result ) ) {
 		if (substr ( $data [0], 0, 1 ) == '_') {
-			$allOther ['#' . $data [0]] = '#*' . $data [0];
+			$allOther ['#*' . $data [0]] = '#*' .$data [0];
 		}
 	}
 }
@@ -147,7 +147,7 @@ $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST
 
 "</fieldset>\n" . 
 
-"<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"checkbox\" id=\"mailViaBcc\" name=\"MAIL_VIA_BCC\" value=\"1\"" . ($cfg->get ( "mailViaBcc" ) == '1' ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" . "<label for=\"mailViaBcc\" class=\"labsys_mop_input_field_label\">" . $lng->get ( "mailViaBcc" ) . "</label>" . 
+"<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"checkbox\" id=\"copy2Me\" name=\"COPY2ME\" value=\"1\"" . (isset($_POST['COPY2ME']) && $_POST['COPY2ME'] == 1 ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" . "<label for=\"copy2Me\" class=\"labsys_mop_input_field_label\">" . $lng->get ( "copy2Me" ) . "</label>" . 
 
 "<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" value=\"" . $lng->get ( "sendMail" ) . "\" accesskey=\"s\" onclick='isDirty=false'>\n" . 
 

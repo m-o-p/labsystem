@@ -1,6 +1,16 @@
 <?php
 class MailFunctionality{
-  /**
+function printMail($to, $subject, $message, $additional_headers='', $additional_parameters=''){
+	echo('<br>'.PHP_EOL.'0-0-0-0-0-0-0-0-0'.'<br>'.PHP_EOL);
+	echo('To: '.$to.'<br>'.PHP_EOL);
+	echo('Subject: '.$subject.'<br>'.PHP_EOL);
+	echo('Message: '.$message.'<br>'.PHP_EOL);
+	echo('Additional Headers: '.$additional_headers.'<br>'.PHP_EOL);
+	echo('Additional Parameters: '.$additional_parameters.'<br>'.PHP_EOL);
+	echo('<br>'.PHP_EOL.'0-0-0-0-0-0-0-0-0'.'<br>'.PHP_EOL);
+}
+	
+   /**
    * Send a mail.
    * @param String $sender              The sender.
    * @param String $receiverUID         The UID of the receiver.
@@ -14,6 +24,12 @@ class MailFunctionality{
     
     if (empty($sender)){
     	$sender = $cfg->get('SystemTitle').' <noreply@'.$_SERVER['SERVER_NAME'].'>';
+    }
+    
+    preg_match("/\<(.*)\>/", $sender, $output_array);
+    $senderMail = $output_array[1];
+    if (empty($senderMail)){
+    	$senderMail = $sender;
     }
     
     // Load receiver data including mail address
@@ -33,11 +49,11 @@ class MailFunctionality{
     $subject = $this->replaceConstants($subject, $receiverUsrObject);
     $receiver = $receiverUsrObject->mailAddress;
     
-    mail( ($BCC ? $sender : $receiver), // TO
+    mail( ($BCC ? $senderMail : $receiver), // TO
           '['.$cfg->get("SystemTitle").'] '.$subject,
           $text.PHP_EOL.PHP_EOL.
           stripcslashes($cfg->get('mailFooter')).PHP_EOL,
-          ($CCsender ? 'CC: '.$sender.PHP_EOL:''). // CC
+          ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
           ($BCC ? 'BCC: '.$receiver.PHP_EOL : ''). // BCC
           'From: '.$sender.PHP_EOL.
           "X-Mailer: labsystem".PHP_EOL.

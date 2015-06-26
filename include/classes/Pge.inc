@@ -36,7 +36,6 @@
 class Pge extends LpElement{
   var $nextTab = 1; // the value of the next available TabNumber (for forms and menu elements)
   var $replaceKey;
-  var $replaceValue;
 
   /**
   * In this function the strings that will be replaced when displaying and their replacements are initialized.
@@ -68,7 +67,6 @@ class Pge extends LpElement{
     							"eka32ugud9",
                                 "udan1obo94",
                                 "siducb4uib" );
-    $this->replaceValue = "";
   }
 
   /**
@@ -113,9 +111,7 @@ class Pge extends LpElement{
   */
   function replaceConstants( $text ){
     global $url, $usr, $lng, $cfg;
-    // initialize replacements on first use:
-    if(empty($this->replaceValue)){
-    	$this->replaceValue = Array( $url->get("newQueryString"),
+    	$replaceValue = Array( $url->get("newQueryString"),
     	                             htmlentities( $this->title ),
     	                             htmlentities( $cfg->get("SystemTitle") ),
     	                             htmlentities( $usr->foreName ),
@@ -127,10 +123,9 @@ class Pge extends LpElement{
     	                             urlencode( $_SERVER['REQUEST_URI'] ),
     	                             $cfg->get("Link2UserAdminInterface"),
     	                             htmlentities( date( $lng->get("DateFormat") ) ) );
-    }
 
     return str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
-                        array_merge( $this->replaceValue, $this->replaceValue ),
+                        array_merge( $replaceValue, $replaceValue ),
                         $text );
   }
 
