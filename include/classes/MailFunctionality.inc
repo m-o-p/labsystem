@@ -56,10 +56,10 @@ class MailFunctionality{
    */
   function replaceConstants( $text, $currentUsrObject ){
   	global $usr, $pge;
-  	$tempUsr = $usr;
-  	$usr = $currentUsrObject;
+  	$tempUsr = $GLOBALS['usr'];
+  	$GLOBALS['usr'] = $currentUsrObject;
   	$replacedText = $pge->replaceConstants( $text );
-  	$usr = $tempUsr;
+  	$GLOBALS['usr'] = $tempUsr;
   	return $replacedText;
   }
 
