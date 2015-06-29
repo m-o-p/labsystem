@@ -77,7 +77,9 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 				// Store a new token and validity for 1 hour
 				$token = sha1 ( uniqid ( rand () ) );
 				$userDBC->mkUpdate ( 'pwReminderToken="' . $token . '", pwReminderValidUntil=' . (time () + 60 * 60), $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . "='" . $data [$cfg->get ( 'UserDBField_uid' )] . "'" );
-				$mailPage->contents .= 'https://' . $_SERVER ['SERVER_NAME'] . '/pages/uaUnPwReminder.php?config=useradmin&EMAIL=' . urlencode ( $requesterEmail ) . '&TOKEN=' . urlencode ( $token );
+				$urlParts = parse_url('http'.(isset($_SERVER['HTTPS'])?'s':'').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+				
+				$mailPage->contents .= 'https://' . $urlParts['host'] .$urlParts['path']. '?config=useradmin&EMAIL=' . urlencode ( $requesterEmail ) . '&TOKEN=' . urlencode ( $token );
 			}
 			require_once (INCLUDE_DIR . "/classes/MailFunctionality.inc");
 			$mailFunc->sendMail ( '', $data ['uid'], $mailPage->title, $mailPage->contents );
