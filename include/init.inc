@@ -19,90 +19,88 @@
  */
 
 /**
- * This module contains the standard page includes.
- *
- * @module ../include/init.inc
- * 
- * @author Marc-Oliver Pahl
- * @copyright Marc-Oliver Pahl 2005
- * @version 1.0
- *         
- */
+* This module contains the standard page includes.
+*
+* @module     ../include/init.inc
+* @author     Marc-Oliver Pahl
+* @copyright  Marc-Oliver Pahl 2005
+* @version    1.0
+*/
 
 // include strong passwords for PHP < 5.5.0:
-if (version_compare ( PHP_VERSION, '5.5.0', '<' )) {
-	require '../plugins/password.php';
-}
+require '../plugins/password.php';
 
 // time measurement
-$mtime = microtime ();
-$mtime = explode ( " ", $mtime );
-$mtime = $mtime [1] + $mtime [0];
+$mtime = microtime();
+$mtime = explode(" ",$mtime);
+$mtime = $mtime[1] + $mtime[0];
 $pagecreation_starttime = $mtime;
 
-ini_set ( "display_errors", "On" ); // uncomment to force php to display errors (php.ini value gets temporarily overwritten).
-                                   // error_reporting(E_ALL ^ (E_NOTICE & E_STRICT) ); // remove warnings php5
-ini_set ( "register_globals", "Off" ); // a) security b) problems may arise with duplicate variable names
+ini_set( "display_errors", "On" ); // uncomment to force php to display errors (php.ini value gets temporarily overwritten).
+//error_reporting(E_ALL ^ (E_NOTICE & E_STRICT) ); // remove warnings php5
+ini_set( "register_globals", "Off" ); // a) security b) problems may arise with duplicate variable names
 
-/*
- * The order of the includes should be like it is since the later
- * includes require the presence of the previous ones.
- */
+/* The order of the includes should be like it is since the later
+ * includes require the presence of the previous ones. */
 
-define ( "INCLUDE_DIR", "../include" );
+define( "INCLUDE_DIR", "../include" );
 
-require (INCLUDE_DIR . "/classes/Url.inc"); // Include url handling and rewriting stuff. => Object $url.
-                                           // needed to get parameters from the url ($url->get, ->available)
+require( INCLUDE_DIR."/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
+                                                // needed to get parameters from the url ($url->get, ->available)
 
-require (INCLUDE_DIR . "/customErrHandle.inc"); // The custom Error handler.
-require (INCLUDE_DIR . "/helper.inc"); // Some helper functions that are used.
+require( INCLUDE_DIR."/customErrHandle.inc" );  // The custom Error handler.
+require( INCLUDE_DIR."/helper.inc" );           // Some helper functions that are used.
 
-require (INCLUDE_DIR . "/configuration.inc"); // Include the global configuration. => Object $cfg.
-require ($cfg->get ( "SystemResourcePath" ) . $cfg->get ( "SystemUserRoles" )); // Include the user role constants.
-require (INCLUDE_DIR . "/language.inc"); // Include the localized Strings. => Object $lng.
+require( INCLUDE_DIR."/configuration.inc" );    // Include the global configuration. => Object $cfg.
+require( $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles") );  // Include the user role constants.
+require( INCLUDE_DIR."/language.inc" );         // Include the localized Strings. => Object $lng.
 
-$url->preserve ( "nomenu" ); // keep in url if present (menu off)
-$url->preserve ( "config" ); // keep in url if present (config file)
-$url->preserve ( "lng" ); // keep in url if present (language file)
-$url->preserve ( "tinyMCE" ); // keep in url if present (tinyMCE integration (200k js))
-$url->preserve ( "hideAnswers" ); // keep in url if present (hideAnswers if in seeing mode)
-$url->preserve ( "seeMe" ); // keep in url if present (seeMe if in seeing mode)
-$url->preserve ( 'hideExampleSolutionInThisTab' );
-$url->preserve ( 'pseudoNames' ); // provides random names instead of real names
+$url->preserve("nomenu");                       //  keep in url if present (menu off)
+$url->preserve("config");                       //  keep in url if present (config file)
+$url->preserve("lng");                          //  keep in url if present (language file)
+$url->preserve("tinyMCE");                      //  keep in url if present (tinyMCE integration (200k js))
+$url->preserve("hideAnswers");                  //  keep in url if present (hideAnswers if in seeing mode)
+$url->preserve("seeMe");                        //  keep in url if present (seeMe if in seeing mode)
+$url->preserve('hideExampleSolutionInThisTab');
+$url->preserve('pseudoNames');                  //  provides random names instead of real names
 
-require (INCLUDE_DIR . "/classes/ElementUser.inc"); // user
-require (INCLUDE_DIR . "/classes/Usr.inc"); /*
-                                            * Creates a current user with default values for accessLevel, name, ...
-                                            * => Object $usr.
-                                            */
-require (INCLUDE_DIR . "/session.inc"); /*
-                                        * Include session management (db based) and, if available,
-                                        * set the information ($usr data) from the session.
-                                        */
-require (INCLUDE_DIR . "/logger.inc"); /* Include to enable logging. */
-// activated when config contains lagDir = "someDirectory"
+require( INCLUDE_DIR."/classes/ElementUser.inc" );                // user
+require( INCLUDE_DIR."/classes/Usr.inc" );      /* Creates a current user with default values for accessLevel, name, ...
+                                                   => Object $usr.
+                                                 */
+require( INCLUDE_DIR."/session.inc" );          /* Include session management (db based) and, if available,
+                                                   set the information ($usr data) from the session.
+                                                 */
+require( INCLUDE_DIR."/logger.inc" );          /* Include to enable logging. */
+                                               // activated when config contains lagDir = "someDirectory"
 
-require_once (INCLUDE_DIR . "/classes/elements/LpDBInterface.inc"); // page
-require_once (INCLUDE_DIR . "/classes/elements/LmDBInterface.inc"); // multiple choice
-require_once (INCLUDE_DIR . "/classes/elements/LiDBInterface.inc"); // input
-require_once (INCLUDE_DIR . "/classes/elements/LsDBInterface.inc"); // schedule
-require_once (INCLUDE_DIR . "/classes/elements/LcDBInterface.inc"); // collection
-require_once (INCLUDE_DIR . "/classes/elements/BCDBInterface.inc"); // Collection
-require_once (INCLUDE_DIR . "/classes/elements/LlDBInterface.inc"); // lab
+require_once( INCLUDE_DIR."/classes/elements/LpDBInterface.inc" ); // page
+require_once( INCLUDE_DIR."/classes/elements/LmDBInterface.inc" ); // multiple choice
+require_once( INCLUDE_DIR."/classes/elements/LiDBInterface.inc" ); // input
+require_once( INCLUDE_DIR."/classes/elements/LsDBInterface.inc" ); // schedule
+require_once( INCLUDE_DIR."/classes/elements/LcDBInterface.inc" ); // collection
+require_once( INCLUDE_DIR."/classes/elements/BCDBInterface.inc" ); // Collection
+require_once( INCLUDE_DIR."/classes/elements/LlDBInterface.inc" ); // lab
 
-require (INCLUDE_DIR . "/classes/Pge.inc"); /*
-                                            * Extends the page element and will hold the values for the currently display-
-                                            * ing html page (p.e. accessLevel, title, ...). => Object $pge.
-                                            */
-require (INCLUDE_DIR . "/classes/ElementButtons.inc"); // Standard buttons.
-require (INCLUDE_DIR . "/classes/ElementMenues.inc"); // Standard menues.
+require( INCLUDE_DIR."/classes/Pge.inc" );      /* Extends the page element and will hold the values for the currently display-
+                                                   ing html page (p.e. accessLevel, title, ...). => Object $pge.
+                                                 */
+require( INCLUDE_DIR."/classes/ElementButtons.inc" ); // Standard buttons.
+require( INCLUDE_DIR."/classes/ElementMenues.inc" );  // Standard menues.
 
-if ($url->available ( 'seeMe' ) && $usr->isOfKind ( IS_CORRECTOR ) && $url->get ( 'seeMe' ) != 'none') {
-	$usr->seesDataOf ( $url->get ( 'seeMe' ) );
+if($url->available('seeMe') && $usr->isOfKind(IS_CORRECTOR) && $url->get('seeMe')!='none'){
+  $usr->seesDataOf( $url->get('seeMe') );
 }
-
 // used by menu.inc and page_layout.inc
-$labsystem_LogInLink = ($cfg->doesExist ( 'SSLLogin' ) && ($cfg->get ( 'SSLLogin' ) == 1) ? 'https://' . $_SERVER ['SERVER_NAME'] . preg_replace_callback ( '#(\S*pages\/)[^\?]*(\?\S*)#', create_function ( '$matches', 'return $matches[1]."login.php";' ), $_SERVER ["REQUEST_URI"] ) : '../pages/login.php');
+$labsystem_LogInLink = ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?
+    'https://'.$_SERVER[ 'SERVER_NAME' ].preg_replace_callback( '#(\S*pages\/)[^\?]*(\?\S*)#',
+        create_function(
+            '$matches',
+            'return $matches[1]."login.php";'
+        ),
+        $_SERVER["REQUEST_URI"]
+    ) :
+    '../pages/login.php' );
 
 $labsystem_LogOutLink = "../php/logout.php";
 ?>

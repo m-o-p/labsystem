@@ -164,7 +164,8 @@ class LsElement extends Element{
     $dayNumbers  = "<tr>";
 
     for ( $i=1; $i <= $daysInMonth; $i++ ){
-      $dayNames   .= "<td class=\"labsys_mop_s_table_day_name\">".date( "D", mktime( 0, 0, 0, date("n", $givenDate), $i, date("Y", $givenDate) ) )."</td>";
+      $theTime = mktime( 0, 0, 0, date("n", $givenDate), $i, date("Y", $givenDate) );
+      $dayNames   .= "<td class=\"labsys_mop_s_table_day_name".(date('N', $theTime) >= 6 ? '_weekend':'')."\">".date( "D", $theTime )."</td>";
       $dayNumbers .= "<td class=\"labsys_mop_s_table_".( $i == $today ?  "to"  : '' )."day\">".$i."</td>";
                                         }
 
@@ -272,7 +273,7 @@ class LsElement extends Element{
       if ( !array_key_exists( "s".$element->idx, $legend) ){ // new element? -> add to legend
         $id = $element->id;
         require( "../php/getDBIbyID.inc" ); // -> $DBI
-        $element2 = $DBI->getMenuData2idx( $element->num );
+        $element2 = $DBI->getData2idx( $element->num );
 
         if (!$element2){ // delete schedules for non-existing elements
           $sDBI->deleteData( $element->idx );

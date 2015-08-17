@@ -1,13 +1,23 @@
 CREATE TABLE IF NOT EXISTS `multiple_choices` (
-  `idx` bigint(20) NOT NULL auto_increment,
+  `idx` bigint(20) NOT NULL AUTO_INCREMENT,
   `question` text,
   `answer_array` text,
+  `reaction_array` text NOT NULL,
   `answer_explanation` text,
-  `correct_mask` bigint(20) default '0',
-  `visible_for` bigint(20) default '0',
-  `visible_only_in_collection` tinyint(1) default '0',
+  `correct_mask` bigint(20) DEFAULT '0',
+  `possible_credits` int(11) NOT NULL DEFAULT '-1',
+  `do_not_shuffle_answers` tinyint(1) NOT NULL,
+  `only_one_answer_possible` tinyint(1) NOT NULL,
+  `requires_n_correct` smallint(6) DEFAULT NULL COMMENT 'How many of the correct answers have to be clicked to grade this Q as correct?',
+  `reactions` tinyint(1) NOT NULL,
+  `show_hint_for_clicked` tinyint(1) NOT NULL,
+  `reshow_last_hint` tinyint(1) NOT NULL,
+  `detailed_grading` tinyint(1) NOT NULL,
+  `horizontal_layout` tinyint(1) NOT NULL,
+  `visible_for` bigint(20) DEFAULT '0',
+  `visible_only_in_collection` tinyint(1) DEFAULT '0',
   `history` text NOT NULL,
-  PRIMARY KEY  (`idx`)
+  PRIMARY KEY (`idx`)
 ) AUTO_INCREMENT=3 ;
 
 INSERT INTO `multiple_choices` (`idx`, `question`, `answer_array`, `answer_explanation`, `correct_mask`, `visible_for`, `visible_only_in_collection`, `history`) VALUES
@@ -15,13 +25,23 @@ INSERT INTO `multiple_choices` (`idx`, `question`, `answer_array`, `answer_expla
 (2, 'This is a multiple choice question. Click on "give answers" to set the check marks. Don''t forget to "save"...', 'a:3:{i:0;s:46:"[HTML]This answer is <strong>correct</strong>.";i:1;s:21:"This answer is wrong.";i:2;s:46:"[HTML]This answer is <strong>correct</strong>.";}', 'Here you might find some remarks why the solution is correct.', 5, 1, 1, '2007-09-04 17:56:05: Marc-Oliver Pahl\n2007-09-03 20:04:37: Marc-Oliver Pahl\r\n2006-03-11 19:10:58: Marc-Oliver Pahl');
 
 CREATE TABLE IF NOT EXISTS `bak_multiple_choices` (
-  `idx` bigint(20) NOT NULL auto_increment,
+  `idx` bigint(20) NOT NULL AUTO_INCREMENT,
   `question` text,
   `answer_array` text,
+  `reaction_array` text NOT NULL,
   `answer_explanation` text,
-  `correct_mask` bigint(20) default '0',
-  `visible_for` bigint(20) default '0',
-  `visible_only_in_collection` tinyint(1) default '0',
+  `correct_mask` bigint(20) DEFAULT '0',
+  `possible_credits` int(11) NOT NULL DEFAULT '-1',
+  `do_not_shuffle_answers` tinyint(1) NOT NULL,
+  `only_one_answer_possible` tinyint(1) NOT NULL,
+  `requires_n_correct` smallint(6) DEFAULT NULL COMMENT 'How many of the correct answers have to be clicked to grade this Q as correct?',
+  `reactions` tinyint(1) NOT NULL,
+  `show_hint_for_clicked` tinyint(1) NOT NULL,
+  `reshow_last_hint` tinyint(1) NOT NULL,
+  `detailed_grading` tinyint(1) NOT NULL,
+  `horizontal_layout` tinyint(1) NOT NULL,
+  `visible_for` bigint(20) DEFAULT '0',
+  `visible_only_in_collection` tinyint(1) DEFAULT '0',
   `history` text NOT NULL,
-  PRIMARY KEY  (`idx`)
+  PRIMARY KEY (`idx`)
 );

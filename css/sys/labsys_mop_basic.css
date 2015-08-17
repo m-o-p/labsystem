@@ -391,6 +391,10 @@ fieldset{
     margin: 0 0 0 0px;
   }
 
+  .labsys_mop_std_form .subOptions { /* the standard form element used in the edits */
+    margin-left: 2em
+  }
+  
   .labsys_mop_in_fieldset{ /* a new group inside a fieldset */
                     margin-left: 15px;
                     margin-right: 15px;
@@ -643,7 +647,16 @@ fieldset{
   .labsys_mop_c_structure_substructure{ /* Around a substructur in the structure on top of the structure page (...) */
                     border-bottom: 1px solid red;
                     padding-bottom: 1px;
-                    background-color: #eeeeee;
+                    background-color: #f99;
+  }
+  .labsys_mop_c_structure_substructure > .labsys_mop_c_structure_substructure{
+                    background-color: #ff9;
+  }
+  .labsys_mop_c_structure_substructure > .labsys_mop_c_structure_substructure > .labsys_mop_c_structure_substructure{
+                    background-color: #99f;
+  }
+  .labsys_mop_c_structure_substructure > .labsys_mop_c_structure_substructure > .labsys_mop_c_structure_substructure > .labsys_mop_c_structure_substructure{
+                    background-color: #9f9;
   }
   .labsys_mop_c_structure_address{ /* The address on top of a collection structure row. */
                     font-size: 0.6em;
@@ -761,6 +774,14 @@ fieldset{
   .labsys_mop_l_status_whichCorrected{
     text-align: right;
   }
+  .labsys_mop_question_stats_c_allType{
+                  margin-bottom: 0.2em;
+                  background-color: #f0f0f0;
+                  padding: 1em;
+                  border: solid 1px #aaaaaa;
+                  border-radius: 0.3em;
+                  margin-left: 1em;
+  }
   .labsys_mop_l_all_inputs_stats{ /* appears on top of allLabQuestions below the headline and contains [20 questions; 60 credits] */
                     font-size: 0.7em;
                     border: none;
@@ -768,6 +789,19 @@ fieldset{
                     padding: 5px 5px 5px 5px;
                     margin-top: -1em;
                     margin-bottom: 1em;
+  }
+  .labsys_mop_l_all_inputs_stats_percentBar{
+                    float:right;
+                    width:50px;
+                    font-size:0.7em
+  }
+  .labsys_mop_l_all_inputs_stats_elementCount{
+                    float:left;
+                    color:silver;
+                    font-size:0.8em
+  }
+  .labsys_mop_l_all_inputs_stats_clearBoth{
+                    clear:both;
   }
   .labsys_mop_l_status_percentBarDiv{ /* shown in the lab status table below the percent value */
                     text-align: left;
@@ -835,6 +869,16 @@ fieldset{
                     border-radius: 0.3em;
                     margin-left: 1em;
   }
+  .labsys_mop_elements_m_around .correct {
+  	background-color:#dfe
+  }
+  .labsys_mop_elements_m_around .wrong {
+  	background-color: #fcd
+  }
+  .labsys_mop_elements_m_around .wrongButAnswerable {
+    display: inline;
+  	background-color: #ffd
+  }  
   .labsys_mop_m_question{
                     border-bottom: 1px solid #eeeeee;
                     padding: 5px 5px 5px 5px;
@@ -847,6 +891,65 @@ fieldset{
                     border-top: solid 1px #eeeeee;
                     padding: 5px 5px 5px 5px;
                     color: #555555;
+  }
+  
+  .labsys_mop_m_answers{
+    width:100%;
+  }
+  .labsys_mop_m_answers .answer {
+  	margin-top:1em;
+  }
+  .labsys_mop_m_answers .answerHorizontal {
+    background-color: #eee;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    margin-right:0.2em
+  }
+  .labsys_mop_m_answers .answer .checkMark{
+    margin-right:0.2em;
+    float:left
+  }
+  .labsys_mop_m_answers .checkMark .wrong{
+    background-color:#f88
+  }
+  .labsys_mop_m_answers .checkMark .right{
+    background-color:#5c5
+  }
+  .labsys_mop_m_answers .checkMark .exampleSolutionCorrect{
+    background-color:#050
+  }
+  .labsys_mop_m_answers .checkMark .exampleSolutionWrong{
+  }
+  .labsys_mop_m_answers .answer .answers{
+    display:block;
+  }
+  .mcAnswerHints{
+  background-color:#ff0;
+  padding:1em
+  }
+  .labsys_mop_m_answers .answer .answers label{
+    margin:0
+  }
+  .labsys_mop_m_answers .answer .answers .answerReaction{
+    float:left;
+    margin:2px;
+    padding:2px;
+    border:solid #888 1px
+  }
+  .labsys_mop_m_answers .answer .answers .answerReaction .labsys_mop_input{
+    width:15%
+  }
+  .labsys_mop_m_answers .answer .answers .answerReaction textarea{
+    width:70%
+  }
+  .labsys_mop_m_answers .clearBoth{
+    clear:both;
+    display:inline-block;
+    width:100%;
+  }
+  
+  .labsys_mop_m_answers .answer .answers .labsys_mop_textarea{
   }
   
   .labsys_mop_m_answers_table { /* The multiple choice checkboxes and answers are inside this table. */
@@ -1116,7 +1219,12 @@ fieldset{
   .labsys_mop_s_table_day_name {
                     text-align: center;
                     font-size: 0.6em;
-  } 
+  }
+  .labsys_mop_s_table_day_name_weekend {
+                    text-align: center;
+                    font-size: 0.6em;
+                    background-color:#ccc
+  }  
   .labsys_mop_s_table_name_month {
                     border-bottom: solid 1px #000000;
   } 

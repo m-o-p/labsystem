@@ -95,9 +95,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                                  'labsys_mop_last_change',
                                  'registerFor',
                                  'history',
-                                 'matrikelnummer',
-					     		 'pwReminderToken',
-					     		 'pwReminderValidUntil'
+                                 'matrikelnummer'
                                 );
      foreach ( $data as $key => $value ){
         if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ){ /* do nothing */;

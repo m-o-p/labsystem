@@ -180,8 +180,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
             $UID = $existingData[$cfg->get('UserDBField_uid')];
           }
           $insertString .= ','.$cfg->get('UserDBField_uid').'="'.$UID.'"';
-          // New users can request their PW here: https://__SERVERNAME__/pages/uaUnPwReminder.php?config=useradmin&EMAIL=__MAILADDRESS__&TOKEN=NEW
-          $userDBC->mkUpdIns($insertString, $cfg->get('UserDatabaseTable'),'pwReminderToken="NEW", pwReminderValidUntil=' . (time () + 7*24*60 * 60).','.$cfg->get('UserDBField_username').'="'.$userDBC->escapeString($row[$cfg->get('UserDBField_email')]).'"' );
+          $userDBC->mkUpdIns($insertString, $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_username').'="'.$userDBC->escapeString($row[$cfg->get('UserDBField_email')]).'"' );
           makeLogEntry( 'useradmin', 'new user '.$userDBC->escapeString($row[$cfg->get('UserDBField_email')]).' created' );
         }
 

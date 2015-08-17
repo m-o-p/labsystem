@@ -47,6 +47,7 @@ class LlDBInterface {
    * @return LcElement The new element filled with the data from the DB.
    */
   function createElementFromDbResult( &$data, $isInColl=false ){
+  global $cfg;
     return new LlElement( $data['idx'],                                   // $idx
                           // create a new ID if there is none (makes sure it is always shown and saved later...)
                           ( !isset($data['uniqueID']) || (($data['uniqueID'] == '') && $data['idx'] != 1) ) ?

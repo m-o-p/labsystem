@@ -8,7 +8,7 @@ BASEDIR="$(dirname "$BASENAME")"
 BASENAME="$(basename "$BASENAME")"
 
 if ! type php5 >/dev/null 2>&1 ; then
-	echo "No comman line interface for php5 found."
+	echo "No comman line interface for php5 found." >&2
 	exit 1
 fi
 
@@ -26,7 +26,7 @@ for ((i=1;i<${#MAPFILE[@]};i++)); do
 			php5 "cliDoInstanceBackup.php" \
 				"${MAPFILE[i]}" "$backupdir"
 		else
-			echo "ERROR: could not cd to ${BASEDIR}/php"
+			echo "ERROR: could not cd to ${BASEDIR}/php" >&2
 		fi
 	)
 done

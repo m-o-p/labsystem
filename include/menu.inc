@@ -34,9 +34,6 @@
  */
 require_once( INCLUDE_DIR."/classes/Menu.inc" );
 
-// used not to load status values in L-elements
-$IamOnlyGeneratingTheMenu = true;
-
 echo("<div class=\"labsys_mop_menu\"><ul>\n");
 
 $myMenu = new Menu( "labsys_mop_menuEntry", "on", "off", "hover", "title", "spacer" ); // So you could easy create menus based on other stylesheet entries.
@@ -56,14 +53,14 @@ foreach ( $mainMenuIni as $key => &$value ){
   if ( $key == "sys_login" ){
     $key = $usr->userName;
     if ( $usr->isLoggedIn() ){
-      $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogOut" ), $url->link2($labsystem_LogOutLink) ).
+      $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogOut" ), $labsystem_LogOutLink ).
       $myMenu->entry( $lng->get( "MnuEntryMyRights" ), "../pages/myRights.php" ).
       $myMenu->entry( $lng->get( "MnuEntryMyStatistics" ), "../pages/view.php?address=l1.ALLlabStatus" ).
       ( !$usr->isOfKind( IS_USER_RIGHTS_EDITOR ) ? '' : $myMenu->entry( $lng->get( "MnuEntryUaUsrRights" ), "../pages/manageUsers.php" ) ).
       $myMenu->spacer().
       $myMenu->entry( $lng->get( "MnuEntrySendMail" ), "../pages/mailForm.php" );
     }else{
-      $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), $url->link2($labsystem_LogInLink) ).
+      $possibleMenu .= $myMenu->entry( $lng->get( "MnuEntryLogIn" ), $labsystem_LogInLink ).
       $myMenu->entry( $lng->get("MnuEntryRegister"), "../?address=register" ); // you can also put another config in the url here (/register.php?config=useradmin)
       // The advantage is that all registrations count to the same system...
       // Otherwhise they only count to your current instance.
@@ -71,7 +68,7 @@ foreach ( $mainMenuIni as $key => &$value ){
     }
   }
 
-  // this "magic menu" lists all labs that can be accessed by the current user
+  // this "magic menu" lists all labs acessable to the user
   if ( $key == 'accessible_labs' ){
     $key = $cfg->get('SystemTitle');
     if ( !is_array($value) ){
@@ -125,7 +122,7 @@ foreach ( $mainMenuIni as $key => &$value ){
         // is syntactically a shortcut (p.e. "!p2")
         $id = $value_{1};
         require( "../php/getDBIbyID.inc" ); /* -> $DBI */
-        $element = $DBI->getData2idx( substr( $value_, 2) );
+        $element = $DBI->getMenuData2idx( substr( $value_, 2) );
         if ( $element && $element->isVisible() ){
           $possibleMenu .=  $element->getMenu( substr( $value_, 1 ),
           $myMenu, "",
@@ -153,7 +150,4 @@ foreach ( $mainMenuIni as $key => &$value ){
   }
 }
 echo("\t</ul></div>\n");
-
-// used not to load status values in L-elements
-$IamOnlyGeneratingTheMenu = false;
 ?>

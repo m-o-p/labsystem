@@ -224,7 +224,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
           $pge->put( '<input type="checkbox" id="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" name="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" value="'.$value.'" tabindex="'.$pge->nextTab++.'" '.( ($value == 1) ?  'checked="checked" '  : '' ).' onchange="isDirty=true">'.
                      '<label for="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" class="labsys_mop_input_field_label">'.infoArrow( $key, false ).'</label>' );
 
-      $pge->put( ' '.( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '<a href="'.$url->link2( '../php/uaManageUsersExecute.php?function=see&param='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ).'&redirectTo='.urlencode( '../pages/uaMyData.php' ) ).'">' : '').
+      $pge->put( ' '.( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '<a href="'.$url->link2( '../pages/uaMyData.php?seeMe='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ) ).'">' : '').
                      $data[ $cfg->get('UserDBField_name') ].', '.
                      $data[ $cfg->get('UserDBField_forename') ].' ('.
                      $data[ $cfg->get('UserDBField_username') ].')'.

@@ -130,7 +130,7 @@ function tidyHTML( &$string ){
        ( substr( $string, 0, 6 ) == '[HTML]' ) &&  // this is and HTML element
        class_exists( 'tidy' ) ){ // tidy exists on this system
     if (!isset( $GLOBALS['tidy'] )) $GLOBALS['tidy'] = new tidy();
-    $string = "[HTML]\n".$GLOBALS['tidy']->repairString( substr( $string, 6 ), array('indent' => TRUE, 'show-body-only' => TRUE, 'vertical-space' => TRUE, 'wrap' => 100) );
+    $string = "[HTML]\n".$GLOBALS['tidy']->repairString( substr( $string, 6 ), array('indent' => TRUE, 'show-body-only' => TRUE, 'vertical-space' => TRUE, 'wrap' => 100), 'utf8' );
   }
 }
 

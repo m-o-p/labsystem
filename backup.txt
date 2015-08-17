@@ -1,1 +1,10 @@
-/srv/labsystem-backup
+/srv/www/ilab.net.in.tum.de/backup
+ilab_2015ss
+ilab2_2015ss
+ilab2_UNSW15
+ilab2_UMKC15
+ilab2_2015ss_create
+ilab2_2015ws
+ilab2_EDU2015ss
+ilab_2015ws
+ilab2_2015ws_create

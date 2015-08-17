@@ -969,7 +969,7 @@ class LlElement extends Element{
 /* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) {
      header('Content-type: text/x-csv');
      header('Content-Disposition: attachment; filename="labsystem_result_summary'.$GLOBALS['cfg']->get('User_courseID').'CSV.txt"');
-     echo( "name\tforename\tteam\tprelabPercentage\tprelabCreditsReached\tprelabCreditsReachable\tlabPercentage\tlabCreditsReached\tlabCreditsReachable\r\n");
+     echo( "name\tforename\tmatriculation\tteam\tprelabPercentage\tprelabCreditsReached\tprelabCreditsReachable\tlabPercentage\tlabCreditsReached\tlabCreditsReachable\r\n");
 }
               /* the first entry is the default */
               require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
@@ -1000,7 +1000,7 @@ class LlElement extends Element{
                 else{
                         $nameData = $usr->getUserInformation( $userData["uid"] );
                         $myRetVal .= $nameData["name"].", ".$nameData["foreName"];
-/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( "\r\n".$nameData["name"]."\t".$nameData["foreName"]."\t" );
+/* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( "\r\n".$nameData["name"]."\t".$nameData["foreName"]."\t".$nameData["matrikelnummer"]."\t" );
                      }
                 $myRetVal .= "</div>";
                 $myRetVal .= $this->labStatusUIDALLLabs( $userData["uid"], $compact )."<div>&nbsp;</div>\n";
