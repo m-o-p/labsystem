@@ -130,6 +130,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
           foreach($values as &$value){
             $value=trim($value);
           }
+          unset($value);
           $datarow = array_combine( $headerFields, $values );
           array_push( $data, $datarow );
         }
