@@ -240,7 +240,7 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                    '.$cfg->get("User_courseID").'
                    ) VALUES (
                    \''.$cfg->get("RightsAdminUsername").'\',
-                   \''.password_hash( 'admin', md5( $cfg->get("RightsAdminUsername") ) ).'\',
+                   \''.crypt( 'admin', md5( $cfg->get("RightsAdminUsername") ) ).'\',
                    \'admin\',
                    \'Ms/ Mr\',
                    \'root@localhost\',
