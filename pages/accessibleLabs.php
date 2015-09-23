@@ -134,14 +134,13 @@ foreach ( $accessibleLabs as $value ){
       $value->showEPub( $value->elementId.$value->idx, ( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ).'');
     }
   }else{
-    parseHTML( $value->comment );
     $pge->put('
 <tr>
   <td width="75" class="labIndexNumber">
 '.( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ).'
   </td>
   <td class="labIndexText">
-    <b><a href="../pages/view.php?address=l'.$value->idx.'&amp;__LINKQUERY__" target="_top">'.$value->title.'</a></b> - '.$value->comment.'
+    <b><a href="../pages/view.php?address=l'.$value->idx.'&amp;__LINKQUERY__" target="_top">'.$value->title.'</a></b> - '.parseHTML( $value->comment ).'
     </td>
   </tr>
 ');

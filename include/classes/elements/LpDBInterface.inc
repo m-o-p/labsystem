@@ -30,13 +30,12 @@
 if ( isset( $GLOBALS["pDBI"] ) ) return; // require_once doesn't work well
 
 require_once( INCLUDE_DIR."/classes/Ddbc.inc" );
+require_once( INCLUDE_DIR."/classes/elements/DBInterface.inc" );
 require_once( INCLUDE_DIR."/classes/elements/LpElement.inc" );
 
-class LpDBInterface {
-  var $myDBC;
-  var $myTable;
-
+class LpDBInterface extends DBInterface {
   function LpDBInterface(){
+    parent::__construct();
     $this->myDBC   = new Ddbc();
     $this->myTable = "pages";
   }
@@ -47,15 +46,18 @@ class LpDBInterface {
    * @return LcElement The new element filled with the data from the DB.
    */
   function createElementFromDbResult( &$data, $isInColl=false ){
-    return new LpElement( $data['idx'],                                 // $idx
-                          $this->myDBC->unEscapeString($data['title']),                 // $title
-                          $this->myDBC->unEscapeString($data['contents']),              // $contents
-                          $this->myDBC->unEscapeString($data['matching_menu']),         // $matchingMenu
-                          $data['visible_for'],                         // $visibleFor
-                          ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                          $data['history'],                             // $history
-                          $isInColl                                     // $isInColl
-                        );
+    $newElement = new LpElement(  $data['idx'],                                 // $idx
+                                  $this->myDBC->unEscapeString($data['title']),                 // $title
+                                  $this->myDBC->unEscapeString($data['contents']),              // $contents
+                                  $this->myDBC->unEscapeString($data['matching_menu']),         // $matchingMenu
+                                  $data['visible_for'],                         // $visibleFor
+                                  ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
+                                  $data['history'],                             // $history
+                                  $isInColl                                     // $isInColl
+                                );
+    // cache
+    $this->cache($newElement);
+    return $newElement;
   }
 
   /**
@@ -74,6 +76,10 @@ class LpDBInterface {
   */
   function getData2idx( $idx, $isInColl=false ){
     global $cfg,$url,$lng,$usr;
+    $cachedResult = $this->getFromCache($idx);
+    if ($cachedResult){
+      return $cachedResult;
+    }
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       //trigger_error( mysql_error(). "pge with idx not found: ".$idx, E_USER_WARNING );
@@ -100,40 +106,6 @@ class LpDBInterface {
 
       return $this->createElementFromDbResult($data,$isInColl);
     }
-  }
-
-  /**
-  * For the menu only a little amount of data is needed so here only that stuff is loaded.
-  *
-  * Returns a LpElement to the specified $idx that is only PARTIALLY FILLED.
-  * Menu entries appear only if the element is visible. The element is filled so
-  * that it can tell whether it is visible and has all relevant properties to return
-  * its menu.
-  *
-  * @param $idx               The element's index (also idx in the database).
-  * @param $isInColl          The element might be restricted to be visible only inside a collection.
-  *                           Since this is kind of the elements constructor this argument is just
-  *                           passed to the real constructor.
-  *
-  * @return LpElement         Only partially filled with data!
-  */
-  function getMenuData2idx( $idx, $isInColl=false ){
-    global $cfg;
-    $result = $this->myDBC->mkSelect( "idx, title, matching_menu, visible_for, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      //trigger_error( mysql_error(). "pge with idx not found: ".$idx, E_USER_WARNING );
-      return false;
-      exit;
-    }else
-      return new LpElement( $data['idx'],                                 // $idx
-                            $this->myDBC->unEscapeString($data['title']),                 // $title
-                            "",                                           // $contents
-                            $this->myDBC->unEscapeString($data['matching_menu']),         // $matchingMenu
-                            $data['visible_for'],                         // $visibleFor
-                            ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                            false, /* false indicates "only menu data" */ // $history
-                            $isInColl                                     // $isInColl
-                          );
   }
 
   /**
@@ -176,52 +148,6 @@ class LpDBInterface {
           'history=\''.$this->myDBC->escapeString($element->history)."'",
                                      $this->myTable,
                                      "idx=".$element->idx );
-  }
-
-  /**
-  * Deletes the element with $idx from the database.
-  *
-  * @param $idx   The element's index (also idx in the database).
-  * @return BOOL  The return value of the query.
-  */
-  function deleteData( $idx ){
-    return $this->myDBC->mkDelete( $this->myTable, "idx='".$idx."'" );
-  }
-
-
-  var $queryResult;
-  /**
-  * Queries for all elements. P.e. used at the manage page.
-  *
-  * @param $orderBy    Can be any of the table's keys. The result will be ordered by this key.
-  * @param $asc        Should the datasets be in ascending order?
-  */
-  function getAllData( $orderBy="", $asc=true ){
-    if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
-    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "", $orderBy );
-  }
-
-  /**
-   * Returns the amount of returned datasets from the query;
-   *
-   * @return  amount of returned datasets from the query
-   */
-  function allSize(){
-    return $this->myDBC->datasetsIn( $this->queryResult );
-  }
-
-  /**
-  * Returns the next element from the getAllData() query or false (no more results).
-  *
-  * @return LpElement
-  * @return FALSE     If no more datasets are available.
-  */
-  function getNextData( $isInColl=false ){
-    if ( $data = mysql_fetch_array($this->queryResult) ){
-      return $this->createElementFromDbResult($data, $isInColl);
-    }else{
-      return false;
-    }
   }
 
   /**

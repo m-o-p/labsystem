@@ -88,6 +88,18 @@ class Element{
 
   var $serializationArray;      // This array is used for serialization and unserialization. It contains all variable names to be (un-)serialized as value.
 
+  // selectors
+  function getElementId(){ return $this->elementId; }
+
+  function getIdx()                      { return $this->idx; }
+  function getTitle()                    { return $this->title; }
+  function getMatchingMenuRaw()          { return $this->matchingMenu; }
+  function getVisibleOnlyInCollection()  { return $this->visibleOnlyInCollection; }
+  function getHistory()                  { return $this->history; }
+
+  function setIdx( $newIDX )               { $this->idx = $newIDX; }
+  function setHistory( $newHistory )       { $this->history = $newHistory; }
+  function prependToHistory($historyEntry) { $this->history = $historyEntry.$this->history; }
   /**
   * Is the element visible?
   * @return BOOL  Is the element visible?
@@ -98,6 +110,7 @@ class Element{
             || $usr->isOfKind( IS_CONTENT_EDITOR ); /* contents editors are able to view any page */
   }
 
+
   /**
   /**
   * Serialises the element. Uses $this->serializationArray
@@ -105,7 +118,7 @@ class Element{
   * @return String serializedVersionOfElement
   */
   function getSerialized(){
-    $output = '';
+    $output = '<element>'."\r\n";
     foreach ( $this->serializationArray as $value ){
       $output .= '<'.$value.'>';
       if( is_array($this->$value) ){
@@ -115,6 +128,7 @@ class Element{
       }
       $output .= '</'.$value.'>'."\r\n";
     }
+    $output.='</element>'."\r\n";
     return $output;
   }
 
@@ -157,7 +171,7 @@ class Element{
             if (!next( $inputLines )) break;
       }
     // catch error
-    if ( !current( $inputLines ) ) trigger_error( htmlentities($closeTag, ENT_QUOTES | ENT_IGNORE ).' missing when unserializing: '.htmlentities($serializedData, ENT_QUOTES | ENT_IGNORE ), E_USER_ERROR );
+    if ( !current( $inputLines ) ) trigger_error( htmlentities( $closeTag ).' missing when unserializing: '.htmlentities( $serializedData ), E_USER_ERROR );
     }
   }
 
@@ -170,7 +184,7 @@ class Element{
   */
   function getMenu( $fullAddress, &$menu2Populate, $paragraph="", $isActive=false ){
     global $url;
-    if ( $this->isVisible() ) return $menu2Populate->entry( ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, $isActive );
+    if ( $this->isVisible() ) return $menu2Populate->entry( ( !empty($paragraph) ?  $paragraph.' '  : '' ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, $isActive );
                          else return "";
   }
 

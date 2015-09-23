@@ -57,7 +57,7 @@ class ElementUser {
   * @param $ownRole       If given, the $role is checked against this. (p.e. in helper.inc::rightsBox() ).
   * @return BOOL          True, if the rights are fulfilled false otherwise.
   */
-  function isOfKind( $role, $ownRole="" ){
+  function isOfKind( $role, $ownRole='' ){
     if (!is_numeric( $role ) && !defined ( $role )){
       trigger_error( $role.": is not defined (ElementUser::isOfKind)", E_USER_WARNING );
       return false; // user role is not defined
@@ -67,7 +67,7 @@ class ElementUser {
                             trigger_error( $role.": ElementUser::isOfKind: checked for 0", E_USER_WARNING );
                             return false;
                         }
-    if ($ownRole == "") $ownRole = $this->userRights;
+    if (empty($ownRole)) $ownRole = $this->userRights;
     return ( (intval($ownRole) & intval($role)) == $role ); // checks whether all bits of $role are set in $ownRole
   }
 

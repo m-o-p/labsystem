@@ -37,9 +37,8 @@ require_once( INCLUDE_DIR."/classes/Ddbc.inc" );
 require( INCLUDE_DIR."/classes/elements/BCElement.inc" );
 
 class BCDBInterface extends LcDBInterface {
-  var $myDBC;
   function BCDBInterface(){
-    $this->LcDBInterface();
+    parent::__construct();
   }
 
   /* The following functions have to return a BCElement instead of an LcElement.
@@ -48,6 +47,27 @@ class BCDBInterface extends LcDBInterface {
      So later you might replace the following by:
        return (BCElement) parent:: getData2idx( $idx );
   */
+
+  /**
+   * Creates a new element of the required type using the database query result given as parameter.
+   * @param unknown $data The result of the database query.
+   * @return LcElement The new element filled with the data from the DB.
+   */
+  function createElementFromDbResult( &$data, $isInColl=false, $isInLab=false ){
+    return new BCElement( $data['idx'],                                 // $idx
+        stripslashes($data['title']),                 // $title
+        stripslashes($data['contents']),              // $contents
+        stripslashes($data['matching_menu']),         // $matchingMenu
+        ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
+        ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
+        ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
+        ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
+        $data['history'],                             // $history
+        $isInColl,                                    // $isInColl
+        $isInLab                                      // $isInLab
+    );
+  }
+
   function getData2idx( $idx, $isInColl=false, $isInLab=false ){
     //Something like "" return (BCElement) parent::getData2idx( $idx );""
     global $cfg,$url,$lng,$usr;
@@ -75,81 +95,8 @@ class BCDBInterface extends LcDBInterface {
         $data['history'] = preg_replace('/^(@@'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
       }
 
-      return new BCElement( $data['idx'],                                 // $idx
-                            stripslashes($data['title']),                 // $title
-                            stripslashes($data['contents']),              // $contents
-                            stripslashes($data['matching_menu']),         // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                            $data['history'],                             // $history
-                            $isInColl,                                    // $isInColl
-                            $isInLab                                      // $isInLab
-                          );
+      return $this->createElementFromDbResult( $data, $isInColl, $isInLab );
     }
-  }
-
-  /**
-  * For the menu only a little amount of data is needed so here only that stuff is loaded.
-  *
-  * Returns a BCElement to the specified $idx that is only PARTIALLY FILLED.
-  * Menu entries appear only if the element is visible. The element is filled so
-  * that it can tell whether it is visible and has all relevant properties to return
-  * its menu.
-  *
-  * @param $idx               The element's index (also idx in the database).
-  * @param $isInColl          The element might be restricted to be visible only inside a collection.
-  *                           Since this is kind of the elements constructor this argument is just
-  *                           passed to the real constructor.
-  *
-  * @return BCElement         Only partially filled with data!
-  */
-  function getMenuData2idx( $idx, $isInColl=false, $isInLab=false ){
-    global $cfg;
-    $result = $this->myDBC->mkSelect( "idx, title, contents, matching_menu, visible_before_first_sched, visible_during_sched, visible_after_first_sched, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      //trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
-      return false;
-      exit;
-    }else
-      return new BcElement( $data['idx'],                                 // $idx
-                            stripslashes($data['title']),                 // $title
-                            stripslashes($data['contents']),              // $contents
-                            stripslashes($data['matching_menu']),         // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                            false, /* false indicates "only menu data" */ // $history
-                            $isInColl,                                    // $isInColl
-                            $isInLab                                      // $isInLab
-                          );
-  }
-
-
-  /**
-  * Returns the next element from the getAllData() query or false (no more results).
-  *
-  * @return BCElement
-  * @return FALSE     If no more datasets are available.
-  */
-  function getNextData(){
-    // Something like ""return (BCElement) parent::getNextData();""
-    if ($data = mysql_fetch_array($this->queryResult))
-      return new BCElement( $data['idx'],                                 // $idx
-                            stripslashes($data['title']),                 // $title
-                            stripslashes($data['contents']),              // $contents
-                            stripslashes($data['matching_menu']),         // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                            $data['history'],                             // $history
-                            false,                                        // $isInColl
-                            false                                         // $isInLab
-                          );
-    return false;
   }
 }
 $GLOBALS["CDBI"] = new BCDBInterface();

@@ -37,9 +37,11 @@ if ( $GLOBALS['url']->available('address') ){
   require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0}; $num = substr( $firstFinal, 1);
   if ($id == 'l'){
     require( "../php/getDBIbyID.inc" ); /* -> $DBI */
-    if ( $element = $DBI->getMenuData2idx( $num ) ){
+    $GLOBALS['IamGeneratingTheMenu']=true;
+    if ( $element = $DBI->getData2idx( $num ) ){
       $myCG->setText( $element->title );
     }
+    $GLOBALS['IamGeneratingTheMenu']=false;
   }
 }
 $myCG->generate();

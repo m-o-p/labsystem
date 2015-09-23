@@ -63,8 +63,9 @@ class Usr extends ElementUser{
   * @return The UID of the watched user or false.
   */
   function theSeeingUid(){
-    if ( $this->isSeeingSomeonesData() ) return $this->iSeeUID;
-    else return false;
+    if ( $this->isSeeingSomeonesData() ){
+      return $this->iSeeUID;
+    } else return false;
   }
 
   /**
@@ -82,16 +83,16 @@ class Usr extends ElementUser{
   */
   function seesDataOf( $uid ){
     global $lng;
-    if ( !(empty($uid) || $this->isOfKind( IS_CORRECTOR ) || ((IS_DB_USER_ADMIN != 0) && $this->isOfKind( IS_DB_USER_ADMIN ))) ) return false; // only correctors can do that
-
-    if ( !empty($uid) ){
-      $this->iSeeUID = $uid;
-      if ( $this->iSeeUID != 'all' ){ // seeing one member's answers
-                              $userData = $this->getUserInformation( $this->iSeeUID );
-                              $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$userData["userName"].")";
-      }else{ // seeing ALL member's answers
-                              $this->iSeeDesc = $lng->get("showAllUADesc");
-      }
+    if ( !($this->isOfKind( IS_CORRECTOR ) ||
+          (defined(IS_DB_USER_ADMIN) && IS_DB_USER_ADMIN!=0 && $this->isOfKind( IS_DB_USER_ADMIN ))
+          )
+        ) return false; // only correctors can do that
+    $this->iSeeUID = $uid;
+    if ( $this->iSeeUID != 'all' ){ // seeing one member's answers
+                            $userData = $this->getUserInformation( $this->iSeeUID );
+                            $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$userData["userName"].")";
+    }else{ // seeing ALL member's answers
+                            $this->iSeeDesc = $lng->get("showAllUADesc");
     }
   }
 
@@ -123,8 +124,7 @@ class Usr extends ElementUser{
       }
       return Array( "name"     => ($url->available('pseudoNames')? randomName():$userData["name"]),
                     "foreName" => ($url->available('pseudoNames')? randomName():$userData["foreName"]),
-                    "userName" => ($url->available('pseudoNames')? randomName():$userData["userName"]),
-                    'matrikelnummer' => ($url->available('pseudoNames')? '123456':$userData["matrikelnummer"])
+                    "userName" => ($url->available('pseudoNames')? randomName():$userData["userName"])
                    );
     }
   }

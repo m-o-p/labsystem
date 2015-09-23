@@ -50,15 +50,16 @@ class LlDBInterfaceUidStatus {
   * @param $uid             The user's unique identifier.
   * @return Array(  "currentTeam" => int,
   *                 "preLabFinished" => bool,
-  *                 "preLabGivenCredits" => float,
+  *                 "preLabGivenCredits" => float, // contains "0/3;reached/possibleCredits;..."
   *                 "preLabPossibleCredits" => float,
+  *                 "preLabDetailedCredits" => string,
   *                 "preLabAllTeammFinished" => bool,
   *                 "labClosed" => bool,
   *                 "labCorrected" => bool,
   *                 "whichCorrected" => string, // contains "ttfttt" 1,2 corrected; 3 not etc.; only present if labCorrected=false;
   *                 "labGivenCredits" => float,
   *                 "labPossibleCredits" => float,
-  *                 "detailedCredits" => string, // contains "0/3;reached/possibleCredits;..."
+  *                 "labDetailedCredits" => string, // contains "0/3;reached/possibleCredits;..."
   *                 "history" => string );
   */
   function getData4( $uid ){
@@ -70,26 +71,28 @@ class LlDBInterfaceUidStatus {
                     "preLabFinished" => false,
                     "preLabGivenCredits" => 0,
                     "preLabPossibleCredits" => 0,
+                    "preLabDetailedCredits" => '',
                     "preLabAllTeammFinished" => false,
                     "labClosed" => false,
                     "labCorrected" => false,
                     "whichCorrected" => "",
                     "labGivenCredits" => 0,
                     "labPossibleCredits" => 0,
-                    "detailedCredits" => '',
+                    "labDetailedCredits" => '',
                     "history" => "" );
     }else{
       return Array( "currentTeam" => $data['current_team'],
                     "preLabFinished" => ($data['prelab_finished'] == 1),
                     "preLabGivenCredits" => ($data['prelab_given_credits'] / 100),
                     "preLabPossibleCredits" => ($data['prelab_possible_credits'] / 100),
+                    "preLabDetailedCredits" => (array_key_exists('prelab_detailed_credits', $data) ? $data['prelab_detailed_credits'] : ''),
                     "preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1),
                     "labClosed" => ($data['lab_closed'] == 1),
                     "labCorrected" => ($data['lab_corrected'] == 1),
                     "whichCorrected" => $data['which_corrected'],
                     "labGivenCredits" => ($data['lab_given_credits'] / 100),
                     "labPossibleCredits" => ($data['lab_possible_credits'] / 100),
-                    "detailedCredits" => (array_key_exists('detailed_credits', $data) ? $data['detailed_credits'] : ''),
+                    "labDetailedCredits" => (array_key_exists('lab_detailed_credits', $data) ? $data['lab_detailed_credits'] : ''),
                     "history" => $data['history'] );
     }
   }
@@ -101,13 +104,14 @@ class LlDBInterfaceUidStatus {
   * @param $currentTeam                   The users currentTeam. (some as in DBInterfaceInputAnswersUidTeam.inc but on lab level)
   * @param $prelabFinished                Is the prelab finished?
   * @param $prelabGivenCredits            FLOAT of given credits (p.e. 0.75).
+  * @param $prelabDetailedCredits         The detailed lab credits
   * @param $prelabPossibleCredits         FLOAT of possible credits.
   * @param $prelabAllTeammembersFinished  Did all teammembers finish the prelab?
   * @param $labClosed                     Is the lab closed?
   * @param $labCorrected                  Is the lab corrected?
   * @param $givenCredits                  FLOAT of given credits (p.e. 0.75).
   * @param $possibleCredits               FLOAT of possible credits.
-  * @param detailedCredits                The detailed credits (see above).
+  * @param labDetailedCredits             The detailed lab credits (see above).
   * @param $history                       If present this is set after the user's name.
   */
   function setData4( $uid,
@@ -115,26 +119,28 @@ class LlDBInterfaceUidStatus {
                      $prelabFinished=false,
                      $prelabGivenCredits=0,
                      $prelabPossibleCredits=0,
+                     $prelabDetailedCredits='',
                      $prelabAllTeammembersFinished=false,
                      $labClosed=false,
                      $labCorrected=false,
                      $whichCorrected="",
                      $givenCredits=0,
                      $possibleCredits=0,
-                     $detailedCredits="",
-                     $history = "" ){
+                     $labDetailedCredits='',
+                     $history = '' ){
     global $usr;
     $toSet = "current_team='".$currentTeam."', ".
              "prelab_finished='".( $prelabFinished ?  "1" :  "0" )."', ".
              "prelab_given_credits='".($prelabGivenCredits * 100)."', ".
              "prelab_possible_credits='".($prelabPossibleCredits * 100)."', ".
+             "prelab_detailed_credits='".$prelabDetailedCredits."', ".
              "prelab_all_teammembers_finished='".( $prelabAllTeammembersFinished ?  "1" :  "0" )."', ".
              "lab_closed='".( $labClosed ?  "1" :  "0" )."', ".
              "lab_corrected='".( $labCorrected ?  "1" :  "0" )."', ".
              "which_corrected='".$whichCorrected."', ".
              "lab_given_credits='".($givenCredits * 100)."', ".
              "lab_possible_credits='".($possibleCredits * 100)."', ".
-             "detailed_credits='".$detailedCredits."', ".
+             "lab_detailed_credits='".$labDetailedCredits."', ".
              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && uid='".$uid."'" );
   }
@@ -222,13 +228,14 @@ class LlDBInterfaceUidStatus {
   *                 "preLabFinished" => bool,
   *                 "preLabGivenCredits" => float,
   *                 "preLabPossibleCredits" => float,
+  *                 "preLabDetailedCredits" => string,
   *                 "preLabAllTeammFinished" => bool,
   *                 "labClosed" => bool,
   *                 "labCorrected" => bool,
   *                 "whichCorrected" => string,
   *                 "labGivenCredits" => float,
   *                 "labPossibleCredits" => float,
-  *                 "detailedCredits" => string,
+  *                 "labDetailedCredits" => string,
   *                 "history" => string );
   * @return FALSE   If no more datasets are available.
   */
@@ -240,13 +247,14 @@ class LlDBInterfaceUidStatus {
                     "preLabFinished" => ($data['prelab_finished'] == 1),
                     "preLabGivenCredits" => ($data['prelab_given_credits'] / 100),
                     "preLabPossibleCredits" => ($data['prelab_possible_credits'] / 100),
+                    "preLabDetailedCredits" => (array_key_exists('prelab_detailed_credits', $data) ? $data['prelab_detailed_credits'] : ''),
                     "preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1),
                     "labClosed" => ($data['lab_closed'] == 1),
                     "labCorrected" => ($data['lab_corrected'] == 1),
                     "whichCorrected" => $data['which_corrected'],
                     "labGivenCredits" => ($data['lab_given_credits'] / 100),
                     "labPossibleCredits" => ($data['lab_possible_credits'] / 100),
-                    "detailedCredits" => (array_key_exists('detailed_credits', $data) ? $data['detailed_credits'] : ''),
+                    "labDetailedCredits" => (array_key_exists('lab_detailed_credits', $data) ? $data['lab_detailed_credits'] : ''),
                     "history" => $data['history'] );
     else
       return false;

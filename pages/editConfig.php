@@ -67,5 +67,12 @@ if ( $usr->isOfKind( $pge->visibleFor ) ){
 
 }
 
+require_once '../include/classes/mailFunctionality.inc';
+$mailFunc->mail2groupWithRights( IS_CONFIG_EDITOR,
+    "test lab",
+    'l42: '."test lab".PHP_EOL.
+    $lng->get('labClosedExplain').PHP_EOL.
+    $_SERVER["REQUEST_URI"] );
+
 require( $cfg->get("SystemPageLayoutFile") );
 ?>

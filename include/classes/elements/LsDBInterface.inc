@@ -34,13 +34,12 @@
 if ( isset( $GLOBALS["sDBI"] ) ) return; // require_once doesn't work well
 
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
+require_once( INCLUDE_DIR."/classes/elements/DBInterface.inc" );
 require( INCLUDE_DIR."/classes/elements/LsElement.inc" );
 
-class LsDBInterface {
-  var $myDBC;
-  var $myTable;
-
+class LsDBInterface extends DBInterface {
   function LsDBInterface(){
+    parent::__construct();
     $this->myDBC   = new Wdbc();
     $this->myTable = "schedules";
   }
@@ -99,22 +98,24 @@ class LsDBInterface {
   }
 
 // The "normal" DBI starts here...
-
   /**
    * Creates a new element of the required type using the database query result given as parameter.
    * @param unknown $data The result of the database query.
    * @return LcElement The new element filled with the data from the DB.
    */
   function createElementFromDbResult( &$data, $isInColl=false ){
-    return new LsElement( $data['idx'],                   // $idx
-        $data['id'],                    // $id
-        $data['num'],                   // $num
-        strtotime(  ( $data['idx'] == 1 ? 'today 0:00:00' : $data['start'] ) ),   // $start
-        strtotime(  ( $data['idx'] == 1 ? '+2 weeks 23:59:59' : $data['stop'] ) ),    // $stop
-        $this->myDBC->unEscapeString($data['comment']), // $comment
-        $this->myDBC->unEscapeString($data['history']), // $history
-        $isInColl                       // $isInColl
-    );
+    $newElement = new LsElement(  $data['idx'],                   // $idx
+                                  $data['id'],                    // $id
+                                  $data['num'],                   // $num
+                                  strtotime(  ( $data['idx'] == 1 ? 'today 0:00:00' : $data['start'] ) ),   // $start
+                                  strtotime(  ( $data['idx'] == 1 ? '+2 weeks 23:59:59' : $data['stop'] ) ),    // $stop
+                                  $this->myDBC->unEscapeString($data['comment']), // $comment
+                                  $this->myDBC->unEscapeString($data['history']), // $history
+                                  $isInColl                       // $isInColl
+                              );
+    // cache
+    $this->cache($newElement);
+    return $newElement;
   }
 
   /**
@@ -133,6 +134,10 @@ class LsDBInterface {
   */
   function getData2idx( $idx, $isInColl=false ){
     global $cfg,$url,$lng,$usr;
+    $cachedResult = $this->getFromCache($idx);
+    if ($cachedResult){
+      return $cachedResult;
+    }
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       //trigger_error( mysql_error(). "mc with idx not found: ".$idx, E_USER_WARNING );
@@ -158,41 +163,6 @@ class LsDBInterface {
       }
 
       return $this->createElementFromDbResult($data,$isInColl);
-    }
-  }
-
-  /**
-  * For the menu only a little amount of data is needed so here only that stuff is loaded.
-  *
-  * Returns a LsElement to the specified $idx that is only PARTIALLY FILLED.
-  * Menu entries appear only if the element is visible. The element is filled so
-  * that it can tell whether it is visible and has all relevant properties to return
-  * its menu.
-  *
-  * @param $idx               The element's index (also idx in the database).
-  * @param $isInColl          The element might be restricted to be visible only inside a collection.
-  *                           Since this is kind of the elements constructor this argument is just
-  *                           passed to the real constructor.
-  *
-  * @return LsElement         Only partially filled with data!
-  */
-  function getMenuData2idx( $idx, $isInColl=false ){
-    global $cfg;
-    $result = $this->myDBC->mkSelect( "idx, num, id", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      //trigger_error( mysql_error(). "mc with idx not found: ".$idx, E_USER_WARNING );
-      return false;
-      exit;
-    }else{
-      return new LsElement( $data['idx'],                   // $idx
-                            $data['id'],                    // $id
-                            $data['num'],                   // $num
-                            strtotime(  $data['start'] ),   // $start
-                            strtotime(  $data['stop'] ),    // $stop
-                            "",                             // comment
-                            false, /* "only menu data" */   // $history
-                            $isInColl                       // $isInColl
-                           );
     }
   }
 
@@ -236,52 +206,6 @@ class LsDBInterface {
           'history=\''.$this->myDBC->escapeString($element->history)."'",
                                      $this->myTable,
                                      "idx=".$element->idx );
-  }
-
-  /**
-  * Deletes the element with $idx from the database.
-  *
-  * @param $idx   The element's index (also idx in the database).
-  * @return BOOL  The return value of the query.
-  */
-  function deleteData( $idx ){
-    return $this->myDBC->mkDelete( $this->myTable, "idx='".$idx."'" );
-  }
-
-
-  var $queryResult;
-  /**
-  * Queries for all elements. P.e. used at the manage page.
-  *
-  * @param $orderBy    Can be any of the table's keys. The result will be ordered by this key.
-  * @param $asc        Should the datasets be in ascending order?
-  */
-  function getAllData( $orderBy="", $asc=true ){
-    if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
-    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "", $orderBy );
-  }
-
-  /**
-   * Returns the amount of returned datasets from the query;
-   *
-   * @return  amount of returned datasets from the query
-   */
-  function allSize(){
-    return $this->myDBC->datasetsIn( $this->queryResult );
-  }
-
-  /**
-  * Returns the next element from the getAllData() query or false (no more results).
-  *
-  * @return LsElement
-  * @return FALSE     If no more datasets are available.
-  */
-  function getNextData( $isInColl=false ){
-    if ( $data = mysql_fetch_array($this->queryResult) ){
-      return $this->createElementFromDbResult($data, $isInColl);
-    }else{
-      return false;
-    }
   }
 
   /**

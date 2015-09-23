@@ -192,7 +192,7 @@ $usrDB = new DBConnection($cfg->get("UserDatabaseHost"),
 echo( $cfg->get("UserDatabaseName").': ' );
 if(!$usrDB->db_exists( $cfg->get("UserDatabaseName") ))
 {
-       $query = 'CREATE DATABASE IF NOT EXISTS '.$cfg->get("UserDatabaseName").' CHARACTER SET utf8 COLLATE utf8_general_ci';
+       $query = 'CREATE DATABASE IF NOT EXISTS '.$cfg->get("UserDatabaseName");
        $usrDB->query($query);
        if ( !$usrDB->reportErrors() ) say_done(); else say_failed();
 } else say_skipped();
@@ -210,8 +210,8 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                  `desiredTeamPartner` varchar(255) NOT NULL,
                  `reasonToParticipate` text NOT NULL,
                  '.$cfg->get("UserDBField_uid").' char(32) NOT NULL UNIQUE,
-				 `pwReminderToken` char(255) NOT NULL COMMENT "Stores the password reminder token.",
-				 `pwReminderValidUntil` int(11) NOT NULL COMMENT "Stores until the token is valid in unixtime.",
+		  		 `pwReminderToken` char(255) COLLATE utf8_unicode_ci NOT NULL COMMENT "Stores the password reminder token.",
+  				 `pwReminderValidUntil` int(11) NOT NULL COMMENT "Stores until the token is valid in unixtime.",
                  `registerFor` varchar(255) NOT NULL COMMENT "Used by register.php to indicate where one registered for.",
                  `last_registered` datetime NOT NULL COMMENT "Stores when the last registration happened for this address (for giving the places in the right order)",
                  '.$cfg->get("User_courseID").' tinyint(1) NOT NULL default \'1\',
@@ -320,7 +320,7 @@ $dataDB = new DBConnection($cfg->get("DataDatabaseHost"),
 echo( $cfg->get("DataDatabaseName").': ' );
 if(!$dataDB->db_exists( $cfg->get("DataDatabaseName") ))
 {
-       $query = 'CREATE DATABASE IF NOT EXISTS '.$cfg->get("DataDatabaseName").' CHARACTER SET utf8 COLLATE utf8_general_ci';
+       $query = 'CREATE DATABASE IF NOT EXISTS '.$cfg->get("DataDatabaseName");
        $dataDB->query($query);
        if ( !$dataDB->reportErrors() ) say_done(); else say_failed();
 } else say_skipped();
@@ -336,7 +336,7 @@ $wrkDB = new DBConnection($cfg->get("WorkingDatabaseHost"),
 echo( $cfg->get("WorkingDatabaseName").': ' );
 if(!$wrkDB->db_exists( $cfg->get("WorkingDatabaseName") ))
 {
-       $query = 'CREATE DATABASE IF NOT EXISTS '.$cfg->get("WorkingDatabaseName").' CHARACTER SET utf8 COLLATE utf8_general_ci';
+       $query = 'CREATE DATABASE IF NOT EXISTS '.$cfg->get("WorkingDatabaseName");
        $wrkDB->query($query);
        if ( !$wrkDB->reportErrors() ) say_done(); else say_failed();
 } else say_skipped();

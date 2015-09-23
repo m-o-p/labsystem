@@ -103,25 +103,20 @@ function cutHTMLText( $text, $where ){
 * Gets called to handle the "[HTML]" beginning tag of a string (page content etc.) appropriately.
 * If the string starts with [HTML] no further processing is necessary (The browser will inerprete the following tags).
 * If there is no [HTML] at the beginning of the string it gets nl2br( htmlspecialchars( string ) ); so all tags get filtered.
-* Since the object comes by reference it is directly manipulated! (Doesn't work on array elements in php 4.3).
 * @param &$object   The string to be parsed.
+* @return the replaced string.
 */
-function parseHTML( &$object ){
+function parseHTML( $object ){
+  global $pge;
   // handle multiple spaces as Indention
-  $toReplace = array( '   ', '  ', "\b([^ ])" );
-  $replaceWith = array ( '&nbsp; &nbsp;', '&nbsp; ', "&nbsp;\\1" );
-
   if ( (substr( $object, 0, 4 ) == '[MD]') && file_exists( '../plugins/phpMarkDown/markdown.php' ) && include_once( '../plugins/phpMarkDown/markdown.php' ) ){ //phpMarkDown http://michelf.com/projects/php-markdown/
-    $object = Markdown( $GLOBALS['pge']->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
-  }
-  else if ( substr( $object, 0, 6 ) == '[HTML]' ){ // HTML
-    $object = substr( $object, 6 ); // just remove [HTML]
-  }else{ // assume it is plain text
-//    $object = preg_replace('/ ([\w\s])/', '&nbsp;\\1', nl2br( htmlspecialchars( $object ) ) );
-//    $object = nl2br( htmlspecialchars( $object ) );
-    $object = str_replace(array('  ', "\t"), array('&nbsp; ', '&nbsp; &nbsp; '),
-                           nl2br( htmlentities( $object ) )
-              );
+    return Markdown( $pge->replaceConstants( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
+  } else if ( substr( $object, 0, 6 ) == '[HTML]' ){ // HTML
+    return substr( $pge->replaceConstants( $object ), 6 ); // just remove [HTML]
+  } else { // assume it is plain text
+    return str_replace(array('  ', "\t"), array('&nbsp; ', '&nbsp; &nbsp; '),
+                           nl2br( htmlentities( $pge->replaceConstants( $object ) ) )
+                      );
   }
 }
 
@@ -130,25 +125,23 @@ function tidyHTML( &$string ){
        ( substr( $string, 0, 6 ) == '[HTML]' ) &&  // this is and HTML element
        class_exists( 'tidy' ) ){ // tidy exists on this system
     if (!isset( $GLOBALS['tidy'] )) $GLOBALS['tidy'] = new tidy();
-    $string = "[HTML]\n".$GLOBALS['tidy']->repairString( substr( $string, 6 ), array('indent' => TRUE, 'show-body-only' => TRUE, 'vertical-space' => TRUE, 'wrap' => 100), 'utf8' );
+    $string = "[HTML]\n".$GLOBALS['tidy']->repairString( substr( $string, 6 ), array('indent' => TRUE, 'show-body-only' => TRUE, 'vertical-space' => TRUE, 'wrap' => 100), utf8 );
   }
 }
 
 /**
-* Difference to the previous: Doesn't directly alter the data but return it.
-* Gets called to handle the "[HTML]" beginning tag of a string (page content etc.) appropriately.
-* If the string starts with [HTML] no further processing is necessary (The browser will inerprete the following tags).
-* If there is no [HTML] at the beginning of the string it gets nl2br( htmlspecialchars( string ) ); so all tags get filtered.
-* @param  $object The string to be parsed.
-* @return $string The altered $object.
-*/
-function returnHTML( $object ){
-  parseHTML( $object );
-  return $object;
+ * Functoinal versions of tidying the HTML that is not changing the input variable.
+ * @param unknown $input
+ * @return unknown
+ */
+function getTidiedHTML( $input ){
+  $output = $input;
+  tidyHTML($output);
+  return $output;
 }
 
 /**
-* Rremoves anything with special purpose from the $text for editing.
+* Removes anything with special purpose from the $text for editing.
 * @param  $text   The string to be parsed.
 * @return $string The altered $text.
 */
@@ -262,4 +255,9 @@ function randomName(){
 $linkToPreviousPage = "#";
 $linkToNextPage = "#";
 $linkToTOCPage = "#";
+
+function getHistoryEntryLine( $text ){
+  global $usr;
+  return htmlentities(date('Y-m-d H:i:s').' '. $usr->foreName.' '.$usr->surName.' ('.$usr->userName.'): '.$text.PHP_EOL);
+}
 ?>

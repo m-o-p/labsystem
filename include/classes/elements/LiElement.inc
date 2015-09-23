@@ -113,7 +113,7 @@ class LiElement extends Element{
     $this->elementId                = "i";
     $this->idx                      = $idx;
     $this->title                    = trim(strip_tags(preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
-                                        returnHTML( // remove [HTML] etc.
+                                        parseHTML( // remove [HTML] etc.
                                           substr( $question, 0, 100 )
                                         )))
                                       );
@@ -198,7 +198,7 @@ class LiElement extends Element{
    */
   private function returnPREformatted($text){
     return ( $text[0] == '[' ? // formatted?
-        returnHTML( $text )
+        parseHTML( $text )
         :
         '<pre style="width: 100%; border: 0; padding: 0; margin: 0; background-color: transparent; display: inline;">'.
         htmlentities( $text ).
@@ -565,7 +565,7 @@ class LiElement extends Element{
       exit;
     };
 
-    if ($this->question == "") return "'()";
+    if (empty($this->question)) return "'()";
 
     $answers = "";
     // Load the dynamic data from the working table.
@@ -587,15 +587,12 @@ class LiElement extends Element{
                                 }
       }
 
-
-    parseHTML( $this->question ); // Process [HTML].
-
     return "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
            "<div class=\"labsys_mop_elements_i_around\">".
            EM::viewTopInput( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
              "<div class=\"labsys_mop_i_question\">".
-               ( ($paragraph!="") ?  $paragraph.". "  : '' ).$this->question.
+               (!empty($paragraph) ?  $paragraph.' '  : '' ).parseHTML( $this->question ).
              "</div>\n".
 
            // example solution
@@ -630,13 +627,10 @@ class LiElement extends Element{
       exit;
     }
 
-    parseHTML( $this->question );
-    $pge->replaceConstants( $this->question ); // Process custon fields
-
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Li',
         $fullAddress,
-        ( ($paragraph!="") ?  $paragraph.". "  : '' ).$this->question
+        ( ($paragraph!="") ?  $paragraph.". "  : '' ).parseHTML( $this->question )
     );
 
     // echo ('[i-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');

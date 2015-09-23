@@ -65,7 +65,7 @@ class LmDBInterfaceAnswers {
     global $cfg, $lng;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "uid='".$uid."' && mc_idx='".$mIdx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){ // no dataset found => create a new one
-      // first: The permutation aray of the answers
+      // first: The permutation array of the answers
       $permutationArray = range (0, $countOfAnswers-1);
       srand ((float)microtime()*1000000);
       shuffle ($permutationArray);

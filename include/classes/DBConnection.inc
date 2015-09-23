@@ -275,7 +275,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
    *  p.e.: I've got to say "hello" -> I\'ve got to say \"hello\"
    */
   function escapeString( $val ){
-    return mysql_real_escape_string( $val );
+    return $val;
     /* If magic_quotes is on you must remove the quotes first!
        Otherwise there will be backslashes in your html-code...
     */

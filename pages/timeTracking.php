@@ -45,7 +45,7 @@ function getTitle($resourceFullAddress){
     $pos++;
   }
   $lastID = substr($resourceFullAddress, $pos);
-  if ($element = $GLOBALS[strtolower($lastID[0]).'DBI']->getMenuData2idx(substr($lastID,1))){
+  if ($element = $GLOBALS[strtolower($lastID[0]).'DBI']->getData2idx(substr($lastID,1))){
     return $element->title;
   } else {
     return $resourceFullAddress.': '.$lng->get("elementNotExist");

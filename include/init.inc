@@ -91,6 +91,7 @@ require( INCLUDE_DIR."/classes/ElementMenues.inc" );  // Standard menues.
 if($url->available('seeMe') && $usr->isOfKind(IS_CORRECTOR) && $url->get('seeMe')!='none'){
   $usr->seesDataOf( $url->get('seeMe') );
 }
+
 // used by menu.inc and page_layout.inc
 $labsystem_LogInLink = ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?
     'https://'.$_SERVER[ 'SERVER_NAME' ].preg_replace_callback( '#(\S*pages\/)[^\?]*(\?\S*)#',

@@ -75,7 +75,7 @@ class LpElement extends Element{
   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   * @return string        The html code of the element's view view.
   */
-  function show( $fullAddress, $paragraph="" ){
+  function show( $fullAddress, $paragraph='' ){
     global $usr, $lng;
     if (  !$this->isVisible() ){              // not enough rights->no content
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
@@ -84,18 +84,18 @@ class LpElement extends Element{
 
     $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::pOpen);
 
-    if ($this->contents == "") return "'()";  // is empty
+    if (empty($this->contents)) return "'()";  // is empty
 
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
-    $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
-
-    parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
 
     return EM::viewTopPage( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">".
            "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
            "<div class=\"labsys_mop_elements_p_around\">".
-           $this->contents."</div></div>".
+           parseHTML(
+               str_replace( "__ELEMENTTITLE__", ( !empty($paragraph) ?  $paragraph.' '  : '' ).$this->title, $this->contents )
+                     ).
+           '</div></div>'.
            EM::viewBottomPage( $this, $fullAddress );
   }
 
@@ -119,7 +119,7 @@ class LpElement extends Element{
 //        htmlentities( $this->contents ),
         $this->getePubContents( $paragraph ),
         array(
-            'title'   => returnHTML( ( $paragraph != "" ?  $paragraph.'. '  : '' ).$this->title ),
+            'title'   => parseHTML( ( $paragraph != "" ?  $paragraph.'. '  : '' ).$this->title ),
         )
     );
 
@@ -134,10 +134,8 @@ class LpElement extends Element{
 
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
-    parseHTML( $this->contents );              // Process [HTML]. (../include/helper.inc).
-    $pge->replaceConstants( $this->contents ); // Process custon fields
 
-    return $this->contents;
+    return parseHTML( $this->contents );
   }
 
 // The next functions are used for the element's edit page. *************************************************

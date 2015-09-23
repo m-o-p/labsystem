@@ -30,17 +30,16 @@
 if ( isset( $GLOBALS["cDBI"] ) ) return; // require_once doesn't work well
 
 require_once( INCLUDE_DIR."/classes/Ddbc.inc" );
+require_once( INCLUDE_DIR."/classes/elements/DBInterface.inc" );
 require( INCLUDE_DIR."/classes/elements/LcElement.inc" );
 
-class LcDBInterface {
-  var $myDBC;
-  var $myTable;
+class LcDBInterface extends DBInterface{
 
   function LcDBInterface(){
+    parent::__construct();
     $this->myDBC   = new Ddbc();
     $this->myTable = "collections";
   }
-
 
   /**
    * Creates a new element of the required type using the database query result given as parameter.
@@ -48,18 +47,21 @@ class LcDBInterface {
    * @return LcElement The new element filled with the data from the DB.
    */
   function createElementFromDbResult( &$data, $isInColl=false, $isInLab=false ){
-    return new LcElement( $data['idx'],                                 // $idx
-        $this->myDBC->unEscapeString($data['title']),                 // $title
-        $this->myDBC->unEscapeString($data['contents']),              // $contents
-        $this->myDBC->unEscapeString($data['matching_menu']),         // $matchingMenu
-        ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
-        ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
-        ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
-        ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-        $data['history'],                             // $history
-        $isInColl,                                    // $isInColl
-        $isInLab                                      // $isInLab
-    );
+    $newElement = new LcElement(   $data['idx'],                                 // $idx
+                                  $this->myDBC->unEscapeString($data['title']),                 // $title
+                                  $this->myDBC->unEscapeString($data['contents']),              // $contents
+                                  $this->myDBC->unEscapeString($data['matching_menu']),         // $matchingMenu
+                                  ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
+                                  ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
+                                  ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
+                                  ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
+                                  $data['history'],                             // $history
+                                  $isInColl,                                    // $isInColl
+                                  $isInLab                                      // $isInLab
+                              );
+    // cache
+    $this->cache($newElement);
+    return $newElement;
   }
 
   /**
@@ -80,6 +82,10 @@ class LcDBInterface {
   */
   function getData2idx( $idx, $isInColl=false, $isInLab=false ){
     global $cfg,$url,$lng,$usr;
+    $cachedResult = $this->getFromCache($idx);
+    if ($cachedResult){
+      return $cachedResult;
+    }
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
@@ -109,40 +115,18 @@ class LcDBInterface {
   }
 
   /**
-  * For the menu only a little amount of data is needed so here only that stuff is loaded.
-  *
-  * Returns a LcElement to the specified $idx that is only PARTIALLY FILLED.
-  * Menu entries appear only if the element is visible. The element is filled so
-  * that it can tell whether it is visible and has all relevant properties to return
-  * its menu.
-  *
-  * @param $idx               The element's index (also idx in the database).
-  * @param $isInColl          The element might be restricted to be visible only inside a collection.
-  *                           Since this is kind of the elements constructor this argument is just
-  *                           passed to the real constructor.
-  *
-  * @return LcElement         Only partially filled with data!
-  */
-  function getMenuData2idx( $idx, $isInColl=false, $isInLab=false ){
-    global $cfg;
-    $result = $this->myDBC->mkSelect( "idx, title, contents, matching_menu, visible_before_first_sched, visible_during_sched, visible_after_first_sched, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      //trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
-      return false;
-      exit;
-    }else
-      return new LcElement( $data['idx'],                                 // $idx
-                            $this->myDBC->unEscapeString($data['title']),                 // $title
-                            $this->myDBC->unEscapeString($data['contents']),              // $contents
-                            $this->myDBC->unEscapeString($data['matching_menu']),         // $matchingMenu
-                            ($data['visible_before_first_sched'] == "1"), // $visibleBefore1stSched
-                            ($data['visible_during_sched'] == "1"),       // $visibleDuringSched
-                            ($data['visible_after_first_sched'] == "1"),  // $visibleAfter1stSched
-                            ($data['visible_only_in_collection'] == "1"), // $visibleOnlyInCollection
-                            false, /* false indicates "only menu data" */ // $history
-                            $isInColl,                                    // $isInColl
-                            $isInLab                                      // $isInLab
-                          );
+   * Creates the database set string from the element.
+   * @param unknown $element
+   * @return string
+   */
+  function createSetStringFromElement( &$element ){
+    return  "title='".$this->myDBC->escapeString($eC->getTitle())."', ".
+            "contents='".$this->myDBC->escapeString(implode( ' ', $eC->getContainedElementIdArray() ))."', ".
+            "matching_menu='".$this->myDBC->escapeString($eC->getMatchingMenuRaw())."', ".
+            "visible_only_in_collection=".( $eC->getVisibleOnlyInCollection() ?  "1" :  "0"  ).
+            ", visible_before_first_sched=".( $eC->getVisibleBefore1stSchedule() ?  "1" :  "0"  ).
+            ", visible_during_sched=".( $eC->getVisibleDuringSchedule() ?  "1" :  "0"  ).
+            ", visible_after_first_sched=".( $eC->getVisibleAfter1stSchedule() ?  "1" :  "0"  ).', ';
   }
 
   /**
@@ -156,82 +140,30 @@ class LcDBInterface {
   */
   function setData( &$eC, $createNew = false ){
     global $usr, $cfg, $lng;
-    $toSet =  "title='".$this->myDBC->escapeString($eC->title)."', ".
-              "contents='".$this->myDBC->escapeString($eC->contents)."', ".
-              "matching_menu='".$this->myDBC->escapeString($eC->matchingMenu)."', ".
-              "visible_only_in_collection=".( $eC->visibleOnlyInCollection ?  "1" :  "0"  ).
-              ", visible_before_first_sched=".( $eC->visibleBefore1stSched ?  "1" :  "0"  ).
-              ", visible_during_sched=".( $eC->visibleDuringSched ?  "1" :  "0"  ).
-              ", visible_after_first_sched=".( $eC->visibleAfter1stSched ?  "1" :  "0"  ).', ';
+    $toSet =  $this->createSetStringFromElement($eC);
 
     $element = $eC;
-    $element->history = trim( $element->history[0] == ']' ?
-                          substr( $element->history, 1 ) : // import... -> no stamping please
-                          date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName.( $createNew ? '' : "\n".$element->history)
-                        );
+    $element->setHistory = trim( $element->getHistory()[0] == ']' ?
+                            substr( $element->getHistory(), 1 ) : // import... -> no stamping please
+                            date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName.( $createNew ? '' : PHP_EOL.$element->getHistory())
+                          );
     // versioning
     if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1'){
       $versionedIdx = $this->myDBC->mkInsertReturnIDX( $toSet.
-          "history='".$this->myDBC->escapeString( $element->history )."'",
+          "history='".$this->myDBC->escapeString( $element->getHistory() )."'",
           'bak_'.$this->myTable );
-      $element->history = '@@'.$versionedIdx.' '.$element->history;
+      $element->prependToHistory('@@'.$versionedIdx.' ');
     }
 
     if ( $createNew )
       return $this->myDBC->mkInsertReturnIDX( $toSet.
-                                              "history='".$this->myDBC->escapeString( $element->history )."'",
+                                              "history='".$this->myDBC->escapeString( $element->getHistory() )."'",
                                               $this->myTable );
     else
       return $this->myDBC->mkUpdIns( $toSet.
-          'history=\''.$this->myDBC->escapeString($element->history)."'",
+          'history=\''.$this->myDBC->escapeString($element->getHistory())."'",
                                      $this->myTable,
-                                     "idx=".$element->idx );
-  }
-
-  /**
-  * Deletes the element with $idx from the database.
-  *
-  * @param $idx   The element's index (also idx in the database).
-  * @return BOOL  The return value of the query.
-  */
-  function deleteData( $idx ){
-    return $this->myDBC->mkDelete( $this->myTable, "idx='".$idx."'" );
-  }
-
-
-  var $queryResult;
-  /**
-  * Queries for all elements. P.e. used at the manage page.
-  *
-  * @param $orderBy    Can be any of the table's keys. The result will be ordered by this key.
-  * @param $asc        Should the datasets be in ascending order?
-  */
-  function getAllData( $orderBy="", $asc=true ){
-    if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
-    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "", $orderBy );
-  }
-
-  /**
-   * Returns the amount of returned datasets from the query;
-   *
-   * @return  amount of returned datasets from the query
-   */
-  function allSize(){
-    return $this->myDBC->datasetsIn( $this->queryResult );
-  }
-
-  /**
-  * Returns the next element from the getAllData() query or false (no more results).
-  *
-  * @return LcElement
-  * @return FALSE     If no more datasets are available.
-  */
-  function getNextData($isInColl=false, $isInLab=false){
-    if ($data = mysql_fetch_array($this->queryResult)){
-      return $this->createElementFromDbResult( $data, $isInColl, $isInLab );
-    } else {
-      return false;
-    }
+                                     "idx=".$element->getIdx() );
   }
 
   /**
