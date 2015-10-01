@@ -82,7 +82,7 @@ class Usr extends ElementUser{
   * @param $uid The UID of the user to be watched.
   */
   function seesDataOf( $uid ){
-    global $lng;
+    global $lng,$url;
     if ( !($this->isOfKind( IS_CORRECTOR ) ||
           (defined(IS_DB_USER_ADMIN) && IS_DB_USER_ADMIN!=0 && $this->isOfKind( IS_DB_USER_ADMIN ))
           )
@@ -90,10 +90,21 @@ class Usr extends ElementUser{
     $this->iSeeUID = $uid;
     if ( $this->iSeeUID != 'all' ){ // seeing one member's answers
                             $userData = $this->getUserInformation( $this->iSeeUID );
-                            require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-                            $urDBI = new DBInterfaceUserRights();
-                            $userRightsData = $urDBI->getData4( $this->iSeeUID );
-                            $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$userRightsData['currentTeam'].")";
+                            $currentTeam = 'unk';
+                            if (!($url->available('address') && $url->get('address')[0]=='l')){
+                            	// We are not viewing a lab => load current team number from the user rights data
+                            	require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+                            	$urDBI = new DBInterfaceUserRights();
+                            	$userDetailedData = $urDBI->getData4( $this->iSeeUID );
+                            } else {
+                            	// We are viewing a lab => load team from the labs user data record
+                            	require_once( INCLUDE_DIR."/classes/elements/LlDBInterfaceUidStatus.inc" );
+                            	require( "../php/getFirstLastFinal.inc" ); $labIdx = substr( $firstFinal, 1);
+                            	$uLabDBI = new LlDBInterfaceUidStatus( $labIdx );
+                            	$userDetailedData = $uLabDBI->getData4( $this->iSeeUID );
+                            }
+                            $currentTeam = $userDetailedData['currentTeam'];
+                            $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$currentTeam.")";
     }else{ // seeing ALL member's answers
                             $this->iSeeDesc = $lng->get("showAllUADesc");
     }
