@@ -90,7 +90,10 @@ class Usr extends ElementUser{
     $this->iSeeUID = $uid;
     if ( $this->iSeeUID != 'all' ){ // seeing one member's answers
                             $userData = $this->getUserInformation( $this->iSeeUID );
-                            $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$userData["userName"].")";
+                            require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+                            $urDBI = new DBInterfaceUserRights();
+                            $userRightsData = $urDBI->getData4( $this->iSeeUID );
+                            $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$userRightsData['currentTeam'].")";
     }else{ // seeing ALL member's answers
                             $this->iSeeDesc = $lng->get("showAllUADesc");
     }
