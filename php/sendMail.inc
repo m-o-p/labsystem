@@ -103,7 +103,7 @@ $sendViaBCC = isset( $_POST['MAIL_VIA_BCC'] ) && $_POST['MAIL_VIA_BCC'] == '1';
 if ( $mailto == "" ) $url->put( "sysalert=".$lng->get("NoReceiver") );
 else{
   mail( encodeMailconform( ( $sendViaBCC ?  $mailFrom :  $mailto  ) ), // Bcc? -> mail to sender
-        encodeMailconform( '['.$cfg->get("SystemTitle").'] '.$_POST['SUBJECT'] ),
+        '=?utf-8?B?'.base64_encode('['.$cfg->get("SystemTitle").'] '.encodeMailconform( $_POST['SUBJECT'] )).'?=',
         encodeMailconform( $mailText.
                            $cfg->get('mailFooter') ).
          "\r\n",
