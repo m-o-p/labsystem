@@ -65,7 +65,6 @@ if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 			}
 		} else {
 		// // Useradmin "whole course" special treatment
-
 			$mailFunc->sendMail($sender, $nextID, $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
 		}
 		
