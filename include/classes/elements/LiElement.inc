@@ -936,7 +936,7 @@ class LiElement extends Element{
 
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
 
-    if ( $this->isStartOver() ){// start over without commenting
+    if ( !isset($_POST['CREDITS']) ){ // quick correction is used
       //makeLogEntry( 'i', 'quick correcting', $this->idx );
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorQuick, $_POST['TEAM']);
       $_POST['CREDITS'] = (isset($_POST['FULL_CREDITS'.$this->idx]) ? $this->possibleCredits : $this->givenCredits);
