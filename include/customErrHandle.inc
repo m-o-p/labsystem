@@ -118,7 +118,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
     echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px #999;background-color:#aaa"><a href="javascript:'.($mailSent?'history.go(-2);':'history.back();').'">&lt; b a c k</a></div>' );
 
 // support ticket link
-    echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px #aaa;background-color:#bbb"><a href="http://sourceforge.net/p/labsystem/bugtracker/new/">open a support ticket &gt;</a></div>' );
+    echo( '<div style="margin-top: 1em; padding: 0.2em; text-align: center; border: solid 1px #aaa;background-color:#bbb"><a href="https://github.com/m-o-p/labsystem/issues/new">open a support ticket &gt;</a></div>' );
 
     echo( '<div style="color: #666666; font-family: Verdana, Sans-serif; font-size: 2em; text-align: right;">'.
           'labsystem.m-o-p.de'.
