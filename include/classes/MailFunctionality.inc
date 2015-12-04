@@ -50,7 +50,7 @@ function printMail($to, $subject, $message, $additional_headers='', $additional_
     $receiver = $receiverUsrObject->mailAddress;
     
     mail( ($BCC ? $senderMail : $receiver), // TO
-          '['.$cfg->get("SystemTitle").'] '.$subject,
+          '=?utf-8?B?'.base64_encode('['.$cfg->get("SystemTitle").'] '.$subject).'?=',
           $text.PHP_EOL.PHP_EOL.
           stripcslashes($cfg->get('mailFooter')).PHP_EOL,
           ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
