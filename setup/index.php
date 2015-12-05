@@ -35,7 +35,9 @@ if ( version_compare( "4.3.0", phpversion(), ">=" ) ){
                                                         trigger_error( "You need at least PHP 4.3 to run the labsystem!", E_USER_ERROR );
                                                         exit;
                                                       }
-
+if ( version_compare( "5.5.0", phpversion(), ">=" ) ){
+                                                      	require '../plugins/password.php';
+                                                      }
 /** IF NO OBVIOUS USER ERRORS -> Show Info Page */
 if ( !isset($_POST['continue']) ){
 if ( !file_exists( 'information.txt' ) ){

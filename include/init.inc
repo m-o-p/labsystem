@@ -28,7 +28,9 @@
 */
 
 // include strong passwords for PHP < 5.5.0:
-// require '../plugins/password.php';
+if ( version_compare( "5.5.0", phpversion(), ">=" ) ){
+                                                      	require '../plugins/password.php';
+                                                      }
 
 // time measurement
 $mtime = microtime();
