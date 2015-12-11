@@ -118,91 +118,6 @@ class LsElement extends Element{
 
 // The next functions are used for the element's view page. *************************************************
 
-// helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - -
-// These function were originally coded inline into the show method but php doesn't support inline
-// methods. So I put them out again.
-  /**
-  * @return string  The html code of the first table row (table-layout: fixed;).
-  **/
-  function emptyRow(){
-    $ret  = "<tr>";
-    for ( $i = 0; $i<31; $i++ ) $ret .= "<td></td>";
-    $ret .= "</tr>\n";
-    return $ret;
-  }
-
-  /**
-  * @return string  The html code of an empty row (spacer).
-  */
-  function spacerRow(){
-    return "<tr><td colspan=\"31\">&nbsp;</td></tr>\n";
-  }
-
-  /**
-  * @param $givenDate TIMESTAMP containing fitting month and year.
-  *                   If also the day is given and the current date() is in that month the appropriate cell is highlighted.
-  *
-  * @return string    The html code of two table rows containing:
-  *                     - cells filled with the daynames of the $givenDate's month.
-  *                     - cells filled with the daynumbers of the $givenDate's month.
-  */
-  function monthRow( $givenDate ){
-    $nameOfMonth = date("F Y", $givenDate);
-
-    // How many days has the month?
-      $nextMonth = (date("n", $givenDate) % 12)+1;
-      $nextMonthsYear = date("Y", $givenDate)+floor(date("n", $givenDate) / 12);
-    $daysInMonth = date("d", mktime(0, 0, 0, $nextMonth, 0, $nextMonthsYear ) );
-
-    // Is today in this month?
-    $today = 0;
-    if ( ( date("Y", $givenDate) == date("Y") ) && ( date("n", $givenDate) == date("n") ) ) $today = date("j");
-
-    $header  = "<tr><td colspan=\"31\" class=\"labsys_mop_s_table_name_month\">".$nameOfMonth."</td></tr>";
-
-    $dayNames    = "<tr>";
-    $dayNumbers  = "<tr>";
-
-    for ( $i=1; $i <= $daysInMonth; $i++ ){
-      $theTime = mktime( 0, 0, 0, date("n", $givenDate), $i, date("Y", $givenDate) );
-      $dayNames   .= "<td class=\"labsys_mop_s_table_day_name".(date('N', $theTime) >= 6 ? '_weekend':'')."\">".date( "D", $theTime )."</td>";
-      $dayNumbers .= "<td class=\"labsys_mop_s_table_".( $i == $today ?  "to"  : '' )."day\">".$i."</td>";
-                                        }
-
-    // There might be empty fields at the end (p.e. februrary) to fill the 31 columns.
-    for ( $i=$daysInMonth; $i <= 31; $i++ ){ $dayNames .= "<td></td>"; $dayNumbers .= "<td></td>"; }
-
-    $dayNames   .= "</tr>";
-    $dayNumbers .= "</tr>";
-
-    return $header.$dayNames.$dayNumbers;
-  }
-
-  /**
-  * @param $startDayOfMonth   The day/ cell {1..31} the schedule row should start.
-  * @param $stopDayOfMonth    The day/ cell {1..31} the schedule row should stop.
-  * @param $daysInMonth       The number of days {1..31} the month the row is for has.
-  * @param $label             What should be put inside the bar?
-  */
-  function scheduledRow( $startDayOfMonth, $stopDayOfMonth, $daysInMonth, $label ){
-    $ret  = "<tr>";
-
-    for ( $i=1; $i < $startDayOfMonth; $i++ ) // before
-      $ret .= "<td class=\"labsys_mop_s_table_no_schedule_cell\">&nbsp;</td>";
-
-    $ret .= "<td colspan=\"".($stopDayOfMonth - $startDayOfMonth + 1)."\" class=\"labsys_mop_s_table_schedule_cell\">".$label."</td>";
-
-    for ( $i=$stopDayOfMonth+1; $i <= $daysInMonth; $i++ )  // after
-      $ret .= "<td class=\"labsys_mop_s_table_no_schedule_cell\">&nbsp;</td>";
-
-    for ( $i=$daysInMonth; $i <= 31; $i++ ) // fill till 31
-      $ret .= "<td></td>";
-
-    $ret .= "</tr>";
-
-    return $ret;
-  }
-
   /**
   * Adds the html code for one schedule to &$arrayOtherSchedules.
   *
@@ -212,13 +127,17 @@ class LsElement extends Element{
   * @param &$arrayOtherSchedules  An array consisting of the following pairs:
   *                               ( mktime( 0, 0, 0, month, 1, year ), "<tr>...</tr>\n ..." )
   */
-  function addSchedule( $dateStart, $dateStop, $label, &$arrayOtherSchedules ){
+  function addSchedule( $element, $element2, &$arrayOtherSchedules ){
+    $dateStart = $element->start;
+    $dateStop = $element->stop;
+
     $stopMonth  = date( "m", $dateStop  ); // with leading 0
     $stopYear   = date( "Y", $dateStop  );
 
     $currentMonth = date( "m", $dateStart ); // with leading 0
     $currentYear  = date( "Y", $dateStart );
 
+    $startDayInCurrentMonth = 1;
     $startDayInCurrentMonth = date( "j", $dateStart );
 
     // add the necessary rows for each month in between
@@ -232,13 +151,24 @@ class LsElement extends Element{
      else
       $stopDayInCurrentMonth = $currentMonthDays;
 
-     $key = "key".$currentYear.$currentMonth; // this is the array key to add values to
-     $value = $this->scheduledRow( $startDayInCurrentMonth, $stopDayInCurrentMonth, $currentMonthDays, $label );
+     $key = $currentYear.$currentMonth; // this is the array key to add values to
 
-     if ( array_key_exists( $key, $arrayOtherSchedules) ) // $key exists yet -> just add
-      $arrayOtherSchedules[$key] .= $value;
-     else // $key doesn't exist -> create new header ( monthRow() ) and add yourself
-      $arrayOtherSchedules = array_merge( $arrayOtherSchedules, Array( $key => $this->spacerRow().$this->monthRow( mktime( 0, 0, 0, $currentMonth, 1, $currentYear ) ).$value ) );         // init for next
+     if ( !array_key_exists( $key, $arrayOtherSchedules) ) { // Initialize new month
+       $givenDate = mktime( 0, 0, 0, $currentMonth, 1, $currentYear );
+
+      // How many days has the month?
+      $nextMonth2 = (date("n", $givenDate) % 12)+1;
+      $nextMonthsYear2 = date("Y", $givenDate)+floor(date("n", $givenDate) / 12);
+      $daysInMonth = date("d", mktime(0, 0, 0, $nextMonth2, 0, $nextMonthsYear2 ) );
+
+      // Is today in this month?
+      $today = 0;
+      if ( ( date("Y", $givenDate) == date("Y") ) && ( date("n", $givenDate) == date("n") ) ) $today = date("j");
+
+      $arrayOtherSchedules[$key] = Array("header" => Array( "name" => date("F Y", $givenDate), "time" => $givenDate, "daysInMonth" => $daysInMonth, "today" => $today), "items" => Array());
+    }
+
+     array_push($arrayOtherSchedules[$key]["items"], Array( "element" => $element, "element2" => $element2, "startDayOfMonth" => $startDayInCurrentMonth, "stopDayOfMonth" => $stopDayInCurrentMonth, "daysInMonth" => $currentMonthDays));
 
      $startDayInCurrentMonth = 1;
      $currentMonth = $nextMonth;
@@ -256,10 +186,6 @@ class LsElement extends Element{
   */
   function show( $fullAddress, $paragraph='' ){
     global $usr, $lng, $pge, $sDBI, $url, $cfg;
-    if (  !$this->isVisible() ){ // not enough rights->no content
-      return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
-      exit;
-    }
 
     $schedules = Array();
     $legend = Array();
@@ -280,54 +206,31 @@ class LsElement extends Element{
           continue; // continue with next element
         }
 
-        $legend = array_merge( $legend,
-                               Array( "s".$element->idx =>  "<a href=\"".$url->link2( "../pages/view.php?address=".$element->id.$element->num )."\">".$element2->title."</a>".
-                                                            " (".date( $lng->get("DateFormat"),  $element->start ).
-                                                            " - ".date( $lng->get("DateFormat"), $element->stop ).")".
-                                                            ( $usr->isOfKind( IS_SCHEDULER ) ? " ".EB::edit( "s".$element->idx ).EB::delete( "s".$element->idx ) : '' ).
-                                                            " ".EB::history( $element->history, "s".$element->idx, false ).
-                                                            ( $element->comment != "" ?  "\n<br />".$element->comment."\n"  : '' )
-                                     )
-                              );
+        $legend = array_merge($legend, Array(
+          Array (
+              "element" => $element,
+              "element2" => $element2
+          )
+        ));
       }
 
       // Add it to the schedule table
-      $this->addSchedule( $element->start,
-                          $element->stop,
-                          "<a href=\"".$url->link2( "../pages/view.php?address=".$element->id.$element->num )."\" ".
-                              "title=\""."s".$element->idx.': '.$element2->title.( $element->comment != "" ?  "\n".$element->comment  : '' )."\">".
-                          $element2->title."</a>",
-                          $schedules,
-                          $legend
+      $this->addSchedule( $element,
+                          $element2,
+                          $schedules
                          );
     }
 
     // sort schedules by key (by date)
     ksort( $schedules );
 
-    // sort legend by id
-    //natsort( $legend ); // this doesn't work correctly with my php version - without further sorting: by date -> o.k.
-
-    // create html code
-    $myCalendar = "";
-    foreach( $schedules as $value ) $myCalendar .= $value;
-    $myLegend = "";
-    foreach( $legend as $key => $value ) $myLegend .= "<li>".$key.": ".$value."</li>\n";
-
-    // return the whole element
-    return EM::viewTopSchedule( $this, $fullAddress ).
-           "<div class=\"labsys_mop_contentArea\">\n".
-           "<div class=\"labsys_mop_h2\">".$lng->get("titleSchedules")." - ".$cfg->get("SystemTitle")."</div>".
-           ( $lng->get("showScheduleNote") != '' ? "<div class=\"labsys_mop_note\">\n".$lng->get("showScheduleNote")."</div>\n" : '' ). // note
-           "<table class=\"labsys_mop_s_table\">\n".
-           $this->emptyRow().
-           $myCalendar.
-           "</table>".
-           "<ul class=\"labsys_mop_s_legend\">".
-           $myLegend.
-           "</ul>".
-           "</div>\n".
-           EM::viewBottomSchedule( $this, $fullAddress );
+    global $twig;
+    return $twig->render("s.html", array(
+      "self" => $this,
+      "schedules" => $schedules,
+      "legend" => $legend,
+      "address" => $fullAddress,
+    ));
   }
 
 

@@ -1,0 +1,90 @@
+{% if self.isVisible %}
+  {% include 'menu/top.html' with {'element': self, 'adress': address} %}
+  <div class="labsys_mop_contentArea">
+    <div class="labsys_mop_h2">
+      {{"titleSchedules"|t}} - {{"SystemTitle"|cfg}}
+    </div>
+
+    {% if "showScheduleNote"|t != "" %}
+      <div class="labsys_mop_note">
+          {{"showScheduleNote"|t}}
+      </div>
+    {% endif %}
+
+    <table class="labsys_mop_s_table">
+      {% for month in schedules %}
+        <tr><td colspan=\"31\">&nbsp;</td></tr> {# spacer row #}
+
+        <tr><td colspan="31" class="labsys_mop_s_table_name_month">{{month.header.name}}</td></tr>
+
+        <tr>  {# day names #}
+          {% for i in range(1, month.header.daysInMonth) %}
+            {% set day_number = month.header.time|date_modify("+" ~ (i-1) ~ " day")|date('N') %}
+            {% set day_name = month.header.time|date_modify("+" ~ (i-1) ~ " day")|date('D') %}
+
+            {% if day_number >= 6 %}
+              <td class="labsys_mop_s_table_day_name_weekend">{{day_name}}</td>
+            {% else %}
+              <td class="labsys_mop_s_table_day_name">{{day_name}}</td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+
+        <tr> {# day numbers #}
+          {% for i in range(1, month.header.daysInMonth) %}
+            {% if i == month.header.today %}
+              <td class="labsys_mop_s_table_today">{{i}}</td>
+            {% else %}
+              <td class="labsys_mop_s_table_day">{{i}}</td>
+            {% endif %}
+          {% endfor %}
+        </tr>
+
+        {% for item in month.items %}
+          <tr>
+            {% if item.startDayOfMonth > 1 %}
+              {% for i in range(1, item.startDayOfMonth - 1) %}
+                <td class="labsys_mop_s_table_no_schedule_cell">&nbsp;</td>
+              {% endfor %}
+            {% endif %}
+
+            <td colspan="{{item.stopDayOfMonth - item.startDayOfMonth + 1}}" class="labsys_mop_s_table_schedule_cell">
+              <a href="{{link2("../pages/view.php?address=" ~ item.element.id ~ item.element.num)}}">{{item.element2.title}}</a>
+            </td>
+
+            {% if item.stopDayOfMonth + 1 < item.daysInMonth %}
+              {% for i in range(item.stopDayOfMonth + 1, item.daysInMonth) %}
+                <td class="labsys_mop_s_table_no_schedule_cell">&nbsp;</td>
+              {% endfor %}
+            {% endif %}
+          </tr>
+        {% endfor %}
+      {% endfor %}
+
+    </table>
+
+    <ul class="labsys_mop_s_legend">
+      {% for item in legend %}
+        <li>
+          s{{item.element.idx}}:
+          <a href="{{link2("../pages/view.php?address=" ~ item.element.id ~ item.element.num)}}">{{item.element2.title}}</a>
+          {{item.element.start|tdate}} - {{item.element.stop|tdate}}
+
+          {% if IS_SCHEDULER is allowed %}
+            {% include 'buttons/edit.html' with {'id': s ~ item.element.idx} %}
+            {% include 'buttons/delete.html' with {'id': s ~ item.element.idx} %}
+          {% endif %}
+
+          {% include 'buttons/history.html' with {'id': s ~ item.element.idx, 'history': item.element.history, 'sendAsAddHist': false} %}
+
+          {% if item.element.comment != "" %}
+            <br /> {{item.element.comment}}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% include 'menu/bottom.html' with {'element': self, 'adress': address} %}
+{% else %}
+  <div class="labsys_mop_note">{{"TxtNotEnoughRights"|t}}</div>
+{% endif %}

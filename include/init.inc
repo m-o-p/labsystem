@@ -90,6 +90,10 @@ require( INCLUDE_DIR."/classes/Pge.inc" );      /* Extends the page element and 
 require( INCLUDE_DIR."/classes/ElementButtons.inc" ); // Standard buttons.
 require( INCLUDE_DIR."/classes/ElementMenues.inc" );  // Standard menues.
 
+require( INCLUDE_DIR."/twig.inc" );
+
+date_default_timezone_set("UTC");
+
 if($url->available('seeMe') && $usr->isOfKind(IS_CORRECTOR) && $url->get('seeMe')!='none'){
   $usr->seesDataOf( $url->get('seeMe') );
 }
