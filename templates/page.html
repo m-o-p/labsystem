@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <meta name="generator" content="labsystem.m-o-p.de">
+    <link rel="stylesheet" type="text/css" href="{{"SystemStyleSheet"|cfg}}">
+
+    {% if "SysOverridingSheet"|cfg %}
+      <link rel="stylesheet" type="text/css" href="{{"SysOverridingSheet"|cfg}}">
+    {% endif %}
+
+    <link rel="stylesheet" type="text/css" href="{{"UserStyleSheet"|t}}">
+    <link rel="stylesheet" type="text/css" href="{{"PrintStyleSheet"|t}}" media="print">
+
+    <link rel="shortcut icon" href="{{"Favicon"|cfg)}}">
+
+    <script src="../pages/scripts.js" type="text/javascript" language="javascript"></script>
+
+    <title>{{title}} [{{user.userName}}@{{"SystemTitle"|cfg}}]</title>
+  </head>
+
+  <body>
+    <table class="labsys_mop_maintable" align="center" cellpadding="0" cellspacing="0">
+      <tr>
+        <td class="labsys_mop_ableMenu"></td>
+        <td class="labsys_mop_menu{{isInUrl("nomenu")?"":"_hidden"}}"></td>
+      </tr>
+
+      <tr>
+        <td colspan="3" class="labsys_mop_topmostHeader">{{"TopmostHeader"|cfg}}</td>
+      </tr>
+
+      <tr>
+        <td colspan="3" class="labsys_mop_topHeader">{{"TopHeader"|cfg}}</td>
+      </tr>
+
+      <tr> {# header #}
+        <td colspan="3" class="labsys_mop_topSysinfo">
+          {% if IS_USER is allowed %}
+            [<a class="labsys_mop_logout" href="{{link2("TODO")}}">{{user.userName}} {{"MnuEntryLogOut"|t}}</a>]
+          {% else %}
+            [<a class="labsys_mop_login" href="{{link2("TODO")}}">{{"MnuEntryLogIn"|t}}</a>]
+          {% endif%}
+
+          {% if user.isSeeingSomeonesData() %}
+
+          {% endif%}
+
+          {% if isInUrl("hideAnswers") %}
+
+          {% endif%}
+
+          {% if IS_CORRECTOR is allowed %}
+
+          {% endif%}
+
+          {% if IS_EX_SOLUTION_VIEWER is allowed %}
+
+          {% endif%}
+
+          {{ "now"|date("DateFormat"|t) }}
+
+          {% if IS_CONTENT_EDITOR is allowed %}
+
+          {% endif%}
+
+          TODO languages
+
+        </td>
+      </tr>
+
+      <tr>  {# main #}
+        <td>
+
+        </td>
+
+        {% if showmenu %}
+          <td class="labsys_mop_menu">
+            {% include "menu.html" %}
+          </td>
+        {% else %}
+          <td class="labsys_mop_menu_hidden"></td>
+        {% endif %}
+
+        <td class="labsys_mop_content"> {# content #}
+          {{page|raw}}
+
+          <img src="../syspix/1pixel.gif" style="width: 1200px; height: 1px;" border="0">
+        </td>
+      </tr>
+
+      <tr> {# footer #}
+        <td colspan="3" class="labsys_mop_bottomFooter">
+        </td>
+      </tr>
+
+    </table>
+
+    <script src="../pages/elements.js" type="text/javascript" language="javascript"></script>
+  </body>
+</html>

@@ -160,6 +160,10 @@ class Url
     $newD = str_replace( '&', '&amp;', $newD );
     return $newD;
   }
+
+  function makeLink($destUrl) {
+    return str_replace( '?', '?'.$this->queryString.'&', $destUrl );
+  }
 }
 $url = new Url();
 ?>

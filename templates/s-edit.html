@@ -1,0 +1,94 @@
+{% import 'forms.inc' as forms %}
+{% import 'menus.inc' as menus %}
+
+{% macro rangeOption(range, selected) %}
+  {% import 'forms.inc' as forms %}
+
+  {% for val in range %}
+    {{ forms.option(val, val == selected) }}
+  {% endfor %}
+{% endmacro %}
+
+{% macro yearOptions() %}
+  {% import _self as macros%}
+
+  {% set now = "now"|date("Y") %}
+
+  {{macros.rangeOption([now - 1, now, now + 1], now)}}
+{% endmacro %}
+
+{% macro timeOptions(str, start, end) %}
+  {% import _self as macros%}
+
+  {% set now = "now"|date(str) %}
+
+  {{macros.rangeOption(range(start, end), now)}}
+{% endmacro %}
+
+{{ menus.editTop(self, address, "s") }}
+
+<form class="labsys_mop_std_form" method="POST" action="#">
+  {{forms.hiddenInput("EDIT", "1")}}
+  {{forms.hiddenInput("IDX", element.idx)}}
+
+  <fieldset>
+    <legend>{{"scheduleFor"|t}}</legend>
+
+    {{ forms.select("COLL_LAB", "TODO") }}
+  </fieldset>
+
+  <fieldset>
+    <legend>{{"startDate"|t}}</legend>
+
+    {{ forms.label("START_YEAR", "year", "left") }}
+    {{ forms.select("START_YEAR", _self.yearOptions()) }}
+
+    {{ forms.label("START_MONTH", "month", "left") }}
+    {{ forms.select("START_MONTH", _self.timeOptions("m", 1, 12)) }}
+
+    {{ forms.label("START_DAY", "day", "left") }}
+    {{ forms.select("START_DAY", _self.timeOptions("d", 1, 31)) }}
+
+    {{ forms.label("START_HOUR", "hour", "left") }}
+    {{ forms.select("START_HOUR", _self.timeOptions("H", 0, 23)) }}
+
+    {{ forms.label("START_MINUTE", "minute", "left") }}
+    {{ forms.select("START_MINUTE", _self.timeOptions("i", 0, 59)) }}
+  </fieldset>
+
+  <fieldset>
+    <legend>{{"stopDate"|t}}</legend>
+
+    {{ forms.label("STOP_YEAR", "year", "left") }}
+    {{ forms.select("STOP_YEAR", _self.yearOptions()) }}
+
+    {{ forms.label("STOP_MONTH", "month", "left") }}
+    {{ forms.select("STOP_MONTH", _self.timeOptions("m", 1, 12)) }}
+
+    {{ forms.label("STOP_DAY", "day", "left") }}
+    {{ forms.select("STOP_DAY", _self.timeOptions("d", 1, 31)) }}
+
+    {{ forms.label("STOP_HOUR", "hour", "left") }}
+    {{ forms.select("STOP_HOUR", _self.timeOptions("H", 0, 23)) }}
+
+    {{ forms.label("STOP_MINUTE", "minute", "left") }}
+    {{ forms.select("STOP_MINUTE", _self.timeOptions("i", 0, 59)) }}
+  </fieldset>
+
+  <fieldset>
+    <legend>{{"comment"|t}}</legend>
+    {{ forms.textarea("COMMENT", self.comment) }}
+  </fieldset>
+
+  <fieldset>
+    <legend>{{"properties"|t}}</legend>
+    {{ forms.label("SAVEASNEW", "saveAsNew") }}
+    {{ forms.checkbox("SAVEASNEW") }}
+  </fieldset>
+
+  {{ forms.submit("save") }}
+</form>
+
+{{ menus.editBottom(self, address, "s") }}
+
+{% include 's.html' %}

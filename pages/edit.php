@@ -47,6 +47,10 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
   exit;
 }
 
+if ($_POST['EDIT']) {
+  $element->save();
+}
+
 $pge->put( $element->showEdit( $url->get("address") ) );
 
 $GLOBALS['Logger']->logReferrerEvent();

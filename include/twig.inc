@@ -27,7 +27,7 @@ class Project_Twig_Extension extends Twig_Extension implements Twig_Extension_Gl
       }),
       new Twig_SimpleFilter('link2', function ($data) {
         global $url;
-        return $url->link2($data);
+        return $url->makeLink($data);
       }, array('is_safe' => array('html'))),
     );
   }
@@ -38,6 +38,18 @@ class Project_Twig_Extension extends Twig_Extension implements Twig_Extension_Gl
         global $url;
         return $url->link2($data);
       }, array('is_safe' => array('html'))),
+      new Twig_SimpleFunction('getTabIndex', function () {
+        global $pge;
+        return $pge->nextTab;
+      }),
+      new Twig_SimpleFunction('nextTabIndex', function () {
+        global $pge;
+        return $pge->nextTab++;
+      }),
+      new Twig_SimpleFunction('isInUrl', function ($param) {
+        global $url;
+        return $url->available($param)
+      }),
     );
   }
 
@@ -53,6 +65,8 @@ class Project_Twig_Extension extends Twig_Extension implements Twig_Extension_Gl
 
   public function getGlobals()
   {
+    global $usr;
+
     return array(
       'IS_GUEST' => IS_GUEST,
       'IS_USER' => IS_USER,
@@ -65,6 +79,8 @@ class Project_Twig_Extension extends Twig_Extension implements Twig_Extension_Gl
       'IS_EX_SOLUTION_VIEWER' => IS_EX_SOLUTION_VIEWER,
       'IS_DB_USER_ADMIN' => IS_DB_USER_ADMIN,
       'IS_CONFIG_EDITOR' => IS_CONFIG_EDITOR,
+
+      'user' => $usr;
     );
   }
 }

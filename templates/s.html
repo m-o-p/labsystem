@@ -1,5 +1,8 @@
+{% import "buttons.inc" as buttons %}
+{% import "menus.inc" as menus %}
+
 {% if self.isVisible %}
-  {% include 'menu/top.html' with {'element': self, 'adress': address} %}
+  {{ menus.topSchedule(element, address) }}
   <div class="labsys_mop_contentArea">
     <div class="labsys_mop_h2">
       {{"titleSchedules"|t}} - {{"SystemTitle"|cfg}}
@@ -71,11 +74,11 @@
           {{item.element.start|tdate}} - {{item.element.stop|tdate}}
 
           {% if IS_SCHEDULER is allowed %}
-            {% include 'buttons/edit.html' with {'id': s ~ item.element.idx} %}
-            {% include 'buttons/delete.html' with {'id': s ~ item.element.idx} %}
+            {{ buttons.edit("s" ~ item.element.idx) }}
+            {{ buttons.delete("s" ~ item.element.idx) }}
           {% endif %}
 
-          {% include 'buttons/history.html' with {'id': s ~ item.element.idx, 'history': item.element.history, 'sendAsAddHist': false} %}
+          {{ buttons.history("s" ~ item.element.idx, item.element.history, false) }}
 
           {% if item.element.comment != "" %}
             <br /> {{item.element.comment}}
@@ -84,7 +87,7 @@
       {% endfor %}
     </ul>
   </div>
-  {% include 'menu/bottom.html' with {'element': self, 'adress': address} %}
+  {{ menus.bottom(element, address) }}
 {% else %}
   <div class="labsys_mop_note">{{"TxtNotEnoughRights"|t}}</div>
 {% endif %}

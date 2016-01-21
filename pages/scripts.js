@@ -1,6 +1,6 @@
 /**
 <!--
-    labsystem.m-o-p.de - 
+    labsystem.m-o-p.de -
                     the web based eLearning tool for practical exercises
     Copyright (C) 2010  Marc-Oliver Pahl
 
@@ -59,4 +59,8 @@ var isDirty = false;
 function dirtyWarning(){
   if (isDirty) return confirm(discardChangesWarning);
   return retVal;
+}
+
+function t(str) {
+  return str;
 }

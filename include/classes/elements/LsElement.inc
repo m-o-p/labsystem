@@ -177,14 +177,7 @@ class LsElement extends Element{
   }
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  /**
-  * Returns the element's HTML-representation in the way the VIEWER should see it.
-  *
-  * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
-  * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
-  * @return string        The html code of the element's view view.
-  */
-  function show( $fullAddress, $paragraph='' ){
+  function loadViewData($fullAddress) {
     global $usr, $lng, $pge, $sDBI, $url, $cfg;
 
     $schedules = Array();
@@ -224,13 +217,24 @@ class LsElement extends Element{
     // sort schedules by key (by date)
     ksort( $schedules );
 
-    global $twig;
-    return $twig->render("s.html", array(
+    return array(
       "self" => $this,
       "schedules" => $schedules,
       "legend" => $legend,
       "address" => $fullAddress,
-    ));
+    );
+  }
+
+  /**
+  * Returns the element's HTML-representation in the way the VIEWER should see it.
+  *
+  * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
+  * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  * @return string        The html code of the element's view view.
+  */
+  function show( $fullAddress, $paragraph='' ){
+    global $twig;
+    return $twig->render("s.html", $this->loadViewData($fullAddress));
   }
 
 
@@ -272,6 +276,9 @@ class LsElement extends Element{
   * @return string            The html code of the element's edit view.
   */
   function showEdit( $fullAddress ){
+    global $twig;
+    return $twig->render("s-edit.html", $this->loadViewData($fullAddress));
+
     global $lng, $url, $pge, $cfg, $usr;
 
     // dropdown list for collections and labs:
