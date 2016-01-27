@@ -1,0 +1,19 @@
+<form method="POST">
+  <fieldset class="form-group">
+    <label for="path">Path</label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="Enter name" value="{{ element.path if element is defined else ''}}">
+  </fieldset>
+
+  <fieldset class="form-group">
+    <label for="content">Content</label>
+    <textarea class="form-control" id="content" name="content">
+      {{- element.getRaw()}}
+    </textarea>
+  </fieldset>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<form method="POST" action="{{url_for("display_element_delete", course=element.course, branch=element.branch, path=element.path)}}">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>

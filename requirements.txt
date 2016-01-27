@@ -1,0 +1,6 @@
+Flask
+peewee
+WTForms
+GitPython
+PyYAML
+markdown

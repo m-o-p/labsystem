@@ -1,0 +1,7 @@
+{
+  "name": "labsystem",
+  "dependencies": {
+    "bootstrap": "~3.3.6",
+    "components-font-awesome": "~4.5.0"
+  }
+}

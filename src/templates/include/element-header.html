@@ -1,0 +1,8 @@
+<div class="element-header">
+  <span class="element-title">{{element.getTitle()}}</span>
+
+  <div class="element-header-buttons">
+    <a href="{{url_for('element_edit', course=element.course, branch=element.branch, path=element.path)}}"><i class="fa fa-pencil-square-o">Edit</i></a>
+    <a href="{{url_for('element_delete', course=element.course, branch=element.branch, path=element.path)}}"><i class="fa trash-o">Delete</i></a>
+  </div>
+</div>

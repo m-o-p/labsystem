@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="{{url_for('static', filename="dependencies/bootstrap/dist/css/bootstrap.min.css")}}">
+    <link rel="stylesheet" href="{{url_for('static', filename="dependencies/components-font-awesome/css/font-awesome.min.css")}}">
+
+    <link rel="stylesheet" href="{{url_for('static', filename="main.css")}}">
+
+    <title>{% block title %}Labsystem{% endblock %}</title>
+
+    {% block header %}
+    {% endblock %}
+  </head>
+
+  <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for category, message message in messages %}
+          <li class="{{category}}">{{message}}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+
+    <script src="{{url_for('static', filename="dependencies/jquery/dist/jquery.min.js")}}"></script>
+    <script src="{{url_for('static', filename="dependencies/bootstrap/dist/js/bootstrap.min.js")}}"></script>
+
+    <script src="{{url_for('static', filename="main.js")}}"></script>
+
+    {% block footer %}
+    {% endblock %}
+  </body>
+</html>
