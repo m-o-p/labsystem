@@ -17,7 +17,7 @@ class DisplayHTMLElement(DisplayElement):
         DisplayElement.__init__(self, course, branch, path, meta)
 
     def getRaw(self):
-        return storage.read(self.course, self.branch, os.path.join('content', self.path + '.html')).read()
+        return storage.read(self.course, self.branch, os.path.join('content', self.path + '.html')).read().decode()
 
     def save(self, content):
         Element.save(self)
@@ -35,7 +35,7 @@ class DisplayMarkdownElement(DisplayElement):
         DisplayElement.__init__(self, course, branch, path, meta)
 
     def getRaw(self):
-        return storage.read(self.course, self.branch, os.path.join('content', self.path + '.md')).read()
+        return storage.read(self.course, self.branch, os.path.join('content', self.path + '.md')).read().decode()
 
     def save(self, data):
         Element.save(self)

@@ -14,9 +14,9 @@ def read(course, branch, path):
     if shaRegex.match(branch):
         repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
         blob = repo.commit(branch).tree[path]
-        return blob.data_stream.read()
+        return blob.data_stream
     else:
-        return io.open(os.path.join(app.config['COURSES_DIR'], course, branch, path), 'r')
+        return io.open(os.path.join(app.config['COURSES_DIR'], course, branch, path), 'rb')
 
 
 class GitStorageError(Exception):
