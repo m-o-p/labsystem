@@ -10,5 +10,7 @@ class Answer(database.Model):
     path = CharField()
     commit = CharField()
     course = CharField()
+
     team = ForeignKeyField(Team, related_name='answers')
     contents = TextField()
+    correction = TextField()
