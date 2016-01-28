@@ -63,6 +63,15 @@ def deleteBranch(course, branch):
     shutil.rmtree(os.path.join(app.config['COURSES_DIR'], course, branch))
 
 
+def listCheckedOutBranches(course):
+    return os.listdir(os.path.join(app.config['COURSES_DIR'], course))
+
+
+def listAvailableBranches(course):
+    repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
+    return map(lambda x: str(x), repo.heads)
+
+
 def createCourse(course):
     os.makedirs(app.config['COURSES_DIR'], course)
     repo = Repo.init(os.path.join(app.config['COURSES_DIR'], course, 'master'))
@@ -85,5 +94,5 @@ def getHistory(course, branch, paths, offset, limit):
         repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
         return repo.iter_commits(branch, paths, max_count=limit, skip=offset)
     else:
-        repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'branch'))
+        repo = Repo(os.path.join(app.config['COURSES_DIR'], course, branch))
         return repo.iter_commits(branch, paths, max_count=limit, skip=offset)

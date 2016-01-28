@@ -1,5 +1,5 @@
 <div class="element-header">
-  <span class="element-title">{{element.getTitle()}}</span>
+  <a class="element-title" href="{{url_for('element_view', course=element.course, branch=element.branch, path=element.path)}}">{{element.getTitle()}}</a>
 
   <div class="element-header-buttons">
     <a href="{{url_for('element_edit', course=element.course, branch=element.branch, path=element.path)}}"><i class="fa fa-pencil-square-o">Edit</i></a>

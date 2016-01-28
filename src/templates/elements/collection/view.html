@@ -1,4 +1,6 @@
 {% for element in element.getChildren() %}
   {% include "include/element-header.html" %}
-  {{element.render("collection")}}
+  <div class="elemeng-content">
+    {{element.render("collection")|safe}}
+  </div>
 {% endfor %}

@@ -10,7 +10,7 @@ class CollectionElement(Element):
         Element.__init__(self, course, branch, path, meta)
 
     def render(self, mode):
-        return render_template("elements/collections/view.html", children=self.getChildren())
+        return render_template("elements/collection/view.html", element=self)
 
     def getChildren(self):
         from .element import load_element

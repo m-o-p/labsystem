@@ -1,3 +1,19 @@
-{% for course in courses %}
-  {{course.course}}
-{% endfor %}
+<ul class="courses">
+  {% for course in courses %}
+    <li>
+      <a href="{{url_for('course_element_view', course=course.course, branch="master")}}">
+        {{course.course}}
+      </a>
+
+      <ul class="branches">
+        {% for branch in course.getCheckedOutBranches() %}
+          <li>
+            <a href="{{url_for('course_element_view', course=course.course, branch=branch)}}">
+              {{branch}}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </li>
+  {% endfor %}
+</ul>

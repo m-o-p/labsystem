@@ -12,13 +12,6 @@ def course_element_list():
     return render_template('elements/course/list.html', courses=courses)
 
 
-@app.route("/courses/<course>/branches")
-def course_element_branches(course):
-    branches = storage.listBranches(course)
-
-    return render_template('elements/course/branches.html', branches=branches)
-
-
 @app.route("/courses/<course>/delete")
 def course_element_delete(course):
     course = CourseElement(course)

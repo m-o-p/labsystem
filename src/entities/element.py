@@ -21,13 +21,16 @@ class Element:
         if meta is not None:
             self.meta = meta
         else:
-            self.meta = yaml.load(storage.read(self.course, self.branch, os.path.join('content', self.path + '.meta')))
+            self.meta = yaml.load(storage.read(self.course, self.branch, self.metaPath()))
+
+    def metaPath(self):
+        return os.path.join('content', self.path + '.meta')
 
     def save(self):
-        yaml.dump(self.meta, storage.write(self.course, self.branch, os.path.join('content', self.path + '.meta')))
+        yaml.dump(self.meta, storage.write(self.course, self.branch, self.metaPath()))
 
     def delete(self):
-        storage.delete(self.course, self.branch, os.path.join('content', self.path + '.meta'))
+        storage.delete(self.course, self.branch, self.metaPath())
 
         (parent, me) = os.path.split(self.path)
 
@@ -35,7 +38,7 @@ class Element:
             load_element(self.course, self.branch, parent).removeChild(me)
 
     def move(self, new):
-        storage.rename(self.course, self.branch, os.path.join('content', self.path + '.meta'), os.path.join('content', self.getParentPath(), new + '.meta'))
+        storage.rename(self.course, self.branch, self.metaPath(), os.path.join('content', self.getParentPath(), new + '.meta'))
 
     def getTitle(self):
         (parent, me) = os.path.split(self.path)
