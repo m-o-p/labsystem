@@ -8,6 +8,3 @@ app.config.from_pyfile('../settings.cfg')
 app.config.from_envvar('APP_SETTINGS', silent=True)
 
 database = FlaskDB(app)
-
-import entities
-import routes

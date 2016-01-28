@@ -7,3 +7,15 @@ from .display import DisplayElement, DisplayHTMLElement, DisplayMarkdownElement
 from .question import QuestionElement, TextQuestionElement, MultipleChoiceQuestionElement
 from .collection import CollectionElement
 from .course import CourseElement
+
+
+def create_tables():
+    """ Creates tables if they do not exist yet """
+    Answer.create_table(True)
+    Team.create_table(True)
+    TeamUser.create_table(True)
+    User.create_table(True)
+
+__all__ = []
+
+__all__.extend(globals())

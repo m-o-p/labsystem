@@ -7,6 +7,7 @@ from entities import CourseElement, create_element
 
 @app.route("/courses")
 def course_element_list():
+    """Show the list of courses"""
     courses = map(lambda el: CourseElement(el), storage.listCourses())
 
     return render_template('elements/course/list.html', courses=courses)
@@ -14,6 +15,7 @@ def course_element_list():
 
 @app.route("/courses/<course>/delete")
 def course_element_delete(course):
+    """Delete a course"""
     course = CourseElement(course)
 
     course.delete()
@@ -23,6 +25,7 @@ def course_element_delete(course):
 
 @app.route("/courses/<course>/branches/<branch>")
 def course_element_view(course, branch):
+    """Show a course"""
     course = CourseElement(course, branch)
 
     return render_template('elements/course/view.html', course=course)
@@ -30,6 +33,7 @@ def course_element_view(course, branch):
 
 @app.route("/course/create")
 def course_element_create():
+    """Create a new course"""
     courseName = request.form['course']
     storage.createCourse(courseName)
 

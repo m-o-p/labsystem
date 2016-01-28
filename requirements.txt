@@ -4,3 +4,4 @@ WTForms
 GitPython
 PyYAML
 markdown
+Sphinx

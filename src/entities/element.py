@@ -13,6 +13,7 @@ class ElementYAMLError(Exception):
 
 
 class Element:
+    """Base class for all elements"""
     def __init__(self, course, branch, path, meta=None):
         self.course = course
         self.branch = branch
@@ -62,6 +63,7 @@ from .collection import CollectionElement
 
 
 def load_element(course, branch, path):
+    """Get a specific element"""
     meta = yaml.load(storage.read(course, branch, os.path.join('content', path + '.meta')))
 
     if 'isRedirect' in meta and meta['isRedirect']:
@@ -78,6 +80,7 @@ def load_element(course, branch, path):
 
 
 def create_element(course, branch, path, meta):
+    """Create a new element"""
     yaml.dump(meta, storage.write(course, branch, os.path.join('content', path + '.meta')))
 
     (parent, me) = os.path.split(path)

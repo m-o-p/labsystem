@@ -6,10 +6,9 @@ from .team import Team
 
 
 class Answer(database.Model):
+    """Contains the answer of a team for a specific question"""
     path = CharField()
     commit = CharField()
     course = CharField()
     team = ForeignKeyField(Team, related_name='answers')
     contents = TextField()
-
-Answer.create_table(True)

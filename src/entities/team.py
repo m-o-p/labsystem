@@ -12,6 +12,3 @@ class Team(database.Model):
 class TeamUser(database.Model):
     team = ForeignKeyField(Team, related_name='users')
     user = ForeignKeyField(User, related_name='teams')
-
-Team.create_table(True)
-TeamUser.create_table(True)
