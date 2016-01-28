@@ -10,7 +10,12 @@ class CollectionElement(Element):
         Element.__init__(self, course, branch, path, meta)
 
     def render(self, mode):
-        return render_template("elements/collection/view.html", element=self)
+        if mode == 'self':
+            return render_template("elements/collection/view.html", element=self)
+        elif mode == 'course':
+            return ''
+        else:
+            raise('Invalid rendering mode')
 
     def getChildren(self):
         from .element import load_element
