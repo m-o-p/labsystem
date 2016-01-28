@@ -57,7 +57,7 @@ class Element:
             load_element(self.course, self.branch, parent).removeChild(me)
 
 from .display import load_display_element
-from .question import QuestionElement
+from .question import load_question_element
 from .collection import CollectionElement
 
 
@@ -70,7 +70,7 @@ def load_element(course, branch, path):
         if meta['type'] == 'Display':
             return load_display_element(course, branch, path, meta)
         elif meta['type'] == 'Question':
-            return QuestionElement(course, branch, path, meta)
+            return load_question_element(course, branch, path, meta)
         elif meta['type'] == 'Collection':
             return CollectionElement(course, branch, path, meta)
         else:
