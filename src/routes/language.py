@@ -1,5 +1,5 @@
 from flask import session, redirect, request
-from flask_babel import get_locale
+from flask_babel import get_locale, lazy_gettext
 
 from app import app
 
@@ -13,7 +13,7 @@ def set_language(language):
     return redirect(request.args['back'])
 
 
-languages = {'de': {'name': 'German', 'flag': 'de'}, 'en': {'name': 'English', 'flag': 'us'}}
+languages = {'de': {'name': lazy_gettext('German'), 'flag': 'de'}, 'en': {'name': lazy_gettext('English'), 'flag': 'us'}}
 
 
 @app.context_processor

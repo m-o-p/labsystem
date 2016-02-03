@@ -3,5 +3,7 @@ env
 data
 
 src/static/dependencies
+src/translations/**/*.mo
+src/messages.pot
 
 __pycache__

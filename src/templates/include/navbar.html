@@ -25,7 +25,7 @@
               <li class="{{"active" if code == getLanguage()|string}}">
                 <a href="{{url_for('set_language', language=code, back=request.path)}}">
                   <span class="flag-icon flag-icon-{{data.flag}}"></span>
-                  {{gettext(data.name)}}
+                  {{data.name}}
                 </a>
               </li>
             {% endfor %}
