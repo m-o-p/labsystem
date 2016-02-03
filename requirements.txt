@@ -1,4 +1,5 @@
 Flask
+Flask-Babel
 peewee
 WTForms
 GitPython

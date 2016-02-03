@@ -3,6 +3,7 @@ from .course import course_element_list, course_element_delete, course_element_v
 from .display import display_element_view, display_element_edit, display_element_delete
 from .element import element_view, element_edit, element_delete
 from .users import user_create, user_view, user_edit, team_create, team_view, team_edit
+from .language import set_language
 
 __all__ = []
 

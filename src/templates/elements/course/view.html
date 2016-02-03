@@ -1,23 +1,31 @@
-{{course.course}}
+{% extends "element.html" %}
 
-{% for element in course.getChildren() %}
-  {% include "include/element-header.html" %}
-  <div class="collection-content">
-    {{element.render("course")|safe}}
-  </div>
-{% endfor %}
+{% block element %}
 
-<ol>
-  {% for commit in course.history() %}
-    <li>
-      <a href="{{url_for('course_element_view', course=course.course, branch=commit)}}">
-        {{commit}}
-      </a>
+  <h2>{{gettext('Content')}}</h2>
 
-      -
-      <span>{{commit.message}}</span>
-      -
-      <span>{{commit.author}}</span>
-    </li>
+  {% for element in element.getChildren() %}
+    {% include "include/element-header.html" %}
+    <div class="collection-content">
+      {{element.render("course")|safe}}
+    </div>
   {% endfor %}
-</ol>
+
+  <h2>{{gettext('History')}}</h2>
+
+  <ol>
+    {% for commit in element.history() %}
+      <li>
+        <a href="{{url_for('course_element_view', course=element.course, branch=commit)}}">
+          {{commit}}
+        </a>
+
+        -
+        <span>{{commit.message}}</span>
+        -
+        <span>{{commit.author}}</span>
+      </li>
+    {% endfor %}
+  </ol>
+
+{% endblock element %}

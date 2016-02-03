@@ -28,7 +28,7 @@ def course_element_view(course, branch):
     """Show a course"""
     course = CourseElement(course, branch)
 
-    return render_template('elements/course/view.html', course=course)
+    return render_template('elements/course/view.html', element=course)
 
 
 @app.route("/course/create")
