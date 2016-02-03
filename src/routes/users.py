@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, session
 from playhouse.flask_utils import get_object_or_404
 
 from entities import User, Team, UserForm, TeamForm
@@ -70,3 +70,10 @@ def team_edit(team_id):
         return redirect(url_for('team_view', team_id=team.id))
     else:
         return render_template('teams/edit.html', form=form)
+
+
+@app.route("/login/<int:user_id>", methods=["GET", "POST"])
+def login(user_id):
+    session['user'] = user_id
+
+    return redirect(url_for('user_view', user_id=user_id))

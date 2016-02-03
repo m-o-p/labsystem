@@ -30,13 +30,13 @@
       {% endif %}
     {% endwith %}
 
-    {% block content %}
-    {% endblock %}
-
     <script src="{{url_for('static', filename="dependencies/jquery/dist/jquery.min.js")}}"></script>
     <script src="{{url_for('static', filename="dependencies/bootstrap/dist/js/bootstrap.min.js")}}"></script>
 
     <script src="{{url_for('static', filename="main.js")}}"></script>
+
+    {% block content %}
+    {% endblock %}
 
     {% block footer %}
     {% endblock %}

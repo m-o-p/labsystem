@@ -55,7 +55,10 @@ class Element:
         (parent, me) = os.path.split(self.path)
 
         if parent is not None:
-            load_element(self.course, self.branch, parent).removeChild(me)
+            load_element(self.course, self.branch, parent)
+
+    def getCommit(self):
+        return str(next(storage.getHistory(self.course, self.branch, "", 0, 1)))
 
 from .display import load_display_element
 from .question import load_question_element

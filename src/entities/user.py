@@ -19,3 +19,6 @@ class UserForm(Form):
 class User(database.Model):
     name = CharField(unique=True)
     password = CharField(unique=True)
+
+    def getTeamForCourse(self, course):
+        return self.teams[0]
