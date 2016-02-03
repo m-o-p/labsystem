@@ -8,7 +8,7 @@ from app import app
 @app.route("/user/create", methods=["GET", "POST"])
 def user_create():
     form = UserForm(request.form)
-    form.teams.choices = [(team.id, team.name) for team in Team.select().order_by('name')]
+    del form.teams
 
     if request.method == 'POST' and form.validate():
         user = User()

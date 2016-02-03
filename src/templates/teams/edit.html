@@ -1,3 +1,9 @@
 {% import 'include/forms.html' as forms %}
 
+{% extends "form.html" %}
+
+{% block form %}
+
 {{forms.render_form(form)}}
+
+{% endblock form %}
