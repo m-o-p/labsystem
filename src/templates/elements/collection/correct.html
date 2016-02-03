@@ -1,0 +1,12 @@
+{% extends "element.html" %}
+
+{% block element %}
+
+  {% for element in element.getChildren() %}
+    {% include "include/element-header.html" %}
+    <div class="elemeng-content">
+      {{element.render("correct")|safe}}
+    </div>
+  {% endfor %}
+
+{% endblock element%}

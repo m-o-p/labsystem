@@ -11,3 +11,11 @@ def collection_element_view(course, branch, path):
     element = load_element(course, branch, path)
 
     return render_template('elements/collection/view.html', element=element)
+
+
+@app.route("/courses/<course>/branches/<branch>/element/collection/correct/<path:path>")
+def collection_element_correct(course, branch, path):
+    """Show a Collection"""
+    element = load_element(course, branch, path)
+
+    return render_template('elements/collection/correct.html', element=element)

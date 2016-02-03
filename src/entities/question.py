@@ -33,8 +33,8 @@ class QuestionElement(Element):
     def __init__(self, course, branch, path, meta=None):
         Element.__init__(self, course, branch, path, meta)
 
-    def loadCorrection(self):
-        self.correction = yaml.load(storage.read(self.course, self.branch, os.path.join('secret', self.path + '.meta')))
+    def getCorrection(self):
+        return yaml.load(storage.read(self.course, self.branch, os.path.join('secret', self.path + '.meta')))
 
     def getQuestionDisplayElement(self):
         from .element import load_element
@@ -76,9 +76,6 @@ class QuestionElement(Element):
 
     def getMyAnswer(self):
         return self.getAnswer(g.user.getTeamForCourse(self.course))
-
-    def getCorrection(self, team):
-        return yaml.parse(self.getAnswer(team).correction)
 
 
 class TextQuestionElement(QuestionElement):

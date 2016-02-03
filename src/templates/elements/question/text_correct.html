@@ -1,0 +1,42 @@
+{{element.getQuestionDisplayElement().render('question')|safe}}
+
+<pre>
+{{element.getMyAnswer().contents}}
+</pre>
+
+{% set correction = element.getCorrection() %}
+
+<pre>
+  {{- correction.hint}}
+</pre>
+
+<form method="POST" action="{{url_for("question_element_correct", course=element.course, branch=element.branch, path=element.path, back=request.path)}}">
+  <fieldset class="form-group">
+    <div class="form-group">
+      <label for="text">{{gettext('Correction')}}</label>
+      <textarea class="form-control" name="text">{{element.getMyAnswer().correction}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="credits">{{gettext('Credits')}}</label>
+      <input type="number" class="form-control" id="credits" name="credits" value="0">
+    </div>
+  </fieldset>
+
+  <fieldset class="form-group">
+    {% for section in correction.sections %}
+      <div class="form-group">
+        <label for="text-{{loop.index}}">{{section.content}} {{section.secret}}</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <input type="checkbox" name="check-{{loop.index}}">
+          </div>
+          <input type="text" class="form-control" id="{{loop.index}}" name="text-{{loop.index}}">
+          <div class="input-group-addon">{{section.credits}}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </fieldset>
+
+  <button type="submit" class="btn btn-default">{{gettext('Save')}}</button>
+</form>
