@@ -2,6 +2,7 @@ import os
 
 import markdown
 from wtforms import Form, StringField, TextAreaField, validators
+from flask_babel import lazy_gettext
 
 import storage
 
@@ -69,5 +70,5 @@ def load_display_element(course, branch, path, meta):
 
 
 class DisplayForm(Form):
-    path = StringField('Path', [validators.required()])
-    content = TextAreaField('Content', [validators.required()])
+    path = StringField(lazy_gettext('Path'), [validators.required()])
+    content = TextAreaField(lazy_gettext('Content'), [validators.required()])

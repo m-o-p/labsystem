@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2016-02-03 19:27+0100\n"
-"PO-Revision-Date: 2016-02-03 12:33+0100\n"
+"POT-Creation-Date: 2016-02-03 19:32+0100\n"
+"PO-Revision-Date: 2016-02-03 19:32+0100\n"
 "Last-Translator: \n"
 "Language: de\n"
 "Language-Team: de <LL@li.org>\n"
@@ -18,6 +18,46 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.2.0\n"
 
+#: entities/display.py:73
+msgid "Path"
+msgstr "Pfad"
+
+#: entities/display.py:74 templates/elements/course/view.html:5
+msgid "Content"
+msgstr "Inhalt"
+
+#: entities/team.py:13
+msgid "Name"
+msgstr "Name"
+
+#: entities/user.py:10
+msgid "Username"
+msgstr "Benutzername"
+
+#: entities/user.py:11
+msgid "Full Name"
+msgstr "Name"
+
+#: entities/user.py:12
+msgid "Email Address"
+msgstr "Email Addresse"
+
+#: entities/user.py:13
+msgid "Password"
+msgstr "Kennwort"
+
+#: entities/user.py:15
+msgid "Passwords must match"
+msgstr "Kennworter müssen übereinstimmen"
+
+#: entities/user.py:17
+msgid "Repeat Password"
+msgstr "Kennwort wiederholen"
+
+#: entities/user.py:18
+msgid "Teams"
+msgstr "Teams"
+
 #: routes/language.py:16
 msgid "German"
 msgstr "Deutsch"
@@ -25,10 +65,6 @@ msgstr "Deutsch"
 #: routes/language.py:16
 msgid "English"
 msgstr "Englisch"
-
-#: templates/elements/course/view.html:5
-msgid "Content"
-msgstr "Inhalt"
 
 #: templates/elements/course/view.html:14
 msgid "History"
