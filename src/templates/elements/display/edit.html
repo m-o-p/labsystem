@@ -1,3 +1,17 @@
+{% import 'include/forms.html' as forms %}
+
+{% extends "form.html" %}
+
+{% block form %}
+
+{{forms.render_form(form)}}
+
+<form method="POST" action="{{url_for("display_element_delete", course=element.course, branch=element.branch, path=element.path)}}">
+  <button type="submit" class="btn btn-danger">{{gettext("Delete")}}</button>
+</form>
+
+{% endblock form %}
+
 <form method="POST">
   <fieldset class="form-group">
     <label for="path">Path</label>
@@ -12,8 +26,4 @@
   </fieldset>
 
   <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
-<form method="POST" action="{{url_for("display_element_delete", course=element.course, branch=element.branch, path=element.path)}}">
-  <button type="submit" class="btn btn-danger">Delete</button>
 </form>

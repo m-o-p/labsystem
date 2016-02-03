@@ -1,6 +1,7 @@
 import os
 
 import markdown
+from wtforms import Form, StringField, TextAreaField, validators
 
 import storage
 
@@ -26,6 +27,11 @@ class DisplayHTMLElement(DisplayElement):
         stream.write(content)
         stream.close()
 
+    def delete(self):
+        DisplayElement.delete(self)
+
+        return storage.read(self.course, self.branch, os.path.join('content', self.path + '.html')).delete()
+
     def render(self, mode):
         return self.getRaw()
 
@@ -44,6 +50,11 @@ class DisplayMarkdownElement(DisplayElement):
         stream.write(data)
         stream.close()
 
+    def delete(self):
+        DisplayElement.delete(self)
+
+        return storage.read(self.course, self.branch, os.path.join('content', self.path + '.md')).delete()
+
     def render(self, mode):
         return markdown.markdown(self.getRaw())
 
@@ -55,3 +66,8 @@ def load_display_element(course, branch, path, meta):
         return DisplayMarkdownElement(course, branch, path, meta)
     else:
         raise ElementYAMLError('Invalid displayType')
+
+
+class DisplayForm(Form):
+    path = StringField('Path', [validators.required()])
+    content = TextAreaField('Content', [validators.required()])
