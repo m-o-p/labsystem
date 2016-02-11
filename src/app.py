@@ -1,5 +1,6 @@
 from flask import Flask, session, request, g
 from flask_babel import Babel
+import yaml
 
 from playhouse.flask_utils import FlaskDB, get_object_or_404
 
@@ -9,6 +10,13 @@ app.config.from_pyfile('../settings.cfg')
 app.config.from_envvar('APP_SETTINGS', silent=True)
 
 database = FlaskDB(app)
+
+
+@app.context_processor
+def inject_user():
+    def loadYAML(string):
+        return yaml.load(string)
+    return dict(loadYAML=loadYAML)
 
 babel = Babel(app)
 

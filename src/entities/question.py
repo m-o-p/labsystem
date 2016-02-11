@@ -1,8 +1,7 @@
 import os
 import yaml
-from datetime import datetime
 
-from flask import render_template, g
+from flask import render_template
 
 import storage
 from .element import Element, ElementYAMLError
@@ -40,32 +39,11 @@ class QuestionElement(Element):
         from .element import load_element
         return load_element(self.course, self.branch, os.path.join(self.getParentPath(), self.meta['display']))
 
-    def isLocked(self):
-        return self.getMyAnswer().lock_user is not None
+    def getDisplayElement(self, name):
+        from .element import load_element
+        return load_element(self.course, self.branch, os.path.join(self.getParentPath(), name))
 
-    def lock(self):
-        answer = self.getMyAnswer()
-
-        if answer.lock_user is not None:
-            raise AlreadyLockedError(answer)
-
-        answer.lock_user = g.get('user')
-        answer.lock_time = datetime.now()
-
-        answer.save()
-
-    def unlock(self):
-        answer = self.getMyAnswer()
-
-        if answer.lock_user.id != g.get('user').id:
-            raise LockError("Locked by other user")
-
-        answer.lock_user = None
-        answer.lock_time = None
-
-        answer.save()
-
-    def getAnswer(self, team):
+    def getTeamAnswer(self, team):
         answer, created = Answer.get_or_create(
             team=team,
             course=self.course,
@@ -74,8 +52,23 @@ class QuestionElement(Element):
 
         return answer
 
-    def getMyAnswer(self):
-        return self.getAnswer(g.user.getTeamForCourse(self.course))
+    def getUserAnswer(self, user):
+        answer, created = Answer.get_or_create(
+            user=user,
+            course=self.course,
+            commit=self.getCommit(),
+            path=self.path)
+
+        return answer
+
+    def getAnswer(self, user):
+        if self.needTeamAnswer():
+            return self.getTeamAnswer(user.getTeamForCourse(self.course))
+        else:
+            return self.getUserAnswer(user)
+
+    def needTeamAnswer(self):
+        return True
 
 
 class TextQuestionElement(QuestionElement):

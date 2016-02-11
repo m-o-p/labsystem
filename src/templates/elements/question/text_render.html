@@ -1,5 +1,11 @@
 {{element.getQuestionDisplayElement().render('question')|safe}}
 
+{% set answer = element.getAnswer(g.user) %}
+{% if answer.correction %}
+  {% set existing = loadYAML(answer.correction) %}
+  {% set correction = element.getCorrection() %}
+{% endif %}
+
 <div class="answer">
   <div class="answer-label" style="display: hidden">
     <a>{{gettext('Answer')}}</a>
@@ -7,8 +13,28 @@
 
   <form method="POST" action="{{url_for("question_element_answer", course=element.course, branch=element.branch, path=element.path, back=request.path)}}">
     <div class="form-group">
-      <textarea class="form-control" name="answer">{{element.getMyAnswer().contents}}</textarea>
+      <textarea class="form-control" name="answer">{{answer.contents if answer.contents}}</textarea>
     </div>
+
+    {% if existing %}
+      {{existing['credits']}}/{{correction['credits']}}
+      <fieldset class="form-group">
+        {% for section in correction.sections %}
+          <div class="form-group">
+            <label for="text-{{loop.index0}}"> {{section.secret}}
+              {{element.getDisplayElement(section.content).render('question')|safe}}
+            </label>
+            <div class="input-group">
+              <div class="input-group-addon">
+                <input type="checkbox" name="check-{{loop.index0}}" {% if existing['check-' ~ loop.index0] %}checked{% endif %}>
+              </div>
+              <input type="text" class="form-control" id="{{loop.index0}}" name="text-{{loop.index0}}" value={{existing['text-' ~ loop.index0]}}>
+              <div class="input-group-addon">{{section.credits}}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </fieldset>
+    {% endif %}
 
     <button type="submit" class="btn btn-default">{{gettext('Save')}}</button>
   </form>
@@ -19,7 +45,7 @@
     answer: $('div.answer').last(),
     lockUrl: "{{url_for("question_element_lock", course=element.course, branch=element.branch, path=element.path)}}",
     unlockUrl: "{{url_for("question_element_unlock", course=element.course, branch=element.branch, path=element.path)}}",
-    locked: {{'true' if element.isLocked() else 'false'}},
+    locked: {{'true' if answer.isLocked() else 'false'}},
   }
 
   registerAnswer(data);

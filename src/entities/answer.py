@@ -1,4 +1,5 @@
 from peewee import ForeignKeyField, CharField, TextField, DateTimeField
+from datetime import datetime
 
 from app import database
 
@@ -12,14 +13,38 @@ class Answer(database.Model):
     commit = CharField()
     course = CharField()
 
-    team = ForeignKeyField(Team, related_name='answers')
+    team = ForeignKeyField(Team, null=True, related_name='answers')
+    user = ForeignKeyField(User, null=True, related_name='answers')
     contents = TextField(null=True)
     correction = TextField(null=True)
 
-    lock_user = ForeignKeyField(User, null=True)
+    lock_user = ForeignKeyField(User, null=True, related_name='locks')
     lock_time = DateTimeField(null=True)
 
     class Meta:
         indexes = (
-            (('team', 'course', 'commit', 'path'), True),
+            (('user', 'team', 'course', 'commit', 'path'), True),
         )
+
+    def isLocked(self):
+        return self.lock_user is not None
+
+    def lock(self, user):
+        if self.lock_user is not None:
+            from .question import AlreadyLockedError
+            raise AlreadyLockedError(self)
+
+        self.lock_user = user
+        self.lock_time = datetime.now()
+
+        self.save()
+
+    def unlock(self, user):
+        if self.lock_user.id != user.id:
+            from .question import LockError
+            raise LockError("Locked by other user")
+
+        self.lock_user = None
+        self.lock_time = None
+
+        self.save()

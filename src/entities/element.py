@@ -65,9 +65,10 @@ from .question import load_question_element
 from .collection import CollectionElement
 
 
-def load_element(course, branch, path):
+def load_element(course, branch, path, meta=None):
     """Get a specific element"""
-    meta = yaml.load(storage.read(course, branch, os.path.join('content', path + '.meta')))
+    if meta is None:
+        meta = yaml.load(storage.read(course, branch, os.path.join('content', path + '.meta')))
 
     if 'isRedirect' in meta and meta['isRedirect']:
         return load_element(course, branch, meta.path)
@@ -82,10 +83,8 @@ def load_element(course, branch, path):
             raise ElementYAMLError('Invalid type')
 
 
-def create_element(course, branch, path, meta):
+def create_element(course, branch, path, meta, **kwargs):
     """Create a new element"""
-    yaml.dump(meta, storage.write(course, branch, os.path.join('content', path + '.meta')))
+    element = load_element(course, branch, path, meta)
 
-    (parent, me) = os.path.split(path)
-
-    return load_element(course, branch, parent).addChild(me)
+    element.create(**kwargs)

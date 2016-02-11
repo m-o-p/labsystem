@@ -1,37 +1,42 @@
-{{element.getQuestionDisplayElement().render('question')|safe}}
-
-<pre>
-{{element.getMyAnswer().contents}}
-</pre>
+{{element.getDisplayElement(element.meta.display).render('question')|safe}}
 
 {% set correction = element.getCorrection() %}
+{% set answer = element.getAnswer(getUser(request.args['user'])) %}
+{% if answer.correction %}
+  {% set existing = loadYAML(answer.correction) %}
+{% endif %}
 
 <pre>
-  {{- correction.hint}}
+  {{answer.contents if answer.contents}}
 </pre>
 
-<form method="POST" action="{{url_for("question_element_correct", course=element.course, branch=element.branch, path=element.path, back=request.path)}}">
+{{element.getDisplayElement(correction.hint).render('question')|safe}}
+
+<form method="POST" action="{{url_for("question_element_correct", course=element.course, branch=element.branch, path=element.path, back=request.url)}}">
   <fieldset class="form-group">
     <div class="form-group">
       <label for="text">{{gettext('Correction')}}</label>
-      <textarea class="form-control" name="text">{{element.getMyAnswer().correction}}</textarea>
+      <textarea class="form-control" name="text">{{existing['text'] if existing}}</textarea>
     </div>
 
     <div class="form-group">
       <label for="credits">{{gettext('Credits')}}</label>
-      <input type="number" class="form-control" id="credits" name="credits" value="0">
+      <input type="number" class="form-control" id="credits" name="credits" value="{{existing['freeCredits']  if existing}}">
     </div>
   </fieldset>
 
   <fieldset class="form-group">
     {% for section in correction.sections %}
       <div class="form-group">
-        <label for="text-{{loop.index}}">{{section.content}} {{section.secret}}</label>
+        <label for="text-{{loop.index0}}"> {{section.secret}}
+          {{element.getDisplayElement(section.content).render('question')|safe}}
+          {{element.getDisplayElement(section.secret).render('question')|safe}}
+        </label>
         <div class="input-group">
           <div class="input-group-addon">
-            <input type="checkbox" name="check-{{loop.index}}">
+            <input type="checkbox" name="check-{{loop.index0}}" {% if existing and existing['check-' ~ loop.index0] %}checked{% endif %}>
           </div>
-          <input type="text" class="form-control" id="{{loop.index}}" name="text-{{loop.index}}">
+          <input type="text" class="form-control" id="{{loop.index0}}" name="text-{{loop.index0}}" value={{existing['text-' ~ loop.index0]  if existing}}>
           <div class="input-group-addon">{{section.credits}}</div>
         </div>
       </div>

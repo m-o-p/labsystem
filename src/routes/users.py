@@ -3,6 +3,14 @@ from playhouse.flask_utils import get_object_or_404
 
 from entities import User, Team, UserForm, TeamForm
 from app import app
+import storage
+
+
+@app.context_processor
+def inject_user():
+    def getUser(id):
+        return get_object_or_404(User.select(), User.id == id)
+    return dict(getUser=getUser)
 
 
 @app.route("/user/create", methods=["GET", "POST"])
@@ -30,7 +38,7 @@ def user_view(user_id):
 def user_edit(user_id):
     user = get_object_or_404(User.select(), User.id == user_id)
     form = UserForm(request.form, user)
-    form.teams.choices = [(team.id, team.name) for team in Team.select().order_by('name')]
+    form.teams.choices = [(team.id, team.course + ' - ' + team.name) for team in Team.select().order_by('name')]
 
     if request.method == 'POST' and form.validate():
         form.populate_obj(user)
@@ -43,6 +51,8 @@ def user_edit(user_id):
 @app.route("/team/create", methods=["GET", "POST"])
 def team_create():
     form = TeamForm(request.form)
+    form.course.choices = [(course, course) for course in storage.listCourses()]
+
     if request.method == 'POST' and form.validate():
         team = Team()
         form.populate_obj(team)
@@ -63,6 +73,7 @@ def team_view(team_id):
 def team_edit(team_id):
     team = get_object_or_404(Team.select(), Team.id == team_id)
     form = TeamForm(request.form, team)
+    form.course.choices = [(course, course) for course in storage.listCourses()]
 
     if request.method == 'POST' and form.validate():
         form.populate_obj(team)

@@ -21,8 +21,9 @@ class UserForm(Form):
 class User(database.Model):
     name = CharField(unique=True)
     username = CharField(unique=True)
-    password = CharField(unique=True)
+    password = CharField()
     email = CharField(unique=True)
 
     def getTeamForCourse(self, course):
-        return self.teams[0]
+        from .team import Team
+        return self.teams.where(Team.course == course)
