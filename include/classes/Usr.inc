@@ -121,11 +121,11 @@ class Usr extends ElementUser{
         $userData["foreName"] = $lng->get("unknown");
         $userData["userName"] = $lng->get("unknown");
       }
-      return Array( "name"     => ($url->available('pseudoNames')? randomName():$userData["name"]),
-                    "foreName" => ($url->available('pseudoNames')? randomName():$userData["foreName"]),
-                    "userName" => ($url->available('pseudoNames')? randomName():$userData["userName"]),
-                    'matrikelnummer' => ($url->available('pseudoNames')? '123456':$userData["matrikelnummer"])
-                   );
+      $newReturnArray = Array( "name"     => ($url->available('pseudoNames')? randomName():$userData["name"]),
+                    	"foreName" => ($url->available('pseudoNames')? randomName():$userData["foreName"]),
+                    	"userName" => ($url->available('pseudoNames')? randomName():$userData["userName"])
+                   		);
+      return array_merge($userData, $newReturnArray); 
     }
   }
 }
