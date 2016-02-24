@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for, g
 import yaml
 
 from app import app
-from entities import load_element, LockError
+from entities import load_element, LockError, AnswerContent
 
 
 @app.route("/courses/<course>/branches/<branch>/element/question/view/<path:path>")
@@ -35,8 +35,8 @@ def question_element_answer(course, branch, path):
     if not answer.isLocked():
         raise LockError('Answering without a lock')
 
-    answer.contents = request.form["answer"]
-    answer.save()
+    answercontent = AnswerContent(answer=answer, content=request.form["answer"])
+    answercontent.save()
 
     answer.unlock(g.user)
 
@@ -68,9 +68,11 @@ def question_element_correct(course, branch, path):
     element = load_element(course, branch, path)
     answer = element.getAnswer(g.user)
     correction = element.getCorrection()
+    answercontent = answer.getLatestContent()
 
     data = {
         'text': request.form['text'],
+        'comment': request.form['comment'],
         'credits': int(request.form['credits']),
         'freeCredits': int(request.form['credits'])
     }
@@ -82,8 +84,9 @@ def question_element_correct(course, branch, path):
         if data['check-' + str(id)]:
             data['credits'] += section['credits']
 
-    answer.correction = yaml.dump(data)
+    answercontent.correction = yaml.dump(data)
+    answercontent.corrector = g.user
 
-    answer.save()
+    answercontent.save()
 
     return redirect(request.args['back'])

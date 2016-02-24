@@ -1,8 +1,8 @@
 {{element.getQuestionDisplayElement().render('question')|safe}}
 
 {% set answer = element.getAnswer(g.user) %}
-{% if answer.correction %}
-  {% set existing = loadYAML(answer.correction) %}
+{% if answer.hasCorrection() %}
+  {% set existing = loadYAML(answer.getLatestCorrection().correction) %}
   {% set correction = element.getCorrection() %}
 {% endif %}
 
@@ -13,11 +13,16 @@
 
   <form method="POST" action="{{url_for("question_element_answer", course=element.course, branch=element.branch, path=element.path, back=request.path)}}">
     <div class="form-group">
-      <textarea class="form-control" name="answer">{{answer.contents if answer.contents}}</textarea>
+      <textarea class="form-control" name="answer">{{answer.getLatestContent().content if answer.hasContent()}}</textarea>
     </div>
 
     {% if existing %}
-      {{existing['credits']}}/{{correction['credits']}}
+      {% if answer.hasContent() and answer.hasCorrection() and answer.getLatestContent() != answer.getLatestCorrection() %}
+        <span class="label label-warning">{{gettext('Content updated after last correction')}}</span>
+      {% endif%}
+
+      <span class="label label-default">{{existing['credits']}}/{{correction['credits']}}</span>
+      <span class="label label-info">{{answer.getLatestCorrection().corrector.name}}</span>
       <fieldset class="form-group">
         {% for section in correction.sections %}
           <div class="form-group">

@@ -2,12 +2,16 @@
 
 {% set correction = element.getCorrection() %}
 {% set answer = element.getAnswer(getUser(request.args['user'])) %}
-{% if answer.correction %}
-  {% set existing = loadYAML(answer.correction) %}
+{% if answer.hasCorrection() %}
+  {% set existing = loadYAML(answer.getLatestCorrection().correction) %}
 {% endif %}
 
+{% if answer.hasContent() and answer.hasCorrection() and answer.getLatestContent() != answer.getLatestCorrection() %}
+  <span class="label label-warning">{{gettext('Content updated after last correction')}}</span>
+{% endif%}
+
 <pre>
-  {{answer.contents if answer.contents}}
+  {{answer.getLatestContent().content if answer.hasContent()}}
 </pre>
 
 {{element.getDisplayElement(correction.hint).render('question')|safe}}
@@ -17,6 +21,11 @@
     <div class="form-group">
       <label for="text">{{gettext('Correction')}}</label>
       <textarea class="form-control" name="text">{{existing['text'] if existing}}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="comment">{{gettext('Comment')}}</label>
+      <textarea class="form-control" name="comment">{{existing['comment'] if existing}}</textarea>
     </div>
 
     <div class="form-group">

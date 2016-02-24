@@ -15,11 +15,21 @@ class Answer(database.Model):
 
     team = ForeignKeyField(Team, null=True, related_name='answers')
     user = ForeignKeyField(User, null=True, related_name='answers')
-    contents = TextField(null=True)
-    correction = TextField(null=True)
 
     lock_user = ForeignKeyField(User, null=True, related_name='locks')
     lock_time = DateTimeField(null=True)
+
+    def getLatestContent(self):
+        return self.contents.order_by(AnswerContent.time.desc()).get()
+
+    def hasContent(self):
+        return self.contents.where(~ AnswerContent.content >> None).count() > 0
+
+    def getLatestCorrection(self):
+        return self.contents.order_by(AnswerContent.time.desc()).where(~ AnswerContent.correction >> None).get()
+
+    def hasCorrection(self):
+        return self.contents.where(~ AnswerContent.correction >> None).count() > 0
 
     class Meta:
         indexes = (
@@ -48,3 +58,13 @@ class Answer(database.Model):
         self.lock_time = None
 
         self.save()
+
+
+class AnswerContent(database.Model):
+    answer = ForeignKeyField(Answer, 'contents')
+    content = TextField(null=True)
+    time = DateTimeField(default=datetime.now)
+
+    correction = TextField(null=True)
+    comment = TextField(null=True)
+    corrector = ForeignKeyField(User, null=True, related_name='corrections')
