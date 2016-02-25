@@ -111,16 +111,19 @@ class DBInterfaceUser
     $what = $cfg->get("UserDBField_name")." AS name, ".
             $cfg->get("UserDBField_forename")." AS forename, ".
             $cfg->get("UserDBField_email")." AS email, ".
-            $cfg->get("UserDBField_uid")."  AS uid";
+            $cfg->get("UserDBField_uid")."  AS uid, ".
+            $cfg->get("UserDBField_password")." AS crypt_passwd";
     // mysql_real_escape_string() against SQL-Injection!
     $where= $cfg->get("UserDBField_username")."='".$this->myDBC->escapeString( Ddbc::escapeString($username) )."' && ".
-            $cfg->get("UserDBField_password")."='".$this->myDBC->escapeString( crypt( $password, $resArray['uid'] ) )."' && ".  // the UID is used as salt
             $cfg->get("User_courseID")."='1'";
     $result = $this->myDBC->mkSelect( $what, $from, $where );
     if ( mysql_num_rows( $result ) != 1 )
       return false; // not found/ error
     else{
+      // entry found
       $resArray = mysql_fetch_array( $result );
+      if ( crypt($password, $resArray["crypt_passwd"]) != $resArray["crypt_passwd"] )
+        return false; // password wrong
       return Array( "name"     => $resArray["name"],
                     "foreName" => $resArray["forename"],
                     "eMail"    => $resArray["email"],
