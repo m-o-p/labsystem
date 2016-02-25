@@ -166,7 +166,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
                             $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $usr->userName )."', ".
                             $cfg->get('UserDBField_name')."='".$userDBC->escapeString( $usr->surName )."', ".
                             $cfg->get('UserDBField_forename')."='".$userDBC->escapeString( $usr->foreName )."', ".
-                            $cfg->get('UserDBField_password')."='".crypt( $newPW, $usr->uid )."', ".
+                            $cfg->get('UserDBField_password')."='".crypt( $newPW, '$6$' . $usr->uid )."', ".
                             $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $usr->mailAddress )."', ".
                             $cfg->get('UserDBField_uid')."='".$userDBC->escapeString( $usr->uid )."', ".
                             "last_registered='".date('Y-m-d H:i:s')."', ".
