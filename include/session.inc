@@ -39,6 +39,8 @@ if ( $GLOBALS['url']->available("config") ) session_name ( $url->get("config") )
 // // per default file based session management is enabled with current phps...
 // // require( INCLUDE_DIR."/php_session_management.inc"); /** store the session variables in the table instead of a cookie or url */
 
+session_set_cookie_params ( 0 , "/", $_SERVER['SERVER_NAME'], TRUE, TRUE );
+
 if ( isset( $NEWSESSION ) ) {
 //   $url->put("inside=true");
    session_regenerate_id(true);
