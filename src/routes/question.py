@@ -11,7 +11,10 @@ def question_element_view(course, branch, path):
     answer = element.getAnswer(g.user)
 
     if element.meta['questionType'] == 'Text':
-        return render_template('elements/question/view_text.html', element=element, answer=answer)
+        return render_template('elements/question/text_view.html', element=element, answer=answer)
+    elif element.meta['questionType'] == 'MultipleChoice':
+        element.setupShuffle(g.user)
+        return render_template('elements/question/mc_view.html', element=element, answer=answer)
 
 
 @app.route("/courses/<course>/branches/<branch>/element/question/edit/<path:path>", methods=["GET", "POST"])
@@ -27,8 +30,8 @@ def question_element_delete(course, branch, path):
     return redirect(url_for('collection_element_view', course=course, branch=branch, path=element.getParentPath()))
 
 
-@app.route("/courses/<course>/branches/<branch>/element/question/answer/<path:path>", methods=["POST"])
-def question_element_answer(course, branch, path):
+@app.route("/courses/<course>/branches/<branch>/element/question/answer_text/<path:path>", methods=["POST"])
+def text_question_element_answer(course, branch, path):
     element = load_element(course, branch, path)
     answer = element.getAnswer(g.user)
 
@@ -39,6 +42,27 @@ def question_element_answer(course, branch, path):
     answercontent.save()
 
     answer.unlock(g.user)
+
+    return redirect(request.args['back'])
+
+
+@app.route("/courses/<course>/branches/<branch>/element/question/answer_mc/<path:path>", methods=["POST"])
+def mc_question_element_answer(course, branch, path):
+    element = load_element(course, branch, path)
+    answer = element.getAnswer(g.user)
+    correction = element.getCorrection()
+
+    answercontent = answer.getLatestCorrection()
+
+    if answercontent.content is not None:
+        content = yaml.load(answercontent.content)
+    else:
+        content = []
+
+    content.append(["checkbox_" + str(i) in request.form for i in range(0, len(correction['options']))])
+
+    answercontent.content = yaml.dump(content)
+    answercontent.save()
 
     return redirect(request.args['back'])
 

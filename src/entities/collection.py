@@ -18,7 +18,7 @@ class CollectionElement(Element):
             raise('Invalid rendering mode')
 
     def getChildren(self):
-        from .element import load_element
+        from .helpers import load_element
 
         return map(lambda el: load_element(self.course, self.branch, os.path.join(self.path, el)), self.meta['children'])
 

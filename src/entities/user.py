@@ -27,3 +27,20 @@ class User(database.Model):
     def getTeamForCourse(self, course):
         from .team import Team
         return self.teams.where(Team.course == course)
+
+    def can(self, permission, course=None, assignment=None):
+        from .permission import UserRole
+
+        roles = self.roles
+
+        if course is None:
+            roles = roles.where(UserRole.course >> None)
+        else:
+            roles = roles.where(UserRole.course == course)
+
+        if assignment is None:
+            roles = roles.where(UserRole.assignment >> None)
+        else:
+            roles = roles.where(UserRole.assignment == assignment)
+
+        return any(map(lambda role: role.role.can(permission), roles))

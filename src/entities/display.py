@@ -6,7 +6,7 @@ from flask_babel import lazy_gettext
 
 import storage
 
-from .element import Element, ElementYAMLError
+from .element import Element
 
 
 class DisplayElement(Element):
@@ -57,6 +57,7 @@ def load_display_element(course, branch, path, meta):
     elif meta['displayType'] == 'Markdown':
         return DisplayMarkdownElement(course, branch, path, meta)
     else:
+        from .helpers import ElementYAMLError
         raise ElementYAMLError('Invalid displayType')
 
 

@@ -4,14 +4,6 @@ import os
 import storage
 
 
-class ElementYAMLError(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return repr(self.value)
-
-
 class Element:
     """Base class for all elements"""
     def __init__(self, course, branch, path, meta=None):
@@ -36,6 +28,7 @@ class Element:
         (parent, me) = os.path.split(self.path)
 
         if parent is not None:
+            from .helpers import load_element
             load_element(self.course, self.branch, parent).removeChild(me)
 
     def move(self, new):
@@ -55,36 +48,11 @@ class Element:
         (parent, me) = os.path.split(self.path)
 
         if parent is not None:
-            load_element(self.course, self.branch, parent)
+            from .helpers import load_element
+            return load_element(self.course, self.branch, parent)
 
     def getCommit(self):
         return str(next(storage.getHistory(self.course, self.branch, "", 0, 1)))
 
-from .display import load_display_element
-from .question import load_question_element
-from .collection import CollectionElement
-
-
-def load_element(course, branch, path, meta=None):
-    """Get a specific element"""
-    if meta is None:
-        meta = yaml.load(storage.read(course, branch, os.path.join('content', path + '.meta')))
-
-    if 'isRedirect' in meta and meta['isRedirect']:
-        return load_element(course, branch, meta.path)
-    else:
-        if meta['type'] == 'Display':
-            return load_display_element(course, branch, path, meta)
-        elif meta['type'] == 'Question':
-            return load_question_element(course, branch, path, meta)
-        elif meta['type'] == 'Collection':
-            return CollectionElement(course, branch, path, meta)
-        else:
-            raise ElementYAMLError('Invalid type')
-
-
-def create_element(course, branch, path, meta, **kwargs):
-    """Create a new element"""
-    element = load_element(course, branch, path, meta)
-
-    element.create(**kwargs)
+    def getAssignment(self):
+        return self.getParent().getAssignment()
