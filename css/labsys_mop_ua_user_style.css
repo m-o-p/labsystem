@@ -1,0 +1,57 @@
+  /**
+  * I want the logo to appear on the right and without paddings above and below...
+  * Done... To reflect more changes you might want to start with a copy of the theme 
+  * stylesheets in the sys/ directory...
+  */
+
+  .labsys_mop_topHeader { /* for the custom logo etc. (taken from ../ini/config*.ini: TopHeader) */
+                      text-align: right; 
+                      padding-top: 0px;
+                      padding-bottom: 0px;
+  }
+
+/**
+ * This is the UserAdministration's user stylesheet.
+ *
+ * this is the user defined stylesheet
+ * place all the styles you want to use here
+ * since your styles will only be applied at the content area put .labsys_mop_contentArea in front
+ * of them to avoid collisions with other stylesheets.
+ */
+ 
+.labsys_mop_contentArea{  /* The systems puts this style around each element's content part */
+     padding-left: 10px;
+     padding-right: 10px;
+}
+
+.labsys_mop_contentArea h3{  /* Used on the demo startpage */
+     margin-top: 1.5em;
+     margin-bottom: 0.5em;
+     border-bottom: solid 1px gray;
+}
+
+.labsys_mop_contentArea .figure_description{  /* Used on the demo startpage */
+     padding-left: 0.5em;
+     padding-right: 0.5em;
+     text-align: justify;
+     font-size: 0.7em;
+}
+
+.labsys_mop_contentArea .inNotice{
+     margin: 0.5em;
+     background-color: #efefe9;
+     padding: 0.5em;
+     font-size: 0.8em;
+}
+
+.labsys_mop_contentArea ul li{
+     margin-bottom: 0.5em;
+     margin-top: 0.5em;
+}
+
+.labsys_mop_contentArea .code {
+     font-family: courier, monospace;
+     background-color: #000000;
+     color: #ffffff;
+     padding: 1px;
+}
