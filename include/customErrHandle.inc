@@ -24,7 +24,7 @@
 *
 * @module     ../include/customErrorHandler.inc
 */
-$ERRORMAIL_RECEIVER = ''; // If you enter a valid email address here and you have mailing configured you can receive an error report
+require_once INCLUDE_DIR.'/config.inc'; // for errormail_receiver
 $mailSent = FALSE;
 /**
 * Displays the error.
