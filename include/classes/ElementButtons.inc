@@ -41,7 +41,7 @@ class EB{ /* ElementButtons */
   *
   * @return       The link's html-code.
   */
-  /*private*/ function mkLink( $link, $img ){
+  /*private*/ static function mkLink( $link, $img ){
     global $pge;
     return "\t<a tabindex=\"".$pge->nextTab++."\" href=\"".$link."\">".$img."</a>\n";
   }
@@ -54,7 +54,7 @@ class EB{ /* ElementButtons */
   *
   * @return       The link's html-code.
   */
-  /*private*/ function mkHiddenDiv( $link, $img, $content ){
+  /*private*/ static function mkHiddenDiv( $link, $img, $content ){
     global $pge;
     return " <a tabindex=\"".$pge->nextTab++."\" href=\"".
                 $link.
@@ -82,7 +82,7 @@ class EB{ /* ElementButtons */
    *
    * @return          The button's html-code.
    */
-  function getLink2ElementURL( $address ){
+  static function getLink2ElementURL( $address ){
     // When the address contains a small c the link should be ....c...#$address
     $posc = strpos($address, 'c');
     $fragment = '';
@@ -104,7 +104,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function link2Element( $address, &$el=false ){
+  static function link2Element( $address, &$el=false ){
     global $lng;
 
     return EB::mkHiddenDiv( "../pages/view.php?address=".$address."&amp;amp;&#x005F;_LINKQUERY__",
@@ -119,7 +119,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function link2Url( $link ){
+  static function link2Url( $link ){
     global $lng;
     $link .= '?&#x005F;_LINKQUERY__';
     return EB::mkHiddenDiv( $link,
@@ -134,7 +134,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function link2Content( $content ){
+  static function link2Content( $content ){
     global $lng;
     return EB::mkHiddenDiv( '#',
                               "<img src=\"../syspix/button_link2_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2")."\">",
@@ -148,7 +148,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function link2epub( $address ){
+  static function link2epub( $address ){
     global $lng, $cfg;
     // Do not show the button if ePubs are not allowed.
     $allowEpub = $cfg->doesExist('allowEpubDownload') && ($cfg->get('allowEpubDownload') == "1");
@@ -165,7 +165,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function view( $address ){
+  static function view( $address ){
     global $lng, $url;
     $link = $url->link2( "../pages/view.php?address=".$address.'#'.$address ); // #$address will jump directly to the element
     return EB::mkLink( $link, "<img src=\"../syspix/button_view_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view\" title=\"".$lng->get("explainView")."\">" );
@@ -178,7 +178,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function edit( $address ){
+  static function edit( $address ){
     global $lng, $url;
     $link = $url->link2( "../pages/edit.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get("explainEdit")."\">" );
@@ -191,7 +191,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function printView( $address ){
+  static function printView( $address ){
     global $lng, $url;
     $link = $url->link2( "../pages/view.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_folder_open_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view\" title=\"".$lng->get("explainPrintView")."\">" );
@@ -204,7 +204,7 @@ class EB{ /* ElementButtons */
   *
   * @return           The button's html-code.
   */
-  function createNew( $elementID ){
+  static function createNew( $elementID ){
     global $lng, $url;
     $link = $url->link2( "../pages/edit.php?address=".$elementID."1&amp;saveAsNew=true" );
     return EB::mkLink( $link, "<img src=\"../syspix/button_new_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"new\" title=\"".$lng->get("explainCreateNew")."\">" );
@@ -215,7 +215,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function manageElements( ){
+  static function manageElements( ){
     global $lng, $url;
     return EB::mkLink( $url->link2("../pages/view.php?address=p2"), "<img src=\"../syspix/button_manage_elements_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"new\" title=\"".$lng->get("explainManageElmnts")."\">" );
   }
@@ -227,7 +227,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function delete( $address ){
+  static function delete( $address ){
     global $lng, $pge, $url;
     $link = $url->link2( "../php/delete.php?address=".$address );
     return "<a tabindex=\"".$pge->nextTab++."\" href=\"".$link."\" onClick=\"return confirmLink(this, '".$address.": ".$lng->get("confirmDelete")."');\">".
@@ -242,7 +242,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function viewStructure( $address ){
+  static function viewStructure( $address ){
     global $lng, $url;
     $link = $url->link2( "../pages/view.php?address=".$address.".structure" );
     return EB::mkLink( $link, "<img src=\"../syspix/button_view_structure_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view_structure\" title=\"".$lng->get("explainViewStructure")."\">" );
@@ -263,7 +263,7 @@ class EB{ /* ElementButtons */
   *
   * @return                 The button's html-code.
   */
-  function history ( $history, $address, $sendAsAddHist=false ){
+  static function history ( $history, $address, $sendAsAddHist=false ){
     global $pge, $lng, $url, $cfg;
 
     if ($url->available( 'hideHistory' )) return ''; // temporarily handy for HTML diffs...
@@ -327,7 +327,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function prev( $address ){
+  static function prev( $address ){
     global $lng, $url, $linkToPreviousPage; // Links are defined in /include/helper.inc
     $link = $url->link2( "../pages/view.php?address=".$address );
     $linkToPreviousPage = $url->rawLink2( "../pages/view.php?address=".$address );
@@ -342,7 +342,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function next( $address ){
+  static function next( $address ){
     global $lng, $url, $linkToNextPage; // Links are defined in /include/helper.inc
     $link = $url->link2( "../pages/view.php?address=".$address );
     $linkToNextPage = $url->rawLink2( "../pages/view.php?address=".$address );
@@ -357,7 +357,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function toc( $address ){
+  static function toc( $address ){
     global $lng, $url, $linkToTOCPage; // Links are defined in /include/helper.inc
     $link = $url->link2( "../pages/view.php?address=".$address );
     $linkToTOCPage = $url->rawLink2( "../pages/view.php?address=".$address );
@@ -374,7 +374,7 @@ class EB{ /* ElementButtons */
   *
   * @return          The button's html-code.
   */
-  function mail( $address, $subject ){
+  static function mail( $address, $subject ){
     global $lng, $url, $usr;
     // Not logged in? -> mailForm is not available -> Button makes no sense
     if ( !$usr->isOfKind( IS_USER ) ){
