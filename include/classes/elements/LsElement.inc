@@ -83,7 +83,7 @@ class LsElement extends Element{
   *                 "notFound"          => bool
   *               );
   */
-  /*static*/ function getVisibility( $id, $num ){
+  static function getVisibility( $id, $num ){
     global $sDBI;
 
     $data = $sDBI->getSchedule4( strtolower($id), $num );
@@ -103,7 +103,7 @@ class LsElement extends Element{
   *
   * @return bool                    Is the element visible now?
   */
-  /*static*/ function visiblePerSchedule( $id, $num, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched ){
+  static function visiblePerSchedule( $id, $num, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched ){
     global $sDBI, $usr;
     if ( $visibleBefore1stSched && $visibleDuringSched && $visibleAfter1stSched) return true;     // always visible
     if ( !$visibleBefore1stSched && !$visibleDuringSched && !$visibleAfter1stSched) return false; // never visible
