@@ -143,8 +143,7 @@ class Pge extends LpElement{
       $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
 
     // Some replacements must be set here since they may not be correct before.
-    $this->replaceConstants($this->contents);
-    echo( $this->contents );
+    echo( $this->replaceConstants($this->contents) );
   }
 
   /**
