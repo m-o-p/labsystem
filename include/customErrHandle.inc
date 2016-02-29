@@ -137,6 +137,14 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
                   "<b>$errstr</b>: On line $errline of file $errfile\n"
                  );
     break;
+  case E_DEPRECATED:
+    // TODO: stop using deprecated mysql API, switch to mysqli or PDO
+    if ( substr( $errstr, 0, 6 ) === "mysql_" )
+        break;
+    displayError( '#6666ff',
+                  "<b>$errstr</b>: On line $errline of file $errfile\n"
+                 );
+    break;
   default:
     displayError( '#6666ff',
                   "<b>$errstr</b>: On line $errline of file $errfile\n"
