@@ -175,7 +175,7 @@ function mail_error_handler($number, $message, $file, $line, $vars){
          && isset($_SESSION["mailAddress"]) ){ // mail only errors user experience that are logged in
       $email = getErrorReport($number, $message, $file, $line, $vars);
 
-      $headers = 'Content-type: text/html;' . PHP_EOL;
+      $headers = 'Content-type: text/html;';
 
       // Email the error to someone...
       if ( ($number !== E_NOTICE) && ($number < 2048) ){
