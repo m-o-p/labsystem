@@ -187,7 +187,7 @@ class LlElement extends Element{
    * @param unknown $percentageFailed  The value the bar gets red if below.
    * @return string                    The color as RGB hex value.
    */
-  function getSuccessIndicatorColor( $percentage, $percentageFailed ){
+  static function getSuccessIndicatorColor( $percentage, $percentageFailed ){
     // $p2 = $percentage - $percentageFailed mapped on [0..1] for coloring.
     // The color varies from #ff0000 ( $p2 =   0% ) (red)
     //                  over #ffff99 ( $p2 =  50% ) (yellow)
@@ -408,7 +408,7 @@ class LlElement extends Element{
   *
   * @return string      The bar's html-code.
   */
-  function percentBar( $percentage, $percentageFailed, $style="labsys_mop_l_status_percentBarDiv" ){
+  static function percentBar( $percentage, $percentageFailed, $style="labsys_mop_l_status_percentBarDiv" ){
     $color = LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed );
 
     return "<div class=\"".$style."\">".
@@ -427,7 +427,7 @@ class LlElement extends Element{
    *
    * @return string      The bar's html-code.
    */
-  function percentStick( $givenCredits, $possibleCredits, $description ){
+  static function percentStick( $givenCredits, $possibleCredits, $description ){
     global $cfg;
     $percentage = ($possibleCredits>0?abs($givenCredits/$possibleCredits) : 0);
     $percentageFailed = $cfg->get("percentageFailedPreLab");
@@ -1768,7 +1768,7 @@ class LlElement extends Element{
   * @param $i_idx         The index of the input the lock should get acquired on.
   * @param $fullAddress   The element's full address (p.e. l23.C42.i17)
   */
-  function forceLockOn( $i_idx, $fullAddress ){
+  static function forceLockOn( $i_idx, $fullAddress ){
     global $url;
 
     $element = $GLOBALS[ 'iDBI' ]->getData2idx( $i_idx );
