@@ -60,7 +60,7 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
 // authenticated
   if ( isset($_POST['stayLoggedIn']) ){
     // Set cookie lifetime to 1 year
-    session_set_cookie_params ( 365 * 24 * 60 );
+    session_set_cookie_params ( 365 * 24 * 60 * 60 );
     $url->put( "sysinfo=".$lng->get('StayLoggedIn') );
   }
   $NEWSESSION = true;
