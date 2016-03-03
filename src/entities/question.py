@@ -1,6 +1,5 @@
 import os
 import yaml
-import random
 
 from flask import render_template
 
@@ -35,7 +34,7 @@ class QuestionElement(Element):
     def __init__(self, course, branch, path, meta=None):
         Element.__init__(self, course, branch, path, meta)
 
-    def getCorrection(self):
+    def getSecret(self):
         return yaml.load(storage.read(self.course, self.branch, os.path.join('secret', self.path + '.meta')))
 
     def getQuestionDisplayElement(self):
@@ -64,6 +63,12 @@ class QuestionElement(Element):
 
         return answer
 
+    def getAnswer(self, user):
+        if self.needTeamAnswer():
+            return self.getTeamAnswer(user.getTeamForCourse(self.course))
+        else:
+            return self.getUserAnswer(user)
+
     def needTeamAnswer(self):
         return self.getAssignment().meta['teamwork']
 
@@ -80,12 +85,6 @@ class TextQuestionElement(QuestionElement):
         else:
             return render_template('elements/question/text_render.html', element=self)
 
-    def getAnswer(self, user):
-        if self.needTeamAnswer():
-            return self.getTeamAnswer(user.getTeamForCourse(self.course))
-        else:
-            return self.getUserAnswer(user)
-
 
 @app.context_processor
 def register_shuffle_helper():
@@ -100,34 +99,9 @@ class MultipleChoiceQuestionElement(QuestionElement):
         QuestionElement.__init__(self, course, branch, path, meta)
 
     def render(self, context):
-        return render_template('elements/question/mc_render.html', element=self)
-
-    def getAnswer(self, user):
-        return self.getUserAnswer(user)
-
-    def setupShuffle(self, user):
-        answer = self.getAnswer(user)
-
-        if not answer.hasCorrection():
-            array = [i for i in range(0, len(self.meta['options']))]
-
-            random.shuffle(array)
-
-            order = yaml.dump(array)
-
-            from .answer import AnswerContent
-            answercontent = AnswerContent(answer=answer, correction=order)
-            answercontent.save()
-
-    def isCorrect(self, correction, answercontent, version=-1):
-        order = yaml.load(answercontent.correction)
-        answer = yaml.load(answercontent.content)[version]
-
-        for idx, val in enumerate(correction['options']):
-            if val != answer[order[idx]]:
-                return False
-
-        return True
+        from controllers import MultipleChoiceQuestionController
+        controller = MultipleChoiceQuestionController(self)
+        return render_template('elements/question/mc_render.html', **controller.renderParams())
 
 
 def load_question_element(course, branch, path, meta):

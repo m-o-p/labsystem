@@ -19,6 +19,8 @@ class Answer(database.Model):
     lock_user = ForeignKeyField(User, null=True, related_name='locks')
     lock_time = DateTimeField(null=True)
 
+    meta = CharField(null=True)
+
     def getLatestContent(self):
         return self.contents.order_by(AnswerContent.time.desc()).get()
 

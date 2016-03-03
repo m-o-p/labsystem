@@ -1,50 +1,96 @@
-{% set x = element.setupShuffle(g.user) %}
-
-{% set answer = element.getAnswer(g.user) %}
-{% set fullanswercontent = answer.getLatestCorrection() %}
-{% set existing = loadYAML(fullanswercontent.correction) %}
-{% set correction = element.getCorrection() %}
-{% set hasContent = answer.hasContent() %}
-
-{% if hasContent %}
-  {% set answercontent = loadYAML(answer.getLatestContent().content) %}
-  {% set isCorrect = element.isCorrect(correction, fullanswercontent) %}
-{% else %}
-  {% set isCorrect = false %}
-{% endif %}
-
-{% set options = do_shuffle(element.meta.options, existing)%}
-
 {{element.getQuestionDisplayElement().render('question')|safe}}
 
-<form method="POST" action="{{url_for("mc_question_element_answer", course=element.course, branch=element.branch, path=element.path, back=request.path)}}">
-  {% for option in options %}
-    {% if hasContent %}
-      {% set rowindex = loop.index0 %}
-      {% for column in answercontent %}
-        {% set isCorrectColumn = element.isCorrect(correction, fullanswercontent, loop.index0) %}
+{% set previousAnswers = controller.getPreviousAnswers() %}
+{% set collegueAnswers = controller.getCollegueAnswers() %}
 
-        <div class="checkbox-inline {% if isCorrectColumn %}mc-correct{% else %}mc-incorrect{% endif %}">
-            <label>
-              <input disabled type="checkbox" {{ "checked" if column[rowindex] }}>
-            </label>
-        </div>
-      {% endfor %}
+<table>
+  <form method="POST" action="{{url_for("mc_question_element_answer", course=element.course, branch=element.branch, path=element.path, back=request.path)}}">
+    {# userNames #}
+
+    {% if needTeamAnswer%}
+      <tr>
+        {% for answer in previousAnswers %}
+          <td></td>
+        {% endfor %}
+
+        {% for user in controller.getCollegues() %}
+          <td>{{user.name}}</td>
+        {% endfor %}
+      </tr>
     {% endif %}
 
-    {% if not isCorrect %}
-      <div class="checkbox-inline">
-          <label>
-            <input type="checkbox" name="checkbox_{{loop.index0}}">
-            {{element.getDisplayElement(option.content).render('question')|safe}}
-          </label>
-      </div>
-    {% endif %}
+    {% for option in options %}
+      <tr>
+        {% set rowindex = loop.index0 %}
 
-    <br />
-  {% endfor %}
+        {% for answer in previousAnswers %}
+          {% set isCorrectColumn = controller.isCorrect(answer) %}
 
-  {% if not isCorrect %}
-    <button type="submit" class="btn btn-default">{{gettext('Save')}}</button>
-  {% endif %}
-</form>
+          <td class="{% if isCorrectColumn %}mc-correct{% else %}mc-incorrect{% endif %}">
+            <input disabled type="checkbox" {{ "checked" if answer[rowindex] }}>
+          </td>
+        {% endfor %}
+
+        {% for answer in collegueAnswers %}
+          {% if answer %}
+            <td class="mc-collegue">
+              <input disabled type="checkbox" {{ "checked" if answer[rowindex] }}>
+            </td>
+          {% else %}
+            <td></td>
+          {% endif %}
+        {% endfor %}
+
+
+        {% if controller.canAnswer() %}
+          <td>
+            {% if element.meta.singleChoice %}
+              <input type="radio" name="answer" value="{{rowindex}}">
+            {% else %}
+              <input type="checkbox" name="checkbox_{{rowindex}}">
+            {% endif %}
+          </td>
+        {% endif %}
+
+        <td>
+          {{element.getDisplayElement(option.content).render('question')|safe}}
+        </td>
+      </tr>
+
+      {# Show answer hints #}
+
+      {% if previousAnswers|length %}
+        {% set lastPreviousAnswer = previousAnswers[-1] %}
+        {% set correctArray = controller.correctArray(lastPreviousAnswer) %}
+
+        {% if element.meta.alwaysShowQuestionHints or correctArray[rowindex] == False %}
+          {% if secret.optionHints[rowindex] %}
+            <tr>
+              <td>
+                {{element.getDisplayElement(secret.optionHints[rowindex]).render('question')|safe}}
+              </td>
+            </tr>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {% for i in range(0, previousAnswers|length) %}
+      {% if secret.roundHints[i] %}
+        <tr>
+          <td>
+          {{element.getDisplayElement(secret.roundHints[i]).render('question')|safe}}
+        </td>
+      </tr>
+      {% endif %}
+    {% endfor %}
+
+    <tr>
+      <td>
+        {% if not isCorrect %}
+          <button type="submit" class="btn btn-default">{{gettext('Save')}}</button>
+        {% endif %}
+      </td>
+    </tr>
+  </form>
+</table>

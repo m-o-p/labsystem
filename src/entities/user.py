@@ -26,7 +26,7 @@ class User(database.Model):
 
     def getTeamForCourse(self, course):
         from .team import Team
-        return self.teams.where(Team.course == course)
+        return self.teams.where(Team.course == course).get()
 
     def can(self, permission, course=None, assignment=None):
         from .permission import UserRole

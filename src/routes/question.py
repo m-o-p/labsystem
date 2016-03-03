@@ -3,18 +3,18 @@ import yaml
 
 from app import app
 from entities import load_element, LockError, AnswerContent
+from controllers import MultipleChoiceQuestionController
 
 
 @app.route("/courses/<course>/branches/<branch>/element/question/view/<path:path>")
 def question_element_view(course, branch, path):
     element = load_element(course, branch, path)
-    answer = element.getAnswer(g.user)
 
     if element.meta['questionType'] == 'Text':
+        answer = element.getAnswer(g.user)
         return render_template('elements/question/text_view.html', element=element, answer=answer)
     elif element.meta['questionType'] == 'MultipleChoice':
-        element.setupShuffle(g.user)
-        return render_template('elements/question/mc_view.html', element=element, answer=answer)
+        return render_template('elements/question/mc_view.html', element=element)
 
 
 @app.route("/courses/<course>/branches/<branch>/element/question/edit/<path:path>", methods=["GET", "POST"])
@@ -48,21 +48,14 @@ def text_question_element_answer(course, branch, path):
 
 @app.route("/courses/<course>/branches/<branch>/element/question/answer_mc/<path:path>", methods=["POST"])
 def mc_question_element_answer(course, branch, path):
-    element = load_element(course, branch, path)
-    answer = element.getAnswer(g.user)
-    correction = element.getCorrection()
+    controller = MultipleChoiceQuestionController.fromParams(course, branch, path)
 
-    answercontent = answer.getLatestCorrection()
-
-    if answercontent.content is not None:
-        content = yaml.load(answercontent.content)
+    if controller.element.meta['singleChoice']:
+        answers = [str(i) == request.form['answer'] for i in range(0, len(controller.element.meta['options']))]
     else:
-        content = []
+        answers = ["checkbox_" + str(i) in request.form for i in range(0, len(controller.element.meta['options']))]
 
-    content.append(["checkbox_" + str(i) in request.form for i in range(0, len(correction['options']))])
-
-    answercontent.content = yaml.dump(content)
-    answercontent.save()
+    controller.processAnswer(answers)
 
     return redirect(request.args['back'])
 
