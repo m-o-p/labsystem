@@ -37,7 +37,8 @@ class LcDBInterface {
   var $myTable;
 
   function LcDBInterface(){
-    $this->myDBC   = new Ddbc();
+    global $dDBI;
+    $this->myDBC   = $dDBI;
     $this->myTable = "collections";
   }
 

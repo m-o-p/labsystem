@@ -41,7 +41,8 @@ class LmDBInterfaceAnswers {
   var $myDBC;
   var $myTable;
   function LmDBInterfaceAnswers(){
-    $this->myDBC   = new Wdbc();
+    global $wDBI;
+    $this->myDBC   = $wDBI;
     $this->myTable = "multiple_choice_answers";
   }
 

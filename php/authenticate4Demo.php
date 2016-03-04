@@ -49,8 +49,6 @@ if ( !$GLOBALS['url']->available('userrole') ){
 
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 
-$uDBI = new DBInterfaceUser();
-
 // preserve the current url since we will probably link back (p.e. to give an error) or add something to the url.
 $url->clearQueryString(); $url->put( $url->get("oldQueryString") );
 

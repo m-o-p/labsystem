@@ -1,4 +1,6 @@
 <?php
+require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
+require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 class MailFunctionality{
   /**
    * Send a mail.
@@ -33,10 +35,7 @@ class MailFunctionality{
    * @param String $text                The mail text.
    */
   function mail2groupWithRights( $accessRightsMask, $subject, $text ){
-    require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
-    $uDBI = new DBInterfaceUser();
-    require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-    $urDBI = new DBInterfaceUserRights();
+    global $uDBI, $urDBI;
     $urDBI->getAllData();
     // iterate over all users that have rights
     while( $userRightsData = $urDBI->getNextData() ){

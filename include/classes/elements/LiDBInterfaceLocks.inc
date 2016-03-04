@@ -35,7 +35,8 @@ class LiDBInterfaceLocks {
   var $myDBC;
   var $myTable;
   function LiDBInterfaceLocks(){
-    $this->myDBC   = new Wdbc();
+    global $wDBI;
+    $this->myDBC   = $wDBI;
     $this->myTable = "input_answers_locks";
   }
   

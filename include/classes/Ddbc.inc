@@ -42,3 +42,4 @@ class Ddbc extends DBConnection{
                                 $cfg->get("DataDatabaseName"));
   }
 }
+$dDBI = new Ddbc();

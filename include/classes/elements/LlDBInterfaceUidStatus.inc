@@ -39,7 +39,8 @@ class LlDBInterfaceUidStatus {
   * As you can see the class holds to which lab it belongs.
   */
   function LlDBInterfaceUidStatus( $labIdx ){
-    $this->myDBC   = new Wdbc();
+    global $wDBI;
+    $this->myDBC   = $wDBI;
     $this->myTable = "lab_uid_status";
     $this->labIdx   = $labIdx;
   }

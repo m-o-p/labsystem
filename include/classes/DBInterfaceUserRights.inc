@@ -30,7 +30,6 @@
 * @copyright  Marc-Oliver Pahl 2005
 * @version    1.0
 */
-if ( class_exists( 'DBInterfaceUserRights' ) || function_exists( 'DBInterfaceUserRights' ) ) return;
 
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 
@@ -38,7 +37,8 @@ class DBInterfaceUserRights {
   var $myDBC;
   var $myTable;
   function DBInterfaceUserRights(){
-    $this->myDBC = new Wdbc();
+    global $wDBI;
+    $this->myDBC   = $wDBI;
     $this->myTable = "user_rights";
   }
 
@@ -148,10 +148,12 @@ class DBInterfaceUserRights {
   *
   * @return array An array of pairs ( description, database key ).
   */
-  function sortableByArray(){
+  static function sortableByArray(){
     global $lng, $cfg;
     return Array( $lng->get("team")     => "currentTeam",
                   $lng->get("rights")   => "rights"
                  );
   }
 }
+$urDBI = new DBInterfaceUserRights();
+?>

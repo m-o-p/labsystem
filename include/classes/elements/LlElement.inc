@@ -29,6 +29,8 @@ require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 
 // The following DBI connects UID and labstatus (prelabdone, points etc.)
 require( INCLUDE_DIR."/classes/elements/LlDBInterfaceUidStatus.inc" );
+require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
+require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
 class LlElement extends Element{
   var $uniqueID;              // Unique ID for export
@@ -483,7 +485,6 @@ class LlElement extends Element{
                  "</tr>";
 
     if ( $usr->isOfKind(IS_USER_RIGHTS_EDITOR) ) // user->team mapping possible
-      require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
     $i = 0;
    // If $showSummation is set the credits are summed up and a row is added at the table's bottom with that summary.
@@ -542,7 +543,7 @@ class LlElement extends Element{
         if ( $usr->isOfKind(IS_USER_RIGHTS_EDITOR) &&
              ( $labStatus['lIdx'] == $this->idx ) // functionality only available for the current lab
             ){
-          $urDBI = new DBInterfaceUserRights();
+          global $urDBI;
           $ur = $urDBI->getData4( $labStatus['uid'] );
           $myRetVal .= " <a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reMapUidTeam&param=".urlencode( "\"".$labStatus['uid']."\", ".$ur['currentTeam'] )."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">".
                        "<img src=\"../syspix/reMapUsr_26x12.gif\" width=\"26\" height=\"12\" border=\"0\" title=\"".$lng->get("reMapUsrTo")." ".$ur['currentTeam']."\">".
@@ -972,8 +973,6 @@ class LlElement extends Element{
      echo( "name\tforename\tmatriculation\tteam\tprelabPercentage\tprelabCreditsReached\tprelabCreditsReachable\tlabPercentage\tlabCreditsReached\tlabCreditsReachable\r\n");
 }
               /* the first entry is the default */
-              require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
-              require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
               $sortArray = array_merge ( DBInterfaceUserRights::sortableByArray(), DBInterfaceUser::sortableByArray() );
 
               /* sorting */ require( "../pages/sorter.inc" );
@@ -981,15 +980,16 @@ class LlElement extends Element{
 
               /* Since the data have two sources, the external users and the internal user rights db
                  we have to distinguish! */
+              global $uDBI, $urDBI;
               if ( ( $orderBy == $cfg->get("UserDBField_name") ) ||
                    ( $orderBy == $cfg->get("UserDBField_forename") ) ||
                    ( $orderBy == $cfg->get("UserDBField_username") ) ){
                       /* $uDBI is the source */
-                      $uidDBI = new DBInterfaceUser();
+                      $uidDBI = $uDBI;
                       $hasName = true;
               }else{
                       /* $urDBI is source */
-                      $uidDBI = new DBInterfaceUserRights();
+                      $uidDBI = $urDBI;
                       $hasName = false;
               }
 
@@ -1726,8 +1726,7 @@ class LlElement extends Element{
    */
   function isPrelabFinishedByAllCurrentTeammates( $teamToCheck ){
     // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
-    require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-    $urDBI = new DBInterfaceUserRights();
+    global $urDBI;
 
     $urDBI->getAllData( "", true, "`currentTeam` = '".$teamToCheck."'" );
     $preLabAllTeammatesFin = true;
@@ -1751,8 +1750,7 @@ class LlElement extends Element{
   function createPrelabFinishedStatus( $teamNumber ){
     global $usr, $lng;
          // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
-          require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-          $urDBI = new DBInterfaceUserRights();
+          global $urDBI;
           $urDBI->getAllData( "", true, "currentTeam='".$teamNumber."'" );
           while ( ($dataArray = $urDBI->getNextData()) ){
             $uid          = $dataArray['uid'];
@@ -2036,8 +2034,7 @@ class LlElement extends Element{
              ){
             $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
             // Collect all team's participant mail addresses
-            require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
-            $uDBI = new DBInterfaceUser();
+            global $uDBI;
             $userData = $uDBI->getData4( $labStatus['uid'] );
             // Send an email to the participants
             require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';

@@ -32,6 +32,10 @@
 * @copyright  Marc-Oliver Pahl 2005
 * @version    1.0
 */
+
+require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
+require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+
 class Usr extends ElementUser{
   private $iSeeUID;
   private $iSeeDesc;
@@ -94,8 +98,7 @@ class Usr extends ElementUser{
                             $currentTeam = 'unk';
                             if (!($url->available('address') && $url->get('address')[0]=='l')){
                             	// We are not viewing a lab => load current team number from the user rights data
-                            	require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-                            	$urDBI = new DBInterfaceUserRights();
+                            	global $urDBI;
                             	$userDetailedData = $urDBI->getData4( $this->iSeeUID );
                             } else {
                             	// We are viewing a lab => load team from the labs user data record
@@ -129,8 +132,7 @@ class Usr extends ElementUser{
                                       // this function is called on the statistics page as well
                                       // if you restrict to correctors users will not see other user's names
                                       // you should remove the history then as well in the statistics
-      require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
-      $uDBI = new DBInterfaceUser();
+      global $uDBI;
       $userData = $uDBI->getData4( $uid );
       if ( $userData == false ){
         $userData["name"] = "UID ".$uid;

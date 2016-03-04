@@ -43,3 +43,4 @@ class Wdbc extends DBConnection{
                                 $cfg->get("WorkingDatabaseName"));
   }
 }
+$wDBI = new Wdbc();
