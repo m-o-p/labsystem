@@ -98,7 +98,7 @@ class DBInterfaceUser
     // Load the salt...
     $what = $cfg->get("UserDBField_uid")."  AS uid"; // as salt
     $from = $this->myTable;
-    // mysql_real_escape_string() against SQL-Injection!
+    // escaping for protection against SQL-Injection!
     $where= $cfg->get("UserDBField_username")."='".Ddbc::escapeString($username)."' && ".
             $cfg->get("User_courseID")."='1'";
     $result = $this->myDBC->mkSelect( $what, $from, $where );
@@ -112,7 +112,7 @@ class DBInterfaceUser
             $cfg->get("UserDBField_email")." AS email, ".
             $cfg->get("UserDBField_uid")."  AS uid, ".
             $cfg->get("UserDBField_password")." AS crypt_passwd";
-    // mysql_real_escape_string() against SQL-Injection!
+    // escaping for protection against SQL-Injection!
     $where= $cfg->get("UserDBField_username")."='".$this->myDBC->escapeString( Ddbc::escapeString($username) )."' && ".
             $cfg->get("User_courseID")."='1'";
     $result = $this->myDBC->mkSelect( $what, $from, $where );
