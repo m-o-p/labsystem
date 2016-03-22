@@ -33,6 +33,7 @@
 */
 
 require( "../include/init.inc" );
+require_once( "../include/config.inc" );
 
 if ( !isset( $_POST['REDIRECTTO'] ) ||
      !isset( $_POST['EMAIL'] )
@@ -105,7 +106,7 @@ else{
     $pge->replaceConstants($mailPage->title);
     $pge->replaceConstants($mailPage->contents);
 
-    $senderAddr = $cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].'>';
+    $senderAddr = $cfg->get('SystemTitle')." <".$SYSTEMMAIL_SENDER.'>';
 
     mail( $usr->mailAddress,
          /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/,

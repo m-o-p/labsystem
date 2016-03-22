@@ -1,6 +1,7 @@
 <?php
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+require_once( INCLUDE_DIR."/config.inc" );
 class MailFunctionality{
   /**
    * Send a mail.
@@ -20,7 +21,7 @@ class MailFunctionality{
               PHP_EOL,
               ($CCsender ? 'CC: '.$sender.PHP_EOL:''). // CC
               ($BCC && !empty($sender) ? $receiver : ''). // BCC
-              'From: '.(!empty($sender) ? $sender : $cfg->get('SystemTitle').' <noreply@'.$_SERVER['SERVER_NAME'].'>').PHP_EOL.
+              'From: '.(!empty($sender) ? $sender : $cfg->get('SystemTitle').' <'.$SYSTEMMAIL_SENDER.'>').PHP_EOL.
               "X-Mailer: PHP/".phpversion().PHP_EOL.
               (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
               $additionalHeaders.
