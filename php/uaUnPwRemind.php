@@ -69,7 +69,7 @@ else{
     $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
 
     // set the new password
-    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".crypt( $newPW, '$6$' . $data['uid'] )."'",  // the UID is used as salt
+    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".password_hash( $newPW, PASSWORD_DEFAULT )."'",
                         $cfg->get('UserDatabaseTable'),
                         $cfg->get('UserDBField_uid')."='".$data[ $cfg->get('UserDBField_uid') ]."'"
                        );

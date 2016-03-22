@@ -121,7 +121,7 @@ class DBInterfaceUser
     else{
       // entry found
       $resArray = mysql_fetch_array( $result );
-      if ( crypt($password, $resArray["crypt_passwd"]) != $resArray["crypt_passwd"] )
+      if ( ! password_verify($password, $resArray["crypt_passwd"]) )
         return false; // password wrong
       return Array( "name"     => $resArray["name"],
                     "foreName" => $resArray["forename"],
