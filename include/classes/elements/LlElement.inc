@@ -484,8 +484,6 @@ class LlElement extends Element{
                      "<td class=\"labsys_mop_l_status_table_cell_lab_credits\"><i>i</i>-".$lng->get( 'Credits' )."</td>".
                  "</tr>";
 
-    if ( $usr->isOfKind(IS_USER_RIGHTS_EDITOR) ) // user->team mapping possible
-
     $i = 0;
    // If $showSummation is set the credits are summed up and a row is added at the table's bottom with that summary.
     if ( $showSummation ){
