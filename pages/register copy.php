@@ -59,6 +59,7 @@ $UA_CourseID='_ua'; // to this ID new users get registered to automatically
 $DEFAULT_PLACES=20; // the number of places offered when $cfg->get('maxRegistrations') is not set
 
 require( "../include/init.inc" );
+require_once( "../include/config.inc" );
 
 $pge->title        = $lng->get("titleRegister");
 $pge->matchingMenu = $lng->get("MnuEntryRegister");
@@ -166,7 +167,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
                             $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $usr->userName )."', ".
                             $cfg->get('UserDBField_name')."='".$userDBC->escapeString( $usr->surName )."', ".
                             $cfg->get('UserDBField_forename')."='".$userDBC->escapeString( $usr->foreName )."', ".
-                            $cfg->get('UserDBField_password')."='".crypt( $newPW, '$6$' . $usr->uid )."', ".
+                            $cfg->get('UserDBField_password')."='".password_hash( $newPW, PASSWORD_DEFAULT )."', ".
                             $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $usr->mailAddress )."', ".
                             $cfg->get('UserDBField_uid')."='".$userDBC->escapeString( $usr->uid )."', ".
                             "last_registered='".date('Y-m-d H:i:s')."', ".
@@ -190,7 +191,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
          $lng->get('passWord').': '.$newPW."\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
          "\r\n",
-         "From: ".$cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].">\r\n".
+         "From: ".$cfg->get('SystemTitle')." <".$SYSTEMMAIL_SENDER.">\r\n".
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
@@ -216,7 +217,7 @@ if ( isset( $_POST['EMAIL'] ) && !isset($SYSALERT) ){ // data posted and no erro
          $mailPage->contents."\r\n\r\n".
          eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
          "\r\n",
-         "From: ".$cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].">\r\n".
+         "From: ".$cfg->get('SystemTitle')." <".$SYSTEMMAIL_SENDER.">\r\n".
          "X-Mailer: PHP/".phpversion()."\r\n".
          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle")."\r\n". // this is for identifying a user (username must be correct...)
          eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...

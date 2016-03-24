@@ -32,6 +32,8 @@
 */
 
 require( "../include/init.inc" );
+require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
+require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
 if ( !isset($_POST['REDIRECTTO'])
    ){
@@ -48,12 +50,9 @@ if ( !( isset($_POST['SESSION_ID']) &&
      }
 
 // check for all user ids if data are there and save the changes if there are changes.
-  require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
-  require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
-  $uDBi = new DBInterfaceUser();
-  $uDBi->getAllData();
-  while( $userData = $uDBi->getNextData() ){
+  $uDBI->getAllData();
+  while( $userData = $uDBI->getNextData() ){
     // only take present users!
     if ( !isset( $_POST[ $userData["uid"].'_present' ] ) ) continue;
 
@@ -68,7 +67,6 @@ if ( !( isset($_POST['SESSION_ID']) &&
     $currentTeam = "";
     if ( isset( $_POST[$userData["uid"]."_team"] ) ) $currentTeam = $_POST[$userData["uid"]."_team"];
 
-    $urDBI = new DBInterfaceUserRights();
     $ur = $urDBI->getData4( $userData["uid"] );
     if ( ( $userRightsNew != $ur['rights'] ) || ( $currentTeam != $ur['currentTeam'] ) ){ // changes?
       $urDBI->setData4( $userData["uid"], $userRightsNew, $currentTeam );

@@ -40,7 +40,6 @@ if (isset($_POST['SESSION_ID'])){
 }
 
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
-$uDBI = new DBInterfaceUser();
 
 require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
@@ -71,7 +70,6 @@ function setCheckboxes(do_check)
 $allSupporter = array();
 $allOther = array();
 
-$urDBI = new DBInterfaceUserRights();
 $urDBI->getAllData();
 // iterate over all users that have rights
 while( $userRightsData = $urDBI->getNextData() ){

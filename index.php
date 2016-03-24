@@ -25,9 +25,10 @@
  */
   require( "include/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
                                              // needed to get parameters from the url ($url->get, ->available)
+  require_once( "include/config.inc" );      // contains DEFAULT_INSTANCE required below
 
   if ( $GLOBALS['url']->available('config') ) $config = $GLOBALS['url']->get('config'); // config provided
-   else $config = 'demo'; // use as default config: e.g. config_course23.ini -> &config=course23
+   else $config = $DEFAULT_INSTANCE;
 
   if ( $GLOBALS['url']->available('address') ) $address = $GLOBALS['url']->get('address'); // address provided
    else $address = 'p3'; // use this (startpage is 3) as defaul value

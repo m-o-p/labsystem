@@ -37,7 +37,8 @@ class LmDBInterface {
   var $myTable;
 
   function LmDBInterface(){
-    $this->myDBC   = new Ddbc();
+    global $dDBI;
+    $this->myDBC   = $dDBI;
     $this->myTable = "multiple_choices";
   }
 

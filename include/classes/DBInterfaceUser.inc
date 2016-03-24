@@ -62,7 +62,6 @@
 * @copyright  Marc-Oliver Pahl 2005
 * @version    1.0
 */
-if ( class_exists("DBInterfaceUser") ) return; // include once
 
 require_once( INCLUDE_DIR."/classes/DBConnection.inc" );
 
@@ -122,7 +121,7 @@ class DBInterfaceUser
     else{
       // entry found
       $resArray = mysql_fetch_array( $result );
-      if ( crypt($password, $resArray["crypt_passwd"]) != $resArray["crypt_passwd"] )
+      if ( ! password_verify($password, $resArray["crypt_passwd"]) )
         return false; // password wrong
       return Array( "name"     => $resArray["name"],
                     "foreName" => $resArray["forename"],
@@ -229,7 +228,7 @@ class DBInterfaceUser
   *
   * @return array An array of pairs ( description, database key ).
   */
-  function sortableByArray(){
+  static function sortableByArray(){
     global $lng, $cfg;
     return Array( $lng->get("surName")  => $cfg->get("UserDBField_name"),
                   $lng->get("foreName") => $cfg->get("UserDBField_forename"),
@@ -238,4 +237,5 @@ class DBInterfaceUser
                  );
   }
 }
+$uDBI = new DBInterfaceUser()
 ?>

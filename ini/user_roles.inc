@@ -31,7 +31,7 @@
 *
 * Adding further user roles does not cause troubles where the
 * numeric constant is not defined as the query returns false then.
-* Duplicate differen meanings (e.g. 1024 = A in system alpha and
+* Duplicate different meanings (e.g. 1024 = A in system alpha and
 * 1024 = B in system beta will cause trouble as the system works
 * only on the numerical constants!
 */

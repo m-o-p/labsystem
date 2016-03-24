@@ -24,7 +24,7 @@
 *
 * @module     ../include/customErrorHandler.inc
 */
-$ERRORMAIL_RECEIVER = ''; // If you enter a valid email address here and you have mailing configured you can receive an error report
+require_once INCLUDE_DIR.'/config.inc'; // for errormail_receiver
 $mailSent = FALSE;
 /**
 * Displays the error.
@@ -137,6 +137,14 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
                   "<b>$errstr</b>: On line $errline of file $errfile\n"
                  );
     break;
+  case E_DEPRECATED:
+    // TODO: stop using deprecated mysql API, switch to mysqli or PDO
+    if ( substr( $errstr, 0, 6 ) === "mysql_" )
+        break;
+    displayError( '#6666ff',
+                  "<b>$errstr</b>: On line $errline of file $errfile\n"
+                 );
+    break;
   default:
     displayError( '#6666ff',
                   "<b>$errstr</b>: On line $errline of file $errfile\n"
@@ -167,7 +175,7 @@ function mail_error_handler($number, $message, $file, $line, $vars){
          && isset($_SESSION["mailAddress"]) ){ // mail only errors user experience that are logged in
       $email = getErrorReport($number, $message, $file, $line, $vars);
 
-      $headers = 'Content-type: text/html;' . PHP_EOL;
+      $headers = 'Content-type: text/html;';
 
       // Email the error to someone...
       if ( ($number !== E_NOTICE) && ($number < 2048) ){

@@ -347,7 +347,6 @@ class LmElement extends Element{
                   $this->loadUserData4( $usr->theSeeingUid() );
                   $answers = $this->showAnswer( $fullAddress );
         }else{  // seeing all
-                  require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
                   $this->mcDBI->getAllUIDs( $this->idx );
                   while ( ($nextUID = $this->mcDBI->getNextData()) ){
                     //information row

@@ -33,7 +33,8 @@ class LiDBInterfaceAnswers {
   var $myDBC;
   var $myTable;
   function LiDBInterfaceAnswers(){
-    $this->myDBC   = new Wdbc();
+    global $wDBI;
+    $this->myDBC   = $wDBI;
     $this->myTable = "input_answers";
   }
 

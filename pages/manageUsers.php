@@ -62,9 +62,6 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 // the sorter
   $pge->put( $sorter );
 
-$uDBI = new DBInterfaceUser();
-$urDBI = new DBInterfaceUserRights();
-
 // remove access rights for users without access (as they may have been removed
 // from the instance and if they were part of a team they may cause trouble...)
 $urDBI->getAllData();
@@ -83,12 +80,12 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
        ( $orderBy == $cfg->get("UserDBField_forename") ) ||
        ( $orderBy == $cfg->get("UserDBField_username") ) ){
           /* $uDBI is the source */
-          $master = new DBInterfaceUser();
-          $slave  = new DBInterfaceUserRights();
+          $master = $uDBI;
+          $slave  = $urDBI;
   }else{
           /* $urDBI is source */
-          $master = new DBInterfaceUserRights();
-          $slave  = new DBInterfaceUser();
+          $master = $urDBI;
+          $slave  = $uDBI;
   }
 
   $master->getAllData( $orderBy, $asc );

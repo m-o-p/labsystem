@@ -44,8 +44,7 @@ if ( !isset($_POST['USERNAME']) || !isset($_POST['PASSWORD']) ){
                                                                 }
 
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
-
-$uDBI = new DBInterfaceUser();
+require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
 // preserve the current url since we will probably link back (p.e. to give an error) or add something to the url.
 $url->clearQueryString(); $url->put( $url->get("oldQueryString") );
@@ -60,7 +59,7 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
 // authenticated
   if ( isset($_POST['stayLoggedIn']) ){
     // Set cookie lifetime to 1 year
-    session_set_cookie_params ( 365 * 24 * 60 );
+    session_set_cookie_params ( 365 * 24 * 60 * 60 );
     $url->put( "sysinfo=".$lng->get('StayLoggedIn') );
   }
   $NEWSESSION = true;
@@ -81,8 +80,6 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
   $_SESSION["config"]  = $url->get('config');
 
  // get the user rights from the DB
-  require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-  $urDBI = new DBInterfaceUserRights();
   $data = $urDBI->getData4( $_SESSION["uid"] );
   $_SESSION["userRights"]  = $data['rights'];
   $_SESSION["currentTeam"] = $data['currentTeam'];

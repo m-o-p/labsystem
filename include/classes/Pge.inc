@@ -36,7 +36,6 @@
 class Pge extends LpElement{
   var $nextTab = 1; // the value of the next available TabNumber (for forms and menu elements)
   var $replaceKey;
-  var $replaceValue;
 
   /**
   * In this function the strings that will be replaced when displaying and their replacements are initialized.
@@ -50,6 +49,9 @@ class Pge extends LpElement{
                                  "__FORENAME__",
                                  "__NAME__",
                                  "__USERNAME__",
+                                 "__TEAMNUMBER__",
+                                 "__MAILADDRESS__",
+                                 "__SERVERNAME__",
                                  "__ELEMENTTITLE__",
                                  "__CURRENT_URL__",
                                  "__LINK2ADMIN_USER_INTERFACE__",
@@ -61,10 +63,12 @@ class Pge extends LpElement{
                                 "elid5upe10",
                                 "anus9iri39",
                                 "avod1ubo72",
+                                "bW3Bsd8JlC",
+                                "ubo72avod1",
                                 "ugud9eka32",
+                                "eka32ugud9",
                                 "udan1obo94",
                                 "siducb4uib" );
-    $this->replaceValue = "";
   }
 
   /**
@@ -98,30 +102,35 @@ class Pge extends LpElement{
     return str_replace( $this->replaceKey, $this->sanitizedKey, $string );
   }
 
+  function escapeKeys( $string ){
+    return str_replace( '_', '&#x005F;', $string );
+  }
+
+
   /**
   * Replaces the constants with the values.
   * @param String The content the constants should be replaced in.
+  * @return The string with the replaced constants.
   */
-  function replaceConstants( &$text ){
+  function replaceConstants( $text ){
     global $url, $usr, $lng, $cfg;
-    // initialize replacements on first use:
-    if($this->replaceValue==""){
-    	$this->replaceValue = Array( $url->get("newQueryString"),
-    	                             htmlentities( $this->title , ENT_QUOTES | ENT_IGNORE ),
-    	                             htmlentities( $cfg->get("SystemTitle") , ENT_QUOTES | ENT_IGNORE ),
-    	                             htmlentities( $usr->foreName , ENT_QUOTES | ENT_IGNORE ),
-    	                             htmlentities( $usr->surName , ENT_QUOTES | ENT_IGNORE ),
-    	                             htmlentities( $usr->userName , ENT_QUOTES | ENT_IGNORE ),
-    	                             htmlentities( "WillBeReplacedByElsShow" , ENT_QUOTES | ENT_IGNORE ),
+    	$replaceValue = Array( $url->get("newQueryString"),
+    	                             htmlentities( $this->title ),
+    	                             htmlentities( $cfg->get("SystemTitle") ),
+    	                             htmlentities( $usr->foreName ),
+    	                             htmlentities( $usr->surName ),
+    	                             htmlentities( $usr->userName ),
+    	                             htmlentities( $usr->currentTeam ),
+    	                             htmlentities( $usr->mailAddress ),
+    	                             $_SERVER['SERVER_NAME'],
+    	                             htmlentities( "WillBeReplacedByElsShow" ),
     	                             urlencode( $_SERVER['REQUEST_URI'] ),
     	                             $cfg->get("Link2UserAdminInterface"),
-    	                             htmlentities( date( $lng->get("DateFormat") ) ) , ENT_QUOTES | ENT_IGNORE );
-    }
+    	                             htmlentities( date( $lng->get("DateFormat") ) ) );
 
-    $text = ( str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
-                           array_merge( $this->replaceValue, $this->replaceValue ),
-                           $text )
-                           );
+    return str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
+                        array_merge( $replaceValue, $replaceValue ),
+                        $text );
   }
 
   /**
@@ -134,8 +143,7 @@ class Pge extends LpElement{
       $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
 
     // Some replacements must be set here since they may not be correct before.
-    $this->replaceConstants($this->contents);
-    echo( $this->contents );
+    echo( $this->replaceConstants($this->contents) );
   }
 
   /**

@@ -41,7 +41,8 @@ class LsDBInterface {
   var $myTable;
 
   function LsDBInterface(){
-    $this->myDBC   = new Wdbc();
+    global $wDBI;
+    $this->myDBC   = $wDBI;
     $this->myTable = "schedules";
   }
 

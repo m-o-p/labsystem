@@ -37,7 +37,8 @@ class LpDBInterface {
   var $myTable;
 
   function LpDBInterface(){
-    $this->myDBC   = new Ddbc();
+    global $dDBI;
+    $this->myDBC   = $dDBI;
     $this->myTable = "pages";
   }
 

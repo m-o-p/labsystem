@@ -29,6 +29,7 @@
 * @param $_POST[ "UR_".$i]  The user right checkbox return value
 */
 require( "../include/init.inc" );
+require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
 if ( !( (isset($_POST['SESSION_ID']) &&
          ($_POST['SESSION_ID'] != "") &&
@@ -51,8 +52,6 @@ if ( !( (isset($_POST['SESSION_ID']) &&
   }
 
 // check against user's full rights (can set only less)
-  require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-  $urDBI = new DBInterfaceUserRights();
   $data = $urDBI->getData4( $_SESSION["uid"] );
 
   if ( $usr->isOfKind( $newRights, $data['rights'] ) ) $_SESSION["userRights"] = $newRights;

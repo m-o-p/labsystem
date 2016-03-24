@@ -33,6 +33,7 @@
 */
 
 require( "../include/init.inc" );
+require_once( "../include/config.inc" );
 
 if ( !isset( $_POST['REDIRECTTO'] ) ||
      !isset( $_POST['EMAIL'] )
@@ -69,7 +70,7 @@ else{
     $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
 
     // set the new password
-    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".crypt( $newPW, '$6$' . $data['uid'] )."'",  // the UID is used as salt
+    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".password_hash( $newPW, PASSWORD_DEFAULT )."'",
                         $cfg->get('UserDatabaseTable'),
                         $cfg->get('UserDBField_uid')."='".$data[ $cfg->get('UserDBField_uid') ]."'"
                        );
@@ -98,18 +99,17 @@ else{
     $usr->foreName    = $requestingUsr['foreName'];
     $usr->surName     = $requestingUsr['name'];
     $usr->mailAddress = $_POST['EMAIL'];
+    $usr->currentTeam = 0;
 
     // Load mail element from pages:
     $mailPage = $GLOBALS["pDBI"]->getData2idx( $cfg->get('PidPasswordMail'));
     // replace constants using new user data from above:
-    $pge->replaceConstants($mailPage->title);
-    $pge->replaceConstants($mailPage->contents);
 
-    $senderAddr = $cfg->get('SystemTitle')." <noreply@".$_SERVER['SERVER_NAME'].'>';
+    $senderAddr = $cfg->get('SystemTitle')." <".$SYSTEMMAIL_SENDER.'>';
 
     mail( $usr->mailAddress,
-         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$mailPage->title/* )*/,
-         $mailPage->contents."\r\n\r\n".
+         /*QPencode( */'['.$cfg->get("SystemTitle").'] '.$pge->replaceConstants($mailPage->title)/* )*/,
+         $pge->replaceConstants($mailPage->contents)."\r\n\r\n".
          $lng->get('userName').': '.$data[ $cfg->get('UserDBField_username') ]."\r\n".
          $lng->get('passWord').': '.$newPW."\r\n".
          $lng->get('YouAreMemberOf').': '.$groupMemberships."\r\n".

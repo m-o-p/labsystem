@@ -46,7 +46,8 @@ class LiDBInterfaceUidTeam {
   var $myDBC;
   var $myTable;
   function LiDBInterfaceUidTeam(){
-    $this->myDBC   = new Wdbc();
+    global $wDBI;
+    $this->myDBC   = $wDBI;
     $this->myTable = "input_answers_uid_team";
   }
 

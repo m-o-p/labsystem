@@ -140,7 +140,8 @@ class Logger{
   var $doTheLogging;
   function Logger(){
     global $cfg;
-    $this->myDBC   = new Wdbc();
+    global $wDBI;
+    $this->myDBC   = $wDBI;
     $this->myTable = "event_log";
     $referrerID = false;
     $this->doTheLogging = $cfg->doesExist('logEvents') && $cfg->get('logEvents') == '1';
