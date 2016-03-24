@@ -1,32 +1,88 @@
 <?php
-require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
-require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-require_once( INCLUDE_DIR."/config.inc" );
 class MailFunctionality{
-  /**
+	/*
+	 * For debugging purposes you can use this function to display a mail instead of sending it out.
+	 */
+	function printMail($to, $subject, $message, $additional_headers='', $additional_parameters=''){
+		echo('<br>'.PHP_EOL.'0-0-0-0-0-0-0-0-0'.'<br>'.PHP_EOL);
+		echo('To: '.$to.'<br>'.PHP_EOL);
+		echo('Subject: '.$subject.'<br>'.PHP_EOL);
+		echo('Message: '.$message.'<br>'.PHP_EOL);
+		echo('Additional Headers: '.$additional_headers.'<br>'.PHP_EOL);
+		echo('Additional Parameters: '.$additional_parameters.'<br>'.PHP_EOL);
+		echo('<br>'.PHP_EOL.'0-0-0-0-0-0-0-0-0'.'<br>'.PHP_EOL);
+	}
+	
+   /**
    * Send a mail.
    * @param String $sender              The sender.
-   * @param String $receiver            The list of receivers.
+   * @param String $receiverUID         The UID of the receiver.
    * @param String $subject             The mail subject.
    * @param String $text                The mail text.
-   * @param String $CCsender            Send mail via CC to sender?
-   * @param String $BCC                 Send mail via BCC?
+   * @param Boolean $CCsender            Send mail via CC to sender?
+   * @param Boolean $BCC                 Send mail via BCC?
    */
-  function sendMail( $sender, $receiver, $subject, $text, $CCsender= FALSE, $BCC=FALSE, $additionalHeaders='' ){
+  function sendMail( $sender, $receiverUID, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
     global $cfg, $usr;
-    mail( ($BCC && !empty($sender) ? $sender : $receiver), // TO
+    
+    require_once( INCLUDE_DIR."/config.inc" );
+    
+    if (empty($sender)){
+    	$sender = $cfg->get('SystemTitle').' <noreply@'.$_SERVER['SERVER_NAME'].'>';
+    }
+    
+    preg_match("/\<(.*)\>/", $sender, $output_array);
+    $senderMail = $output_array[1];
+    if (empty($senderMail)){
+    	$senderMail = $sender;
+    }
+    
+    // Load receiver data including mail address
+    require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
+    $uDBI = new DBInterfaceUser();
+    $receiverUsrDataArray = $uDBI->getData4( $receiverUID );
+    $receiverUsrObject = new ElementUser( $receiverUID, 
+    		                      $receiverUsrDataArray['userName'], 
+    		 					  $receiverUsrDataArray['foreName'], 
+    							  $receiverUsrDataArray['name'], 
+    							  0, 
+    							  0, 
+    							  $receiverUsrDataArray['eMail'], 
+    							  'created just for mail');
+    // replace constants for personalized mails
+    $text = $this->replaceConstants($text, $receiverUsrObject);
+    $subject = $this->replaceConstants($subject, $receiverUsrObject);
+    $receiver = $receiverUsrObject->mailAddress;
+    
+    mail( ($BCC ? $senderMail : $receiver), // TO
           '['.$cfg->get("SystemTitle").'] '.$subject,
-          $text.PHP_EOL.
-              eval( 'return "'.$cfg->get('mailFooter').'";' ). // complicated? Well have to process \r\n and so on...
-              PHP_EOL,
-              ($CCsender ? 'CC: '.$sender.PHP_EOL:''). // CC
-              ($BCC && !empty($sender) ? $receiver : ''). // BCC
-              'From: '.(!empty($sender) ? $sender : $cfg->get('SystemTitle').' <'.$SYSTEMMAIL_SENDER.'>').PHP_EOL.
-              "X-Mailer: PHP/".phpversion().PHP_EOL.
-              (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
-              $additionalHeaders.
-              'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle").PHP_EOL. // this is for identifying a user (username must be correct...)
-                  eval('return "'.$cfg->get("mailHeaderAdd").'";')); // necessary to process the \r\n ...
+          $text.PHP_EOL.PHP_EOL.
+          stripcslashes($cfg->get('mailFooter')).PHP_EOL,
+          ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
+          ($BCC ? 'BCC: '.$receiver.PHP_EOL : ''). // BCC
+          'From: '.$SYSTEMMAIL_SENDER.PHP_EOL. /* The labsystem is always sending mails using the configured system mail address */
+    	  'Reply-To: '.$sender.PHP_EOL.
+          "X-Mailer: labsystem".PHP_EOL.
+          (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
+          stripcslashes($additionalHeaders).
+          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle").PHP_EOL. // this is for identifying a user (username must be correct...)
+          $cfg->get('mailHeaderAdd')
+    );
+  }
+  
+  /**
+   * Replaces the page constants in the mail text with the current values.
+   * This is valuable for personalized or othewise customized mails.
+   * @param $text The text the constants should be replaced within.
+   * @param $currentUsrObject The user object to be used for replacing the constants, e.g. user name.
+   */
+  function replaceConstants( $text, $currentUsrObject ){
+  	global $usr, $pge;
+  	$tempUsr = $GLOBALS['usr'];
+  	$GLOBALS['usr'] = $currentUsrObject;
+  	$replacedText = $pge->replaceConstants( $text );
+  	$GLOBALS['usr'] = $tempUsr;
+  	return $replacedText;
   }
 
   /**
@@ -36,13 +92,14 @@ class MailFunctionality{
    * @param String $text                The mail text.
    */
   function mail2groupWithRights( $accessRightsMask, $subject, $text ){
-    global $uDBI, $urDBI;
+
+    require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+    $urDBI = new DBInterfaceUserRights();
     $urDBI->getAllData();
     // iterate over all users that have rights
     while( $userRightsData = $urDBI->getNextData() ){
       if (ElementUser::isOfKind($accessRightsMask, $userRightsData["rights"])) {
-        $userData = $uDBI->getData4( $userRightsData["uid"] );
-        $this->sendMail('', $userData['eMail'], $subject, $text);
+        $this->sendMail('', $userRightsData['uid'], $subject, $text);
       }
     }
   }
