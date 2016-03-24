@@ -2032,12 +2032,10 @@ class LlElement extends Element{
              ){
             $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
             // Collect all team's participant mail addresses
-            global $uDBI;
-            $userData = $uDBI->getData4( $labStatus['uid'] );
             // Send an email to the participants
             require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
             $mailFunc->sendMail(  '',
-                                  $userData['eMail'],
+                                  $labStatus['uid'],
                                   $this->title.' ('.$lng->get('team').' '.$labStatus['currentTeam'].'): '.$lng->get('labCorrExplain'),
                                   $this->title.' ('.$lng->get('team').' '.$labStatus['currentTeam'].'): '.
                                   $lng->get('labCorrExplain').PHP_EOL.

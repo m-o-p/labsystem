@@ -51,7 +51,7 @@ function displayError( $cssColor, $html ){
 
 function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
 {
-  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER, $mailSent;
+  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER_UID, $mailSent;
   if ( defined ( 'E_STRICT' ) && ($errno == constant ( 'E_STRICT' ) ) ) return; // ignore php5 warnings of missing public etc.
 
   $errno = htmlentities( $errno );
@@ -70,7 +70,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
       $errorDetailsProvided=TRUE;
       require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
       $mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
-          $ERRORMAIL_RECEIVER,
+          $ERRORMAIL_RECEIVER_UID,
           'Error Report: '.$_POST['ERROR_REFERRER'],
           nl2br(htmlentities($_POST['ERROR_EXPLANATION'])).'<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
           FALSE,
