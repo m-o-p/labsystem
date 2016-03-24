@@ -71,7 +71,7 @@ if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 		
 		makeLogEntry( 'system', 'mail sent' );
 		
-		$url->put( "sysinfo=".$lng->get("MailHasBeenSent")." ".$sender );
+		$url->put( "sysinfo=".$lng->get("MailHasBeenSent")." ".htmlentities($sender) );
 	}
 }else{
 	$url->put( "sysalert=".$lng->get("NoReceiver") );
