@@ -63,7 +63,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
   case E_USER_ERROR: // most severe case gets whole page...
 // Handle mail details
     $errorDetailsProvided=FALSE;
-    if (!empty($ERRORMAIL_RECEIVER) &&
+    if (!empty($ERRORMAIL_RECEIVER_UID) &&
         !empty($_POST['ERROR_REFERRER']) &&
         !empty($_POST['ERROR_EXPLANATION']) &&
         ($_POST['ERROR_EXPLANATION']!=$lng->get('detailedFeedBack'))){
@@ -100,7 +100,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
     echo( "<p>[Fatal error] <b>$errstr</b></p>" );
 
     // collector for additional details on the error
-    if (!empty($ERRORMAIL_RECEIVER)){
+    if (!empty($ERRORMAIL_RECEIVER_UID)){
       echo( '<form style="width:100%" action="#" method="POST">'.
               ($errorDetailsProvided?$lng->get('thankFeedback'):'').
               '<textarea onClick="this.select();" '.($errorDetailsProvided?'disabled="disabled"':'').'style="width:100%" tabindex="'.$pge->nextTab++.'" name="ERROR_EXPLANATION" rows="'.(isset($cfg) ? intval($cfg->get("sendMailBodyRows")/2) : 3).'" onchange="isDirty=true">'.
@@ -168,10 +168,10 @@ function getErrorReport($number, $message, $file, $line, $vars){
 
 //This error handler sends an email with all relevant information
 function mail_error_handler($number, $message, $file, $line, $vars){
-  global $ERRORMAIL_RECEIVER, $mailSent;
+  global $ERRORMAIL_RECEIVER_UID, $mailSent;
 
   if (!$mailSent){
-    if ( !empty($ERRORMAIL_RECEIVER)
+    if ( !empty($ERRORMAIL_RECEIVER_UID)
          && isset($_SESSION["mailAddress"]) ){ // mail only errors user experience that are logged in
       $email = getErrorReport($number, $message, $file, $line, $vars);
 
@@ -185,7 +185,7 @@ function mail_error_handler($number, $message, $file, $line, $vars){
           // file_put_contents( '/tmp/googlebot_urls.txt', 'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."\r\n", FILE_APPEND );
           // error_log($email, 3, '/tmp/googlebot.txt');
         } else {
-          error_log($email, 1, $ERRORMAIL_RECEIVER, $headers);
+          error_log($email, 1, $ERRORMAIL_RECEIVER_UID, $headers);
         }
       }
 
