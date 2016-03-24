@@ -30,7 +30,7 @@ class MailFunctionality{
     global $cfg, $usr, $uDBI, $SYSTEMMAIL_SENDER;
     
     if (empty($sender)){
-    	$sender = $cfg->get('SystemTitle').' <noreply@'.$_SERVER['SERVER_NAME'].'>';
+    	$sender = '<noreply@'.$_SERVER['SERVER_NAME'].'>';
     }
     
     preg_match("/\<(.*)\>/", $sender, $output_array);
@@ -60,7 +60,7 @@ class MailFunctionality{
           stripcslashes($cfg->get('mailFooter')).PHP_EOL,
           ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
           ($BCC ? 'BCC: '.$receiver.PHP_EOL : ''). // BCC
-          'From: '.$SYSTEMMAIL_SENDER.PHP_EOL. /* The labsystem is always sending mails using the configured system mail address */
+          'From: '.$cfg->get('SystemTitle').' <'.$SYSTEMMAIL_SENDER.'>'.PHP_EOL. /* The labsystem is always sending mails using the configured system mail address */
     	  'Reply-To: '.$sender.PHP_EOL.
           "X-Mailer: labsystem".PHP_EOL.
           (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
