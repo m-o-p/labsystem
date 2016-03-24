@@ -55,7 +55,7 @@ class MailFunctionality{
     $receiver = $receiverUsrObject->mailAddress;
     
     /*mail*/ 
-    printMail( ($BCC ? $senderMail : $receiver), // TO
+    $this->printMail( ($BCC ? $senderMail : $receiver), // TO
           '['.$cfg->get("SystemTitle").'] '.$subject,
           $text.PHP_EOL.PHP_EOL.
           stripcslashes($cfg->get('mailFooter')).PHP_EOL,
