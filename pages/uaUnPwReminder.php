@@ -30,6 +30,7 @@
  *         
  */
 require ("../include/init.inc");
+require_once( "../include/config.inc" );
 
 $pge->title = $lng->get ( "titleUaUnPwRem" );
 $pge->matchingMenu = $lng->get ( "MnuEntryUaUnPwRem" );
