@@ -1,4 +1,8 @@
 <?php
+require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+require_once( INCLUDE_DIR."/config.inc" );
+require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
+
 class MailFunctionality{
 	/*
 	 * For debugging purposes you can use this function to display a mail instead of sending it out.
@@ -23,9 +27,7 @@ class MailFunctionality{
    * @param Boolean $BCC                 Send mail via BCC?
    */
   function sendMail( $sender, $receiverUID, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
-    global $cfg, $usr;
-    
-    require_once( INCLUDE_DIR."/config.inc" );
+    global $cfg, $usr, $uDBI, $SYSTEMMAIL_SENDER;
     
     if (empty($sender)){
     	$sender = $cfg->get('SystemTitle').' <noreply@'.$_SERVER['SERVER_NAME'].'>';
@@ -38,8 +40,6 @@ class MailFunctionality{
     }
     
     // Load receiver data including mail address
-    require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
-    $uDBI = new DBInterfaceUser();
     $receiverUsrDataArray = $uDBI->getData4( $receiverUID );
     $receiverUsrObject = new ElementUser( $receiverUID, 
     		                      $receiverUsrDataArray['userName'], 
@@ -92,8 +92,7 @@ class MailFunctionality{
    * @param String $text                The mail text.
    */
   function mail2groupWithRights( $accessRightsMask, $subject, $text ){
-
-    require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+  	global $urDBI;
     $urDBI = new DBInterfaceUserRights();
     $urDBI->getAllData();
     // iterate over all users that have rights
