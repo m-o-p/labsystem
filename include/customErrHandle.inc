@@ -62,13 +62,15 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
   $errline = htmlentities( $errline );
   
   // Immediately send a mail in case the user does not provide more details:
-  $mailFunc->sendMail(  (!empty($usr->mailAddress) ? $usr->mailAddress : ''),
+  if (empty($_POST['ERROR_EXPLANATION'])){
+  	$mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
 				  		$ERRORMAIL_RECEIVER_UID,
 				  		'Error Report '.$errorUID.': ['.$errno.'] '.$errstr,
 				  		'A second mail may arrive with this report if the user enters more details.<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
 				  		FALSE,
 				  		FALSE,
 				  		'Content-type: text/html;'.PHP_EOL);
+  }
 
   switch ($errno) {
   case E_USER_ERROR: // most severe case gets whole page...
