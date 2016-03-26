@@ -53,27 +53,28 @@ class MailFunctionality{
 	    							  0, 
 	    							  $receiverUsrDataArray['eMail'], 
 	    							  'created just for mail');
-	    $receiver .= (empty($receiver) ? '':',').$receiverUsrObject->mailAddress;
-    }
-    // replace constants for personalized mails
-    $text = $this->replaceConstants($text, $receiverUsrObject);
-    $subject = $this->replaceConstants($subject, $receiverUsrObject);
-    
-    /*$this->printMail*/ 
-    mail( ($BCC ? $senderMail : $receiver), // TO
-          '['.$cfg->get("SystemTitle").'] '.$subject,
-          $text.PHP_EOL.PHP_EOL.
-          stripcslashes($cfg->get('mailFooter')).PHP_EOL,
-          ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
-          ($BCC ? 'BCC: '.$receiver.PHP_EOL : ''). // BCC
-          'From: '.$cfg->get('SystemTitle').' <'.$SYSTEMMAIL_SENDER.'>'.PHP_EOL. /* The labsystem is always sending mails using the configured system mail address */
-    	  'Reply-To: '.$sender.PHP_EOL.
-          "X-Mailer: labsystem".PHP_EOL.
-          (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
-          stripcslashes($additionalHeaders).
-          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle").PHP_EOL. // this is for identifying a user (username must be correct...)
-          $cfg->get('mailHeaderAdd')
-    );
+
+	    // replace constants for personalized mails
+	    $text = $this->replaceConstants($text, $receiverUsrObject);
+	    $subject = $this->replaceConstants($subject, $receiverUsrObject);
+	    $receiver = $receiverUsrObject->mailAddress;
+	    
+	    /*$this->printMail*/ 
+	    mail( ($BCC ? $senderMail : $receiver), // TO
+	          '['.$cfg->get("SystemTitle").'] '.$subject,
+	          $text.PHP_EOL.PHP_EOL.
+	          stripcslashes($cfg->get('mailFooter')).PHP_EOL,
+	          ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
+	          ($BCC ? 'BCC: '.$receiver.PHP_EOL : ''). // BCC
+	          'From: '.$cfg->get('SystemTitle').' <'.$SYSTEMMAIL_SENDER.'>'.PHP_EOL. /* The labsystem is always sending mails using the configured system mail address */
+	    	  'Reply-To: '.$sender.PHP_EOL.
+	          "X-Mailer: labsystem".PHP_EOL.
+	          (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
+	          stripcslashes($additionalHeaders).
+	          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle").PHP_EOL. // this is for identifying a user (username must be correct...)
+	          $cfg->get('mailHeaderAdd')
+	    );
+     }
   }
   
   /**
