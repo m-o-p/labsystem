@@ -25,6 +25,7 @@
 * @module     ../include/customErrorHandler.inc
 */
 require_once INCLUDE_DIR.'/config.inc'; // for errormail_receiver
+require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
 $mailSent = FALSE;
 /**
 * Displays the error.
@@ -51,7 +52,7 @@ function displayError( $cssColor, $html ){
 
 function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
 {
-  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER_UID, $mailSent;
+  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc;
   if ( defined ( 'E_STRICT' ) && ($errno == constant ( 'E_STRICT' ) ) ) return; // ignore php5 warnings of missing public etc.
 
   $errno = htmlentities( $errno );
@@ -68,7 +69,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
         !empty($_POST['ERROR_EXPLANATION']) &&
         ($_POST['ERROR_EXPLANATION']!=$lng->get('detailedFeedBack'))){
       $errorDetailsProvided=TRUE;
-      require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
+      
       $mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
           $ERRORMAIL_RECEIVER_UID,
           'Error Report: '.$_POST['ERROR_REFERRER'],
@@ -168,7 +169,7 @@ function getErrorReport($number, $message, $file, $line, $vars){
 
 //This error handler sends an email with all relevant information
 function mail_error_handler($number, $message, $file, $line, $vars){
-  global $ERRORMAIL_RECEIVER_UID, $mailSent;
+  global $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc;
 
   if (!$mailSent){
     if ( !empty($ERRORMAIL_RECEIVER_UID)
@@ -185,7 +186,14 @@ function mail_error_handler($number, $message, $file, $line, $vars){
           // file_put_contents( '/tmp/googlebot_urls.txt', 'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."\r\n", FILE_APPEND );
           // error_log($email, 3, '/tmp/googlebot.txt');
         } else {
-          error_log($email, 1, $ERRORMAIL_RECEIVER_UID, $headers);
+          //error_log($email, 1, $ERRORMAIL_RECEIVER_UID, $headers);
+          $mailFunc->sendMail(  (!empty($usr->mailAddress) ? $usr->mailAddress : ''),
+			        			$ERRORMAIL_RECEIVER_UID,
+			        			'Error Report: '.$_POST['ERROR_REFERRER'],
+			        			'If the user provides some error details, you will receive this report again soon.<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
+			        			FALSE,
+			        			FALSE,
+			        			'Content-type: text/html;'.PHP_EOL);
         }
       }
 
