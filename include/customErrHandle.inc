@@ -53,7 +53,7 @@ function displayError( $cssColor, $html ){
 
 function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
 {
-  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc;
+  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc, $errorUID;
   if ( defined ( 'E_STRICT' ) && ($errno == constant ( 'E_STRICT' ) ) ) return; // ignore php5 warnings of missing public etc.
 
   $errno = htmlentities( $errno );
@@ -170,7 +170,7 @@ function getErrorReport($number, $message, $file, $line, $vars){
 
 //This error handler sends an email with all relevant information
 function mail_error_handler($number, $message, $file, $line, $vars){
-  global $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc;
+  global $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc, $errorUID;
 
   if (!$mailSent){
     if ( !empty($ERRORMAIL_RECEIVER_UID)
@@ -191,7 +191,7 @@ function mail_error_handler($number, $message, $file, $line, $vars){
           $mailFunc->sendMail(  (!empty($usr->mailAddress) ? $usr->mailAddress : ''),
 			        			$ERRORMAIL_RECEIVER_UID,
 			        			'Error Report '.$errorUID.': '.$_POST['ERROR_REFERRER'],
-			        			'If the user provides some error details, you will receive this report again soon.<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
+			        			'If the user provides some error details, you will receive this report again soon.<br><br>--<br>'.$this->getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
 			        			FALSE,
 			        			FALSE,
 			        			'Content-type: text/html;'.PHP_EOL);
