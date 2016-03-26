@@ -26,7 +26,7 @@ class MailFunctionality{
    * @param Boolean $CCsender            Send mail via CC to sender?
    * @param Boolean $BCC                 Send mail via BCC?
    */
-  function sendMail( $sender, $receiverUID, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
+  function sendMail( $sender, $receiverUIDs, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
     global $cfg, $usr, $uDBI, $SYSTEMMAIL_SENDER;
     
     if (empty($sender)){
@@ -39,20 +39,25 @@ class MailFunctionality{
     	$senderMail = $sender;
     }
     
-    // Load receiver data including mail address
-    $receiverUsrDataArray = $uDBI->getData4( $receiverUID );
-    $receiverUsrObject = new ElementUser( $receiverUID, 
-    		                      $receiverUsrDataArray['userName'], 
-    		 					  $receiverUsrDataArray['foreName'], 
-    							  $receiverUsrDataArray['name'], 
-    							  0, 
-    							  0, 
-    							  $receiverUsrDataArray['eMail'], 
-    							  'created just for mail');
+    $receiver = '';
+    
+    foreach( explode(',', $receiverUIDs) as $receiverUID ){
+    	$receiverUID=trim($receiverUID);
+	    // Load receiver data including mail address
+	    $receiverUsrDataArray = $uDBI->getData4( $receiverUID );
+	    $receiverUsrObject = new ElementUser( $receiverUID, 
+	    		                      $receiverUsrDataArray['userName'], 
+	    		 					  $receiverUsrDataArray['foreName'], 
+	    							  $receiverUsrDataArray['name'], 
+	    							  0, 
+	    							  0, 
+	    							  $receiverUsrDataArray['eMail'], 
+	    							  'created just for mail');
+	    $receiver .= (empty($receiver) ? '':',').$receiverUsrObject->mailAddress;
+    }
     // replace constants for personalized mails
     $text = $this->replaceConstants($text, $receiverUsrObject);
     $subject = $this->replaceConstants($subject, $receiverUsrObject);
-    $receiver = $receiverUsrObject->mailAddress;
     
     /*$this->printMail*/ 
     mail( ($BCC ? $senderMail : $receiver), // TO
