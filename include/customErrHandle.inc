@@ -27,6 +27,7 @@
 require_once INCLUDE_DIR.'/config.inc'; // for errormail_receiver
 require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
 $mailSent = FALSE;
+$errorUID = uniqid();
 /**
 * Displays the error.
 *
@@ -72,7 +73,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
       
       $mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
           $ERRORMAIL_RECEIVER_UID,
-          'Error Report: '.$_POST['ERROR_REFERRER'],
+          'Error Report '.$errorUID.': '.$_POST['ERROR_REFERRER'],
           nl2br(htmlentities($_POST['ERROR_EXPLANATION'])).'<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
           FALSE,
           FALSE,
@@ -189,7 +190,7 @@ function mail_error_handler($number, $message, $file, $line, $vars){
           //error_log($email, 1, $ERRORMAIL_RECEIVER_UID, $headers);
           $mailFunc->sendMail(  (!empty($usr->mailAddress) ? $usr->mailAddress : ''),
 			        			$ERRORMAIL_RECEIVER_UID,
-			        			'Error Report: '.$_POST['ERROR_REFERRER'],
+			        			'Error Report '.$errorUID.': '.$_POST['ERROR_REFERRER'],
 			        			'If the user provides some error details, you will receive this report again soon.<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
 			        			FALSE,
 			        			FALSE,
