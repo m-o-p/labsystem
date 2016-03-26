@@ -190,8 +190,8 @@ function mail_error_handler($number, $message, $file, $line, $vars){
           //error_log($email, 1, $ERRORMAIL_RECEIVER_UID, $headers);
           $mailFunc->sendMail(  (!empty($usr->mailAddress) ? $usr->mailAddress : ''),
 			        			$ERRORMAIL_RECEIVER_UID,
-			        			'Error Report '.$errorUID.': '.$_POST['ERROR_REFERRER'],
-			        			'If the user provides some error details, you will receive this report again soon.<br><br>--<br>'.$this->getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
+			        			'Error Report '.$errorUID.': ['.$errno.'] '.$errstr,
+			        			'If the user provides some error details, you will receive this report again soon.<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
 			        			FALSE,
 			        			FALSE,
 			        			'Content-type: text/html;'.PHP_EOL);
