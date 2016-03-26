@@ -64,8 +64,8 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
   // Immediately send a mail in case the user does not provide more details:
   $mailFunc->sendMail(  (!empty($usr->mailAddress) ? $usr->mailAddress : ''),
 				  		$ERRORMAIL_RECEIVER_UID,
-				  		'Error Report '.$errorUID.': '.$_POST['ERROR_REFERRER'],
-				  		nl2br(htmlentities($_POST['ERROR_EXPLANATION'])).'<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
+				  		'Error Report '.$errorUID.': ['.$errno.'] '.$errstr,
+				  		'A second mail may arrive with this report if the user enters more details.<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
 				  		FALSE,
 				  		FALSE,
 				  		'Content-type: text/html;'.PHP_EOL);
