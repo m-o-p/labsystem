@@ -35,6 +35,7 @@ if ( !( $usr->isOfKind( IS_USER ) ) /* valid call? */
 }
 
 require_once( INCLUDE_DIR."/classes/MailFunctionality.inc" );
+require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 
 if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 	$sender = $usr->foreName.' '.$usr->surName.' <'.$usr->mailAddress.'>';
@@ -47,10 +48,6 @@ if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 		if (substr($nextID, 0, 2) == '#*' && (substr( $url->get('config'), -9 ) == 'useradmin') && $usr->isOfKind( IS_ALL_MAILER )){  
 			// collect all participants of the course
 			// new Interface to the userDB
-			$userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
-					$cfg->get('UserDatabaseUserName'),
-					$cfg->get('UserDatabasePassWord'),
-					$cfg->get('UserDatabaseName'));
 			// The field names are taken from the config*.ini file
 			$what = $cfg->get("UserDBField_name")." AS name, ".
 					$cfg->get("UserDBField_forename")." AS forename, ".
@@ -59,7 +56,7 @@ if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 					$cfg->get("UserDBField_email")." AS email";
 			// add all receivers
 			$where= substr($nextID,2)."='1'";
-			$result = $userDBC->mkSelect( $what, $cfg->get('UserDatabaseTable'), $where );
+			$result = $uDBI->myDBC->mkSelect( $what, $cfg->get('UserDatabaseTable'), $where );
 			while( $data = mysql_fetch_array( $result ) ){
 				$mailFunc->sendMail($sender, $data[ 'uid' ], $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
 			}

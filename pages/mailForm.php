@@ -43,7 +43,6 @@ if (isset ( $_POST ['SENDMAIL'] ) && $_POST ['SENDMAIL'] == 'sendMail') {
 }
 
 require_once (INCLUDE_DIR . "/classes/DBInterfaceUser.inc");
-$uDBI = new DBInterfaceUser ();
 
 require_once (INCLUDE_DIR . "/classes/DBInterfaceUserRights.inc");
 
@@ -94,7 +93,6 @@ function setCheckboxes(do_check)
 $allSupporter = array ();
 $allOther = array ();
 
-$urDBI = new DBInterfaceUserRights ();
 $urDBI->getAllData ();
 // iterate over all users that have rights
 while ( $userRightsData = $urDBI->getNextData () ) {

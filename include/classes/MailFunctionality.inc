@@ -93,8 +93,7 @@ class MailFunctionality{
    * @param String $text                The mail text.
    */
   function mail2groupWithRights( $accessRightsMask, $subject, $text ){
-  	global $urDBI;
-    $urDBI = new DBInterfaceUserRights();
+    global $urDBI;
     $urDBI->getAllData();
     // iterate over all users that have rights
     while( $userRightsData = $urDBI->getNextData() ){
