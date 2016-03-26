@@ -60,6 +60,15 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
   $errstr = htmlentities( $errstr );
   $errfile = htmlentities( $errfile );
   $errline = htmlentities( $errline );
+  
+  // Immediately send a mail in case the user does not provide more details:
+  $mailFunc->sendMail(  (!empty($usr->mailAddress) ? $usr->mailAddress : ''),
+				  		$ERRORMAIL_RECEIVER_UID,
+				  		'Error Report '.$errorUID.': '.$_POST['ERROR_REFERRER'],
+				  		nl2br(htmlentities($_POST['ERROR_EXPLANATION'])).'<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
+				  		FALSE,
+				  		FALSE,
+				  		'Content-type: text/html;'.PHP_EOL);
 
   switch ($errno) {
   case E_USER_ERROR: // most severe case gets whole page...
@@ -175,7 +184,6 @@ function mail_error_handler($number, $message, $file, $line, $vars){
   if (!$mailSent){
     if ( !empty($ERRORMAIL_RECEIVER_UID)
          && isset($_SESSION["mailAddress"]) ){ // mail only errors user experience that are logged in
-      $email = getErrorReport($number, $message, $file, $line, $vars);
 
       $headers = 'Content-type: text/html;';
 
@@ -188,30 +196,15 @@ function mail_error_handler($number, $message, $file, $line, $vars){
           // error_log($email, 3, '/tmp/googlebot.txt');
         } else {
           //error_log($email, 1, $ERRORMAIL_RECEIVER_UID, $headers);
-          $mailFunc->sendMail(  (!empty($usr->mailAddress) ? $usr->mailAddress : ''),
-			        			$ERRORMAIL_RECEIVER_UID,
-			        			'Error Report '.$errorUID.': ['.$errno.'] '.$errstr,
-			        			'If the user provides some error details, you will receive this report again soon.<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
-			        			FALSE,
-			        			FALSE,
-			        			'Content-type: text/html;'.PHP_EOL);
+        	// call the "normal" graphical error handler for the user:
+        	myErrorHandler($number, $message, $file, $line, $vars);
         }
       }
-
-      // Make sure that you decide how to respond to errors (on the user's side)
-      // Either echo an error message, or kill the entire project. Up to you...
-      // The code below ensures that we only "die" if the error was more than
-      // just a NOTICE.
-      //if ( ($number !== E_NOTICE) && ($number !== E_WARNING) && ($number < 2048) ) {
-      //      die("There was an error. Sorry.");
-      //}
     }
   }
 
-  // call the "normal" graphical error handler for the user:
-  myErrorHandler($number, $message, $file, $line, $vars);
-}
 
+}
 
 // Install the new error handler.
 $old_error_handler = set_error_handler('mail_error_handler');
