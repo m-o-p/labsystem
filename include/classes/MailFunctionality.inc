@@ -20,7 +20,7 @@ class MailFunctionality{
    /**
    * Send a mail.
    * @param String $sender              The sender.
-   * @param String $receiverUID         The UID of the receiver.
+   * @param String $receiverUIDs        The comma separated list of receiver UIDs.
    * @param String $subject             The mail subject.
    * @param String $text                The mail text.
    * @param Boolean $CCsender            Send mail via CC to sender?
