@@ -27,7 +27,7 @@
 require_once INCLUDE_DIR.'/config.inc'; // for errormail_receiver
 require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
 $mailSent = FALSE;
-$errorUID = uniqid();
+$errorMailUID = ( !empty($_POST['errorMailUID']) ? $_POST['errorMailUID'] : uniqid());
 /**
 * Displays the error.
 *
@@ -53,7 +53,7 @@ function displayError( $cssColor, $html ){
 
 function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
 {
-  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc, $errorUID;
+  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc, $errorMailUID;
   if ( defined ( 'E_STRICT' ) && ($errno == constant ( 'E_STRICT' ) ) ) return; // ignore php5 warnings of missing public etc.
 
   $errno = htmlentities( $errno );
@@ -65,7 +65,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
   if (empty($_POST['ERROR_EXPLANATION'])){
   	$mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
 				  		$ERRORMAIL_RECEIVER_UID,
-				  		'Error Report '.$errorUID.': ['.$errno.'] '.$errstr,
+				  		'Error Report '.$errorMailUID.': ['.$errno.'] '.$errstr,
 				  		'A second mail may arrive with this report if the user enters more details.<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
 				  		FALSE,
 				  		FALSE,
@@ -84,7 +84,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
       
       $mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
           $ERRORMAIL_RECEIVER_UID,
-          'Error Report '.$errorUID.': '.$_POST['ERROR_REFERRER'],
+          'Error Report '.$errorMailUID.': '.$_POST['ERROR_REFERRER'],
           nl2br(htmlentities($_POST['ERROR_EXPLANATION'])).'<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
           FALSE,
           FALSE,
@@ -120,6 +120,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
               ($errorDetailsProvided?$_POST['ERROR_EXPLANATION']:$lng->get('detailedFeedBack')).
               '</textarea>'.
               '<input type="hidden" name="ERROR_REFERRER" value="['.$errno.'] '.$errstr.'">'.
+      		  '<input type="hidden" name="errorMailUID" value="'.$errorMailUID.'">'.
               (!$errorDetailsProvided?'<input style="width:100%" tabindex="'.$pge->nextTab++.'" type="submit" value="'.$lng->get("submitErrorDetails").'" accesskey="s" onclick="isDirty=false">':'').
              '</form>' );
     }
