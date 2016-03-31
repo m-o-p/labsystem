@@ -121,10 +121,10 @@ class Pge extends LpElement{
     	                             htmlentities( $usr->surName ),
     	                             htmlentities( $usr->userName ),
     	                             htmlentities( $usr->currentTeam ),
-    	                             urlencode( $usr->mailAddress ),
+    	                             htmlentities( $usr->mailAddress ),
     	                             $_SERVER['SERVER_NAME'],
     	                             htmlentities( "WillBeReplacedByElsShow" ),
-    	                             urlencode( $_SERVER['REQUEST_URI'] ),
+    	                             htmlentities( $_SERVER['REQUEST_URI'] ),
     	                             $cfg->get("Link2UserAdminInterface"),
     	                             htmlentities( date( $lng->get("DateFormat") ) ) );
 
