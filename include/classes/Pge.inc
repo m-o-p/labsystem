@@ -121,7 +121,7 @@ class Pge extends LpElement{
     	                             htmlentities( $usr->surName ),
     	                             htmlentities( $usr->userName ),
     	                             htmlentities( $usr->currentTeam ),
-    	                             htmlentities( $usr->mailAddress ),
+    	                             urlencode( $usr->mailAddress ),
     	                             $_SERVER['SERVER_NAME'],
     	                             htmlentities( "WillBeReplacedByElsShow" ),
     	                             urlencode( $_SERVER['REQUEST_URI'] ),
