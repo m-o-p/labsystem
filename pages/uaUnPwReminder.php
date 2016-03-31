@@ -35,6 +35,10 @@ require_once( "../include/config.inc" );
 $pge->title = $lng->get ( "titleUaUnPwRem" );
 $pge->matchingMenu = $lng->get ( "MnuEntryUaUnPwRem" );
 $pge->visibleFor = IS_GUEST;
+// write the pagetitle in any case
+$pge->put ( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );
+// we don't always need to write the body, control via variable
+$writeBody = true;
 
 // Something to process?
 if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
@@ -45,12 +49,8 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 	
 	// check if the mailAddress exists:
 	$result = $userDBC->mkSelect ( 'pwReminderToken,pwReminderValidUntil,' . $cfg->get ( 'UserDBField_uid' ) . ' AS uid', $cfg->get ( 'UserDatabaseTable' ), 'UPPER(' . $cfg->get ( 'UserDBField_email' ) . ")=UPPER('" . $requesterEmail . "')" );
-	if (! isset ( $SYSALERT )) {
-		$SYSALERT = '';
-	}
 	if (mysql_num_rows ( $result ) < 1)
-		// alert
-		$SYSALERT .= $requesterEmail . ' ' . $lng->get ( 'uaNotBelong2Usr' );
+		$pge->put ( "<div class=\"labsys_mop_note\">\n" . $requesterEmail . ' ' . $lng->get ( 'uaNotBelong2Usr' ) . "\n</div>" );
 	else {
 		$mailPage = $GLOBALS ["pDBI"]->getData2idx ( $cfg->get ( 'PidPasswordMail' ) );
 		while ( $data = mysql_fetch_assoc ( $result ) ) {
@@ -84,17 +84,16 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 			}
 			require_once (INCLUDE_DIR . "/classes/MailFunctionality.inc");
 			$mailFunc->sendMail ( '', $data ['uid'], $mailPage->title, $mailPage->contents );
-			$SYSALERT .= $lng->get ( 'MailHasBeenSent' ) . ' ' . $cfg->get ( 'SystemTitle' );
+			$pge->put ( "<div class=\"labsys_mop_note\">\n" . $lng->get ( 'MailHasBeenSent' ) . ' ' . $cfg->get ( 'SystemTitle' ) . "\n</div>" );
+			// no further action from the user required for now, don't show the body
+			$writeBody = false;
 		}
 	}
 }
 
 if (substr ( $url->get ( 'config' ), - 9 ) != 'useradmin')
 	$pge->put ( "<div class=\"labsys_mop_note\">\n" . $lng->get ( "TxtNotConfigUA" ) . "\n</div>" );
-else { // showing password fields
-       // title
-	$pge->put ( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );
-	
+else if ( $writeBody ) { // showing password fields
 	// note
 	if ($lng->get ( "uaUnPwRemNote" ) != "")
 		$pge->put ( "<div class=\"labsys_mop_note\">\n" . $lng->get ( "uaUnPwRemNote" ) . "</div>\n" );
