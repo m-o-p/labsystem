@@ -5,6 +5,8 @@ from .element import element_view, element_edit, element_delete
 from .users import user_create, user_view, user_edit, team_create, team_view, team_edit
 from .question import text_question_element_answer
 from .language import set_language
+from .permissions import role_edit
+from .schedule import schedule_view
 
 __all__ = []
 

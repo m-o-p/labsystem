@@ -2,4 +2,25 @@
 
 {% block content %}
   {{user.name}}
+  </br>
+
+  {% for role in user.roles %}
+    {% if role.course %}
+      {{role.course}} -
+    {% endif %}
+    {% if role.assignment %}
+      {{role.assignment}} -
+    {% endif %}
+    {% if role.schedule %}
+      <a href={{url_for('schedule_edit', schedule_id=role.schedule.id)}}>{{role.schedule.name}}</a> -
+    {% endif %}
+    <a href={{url_for('role_edit', role_id=role.role.id)}}>{{role.role.name}}</a>
+
+    <a href={{url_for('userrole_remove', role_id=role.id)}}>{{gettext('Remove')}}</a>
+
+  </br>
+  {% endfor %}
+
+  <a href={{url_for('userrole_add', user_id=user.id)}}>{{gettext('Assign new role')}}</a>
+
 {% endblock %}

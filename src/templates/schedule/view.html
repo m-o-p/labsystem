@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <p>{{schedule.name}}</p>
+  <span>{{schedule.start}}</span> - <span>{{schedule.end}}</span>
+  <p>{{schedule.isActive()}}</p>
+{% endblock %}

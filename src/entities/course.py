@@ -16,7 +16,7 @@ class CourseElement(Element):
         storage.remoteCourse(self.course)
 
     def getChildren(self):
-        from .element import load_element
+        from .helpers import load_element
 
         return map(lambda el: load_element(self.course, self.branch, el), self.meta['children'])
 
@@ -38,3 +38,6 @@ class CourseElement(Element):
 
     def history(self, offset=0, limit=10):
         return storage.getHistory(self.course, self.branch, "", offset, limit)
+
+    def getAssignments(self):
+        return sum(lambda el: el.getAssignments(), self.getChildren())

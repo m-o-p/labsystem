@@ -13,6 +13,8 @@ def element_view(course, branch, path):
         return redirect(url_for('display_element_view', course=course, branch=branch, path=path))
     elif element.meta['type'] == 'Collection':
         return redirect(url_for('collection_element_view', course=course, branch=branch, path=path))
+    elif element.meta['type'] == 'Assignment':
+        return redirect(url_for('collection_element_view', course=course, branch=branch, path=path))
     else:
         return ''
 
@@ -25,6 +27,13 @@ def element_edit(course, branch, path):
         return redirect(url_for('display_element_edit', course=course, branch=branch, path=path))
     elif element.meta['type'] == 'Collection':
         return redirect(url_for('collection_element_edit', course=course, branch=branch, path=path))
+    elif element.meta['type'] == 'Question':
+        if element.meta['questionType'] == 'Text':
+            return redirect(url_for('question_element_edit', course=course, branch=branch, path=path))
+        elif element.meta['questionType'] == 'MultipleChoice':
+            return redirect(url_for('mc_element_edit', course=course, branch=branch, path=path))
+        else:
+            return ''
     else:
         return ''
 

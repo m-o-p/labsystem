@@ -42,3 +42,5 @@ def create_element(course, branch, path, meta, **kwargs):
     element = load_element(course, branch, path, meta)
 
     element.create(**kwargs)
+
+    return element

@@ -1,8 +1,8 @@
-from flask import render_template, url_for, redirect, request
+from flask import render_template, url_for, redirect, request, g
 
 from app import app
 import storage
-from entities import CourseElement, create_element
+from entities import CourseElement, create_element, checkPermissionForElement
 
 
 @app.route("/courses")
@@ -17,6 +17,7 @@ def course_element_list():
 def course_element_delete(course):
     """Delete a course"""
     course = CourseElement(course)
+    checkPermissionForElement(g.user, 'edit', course)
 
     course.delete()
 
@@ -27,6 +28,7 @@ def course_element_delete(course):
 def course_element_view(course, branch):
     """Show a course"""
     course = CourseElement(course, branch)
+    checkPermissionForElement(g.user, 'view', course)
 
     return render_template('elements/course/view.html', element=course)
 

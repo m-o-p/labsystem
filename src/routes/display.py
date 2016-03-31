@@ -1,12 +1,13 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, g
 
 from app import app
-from entities import load_element, create_element, DisplayForm
+from entities import load_element, create_element, DisplayForm, checkPermissionForElement
 
 
 @app.route("/courses/<course>/branches/<branch>/element/display/view/<path:path>")
 def display_element_view(course, branch, path):
     element = load_element(course, branch, path)
+    checkPermissionForElement(g.user, 'view', element)
 
     return render_template('elements/display/view.html', element=element)
 
@@ -31,6 +32,7 @@ def display_element_create(course, branch):
 @app.route("/courses/<course>/branches/<branch>/element/display/edit/<path:path>", methods=["GET", "POST"])
 def display_element_edit(course, branch, path):
     element = load_element(course, branch, path)
+    checkPermissionForElement(g.user, 'edit', element)
     form = DisplayForm(request.form, element, content=element.getRaw(), type=element.meta['displayType'])
 
     if request.method == 'POST' and form.validate():
@@ -49,6 +51,7 @@ def display_element_edit(course, branch, path):
 @app.route("/courses/<course>/branches/<branch>/element/display/delete/<path:path>")
 def display_element_delete(course, branch, path):
     element = load_element(course, branch, path)
+    checkPermissionForElement(g.user, 'edit', element)
 
     element.delete()
 

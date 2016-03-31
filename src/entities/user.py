@@ -43,4 +43,4 @@ class User(database.Model):
         else:
             roles = roles.where(UserRole.assignment == assignment)
 
-        return any(map(lambda role: role.role.can(permission), roles))
+        return any(map(lambda role: role.can(permission), roles))

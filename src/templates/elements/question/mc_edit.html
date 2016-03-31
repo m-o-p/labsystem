@@ -1,0 +1,13 @@
+{% import 'include/forms.html' as forms %}
+
+{% extends "form.html" %}
+
+{% block form %}
+
+{{forms.render_form(form)}}
+
+<form method="POST" action="{{url_for("question_element_delete", course=element.course, branch=element.branch, path=element.path)}}">
+  <button type="submit" class="btn btn-danger">{{gettext("Delete")}}</button>
+</form>
+
+{% endblock form %}

@@ -37,14 +37,14 @@ class MultipleChoiceQuestionController:
             'userAnswer': self.userAnswer,
             'hasCorrection': self.hasCorrection,
             'hasContent': self.hasContent,
-            'options': self.do_shuffle(self.element.meta['options']),
+            'shuffle': self.do_shuffle(range(self.element.meta['optionCount'])),
             'secret': self.secret,
             'needTeamAnswer': self.needTeamAnswer
         }
 
     def setupShuffle(self):
         if self.userAnswer.meta is None:
-            array = [i for i in range(0, len(self.element.meta['options']))]
+            array = [i for i in range(0, self.element.meta['optionCount'])]
 
             if self.element.meta['shuffle']:
                 random.shuffle(array)
@@ -87,6 +87,11 @@ class MultipleChoiceQuestionController:
         if self.needTeamAnswer:
             team = g.user.getTeamForCourse(self.element.course)
 
+            if self.element.getTeamAnswer(g.user).hasContent():
+                lastTeamAnswerTime = self.element.getTeamAnswer(g.user).getLatestContent().time
+            else:
+                lastTeamAnswerTime = None
+
             for user in team.users:
                 collegueAnswer = self.element.getUserAnswer(user)
 
@@ -94,7 +99,13 @@ class MultipleChoiceQuestionController:
                     # Collegue has not yet answered
                     return
 
-                collegueAnswers = yaml.load(collegueAnswer.getLatestContent().content)
+                data = collegueAnswer.getLatestContent()
+
+                if lastTeamAnswerTime is not None and data.time < lastTeamAnswerTime:
+                    # Collegue answer is older than last request
+                    return
+
+                collegueAnswers = yaml.load(data.content)
 
                 if collegueAnswers != answers:
                     # No consensus
@@ -139,10 +150,21 @@ class MultipleChoiceQuestionController:
         if not self.needTeamAnswer:
             return []
 
+        if self.element.getTeamAnswer(g.user).hasContent():
+            lastTeamAnswerTime = self.element.getTeamAnswer(g.user).getLatestContent().time
+        else:
+            lastTeamAnswerTime = None
+
         def processUser(user):
             answer = self.element.getUserAnswer(user)
             if answer.hasContent():
-                return self.do_shuffle(yaml.load(answer.getLatestContent().content))
+                data = answer.getLatestContent()
+
+                if lastTeamAnswerTime is not None and data.time < lastTeamAnswerTime:
+                    # collegues answer coresponds to an older request
+                    return None
+
+                return self.do_shuffle(yaml.load(data.content))
             else:
                 return None
 

@@ -1,8 +1,5 @@
-from app import app
-from entities import create_tables
+from app import app, setup
 
-create_tables()
-
-import routes
+setup()
 
 app.run()

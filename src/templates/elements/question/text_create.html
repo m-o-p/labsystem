@@ -1,0 +1,14 @@
+{% import 'include/forms.html' as forms %}
+
+{% extends "form.html" %}
+
+{% block form %}
+
+<form method="POST">
+  <div class="form-group">
+    <label for="path">{{gettext('Path')}}</label>
+    <input class="form-control" id="path" name="path">
+  </div>
+</form>
+
+{% endblock form %}

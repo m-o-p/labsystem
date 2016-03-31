@@ -1,8 +1,8 @@
-from flask import Flask, session, request, g
+from flask import Flask, session, request
 from flask_babel import Babel
 import yaml
 
-from playhouse.flask_utils import FlaskDB, get_object_or_404
+from playhouse.flask_utils import FlaskDB
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -12,11 +12,31 @@ app.config.from_envvar('APP_SETTINGS', silent=True)
 database = FlaskDB(app)
 
 
+def setup():
+    from entities import create_tables
+
+    create_tables()
+
+    import controllers
+    import routes
+
+
 @app.context_processor
 def inject_user():
     def loadYAML(string):
         return yaml.load(string)
     return dict(loadYAML=loadYAML)
+
+
+@app.context_processor
+def register_min():
+    def min(a, b):
+        if a < b:
+            return a
+        else:
+            return b
+
+    return dict(min=min)
 
 babel = Babel(app)
 
@@ -33,12 +53,3 @@ def get_locale():
 def get_timezone():
     if 'timezone' in session:
         return session['timezone']
-
-from entities import User
-
-
-@app.before_request
-def getUser():
-    if 'user' in session:
-        print('logged in' + str(session['user']))
-        g.user = get_object_or_404(User, User.id == session['user'])

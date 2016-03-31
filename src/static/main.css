@@ -1,0 +1,7 @@
+.minidisplayedit textarea.form-control {
+  width: 70%;
+}
+
+.minidisplayedit select.form-control {
+  width: 30%;
+}

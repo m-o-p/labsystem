@@ -22,9 +22,10 @@ class DisplayElement(Element):
     def save(self, content):
         Element.save(self)
 
-        stream = storage.write(self.course, self.branch, self.getRawPath())
-        stream.write(content)
-        stream.close()
+        if content is not None:
+            stream = storage.write(self.course, self.branch, self.getRawPath())
+            stream.write(content)
+            stream.close()
 
     def delete(self):
         DisplayElement.delete(self)

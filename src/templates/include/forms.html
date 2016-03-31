@@ -1,13 +1,19 @@
 {% macro render_field(field) -%}
-    <div class="form-group {% if field.errors %}has-error{% endif %}">
+     <div class="form-group {% if field.errors %}has-error{% endif %}">
         <label for="{{ field.id }}">{{ field.label }}</label>
-        {{ field(class_='form-control') }}
+        {{ field() }}
         {% if field.errors %}
             {% for error in field.errors %}
                 <p class="help-block">{{ error }}</p>
             {% endfor %}
         {% endif %}
     </div>
+{%- endmacro %}
+
+{% macro render_fields(form) -%}
+  {% for field in form %}
+    {{ render_field(field) }}
+  {% endfor %}
 {%- endmacro %}
 
 {% macro render_form(form) -%}

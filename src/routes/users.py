@@ -1,5 +1,8 @@
-from flask import render_template, redirect, url_for, request, session
+from flask import render_template, redirect, url_for, request, session, flash
 from playhouse.flask_utils import get_object_or_404
+from wtforms import Form, validators
+from wtforms import StringField, PasswordField
+from flask_babel import lazy_gettext, gettext
 
 from entities import User, Team, UserForm, TeamForm
 from app import app
@@ -83,8 +86,37 @@ def team_edit(team_id):
         return render_template('teams/edit.html', form=form)
 
 
-@app.route("/login/<int:user_id>", methods=["GET", "POST"])
-def login(user_id):
-    session['user'] = user_id
+class LoginForm(Form):
+    username = StringField(lazy_gettext('Username'), [validators.required(), validators.length(min=4, max=20)])
+    password = PasswordField(lazy_gettext('Password'), [validators.required(), validators.length(min=4, max=20)])
 
-    return redirect(url_for('user_view', user_id=user_id))
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        user = User.select().where(User.username == form.username.data)
+
+        try:
+            user = user.get()
+        except:
+            flash(gettext('Invalid login'))
+            return render_template('login.html', form=form)
+
+        if user.password != form.password.data:
+            flash(gettext('Invalid login'))
+            return render_template('login.html', form=form)
+
+        session['user'] = user.id
+
+        return redirect(url_for('user_view', user_id=user.id))
+    else:
+        return render_template('login.html', form=form)
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.pop('user', None)
+
+    return redirect(url_for('login'))

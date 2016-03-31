@@ -19,9 +19,9 @@
       </tr>
     {% endif %}
 
-    {% for option in options %}
+    {% for i in range(element.meta.optionCount) %}
       <tr>
-        {% set rowindex = loop.index0 %}
+        {% set rowindex = shuffle[i] %}
 
         {% for answer in previousAnswers %}
           {% set isCorrectColumn = controller.isCorrect(answer) %}
@@ -41,7 +41,6 @@
           {% endif %}
         {% endfor %}
 
-
         {% if controller.canAnswer() %}
           <td>
             {% if element.meta.singleChoice %}
@@ -53,36 +52,34 @@
         {% endif %}
 
         <td>
-          {{element.getDisplayElement(option.content).render('question')|safe}}
+          {{element.getDisplayElement('Option-' + rowindex|string).render('question')|safe}}
         </td>
       </tr>
+    {% endfor %}
 
-      {# Show answer hints #}
+    {# Show answer hints #}
 
+    {% for rowindex in range(element.meta.optionCount) %}
       {% if previousAnswers|length %}
         {% set lastPreviousAnswer = previousAnswers[-1] %}
         {% set correctArray = controller.correctArray(lastPreviousAnswer) %}
 
         {% if element.meta.alwaysShowQuestionHints or correctArray[rowindex] == False %}
-          {% if secret.optionHints[rowindex] %}
-            <tr>
-              <td>
-                {{element.getDisplayElement(secret.optionHints[rowindex]).render('question')|safe}}
-              </td>
-            </tr>
-          {% endif %}
+          <tr>
+            <td>
+              {{element.getDisplayElement('OptionHint-' + rowindex|string).render('question')|safe}}
+            </td>
+          </tr>
         {% endif %}
       {% endif %}
     {% endfor %}
 
-    {% for i in range(0, previousAnswers|length) %}
-      {% if secret.roundHints[i] %}
-        <tr>
-          <td>
-          {{element.getDisplayElement(secret.roundHints[i]).render('question')|safe}}
+    {% for i in range(0, min(previousAnswers|length, secret.roundHintCount)) %}
+      <tr>
+        <td>
+          {{element.getDisplayElement('RoundHint-' + i|string).render('question')|safe}}
         </td>
       </tr>
-      {% endif %}
     {% endfor %}
 
     <tr>
