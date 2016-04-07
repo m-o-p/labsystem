@@ -42,6 +42,29 @@ class MultipleChoiceQuestionController:
             'needTeamAnswer': self.needTeamAnswer
         }
 
+    def getHints(self):
+        if not self.canAnswer():
+            return []
+
+        if not self.hasCorrection:
+            return []
+
+        hints = []
+
+        correctArray = self.correctArray(self.getPreviousAnswers()[-1])
+        for idx, el in enumerate(correctArray):
+            if el:
+                hints.append(self.element.getDisplayElement('Option-Correct-' + str(idx)))
+            else:
+                hints.append(self.element.getDisplayElement('Option-Hint-' + str(idx)))
+
+        for idx in range(self.element.getSecret()['roundHintCount']):
+            hints.append(self.element.getDisplayElement('RoundHint-' + str(idx)))
+
+        random.shuffle(hints)
+
+        return hints
+
     def setupShuffle(self):
         if self.userAnswer.meta is None:
             array = [i for i in range(0, self.element.meta['optionCount'])]
@@ -65,7 +88,7 @@ class MultipleChoiceQuestionController:
         return incorrectCount
 
     def correctArray(self, answer):
-        return [val != answer[self.order[idx]] for idx, val in enumerate(self.secret['options'])]
+        return [val == answer[idx] for idx, val in enumerate(self.secret['options'])]
 
     def isLatestCorrect(self):
         if not self.hasCorrection:

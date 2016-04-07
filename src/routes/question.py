@@ -94,6 +94,8 @@ def mc_element_edit(course, branch, path):
         option['isCorrect'] = secret['options'][index]
         option['remove'] = False
 
+    roundHints = element.getRoundHints()
+
     questionElement = element.getQuestionDisplayElement()
 
     form = MultipleChoiceQuestionForm(request.form, element,
@@ -103,9 +105,12 @@ def mc_element_edit(course, branch, path):
                                       shuffleHints=element.meta['shuffleHints'],
                                       singleChoice=element.meta['singleChoice'],
                                       maxAllowedMistakes=element.meta['maxAllowedMistakes'],
+                                      maxAllowedAnswers=element.meta['maxAllowedAnswers'],
+                                      roundHints=roundHints,
                                       options=options)
 
     form.options.append_entry(dict(remove=True, content=dict(displayType='HTML', content='-'), hint=dict(displayType='HTML', content='-'), correctHint=dict(displayType='HTML', content='-'), isCorrect=False))
+    form.roundHints.append_entry(dict(displayType='HTML', content='-', remove=True))
 
     if request.method == 'POST' and form.validate():
         questionElement.meta['displayType'] = form.display.displayType.data
@@ -134,12 +139,24 @@ def mc_element_edit(course, branch, path):
 
             index = index + 1
 
+        roundHintIndex = 0
+        for entry in form.roundHints.entries:
+            if entry.remove.data is True:
+                continue
+
+            roundHintElement = create_element(course, branch, path + '-RoundHint-' + str(roundHintIndex), {'type': 'Display', 'displayType': entry.displayType.data})
+            roundHintElement.save(entry.content.data)
+
+            roundHintIndex = roundHintIndex + 1
+
+        secret['roundHintCount'] = roundHintIndex
         element.saveSecret(secret)
 
         element.meta['shuffle'] = form.shuffle.data
         element.meta['shuffleHints'] = form.shuffleHints.data
         element.meta['singleChoice'] = form.singleChoice.data
         element.meta['maxAllowedMistakes'] = form.maxAllowedMistakes.data
+        element.meta['maxAllowedAnswers'] = form.maxAllowedAnswers.data
 
         element.meta['optionCount'] = index
         element.save()
@@ -227,7 +244,7 @@ def question_element_correct(course, branch, path):
     element = load_element(course, branch, path)
     checkPermissionForElement(g.user, 'correct', element)
     answer = element.getAnswer(g.user)
-    correction = element.getCorrection()
+    secret = element.getSecret()
     answercontent = answer.getLatestContent()
 
     data = {
@@ -237,12 +254,12 @@ def question_element_correct(course, branch, path):
         'freeCredits': int(request.form['credits'])
     }
 
-    for id, section in enumerate(correction['sections']):
+    for id, credits in enumerate(secret['sections']):
         data['text-' + str(id)] = request.form['text-' + str(id)]
         data['check-' + str(id)] = 'check-' + str(id) in request.form
 
         if data['check-' + str(id)]:
-            data['credits'] += section['credits']
+            data['credits'] += credits
 
     answercontent.correction = yaml.dump(data)
     answercontent.corrector = g.user

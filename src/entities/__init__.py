@@ -59,6 +59,8 @@ def create_tables():
         User.create_table()
         register_default_user()
 
+AllDbEntities = [User, Team, TeamUser, Answer, AnswerContent, Role, UserRole, Permission, RolePermission, Schedule]
+
 __all__ = []
 
 __all__.extend(globals())

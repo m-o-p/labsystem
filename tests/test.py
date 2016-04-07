@@ -2,9 +2,12 @@ import os
 import unittest
 import tempfile
 
+from peewee import Using, SqliteDatabase
+
 import app
 
 from login import login, logout
+from entities import AllDbEntities
 
 
 class FlaskrTestCase(unittest.TestCase):
@@ -13,13 +16,19 @@ class FlaskrTestCase(unittest.TestCase):
         self.db_fd, self.dbname = tempfile.mkstemp(prefix='labsystem_db_', suffix='.db', dir='.')
 
         app.app.config['DATABASE'] = 'sqlite:///' + self.dbname
+        self.db = SqliteDatabase(self.dbname)
 
         app.app.config['TESTING'] = True
-        app.setup()
 
         self.app = app.app.test_client()
+        self.using = Using(self.db, AllDbEntities)
+
+        self.using.__enter__()
+        app.setup()
 
     def tearDown(self):
+        self.using.__exit__(None, None, None)
+
         os.unlink(self.dbname)
         os.close(self.db_fd)
 
@@ -46,7 +55,7 @@ class FlaskrTestCase(unittest.TestCase):
             confirm='user1pass',
             name='User 1',
             email='user1@test.com'
-        ))
+        ), follow_redirects=True)
 
         assert 'User 1' in rv.data.decode("utf-8")
 

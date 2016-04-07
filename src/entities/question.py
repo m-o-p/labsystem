@@ -47,18 +47,6 @@ class QuestionElement(Element):
     def getQuestionDisplayElement(self):
         return self.getDisplayElement('Display')
 
-    def getHintElement(self):
-        return self.getDisplayElement('Hint')
-
-    def getSectionContentElement(self, index):
-        return self.getDisplayElement('Section-Content-' + str(index))
-
-    def getSectionSecretElement(self, index):
-        return self.getDisplayElement('Section-Secret-' + str(index))
-
-    def getSectionElements(self):
-        return [dict(content=self.getSectionContentElement(i), secret=self.getSectionSecretElement(i)) for i in range(self.meta['sectionCount'])]
-
     def getDisplayElement(self, name):
         from .helpers import load_element
         return load_element(self.course, self.branch, self.path + '-' + name)
@@ -102,6 +90,18 @@ class TextQuestionElement(QuestionElement):
             return render_template('elements/question/text_correct.html', element=self)
         else:
             return render_template('elements/question/text_render.html', element=self)
+
+    def getHintElement(self):
+        return self.getDisplayElement('Hint')
+
+    def getSectionContentElement(self, index):
+        return self.getDisplayElement('Section-Content-' + str(index))
+
+    def getSectionSecretElement(self, index):
+        return self.getDisplayElement('Section-Secret-' + str(index))
+
+    def getSectionElements(self):
+        return [dict(content=self.getSectionContentElement(i), secret=self.getSectionSecretElement(i)) for i in range(self.meta['sectionCount'])]
 
     def create(self):
         from .helpers import create_element
@@ -156,6 +156,11 @@ class MultipleChoiceQuestionElement(QuestionElement):
     def getOptions(self):
         return [dict(content=self.getDisplayElement('Option-' + str(i)), hint=self.getDisplayElement('Option-Hint-' + str(i)), correctHint=self.getDisplayElement('Option-Correct-' + str(i))) for i in range(self.meta['optionCount'])]
 
+    def getRoundHints(self):
+        roundHints = [self.getDisplayElement('RoundHint-' + str(i)) for i in range(self.getSecret()['roundHintCount'])]
+
+        return [dict(content=roundHint.getRaw(), displayType=roundHint.meta['displayType']) for roundHint in roundHints]
+
 
 class OptionForm(Form):
     content = FormField(MiniDisplayForm)
@@ -165,16 +170,23 @@ class OptionForm(Form):
     isCorrect = BooleanField(lazy_gettext('Correct'))
 
 
+class MiniDisplayFormWithRemove(MiniDisplayForm):
+    remove = BooleanField(lazy_gettext('Remove'))
+
+
 class MultipleChoiceQuestionForm(Form):
     display = FormField(MiniDisplayForm)
     credits = IntegerField(lazy_gettext('Credits'))
 
     options = FieldList(FormField(OptionForm))
 
+    roundHints = FieldList(FormField(MiniDisplayFormWithRemove))
+
     shuffle = BooleanField(lazy_gettext('Shuffle'))
     shuffleHints = BooleanField(lazy_gettext('Shuffle hints'))
     singleChoice = BooleanField(lazy_gettext('Single Choice'))
     maxAllowedMistakes = IntegerField(lazy_gettext('Maximum allowed mistakes'))
+    maxAllowedAnswers = IntegerField(lazy_gettext('Maximum number of attempts'))
 
 
 def load_question_element(course, branch, path, meta):

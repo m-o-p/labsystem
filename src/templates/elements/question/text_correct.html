@@ -1,9 +1,9 @@
-{{element.getDisplayElement(element.meta.display).render('question')|safe}}
+{{element.getQuestionDisplayElement().render('question')|safe}}
 
-{% set correction = element.getCorrection() %}
+{% set secret = element.getSecret() %}
 {% set answer = element.getAnswer(getUser(request.args['user'])) %}
 {% if answer.hasCorrection() %}
-  {% set existing = loadYAML(answer.getLatestCorrection().correction) %}
+  {% set correction = loadYAML(answer.getLatestCorrection().correction) %}
 {% endif %}
 
 {% if answer.hasContent() and answer.hasCorrection() and answer.getLatestContent() != answer.getLatestCorrection() %}
@@ -14,39 +14,39 @@
   {{answer.getLatestContent().content if answer.hasContent()}}
 </pre>
 
-{{element.getDisplayElement(correction.hint).render('question')|safe}}
+{{element.getHintElement().render('question')|safe}}
 
 <form method="POST" action="{{url_for("question_element_correct", course=element.course, branch=element.branch, path=element.path, back=request.url)}}">
   <fieldset class="form-group">
     <div class="form-group">
       <label for="text">{{gettext('Correction')}}</label>
-      <textarea class="form-control" name="text">{{existing['text'] if existing}}</textarea>
+      <textarea class="form-control" name="text">{{correction['text'] if correction}}</textarea>
     </div>
 
     <div class="form-group">
       <label for="comment">{{gettext('Comment')}}</label>
-      <textarea class="form-control" name="comment">{{existing['comment'] if existing}}</textarea>
+      <textarea class="form-control" name="comment">{{correction['comment'] if correction}}</textarea>
     </div>
 
     <div class="form-group">
       <label for="credits">{{gettext('Credits')}}</label>
-      <input type="number" class="form-control" id="credits" name="credits" value="{{existing['freeCredits']  if existing}}">
+      <input type="number" class="form-control" id="credits" name="credits" value="{{correction['freeCredits']  if correction}}">
     </div>
   </fieldset>
 
   <fieldset class="form-group">
-    {% for section in correction.sections %}
+    {% for credits in secret.sections %}
       <div class="form-group">
-        <label for="text-{{loop.index0}}"> {{section.secret}}
-          {{element.getDisplayElement(section.content).render('question')|safe}}
-          {{element.getDisplayElement(section.secret).render('question')|safe}}
+        <label for="text-{{loop.index0}}">
+          {{element.getSectionContentElement(loop.index0).render('question')|safe}}
+          {{element.getSectionSecretElement(loop.index0).render('question')|safe}}
         </label>
         <div class="input-group">
           <div class="input-group-addon">
-            <input type="checkbox" name="check-{{loop.index0}}" {% if existing and existing['check-' ~ loop.index0] %}checked{% endif %}>
+            <input type="checkbox" name="check-{{loop.index0}}" {% if correction and correction['check-' ~ loop.index0] %}checked{% endif %}>
           </div>
-          <input type="text" class="form-control" id="{{loop.index0}}" name="text-{{loop.index0}}" value={{existing['text-' ~ loop.index0]  if existing}}>
-          <div class="input-group-addon">{{section.credits}}</div>
+          <input type="text" class="form-control" id="{{loop.index0}}" name="text-{{loop.index0}}" value={{correction['text-' ~ loop.index0]  if correction}}>
+          <div class="input-group-addon">{{credits}}</div>
         </div>
       </div>
     {% endfor %}

@@ -59,32 +59,21 @@
 
     {# Show answer hints #}
 
-    {% for rowindex in range(element.meta.optionCount) %}
-      {% if previousAnswers|length %}
-        {% set lastPreviousAnswer = previousAnswers[-1] %}
-        {% set correctArray = controller.correctArray(lastPreviousAnswer) %}
-
-        {% if element.meta.alwaysShowQuestionHints or correctArray[rowindex] == False %}
-          <tr>
-            <td>
-              {{element.getDisplayElement('OptionHint-' + rowindex|string).render('question')|safe}}
-            </td>
-          </tr>
-        {% endif %}
-      {% endif %}
-    {% endfor %}
-
-    {% for i in range(0, min(previousAnswers|length, secret.roundHintCount)) %}
-      <tr>
-        <td>
-          {{element.getDisplayElement('RoundHint-' + i|string).render('question')|safe}}
-        </td>
-      </tr>
-    {% endfor %}
+    <tr>
+      <td>
+        <ul>
+          {% for hint in controller.getHints() %}
+            <li>
+              {{hint.render('question')|safe}}
+            </li>
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
 
     <tr>
       <td>
-        {% if not isCorrect %}
+        {% if controller.canAnswer() %}
           <button type="submit" class="btn btn-default">{{gettext('Save')}}</button>
         {% endif %}
       </td>
