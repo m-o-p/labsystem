@@ -1363,7 +1363,7 @@ class LlElement extends Element{
   	if (in_array($mime, $possibleMimes)){
   		// We want a thumbnail for this...
   		$thumbFilePath = $filePath.'.thumb.jpg';
-  		$this->checkThumb( $filePath, $thumbFilePath );
+  		LiElement::checkThumb( $filePath, $thumbFilePath );
   		return ' <a href="'.$url->link2($filePath).'">' .
   				'<img src="'.$thumbFilePath.'">'.
   				'</a>';
