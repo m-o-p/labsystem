@@ -1418,7 +1418,7 @@ class LlElement extends Element{
         $filesize = round($file['size'] / 1024).' KB';
         $fileTime = date('H:i j.n.Y', $file['timestamp']);
 
-        if (array_key_exists('extension', $pathInfo) && array_key_exists($pathInfo['extension'], $strFormatArray)){
+        if (array_key_exists('extension', $pathInfo) && array_key_exists(strtolower($pathInfo['extension']), $strFormatArray)){
           $strFormat = $strFormatArray[$pathInfo['extension']];
         }else{
           $strFormat = $strFormatArray['*'];
