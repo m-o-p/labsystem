@@ -207,7 +207,8 @@ class EM{ /* ElementMenues */
     global $usr, $lng, $url;
     if ($usr->isOfKind( IS_CONTENT_EDITOR )){
       // only if navigation is present show bottom menu
-        return //($url->get('address') != $fullAddress ? '' :
+        return  EM::viewTopCollection( $eC, $fullAddress, $prevAddress, $nextAddress, $topAddress, "_edit_bottom" ).
+        		//($url->get('address') != $fullAddress ? '' :
                 ( $url->available('insert') && $url->available('insertAt') && // we are inserting -> place anchor
                   $url->get('insertAt') == $eC->idx ? '<a name="atInsert"></a>' : '' ).
                 '<div class="labsys_mop_elements_menu_c_edit_addElements">'.
@@ -217,8 +218,7 @@ class EM{ /* ElementMenues */
                 ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress.'&insertAt='.$eC->idx.'&insert=c').'#atInsert">&nbsp; *c &nbsp;</a>&nbsp;  '.
                 ( $eC->elementId != 'C' ? '' : '<a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$eC->idx).'&insert=C#atInsert">&nbsp; *C &nbsp;</a>&nbsp;  ' ).
                 "\n".
-                '</div>'.
-                EM::viewTopCollection( $eC, $fullAddress, $prevAddress, $nextAddress, $topAddress, "_edit_bottom" );
+                '</div>';
     }else if ($prevAddress || $nextAddress){
         return "<div class=\"labsys_mop_elements_menu_c\">\n".
                (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
