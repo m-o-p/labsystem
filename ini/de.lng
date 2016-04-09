@@ -514,7 +514,7 @@ historyOf           = "Vergangenheit von"
 addHistory          = "Zus&auml;tzliche Vergangenheit"
 
 ;; viewPage
-VisibleOnlyColl     = "Das Element ist nur in einer Collection sichtbar."  ;; appears on top of an onlyVisInColl element for editors
+VisibleOnlyColl     = "Nur in &quot;c&quot; sichtbar."  ;; appears on top of an onlyVisInColl element for editors
 
 ;; confirm page
 confirmDelete       = "Wollen Sie dieses Element wirklich l&ouml;schen?"  ;; Appears in the delete confirmation dialog.
