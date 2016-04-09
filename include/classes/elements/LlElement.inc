@@ -1419,7 +1419,7 @@ class LlElement extends Element{
         $fileTime = date('H:i j.n.Y', $file['timestamp']);
 
         if (array_key_exists('extension', $pathInfo) && array_key_exists(strtolower($pathInfo['extension']), $strFormatArray)){
-          $strFormat = $strFormatArray[$pathInfo['extension']];
+          $strFormat = $strFormatArray[strtolower($pathInfo['extension'])];
         }else{
           $strFormat = $strFormatArray['*'];
         }
