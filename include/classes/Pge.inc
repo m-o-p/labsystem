@@ -108,6 +108,38 @@ class Pge extends LpElement{
 
 
   /**
+   * Replaces the constants with the values but does NOT htmlexcape the values. 
+   * This allows crossitescripting, w.g. by replacing my user name with JS code. 
+   * However, it only works for loged in users.
+   * 
+   * This is used in the eMail functionality.
+   * 
+   * @param String The content the constants should be replaced in.
+   * @return The string with the replaced constants.
+   */
+  function replaceConstantsNonHTML( $text ){
+  	global $url, $usr, $lng, $cfg;
+  	$replaceValue = Array( $url->get("newQueryString"),
+  			htmlentities( $this->title ),
+  			htmlentities( $cfg->get("SystemTitle") ),
+  			htmlentities( $usr->foreName ),
+  			htmlentities( $usr->surName ),
+  			htmlentities( $usr->userName ),
+  			htmlentities( $usr->currentTeam ),
+  			htmlentities( $usr->mailAddress ),
+  			$_SERVER['SERVER_NAME'],
+  			htmlentities( "WillBeReplacedByElsShow" ),
+  			htmlentities( $_SERVER['REQUEST_URI'] ),
+  			$cfg->get("Link2UserAdminInterface"),
+  			htmlentities( date( $lng->get("DateFormat") ) ) );
+  
+  	return str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
+  			array_merge( $replaceValue, $replaceValue ),
+  			$text );
+  }
+  
+  
+  /**
   * Replaces the constants with the values.
   * @param String The content the constants should be replaced in.
   * @return The string with the replaced constants.
