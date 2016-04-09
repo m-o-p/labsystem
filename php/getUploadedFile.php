@@ -53,18 +53,6 @@ if (!file_exists($filePath)) {
           exit;
 }
 
-if($url->available('thumbnail')){
-	$image = exif_thumbnail($filePath, $width, $height, $type);
-	if ($image!==false) {
-		header('Content-type: ' .image_type_to_mime_type($type));
-		echo $image;
-		exit;
-	} else {
-		// kein Miniaturbild vorhanden. Fehler wird hier verarbeitet
-		exit;
-	}
-}
-
 header("Content-Type: ".mime_content_type($filePath));
 if ($url->available('download')){
   header('Content-Disposition: attachment; filename="' . basename($GLOBALS['url']->get('filename')) . '"');

@@ -283,6 +283,134 @@ class LiElement extends Element{
   }
 
   /**
+   * Checks if $thumbnailFileName exists and creates it otherwise based on $fileSrc.
+   * $fileSrc The original image.
+   * $thumbnailFileName The thumbnail file.
+   * $width The desired thumbnail width.
+   * $height Thedesired thumbnail height.
+   */
+  private function checkThumb($fileSrc, $thumbnailFileName, $width = 100, $height = 100) {
+  	if (! file_exists ( $thumbnailFileName ) || ($fileSrc == $thumbnailFileName)) {
+  		// Thumbnail erzeugen
+  		if ($fileSrc == $thumbnailFileName){
+  			list ( $width_orig, $height_orig ) = getimagesize ( $fileSrc );
+  			if ($width_orig <= $width && $height_orig <= $height){
+  				// already resized;
+  				return;
+  			}
+  		}
+  
+  		// Get new dimensions
+  		list ( $width_orig, $height_orig ) = getimagesize ( $fileSrc );
+  
+  		$ratio_orig = $width_orig / $height_orig;
+  
+  		if ($width / $height > $ratio_orig) {
+  			$width = $height * $ratio_orig;
+  		} else {
+  			$height = $width / $ratio_orig;
+  		}
+  
+  		// Resample
+  		$image_p = imagecreatetruecolor ( $width, $height );
+  		switch(strtolower ( substr ( $fileSrc, - 3 ) )){
+  			case 'gif':
+  				$image = imagecreatefromgif ( $fileSrc );
+  				break;
+  			case 'png':
+  				$image = imagecreatefrompng ( $fileSrc );
+  				break;
+  			default:
+  				$image = imagecreatefromjpeg ( $fileSrc );
+  		}
+  
+  		imagecopyresampled ( $image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig );
+  
+		imagejpeg ( $image_p, $thumbnailFileName, 75 );
+  		
+  		// Clean
+  		imagedestroy ( $image_p );
+  		imagedestroy ( $image );
+  	}
+  }
+  /**
+   * Checks if $thumbnailFileName exists and creates it otherwise based on $fileSrc.
+   * $fileSrc The original image.
+   * $thumbnailFileName The thumbnail file.
+   * $width The desired thumbnail width.
+   * $height Thedesired thumbnail height.
+   */
+  private function checkThumb($fileSrc, $thumbnailFileName, $width = 50, $height = 50) {
+    if (! file_exists ( $thumbnailFileName ) || ($fileSrc == $thumbnailFileName)) {
+      // Thumbnail erzeugen
+      if ($fileSrc == $thumbnailFileName){
+        list ( $width_orig, $height_orig ) = getimagesize ( $fileSrc );
+        if ($width_orig <= $width && $height_orig <= $height){
+          // already resized;
+          return;
+        }
+      }
+  
+      // Get new dimensions
+      list ( $width_orig, $height_orig ) = getimagesize ( $fileSrc );
+  
+      $ratio_orig = $width_orig / $height_orig;
+  
+      if ($width / $height > $ratio_orig) {
+        $width = $height * $ratio_orig;
+      } else {
+        $height = $width / $ratio_orig;
+      }
+  
+      // Resample
+      $image_p = imagecreatetruecolor ( $width, $height );
+      switch(strtolower ( substr ( $fileSrc, - 3 ) )){
+        case 'gif':
+          $image = imagecreatefromgif ( $fileSrc );
+          break;
+        case 'png':
+          $image = imagecreatefrompng ( $fileSrc );
+          break;
+        default:
+          $image = imagecreatefromjpeg ( $fileSrc );
+      }
+  
+      imagecopyresampled ( $image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig );
+  
+    imagejpeg ( $image_p, $thumbnailFileName, 75 );
+      
+      // Clean
+      imagedestroy ( $image_p );
+      imagedestroy ( $image );
+    }
+  }
+  /**
+   * Checks if the file is an image that could have a preview. Retrieves/ creates the preview and returns the HTML code for it.
+   * @param unknown $filePath The full path to the original file.
+   */
+  
+  private function thumbnailHTML($iIdx, $team, $fileName){
+    global $url;
+    $filePath = LiDBInterfaceAnswers::getUploadDirectory($iIdx, $team).'/'.$fileName;
+    $mime = mime_content_type($filePath);
+    
+    // For those we create thumbs:
+    $possibleMimes=array( 'png' => 'image/png',
+                    'jpe' => 'image/jpeg',
+                    'jpeg' => 'image/jpeg',
+                    'jpg' => 'image/jpeg',
+                    'gif' => 'image/gif');
+    
+    if (in_array($mime, $possibleMimes)){
+      // We want a thumbnail for this...
+      $thumbFilePath = $filePath.'.thumb.jpg';
+      $this->checkThumb( $filePath, $thumbFilePath );
+      return ' <a href="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName)).'">' .
+        '<img src="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName.'.thumb.jpg')).'">'.
+        '</a>';
+    }
+  }
+  /**
   * Returns the HTML code of the fileUpload.
   *
   * @param  $isGettingAnswered  If true files can be uploaded and deleted. Otherwhise they can only be downloaded.
@@ -303,18 +431,23 @@ class LiElement extends Element{
 
       $ret .= '<ul class="labsys_mop_i_file_list">';
       foreach ($files as $file) { // List files. If isGettingAnswered with delete button.
+        if (substr($file['fileName'], -9) == 'thumb.jpg'){
+          continue; // jump over thumbnail files.
+        }
         $pathInfo = pathinfo($file['fileName']);
         $ret .= '<li>';
         $filesize = round($file['size'] / 1024).' KB';
         $fileTime = date('H:i j.n.Y', $file['timestamp']);
         $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />';
         $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' .
-    	          $pathInfo['basename'].
+                $pathInfo['basename'].
                 '</a> '.
                 '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename']).'&download=true').'">' .
                 '<img src="../syspix/button_down_13x12.gif">'.
                 '</a> '.
-                '<div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div></li>';
+                '<div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.
+                $this->thumbnailHTML($this->idx, $this->getDataOfTeam, $pathInfo['basename']).
+            '</li>';
       }
       $ret .= '</ul>';
     }
@@ -895,6 +1028,7 @@ class LiElement extends Element{
       } else if (!empty($_POST['deleteFileNames'])) {
  	      foreach ($_POST['deleteFileNames'] as $fileName) {
           $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName);
+          $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName.'.thumb.jpg'); // Also delete a preview image if available...
           $this->history .= $fileName.' deleted';
         }
       }
