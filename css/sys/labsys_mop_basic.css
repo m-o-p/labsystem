@@ -453,6 +453,7 @@ fieldset{
                     border-right: solid 1em #FFE4B5; padding-right: 5px; margin-right: -15px;
                     text-align: right;
                     font-size: 0.8em;
+                    background-color:#FFF4C5;
   }
   /* For the add element buttons at the bottom of a collection */
   .labsys_mop_elements_menu_c_edit_addElements{
@@ -461,6 +462,7 @@ fieldset{
                     text-align: right;
                     font-size: 0.8em;
                     margin-bottom: 1em;
+                    background-color:#FFF4C5;
   }
   .labsys_mop_c_row{ /* One data row on the element's manage and the collection structure site. */
                     margin: 10px 0px 10px 0px;
@@ -468,6 +470,11 @@ fieldset{
                     font-size: 0.8em;
                     background-color: #FFE4B5; /* moccasin */
   } 
+  .labsys_mop_element_title_in_header {
+  					font-size: 0.8em;
+  					display: inline;
+  					color: #aaa;
+  }
   
   /* m element */
   .labsys_mop_elements_menu_m{ /* The element's menu above/ below the its display area. */

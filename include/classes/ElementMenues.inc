@@ -172,7 +172,7 @@ class EM{ /* ElementMenues */
              (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
              (   $nextAddress ?                    EB::next( $nextAddress )  : '' );
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
-      $menu  = $eC->title.' | '.
+      $menu  = '<div class="labsys_mop_element_title_in_header">'.$eC->title.' | </div>'.
       		   ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
                '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
                "<span class=\"labsys_mop_element_description_in_header\">".
