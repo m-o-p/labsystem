@@ -44,18 +44,18 @@ class EM{ /* ElementMenues */
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
      return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
             "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
-            '<div class="labsys_mop_element_title_in_header">'.$theEl->title.' | </div>'.
+            '<div class="labsys_mop_element_title_in_header">'.'<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$theEl->title.'</a> | </div>'.
             ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-            '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
+//             '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
 //             "<span class=\"labsys_mop_element_description_in_header\">".
 //             $fullAddress.
 //             "</span></a>\n".
+            EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+            EB::history( $theEl->history, $fullAddress ).
             EB::link2Element( $fullAddress, $theEl ).
             //EB::createNew( $elShortcut ).
             EB::delete( $fullAddress ).
             // EB::manageElements().
-            EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
-            EB::history( $theEl->history, $fullAddress ).
             EB::edit( $fullAddress ).
             "</div>\n";
     else return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n";
@@ -136,7 +136,6 @@ class EM{ /* ElementMenues */
             //"<span class=\"labsys_mop_element_description_in_header\">".
             //$fullAddress.
             //"</span></a>\n".
-            EB::link2Element( $fullAddress, $eL ).
             //EB::createNew( $elShortcut ).
             //EB::delete( $fullAddress ).
             EB::link2epub( $fullAddress ).
@@ -144,11 +143,14 @@ class EM{ /* ElementMenues */
             // EB::manageElements().
             EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
             EB::history( $eL->history, $fullAddress ).
+            EB::link2Element( $fullAddress, $eL ).
             EB::edit( $fullAddress ).
             "</div>\n";
     else return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
                 EB::link2epub( $fullAddress ).
                 EB::printView( $fullAddress.".all" ).
+                EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
+                EB::history( $eL->history, $fullAddress ).
                 "</div>\n";
   }
   static function viewBottomLab( &$eL, $fullAddress ){
@@ -172,21 +174,21 @@ class EM{ /* ElementMenues */
              (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
              (   $nextAddress ?                    EB::next( $nextAddress )  : '' );
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
-      $menu  = '<div class="labsys_mop_element_title_in_header">'.$eC->title.' | </div>'.
+      $menu  = '<div class="labsys_mop_element_title_in_header">'.'<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$eC->title.'</a> | </div>'.
       		   ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-               '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
+//                '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
 //                "<span class=\"labsys_mop_element_description_in_header\">".
 //                $fullAddress.
 //                "</span></a>\n".
                $menu.
                EB::printView( $fullAddress.".all" ).
+               EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
+               EB::history( $eC->history, $fullAddress ).
                //EB::viewStructure( $fullAddress ).
                EB::link2Element( $fullAddress, $eC ).
                //EB::createNew( "c" ).
                EB::delete( $fullAddress ).
                // EB::manageElements().
-               EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
-               EB::history( $eC->history, $fullAddress ).
                EB::edit( $fullAddress );
     else $menu .= EB::printView( $fullAddress.".all" );
 
@@ -272,13 +274,13 @@ class EM{ /* ElementMenues */
     return  "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
             ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
 //             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
+            EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+            EB::history( $theEl->history, $fullAddress ).
+            EB::delete( $fullAddress ).
+            // EB::manageElements().
             EB::link2Element(  $fullAddress, $theEl ).
             EB::view(   $fullAddress ).
             //EB::createNew( $elShortcut ).
-            EB::delete( $fullAddress ).
-            // EB::manageElements().
-            EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
-            EB::history( $theEl->history, $fullAddress ).
             "</div>\n";
   }
   /**
@@ -380,12 +382,12 @@ class EM{ /* ElementMenues */
   */
   static function manageRowUser( &$eU ){ /* one row on the overview page */
     global $lng, $url;
-    return  EB::link2Element(   "C".$eC->idx ).
+    return  EB::history( $eC->history, "p1", true ).
             EB::view(           "C".$eC->idx ).
-            EB::delete(         "C".$eC->idx ).
+    		EB::link2Element(   "C".$eC->idx ).
+            EB::delete(         "C".$eC->idx );
             //EB::viewStructure(  "C".$eC->idx ).
             // EB::manageElements().
-            EB::history( $eC->history, "p1", true );
   }
 
   /**
@@ -417,10 +419,10 @@ class EM{ /* ElementMenues */
   */
   static function manageRowStandard( &$theEl, $elShortcut ){
     global $lng, $url;
-    return  EB::link2Element(  $elShortcut.$theEl->idx, $theEl ).
-            EB::view(   $elShortcut.$theEl->idx ).
+    return  EB::history( $theEl->history, $elShortcut.$theEl->idx ).
+    		EB::link2Element(  $elShortcut.$theEl->idx, $theEl ).
+            EB::view(   $elShortcut.$theEl->idx );
 //             EB::delete( $elShortcut.$theEl->idx ).
-            EB::history( $theEl->history, $elShortcut.$theEl->idx );
   }
 
   /**
@@ -454,11 +456,11 @@ class EM{ /* ElementMenues */
   static function manageRow_C( &$eC ){ /* one row on the overview page */
     global $lng, $url;
     return  //EB::viewStructure(  "c".$eC->idx ).
+            EB::history( $eC->history, "c".$eC->idx ).
             EB::link2Element(       "c".$eC->idx, $eC ).
             EB::view(           "c".$eC->idx ).
 //             EB::delete(         "c".$eC->idx ).
             // EB::manageElements().
-            EB::history( $eC->history, "c".$eC->idx ).
             EB::edit(           "c".$eC->idx );
   }
 
@@ -472,11 +474,11 @@ class EM{ /* ElementMenues */
   */
   static function collectionRowStandard( &$theEl, $fullAddress, $elShortcut ){
     global $lng, $url;
-    return EB::link2Element(  $fullAddress ).
+    return EB::history(     $theEl->history, $fullAddress ).
            EB::view(          $fullAddress ).
+    	   EB::link2Element(  $fullAddress ).
            EB::createNew(     $elShortcut  ).
 //            EB::delete(        $fullAddress ).
-           EB::history(     $theEl->history, $fullAddress ).
            EB::edit(          $fullAddress );
   }
 
@@ -512,11 +514,11 @@ class EM{ /* ElementMenues */
   static function collectionRow_c( &$eC, $fullAddress ){
     global $lng, $url;
     return //EB::viewStructure( $fullAddress ).
-           EB::link2Element( $fullAddress, $eC ).
+           EB::history( $eC->history, $fullAddress ).
            EB::view( $fullAddress ).
+           EB::link2Element( $fullAddress, $eC ).
            EB::createNew( "c" ).
 //            EB::delete( $fullAddress ).
-           EB::history( $eC->history, $fullAddress ).
            EB::edit( $fullAddress );
   }
 }
