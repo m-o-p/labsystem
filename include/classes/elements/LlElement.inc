@@ -1327,9 +1327,10 @@ class LlElement extends Element{
            // material upload
             "<fieldset><legend>".$lng->get('uploadMaterial')."</legend>\n".
             $lng->get('uploadMaterialNote').
-            '<h5>'.$lng->get('imageUploadHeader').'</h5>'.
+            // Only show the separate directories for files and material for old labs. It makes no sense for new ones.
+            ( file_exists($cfg->get('importPictureDir').$this->uniqueID) ? '<h5>'.$lng->get('imageUploadHeader').'</h5>'.
             $this->getUploadInterface( $cfg->get('importPictureDir').$this->uniqueID, $fileLinkFormattingArray ).
-            '<h5>'.$lng->get('fileUploadHeader').'</h5>'.
+            '<h5>'.$lng->get('fileUploadHeader').'</h5>' : '').
             $this->getUploadInterface( $cfg->get('importFilesDir').$this->uniqueID, $fileLinkFormattingArray ).
             "</fieldset>\n".
 
