@@ -289,57 +289,6 @@ class LiElement extends Element{
    * $width The desired thumbnail width.
    * $height Thedesired thumbnail height.
    */
-  private function checkThumb($fileSrc, $thumbnailFileName, $width = 100, $height = 100) {
-  	if (! file_exists ( $thumbnailFileName ) || ($fileSrc == $thumbnailFileName)) {
-  		// Thumbnail erzeugen
-  		if ($fileSrc == $thumbnailFileName){
-  			list ( $width_orig, $height_orig ) = getimagesize ( $fileSrc );
-  			if ($width_orig <= $width && $height_orig <= $height){
-  				// already resized;
-  				return;
-  			}
-  		}
-  
-  		// Get new dimensions
-  		list ( $width_orig, $height_orig ) = getimagesize ( $fileSrc );
-  
-  		$ratio_orig = $width_orig / $height_orig;
-  
-  		if ($width / $height > $ratio_orig) {
-  			$width = $height * $ratio_orig;
-  		} else {
-  			$height = $width / $ratio_orig;
-  		}
-  
-  		// Resample
-  		$image_p = imagecreatetruecolor ( $width, $height );
-  		switch(strtolower ( substr ( $fileSrc, - 3 ) )){
-  			case 'gif':
-  				$image = imagecreatefromgif ( $fileSrc );
-  				break;
-  			case 'png':
-  				$image = imagecreatefrompng ( $fileSrc );
-  				break;
-  			default:
-  				$image = imagecreatefromjpeg ( $fileSrc );
-  		}
-  
-  		imagecopyresampled ( $image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig );
-  
-		imagejpeg ( $image_p, $thumbnailFileName, 75 );
-  		
-  		// Clean
-  		imagedestroy ( $image_p );
-  		imagedestroy ( $image );
-  	}
-  }
-  /**
-   * Checks if $thumbnailFileName exists and creates it otherwise based on $fileSrc.
-   * $fileSrc The original image.
-   * $thumbnailFileName The thumbnail file.
-   * $width The desired thumbnail width.
-   * $height Thedesired thumbnail height.
-   */
   private function checkThumb($fileSrc, $thumbnailFileName, $width = 50, $height = 50) {
     if (! file_exists ( $thumbnailFileName ) || ($fileSrc == $thumbnailFileName)) {
       // Thumbnail erzeugen
