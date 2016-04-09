@@ -310,7 +310,11 @@ class LiElement extends Element{
         $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />';
         $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' .
     	          $pathInfo['basename'].
-                '</a> <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div></li>';
+                '</a> '.
+                '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename']).'&download=true').'">' .
+                '<img src="../syspix/button_down_13x12.gif">'.
+                '</a> '.
+                '<div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div></li>';
       }
       $ret .= '</ul>';
     }
