@@ -54,7 +54,7 @@ class EM{ /* ElementMenues */
             EB::edit( $fullAddress ).
             EB::createNew( $elShortcut ).
             EB::delete( $fullAddress ).
-            EB::manageElements().
+            // EB::manageElements().
             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
             EB::history( $theEl->history, $fullAddress ).
             "</div>\n";
@@ -142,7 +142,7 @@ class EM{ /* ElementMenues */
             EB::delete( $fullAddress ).
             EB::link2epub( $fullAddress ).
             EB::printView( $fullAddress.".all" ).
-            EB::manageElements().
+            // EB::manageElements().
             EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
             EB::history( $eL->history, $fullAddress ).
             "</div>\n";
@@ -179,13 +179,13 @@ class EM{ /* ElementMenues */
                $fullAddress.
                "</span></a>\n".
                $menu.
-               EB::viewStructure( $fullAddress ).
+               //EB::viewStructure( $fullAddress ).
                EB::link2Element( $fullAddress, $eC ).
                EB::edit( $fullAddress ).
-               EB::createNew( "c" ).
+               //EB::createNew( "c" ).
                EB::delete( $fullAddress ).
                EB::printView( $fullAddress.".all" ).
-               EB::manageElements().
+               // EB::manageElements().
                EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
                EB::history( $eC->history, $fullAddress );
     else $menu .= EB::printView( $fullAddress.".all" );
@@ -274,9 +274,9 @@ class EM{ /* ElementMenues */
             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
             EB::link2Element(  $fullAddress, $theEl ).
             EB::view(   $fullAddress ).
-            EB::createNew( $elShortcut ).
+            //EB::createNew( $elShortcut ).
             EB::delete( $fullAddress ).
-            EB::manageElements().
+            // EB::manageElements().
             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
             EB::history( $theEl->history, $fullAddress ).
             "</div>\n";
@@ -345,12 +345,12 @@ class EM{ /* ElementMenues */
     global $lng, $url;
     return  "<div class=\"labsys_mop_elements_menu_c\">\n".
             ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-            EB::viewStructure( $fullAddress ).
-            EB::link2Element(  $fullAddress, $eC ).
-            EB::view(   $fullAddress ).
-            EB::createNew( "c" ).
-            EB::delete( $fullAddress ).
-            EB::manageElements().
+            //EB::viewStructure( $fullAddress ).
+            //EB::link2Element(  $fullAddress, $eC ).
+            //EB::view(   $fullAddress ).
+            //EB::createNew( "c" ).
+            //EB::delete( $fullAddress ).
+            // EB::manageElements().
             EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
             EB::history( $eC->history, $fullAddress ).
             "</div>\n";
@@ -383,8 +383,8 @@ class EM{ /* ElementMenues */
     return  EB::link2Element(   "C".$eC->idx ).
             EB::view(           "C".$eC->idx ).
             EB::delete(         "C".$eC->idx ).
-            EB::viewStructure(  "C".$eC->idx ).
-            EB::manageElements().
+            //EB::viewStructure(  "C".$eC->idx ).
+            // EB::manageElements().
             EB::history( $eC->history, "p1", true );
   }
 
@@ -405,7 +405,7 @@ class EM{ /* ElementMenues */
     return  "<div class=\"labsys_mop_elements_menu_".$id{0}."\">\n".
             EB::link2Element( $id ).
             EB::createNew( $id ).
-            EB::manageElements().
+            // EB::manageElements().
             "</div>\n";
   }
 
@@ -453,12 +453,12 @@ class EM{ /* ElementMenues */
   */
   static function manageRow_C( &$eC ){ /* one row on the overview page */
     global $lng, $url;
-    return  EB::viewStructure(  "c".$eC->idx ).
+    return  //EB::viewStructure(  "c".$eC->idx ).
             EB::link2Element(       "c".$eC->idx, $eC ).
             EB::view(           "c".$eC->idx ).
             EB::edit(           "c".$eC->idx ).
             EB::delete(         "c".$eC->idx ).
-            EB::manageElements().
+            // EB::manageElements().
             EB::history( $eC->history, "c".$eC->idx );
   }
 
@@ -511,7 +511,7 @@ class EM{ /* ElementMenues */
   */
   static function collectionRow_c( &$eC, $fullAddress ){
     global $lng, $url;
-    return EB::viewStructure( $fullAddress ).
+    return //EB::viewStructure( $fullAddress ).
            EB::link2Element( $fullAddress, $eC ).
            EB::view( $fullAddress ).
            EB::edit( $fullAddress ).
