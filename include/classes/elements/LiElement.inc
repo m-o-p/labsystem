@@ -289,7 +289,7 @@ class LiElement extends Element{
    * $width The desired thumbnail width.
    * $height Thedesired thumbnail height.
    */
-  private function checkThumb($fileSrc, $thumbnailFileName, $width = 50, $height = 50) {
+  public static function checkThumb($fileSrc, $thumbnailFileName, $width = 50, $height = 50) {
     if (! file_exists ( $thumbnailFileName ) || ($fileSrc == $thumbnailFileName)) {
       // Thumbnail erzeugen
       if ($fileSrc == $thumbnailFileName){
@@ -337,7 +337,6 @@ class LiElement extends Element{
    * Checks if the file is an image that could have a preview. Retrieves/ creates the preview and returns the HTML code for it.
    * @param unknown $filePath The full path to the original file.
    */
-  
   private function thumbnailHTML($iIdx, $team, $fileName){
     global $url;
     $filePath = LiDBInterfaceAnswers::getUploadDirectory($iIdx, $team).'/'.$fileName;

@@ -1345,6 +1345,32 @@ class LlElement extends Element{
   }
 
   /**
+   * Checks if the file is an image that could have a preview. Retrieves/ creates the preview and returns the HTML code for it.
+   * @param unknown $filePath The full path to the original file.
+   */
+  private function thumbnailHTML($myPath, $fileName){
+  	global $url;
+  	$filePath=$myPath.'/'.$fileName;
+  	$mime = mime_content_type($filePath);
+  
+  	// For those we create thumbs:
+  	$possibleMimes=array( 'png' => 'image/png',
+  			'jpe' => 'image/jpeg',
+  			'jpeg' => 'image/jpeg',
+  			'jpg' => 'image/jpeg',
+  			'gif' => 'image/gif');
+  
+  	if (in_array($mime, $possibleMimes)){
+  		// We want a thumbnail for this...
+  		$thumbFilePath = $filePath.'.thumb.jpg';
+  		$this->checkThumb( $filePath, $thumbFilePath );
+  		return ' <a href="'.$url->link2($filePath).'">' .
+  				'<img src="'.$thumbFilePath.'">'.
+  				'</a>';
+  	}
+  }
+  
+  /**
    * Creates an upload interface for files from and to the directory $myPath.
    * $myPath      The directory the upload interface should be created for.
    * $strFormat   The link buttons link text gets filled with this. First %s gets replaced by the path, second %s by the filename.
@@ -1384,6 +1410,9 @@ class LlElement extends Element{
                   '<ul class="labsys_mop_i_file_list">'."\n";
 
       foreach ($files as $file) {
+      	if (substr($file['fileName'], -9) == 'thumb.jpg'){
+      		continue; // jump over thumbnail files.
+      	}
         // List files. If isGettingAnswered with delete button.
         $pathInfo = pathinfo($file['fileName']);
         $filesize = round($file['size'] / 1024).' KB';
@@ -1402,7 +1431,9 @@ class LlElement extends Element{
                                               $myPath.'/',
                                               $file['fileName'],
                                               (($imageSize = getimagesize($myPath.'/'.$file['fileName'])) != 0 ? htmlentities( $imageSize[3] ).' ' : '') ) ).
-                    ' <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.'</li>'."\n";
+                    ' <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.
+                    $this->thumbnailHTML($myPath, $file['fileName']).
+        			'</li>'."\n";
       }
       $retHTML .= '</ul>';
     }
@@ -1450,7 +1481,7 @@ class LlElement extends Element{
     } else if (!empty($_POST['deleteFileNames'.$pathID])) {
       foreach ($_POST['deleteFileNames'.$pathID] as $fileName) {
         //echo( 'deleting '.$myPath.'/'.$fileName."<br>\n" );
-        unlink($myPath.'/'.$fileName)
+        (unlink($myPath.'/'.$fileName) && unlink($myPath.'/'.$fileName.'.thumb.jpg'))
         or trigger_error("Error deleting ".$myPath.'/'.$fileName, E_USER_ERROR);
         $history .= $myPath.$fileName.' deleted; ';
       }
