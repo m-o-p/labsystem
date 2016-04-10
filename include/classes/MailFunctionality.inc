@@ -89,6 +89,8 @@ class MailFunctionality{
   	$GLOBALS['usr'] = $currentUsrObject;
   	if ( isset($pge) ){
   		$replacedText = $pge->replaceConstantsNonHTML( $text );
+  	}else{
+  		$replacedText = $text;
   	}
   	$GLOBALS['usr'] = $tempUsr;
   	return $replacedText;
