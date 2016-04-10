@@ -348,13 +348,13 @@ class EM{ /* ElementMenues */
     return  "<div class=\"labsys_mop_elements_menu_c\">\n".
             ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
             //EB::viewStructure( $fullAddress ).
-            //EB::link2Element(  $fullAddress, $eC ).
-            //EB::view(   $fullAddress ).
+            EB::link2Element(  $fullAddress, $eC ).
+            EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
+            EB::history( $eC->history, $fullAddress ).
+            EB::view(   $fullAddress ).
             //EB::createNew( "c" ).
             //EB::delete( $fullAddress ).
             // EB::manageElements().
-            EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
-            EB::history( $eC->history, $fullAddress ).
             "</div>\n";
   }
 
@@ -475,10 +475,10 @@ class EM{ /* ElementMenues */
   static function collectionRowStandard( &$theEl, $fullAddress, $elShortcut ){
     global $lng, $url;
     return EB::history(     $theEl->history, $fullAddress ).
-           EB::view(          $fullAddress ).
     	   EB::link2Element(  $fullAddress ).
-           EB::createNew(     $elShortcut  ).
-//            EB::delete(        $fullAddress ).
+//            EB::createNew(     $elShortcut  ).
+           EB::delete(        $fullAddress ).
+           EB::view(          $fullAddress ).
            EB::edit(          $fullAddress );
   }
 
@@ -515,10 +515,10 @@ class EM{ /* ElementMenues */
     global $lng, $url;
     return //EB::viewStructure( $fullAddress ).
            EB::history( $eC->history, $fullAddress ).
-           EB::view( $fullAddress ).
            EB::link2Element( $fullAddress, $eC ).
            EB::createNew( "c" ).
-//            EB::delete( $fullAddress ).
+           EB::delete( $fullAddress ).
+           EB::view( $fullAddress ).
            EB::edit( $fullAddress );
   }
 }
