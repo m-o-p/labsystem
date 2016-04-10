@@ -120,18 +120,18 @@ class Pge extends LpElement{
   function replaceConstantsNonHTML( $text ){
   	global $url, $usr, $lng, $cfg;
   	$replaceValue = Array( $url->get("newQueryString"),
-  			htmlentities( $this->title ),
-  			htmlentities( $cfg->get("SystemTitle") ),
-  			htmlentities( $usr->foreName ),
-  			htmlentities( $usr->surName ),
-  			htmlentities( $usr->userName ),
-  			htmlentities( $usr->currentTeam ),
-  			htmlentities( $usr->mailAddress ),
+  			$this->title,
+  			$cfg->get("SystemTitle"),
+  			$usr->foreName,
+  			$usr->surName,
+  			$usr->userName,
+  			$usr->currentTeam,
+  			$usr->mailAddress,
   			$_SERVER['SERVER_NAME'],
-  			htmlentities( "WillBeReplacedByElsShow" ),
-  			htmlentities( $_SERVER['REQUEST_URI'] ),
+  			'WillBeReplacedByElsShow',
+  			$_SERVER['REQUEST_URI'],
   			$cfg->get("Link2UserAdminInterface"),
-  			htmlentities( date( $lng->get("DateFormat") ) ) );
+  			date( $lng->get("DateFormat") ) );
   
   	return str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
   			array_merge( $replaceValue, $replaceValue ),

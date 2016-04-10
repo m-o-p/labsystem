@@ -32,7 +32,6 @@
 */
 
 require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
-require_once( "../php/getDBIbyID.inc" );
 // all other elements must get included before!
 
 class LcElement extends Element{
@@ -239,7 +238,7 @@ class LcElement extends Element{
       require( "../php/getDBIbyID.inc" );
       $element = $DBI->getData2idx( $num, true, $this->isInLab );
 
-      if (($id == 'p') ||�($id == 'c') ){
+      if (($id == 'p') || ($id == 'c') ){
         $returnVal .= $element->getePubContents( $paragraph );
       }
     }
