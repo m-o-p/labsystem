@@ -183,6 +183,19 @@ class EB{ /* ElementButtons */
     $link = $url->link2( "../pages/edit.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get("explainEdit")."\">" );
   }
+  
+  /**
+   * This button links to "clone the element".
+   *
+   * @param $address  The element's address.
+   *
+   * @return          The button's html-code.
+   */
+  static function cloneMe( $address ){
+  	global $lng, $url;
+  	$link = $url->link2( '../php/clone.php?address='.$address );
+  	return EB::mkLink( $link, '<img src="../syspix/button_clone_32x12.gif" width="32" height="12" alt="clone" title="'.$lng->get('cloneThisElement').'">' );
+  }
 
   /**
   * This button links to "print view (all on one)".
