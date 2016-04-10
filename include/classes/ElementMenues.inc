@@ -347,7 +347,8 @@ class EM{ /* ElementMenues */
     global $lng, $url;
     return  "<div class=\"labsys_mop_elements_menu_c\">\n".
             ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-            //EB::viewStructure( $fullAddress ).
+            "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
+            EB::viewStructure( $fullAddress ).
             EB::link2Element(  $fullAddress, $eC ).
             EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
             EB::history( $eC->history, $fullAddress ).
