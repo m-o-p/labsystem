@@ -421,7 +421,8 @@ class EM{ /* ElementMenues */
     global $lng, $url;
     return  EB::history( $theEl->history, $elShortcut.$theEl->idx ).
     		EB::link2Element(  $elShortcut.$theEl->idx, $theEl ).
-            EB::view(   $elShortcut.$theEl->idx );
+            EB::view(   $elShortcut.$theEl->idx ).
+    		EB::cloneMe(   $elShortcut.$theEl->idx );
 //             EB::delete( $elShortcut.$theEl->idx ).
   }
 
@@ -461,7 +462,8 @@ class EM{ /* ElementMenues */
             EB::view(           "c".$eC->idx ).
 //             EB::delete(         "c".$eC->idx ).
             // EB::manageElements().
-            EB::edit(           "c".$eC->idx );
+            EB::edit(           "c".$eC->idx ).
+    		EB::cloneMe(        'c'.$eC->idx );
   }
 
 // I N  C O L L E C T I O N  O V E R V I E W
@@ -479,7 +481,8 @@ class EM{ /* ElementMenues */
 //            EB::createNew(     $elShortcut  ).
            EB::delete(        $fullAddress ).
            EB::view(          $fullAddress ).
-           EB::edit(          $fullAddress );
+           EB::edit(          $fullAddress ).
+           EB::cloneMe(   $theEl->elementId.$theEl->idx );
   }
 
   /**
@@ -519,7 +522,8 @@ class EM{ /* ElementMenues */
            EB::createNew( "c" ).
            EB::delete( $fullAddress ).
            EB::view( $fullAddress ).
-           EB::edit( $fullAddress );
+           EB::edit( $fullAddress ).
+           EB::cloneMe( 'c'.$eC->idx );
   }
 }
 ?>

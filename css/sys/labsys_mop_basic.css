@@ -29,7 +29,7 @@ body {
                       font-family: verdana, sans-serif; 
                       text-align:justify; 
 }
-input, textarea, fieldset, .labsys_mop_l_ePubLinkBox, .labsys_mop_clone_button { /* round edges on the buttons and inputs */
+input, textarea, fieldset, .labsys_mop_l_ePubLinkBox { /* round edges on the buttons and inputs */
                       border-radius: 0.3em;
       }
 /* Break long lines: */
@@ -297,7 +297,7 @@ height:auto
     padding:0.2em;
   }
 /******************************* form element styles *******************************/
-.labsys_mop_input, .labsys_mop_clone_button{
+.labsys_mop_input{
                     margin: 1px;
                   	border: solid 1px #4682B4;
                     text-align: center;
