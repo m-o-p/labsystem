@@ -1277,10 +1277,9 @@ class LlElement extends Element{
 
            // save
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
-            ' <div class="labsys_mop_clone_button">'.
-            '<a href="'.$url->link2('../php/clone.php?address='.$this->elementId.$this->idx).'">'.
-            '<img src="../syspix/button_clone_32x12.gif" width="32" height="12" alt="'.$lng->get('clone').'">'.
-            '</a></div>'.PHP_EOL.
+            ' <a class="labsys_mop_clone_button" href="'.$url->link2('../php/clone.php?address='.$this->elementId.$this->idx).'">'.
+            '<img src="../syspix/button_clone_32x12.gif" width="32" height="12" alt="'.$lng->get('cloneThisElement').'">'.
+            '</a>'.PHP_EOL.
 
            // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".

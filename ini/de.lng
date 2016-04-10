@@ -155,6 +155,7 @@ MnuEntryStyleSheet  = "CSS editieren"
 MnuEntryXIport      = "Import | Export"
 MnuEntryEditMenu    = "Menu editieren"
 MnuEntryEditConfig  = "Konfiguration editieren"
+cloneThisElement    = "Dieses Element klonen"
 
 ;; sysinfos ******************************************************************************************
 DataHasBeenSaved    = "Die Daten wurden gespeichert."

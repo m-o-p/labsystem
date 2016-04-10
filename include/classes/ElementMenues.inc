@@ -273,7 +273,7 @@ class EM{ /* ElementMenues */
     global $lng, $url;
     return  "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
             ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-//             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
+            "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
             EB::history( $theEl->history, $fullAddress ).
             EB::delete( $fullAddress ).
