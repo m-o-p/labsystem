@@ -450,6 +450,7 @@ class LcElement extends Element{
 
              // save
               "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save").'" onclick=\'isDirty = false;\'>&nbsp;  '.
+              ' '.EB::cloneMe($this->elementId.$this->idx).PHP_EOL.
               ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=p">&nbsp; *p &nbsp;</a>&nbsp; '.
               ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=m">&nbsp; *m &nbsp;</a>&nbsp;  '.
               ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=i">&nbsp; *i &nbsp;</a>&nbsp;  '.
