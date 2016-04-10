@@ -528,7 +528,7 @@ class LcElement extends Element{
   		array_push( $newContent, $id.$element->cloneAndReturnNewIdx() );
   	}
   	$this->contents = implode( $newContent, ' ' );
-  	return $this->setData( $this, true );
+  	return $cDBI->setData( $this, true );
   }
   
   /**
