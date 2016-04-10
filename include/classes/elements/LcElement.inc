@@ -517,6 +517,7 @@ class LcElement extends Element{
    * Clones the element and returns the new index.
    */
   function cloneAndReturnNewIdx(){
+  	global $cDBI;
   	// Here starts the fun since all child elements must be cloned...
   	$newContent = Array();
   	$structureArray = explode( ' ', $this->getStructure() );
