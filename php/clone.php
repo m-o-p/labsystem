@@ -38,6 +38,6 @@ if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
       require( "../php/getDBIbyID.inc" ); // -> $DBI
       $element = $DBI->getData2idx( $num, true );
 	  $newNum = $element->cloneAndReturnNewIdx();
-	  header("Location: ".$url->rawLink2( "../pages/edit.php?address=".$id.$newNum) );
+	  header("Location: ".$url->rawLink2( "../pages/edit.php?address=".$id.$newNum.'&sysinfo='.$id.$num.'->'.$id.$newNum) );
 }
 ?>
