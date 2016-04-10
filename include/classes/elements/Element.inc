@@ -221,6 +221,15 @@ class Element{
   }
 
   /**
+   * Clones the element and returns the new index.
+   */
+  function cloneAndReturnNewIdx(){
+  	$id = $this->elementId;
+  	require( "../php/getDBIbyID.inc" );
+  	return $DBI->setData( $this, true );
+  }
+  
+  /**
   * This function gets STATICALLY called from ../php/saveElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
   *

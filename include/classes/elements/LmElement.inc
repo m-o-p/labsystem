@@ -538,7 +538,7 @@ class LmElement extends Element{
             EM::editBottomMultipleChoice( $this, $fullAddress ).
             $this->show($fullAddress);
   }
-
+ 
   /**
   * Used to save the edited element.
   *

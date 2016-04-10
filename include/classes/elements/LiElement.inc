@@ -811,7 +811,7 @@ class LiElement extends Element{
             EM::editBottomInput( $this, $fullAddress ).
             $this->show($fullAddress);
   }
-
+  
   /**
   * Used to save the edited element.
   *

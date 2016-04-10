@@ -32,6 +32,7 @@
 */
 
 require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
+require_once( "../php/getDBIbyID.inc" );
 // all other elements must get included before!
 
 class LcElement extends Element{
@@ -238,7 +239,7 @@ class LcElement extends Element{
       require( "../php/getDBIbyID.inc" );
       $element = $DBI->getData2idx( $num, true, $this->isInLab );
 
-      if (($id == 'p') ||Ê($id == 'c') ){
+      if (($id == 'p') ||ï¿½($id == 'c') ){
         $returnVal .= $element->getePubContents( $paragraph );
       }
     }
@@ -513,6 +514,24 @@ class LcElement extends Element{
             EM::editBottomCollection( $this, $fullAddress );
   }
 
+  /**
+   * Clones the element and returns the new index.
+   */
+  function cloneAndReturnNewIdx(){
+  	// Here starts the fun since all child elements must be cloned...
+  	$newContent = Array();
+  	$structureArray = explode( ' ', $this->getStructure() );
+  	foreach( $structureArray as $value ){
+  		$id = $value{0};
+  		$num = substr( $value, 1 );
+  		require( "../php/getDBIbyID.inc" ); // Macro setting $DBI to the DBI belonging to $id
+  		$element = $DBI->getData2idx( $num, true, $this->isInLab );
+  		array_push( $newContent, $id.$element->cloneAndReturnNewIdx() );
+  	}
+  	$this->contents = implode( $newContent, ' ' );
+  	return $this->setData( $this, true );
+  }
+  
   /**
   * Used to save the edited element.
   *

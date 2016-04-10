@@ -215,7 +215,7 @@ class LpElement extends Element{
             EM::editBottomPage( $this, $fullAddress ).
             $this->show($fullAddress);
   }
-
+   
   /**
   * Used to save the edited element.
   *

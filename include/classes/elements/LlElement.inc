@@ -1491,6 +1491,15 @@ class LlElement extends Element{
   }
 
   /**
+   * Clones the element and returns the new index.
+   */
+  function cloneAndReturnNewIdx(){
+  	$this->prelabCollectionIdx=$this->preLab->cloneAndReturnNewIdx();
+  	$this->labCollectionIdx=$this->lab->cloneAndReturnNewIdx();
+  	return $lDBI->setData( $this, true );
+  }
+  
+  /**
   * Used to save the edited element.
   *
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
