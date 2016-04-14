@@ -3,6 +3,7 @@ import os
 import markdown
 from wtforms import Form, StringField, TextAreaField, SelectField, validators
 from flask_babel import lazy_gettext
+from flask import escape
 
 import storage
 
@@ -44,6 +45,14 @@ class DisplayHTMLElement(DisplayElement):
         return self.getRaw()
 
 
+class DisplayTextElement(DisplayElement):
+    def __init__(self, course, branch, path, meta=None):
+        DisplayElement.__init__(self, course, branch, path, meta)
+
+    def render(self, mode):
+        return escape(self.getRaw())
+
+
 class DisplayMarkdownElement(DisplayElement):
     def __init__(self, course, branch, path, meta=None):
         DisplayElement.__init__(self, course, branch, path, meta)
@@ -57,6 +66,8 @@ def load_display_element(course, branch, path, meta):
         return DisplayHTMLElement(course, branch, path, meta)
     elif meta['displayType'] == 'Markdown':
         return DisplayMarkdownElement(course, branch, path, meta)
+    elif meta['displayType'] == 'Text':
+        return DisplayTextElement(course, branch, path, meta)
     else:
         from .helpers import ElementYAMLError
         raise ElementYAMLError('Invalid displayType')

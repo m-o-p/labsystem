@@ -14,6 +14,8 @@ class CollectionElement(Element):
             return render_template("elements/collection/view.html", element=self)
         elif mode == 'course':
             return ''
+        elif mode == 'collection':
+            return ''
         else:
             raise('Invalid rendering mode')
 
