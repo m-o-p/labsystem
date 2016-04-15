@@ -31,6 +31,7 @@ require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 require( INCLUDE_DIR."/classes/elements/LlDBInterfaceUidStatus.inc" );
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+require_once( INCLUDE_DIR.'/classes/MailFunctionality.inc' );
 
 class LlElement extends Element{
   var $uniqueID;              // Unique ID for export
@@ -85,7 +86,7 @@ class LlElement extends Element{
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
   function LlElement( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
-    global $CDBI, $usr, $sDBI, $cfg, $lng, $url;
+    global $CDBI, $usr, $sDBI, $cfg, $lng, $url, $mailFunc;
     $this->elementId                = "l";
 
     $this->idx                      = $idx;
@@ -156,7 +157,6 @@ class LlElement extends Element{
         $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
         // send an email if this just got closed
         if ($this->isAfter1stSched && !$this->isInSched && $this->idx!=1){
-          require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
           $mailFunc->mail2groupWithRights( IS_CORRECTOR,
                                            $this->title.' '.$lng->get('labScheduleOverExpl').' ('.$lng->get('team').' '.$usr->currentTeam.')',
                                            'l'.$this->idx.': '.$this->title.PHP_EOL.
@@ -1972,7 +1972,7 @@ class LlElement extends Element{
   *  - is corrected state ( all checkmarks set? )
   */
   function updateStatus(){
-    global $url, $lng, $usr;
+    global $url, $lng, $usr, $mailFunc;
 
     // If you encounter problems with the statistic or want to recalculate it you have
     // to perform both following steps
@@ -2076,7 +2076,6 @@ class LlElement extends Element{
             $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
             // Collect all team's participant mail addresses
             // Send an email to the participants
-            require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
             $mailFunc->sendMail(  '',
                                   $labStatus['uid'],
                                   $this->title.' ('.$lng->get('team').' '.$labStatus['currentTeam'].'): '.$lng->get('labCorrExplain'),
