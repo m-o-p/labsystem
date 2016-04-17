@@ -51,27 +51,33 @@ class DBInterfaceUserRights {
   */
   function getData4( $uid ){
     global $usr, $cfg, $lng;
-    $result = $this->myDBC->mkSelect( "rights, currentTeam, history", $this->myTable, "uid='".$uid."'" );
+    $result = $this->myDBC->mkSelect( "rights, enabledRights, currentTeam, history", $this->myTable, "uid='".$uid."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       /* no dataset found => create a new one with the default values */
       // each new member should get his own team number
       // therefore we insert the record and add the index to the given start index
       $rights = $cfg->get("DefaultAuthUserRights");
-      $currentTeam = $cfg->get("DefaultAuthUserTeam");
-      $toSet = "";
-      $toSet = ( $rights != "" ?       "rights='".$rights."', " : '' ).
-               ( $currentTeam != "" ?  "currentTeam='".$currentTeam."', "  : '' ).
+      $currentTeam = $cfg->get("DefaultAuthUserTeam"); // will be incremented by the team number
+      $toSet = '';
+      $toSet = ( !empty($rights) ?       "rights='".$rights."', " : '' ).
+      		   "enabledRights='".$rights."', ".
+               ( !empty($currentTeam) ?  "currentTeam='".$currentTeam."', "  : '' ).
                "uid='".$uid."', ".
                "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' (rights: '.$rights.'; team: '.$currentTeam.') '."\\n', ".$this->myTable.".history )";
       $newIDX = $this->myDBC->mkInsertReturnIDX( $toSet, 'user_rights' );
-      $this->setData4( $uid, $cfg->get("DefaultAuthUserRights"), $cfg->get("DefaultAuthUserTeam")+$newIDX, $lng->get("dataSetCreated") );
+      $currentTeam += $newIDX;
+      $this->setData4( $uid, $cfg->get("DefaultAuthUserRights"), $currentTeam, $lng->get("dataSetCreated") );
       return Array( "rights"      => $cfg->get("DefaultAuthUserRights"),
-                    "currentTeam" => $cfg->get("DefaultAuthUserTeam")+$newIDX,
+      				"enabledRights"      => $cfg->get("DefaultAuthUserRights"),	
+      				"currentTeam" => $currentTeam,
                     "history"     => "");
-    }else
+    }else{
       return Array( "rights"      => $data['rights'],
+					// This ensures you cannot get rights you do not have even though they somehow managed to get into your DB row:
+      				"enabledRights"      => ( !isset($data['enabledRights']) ||  empty($data['enabledRights'] || ($data['rights']&$data['enabledRights']!=$data['enabledRights'])) ? $data['rights'] : $data['enabledRights'] ),
                     "currentTeam" => $data['currentTeam'],
                     "history"     => $data['history'] );
+    }
   }
 
   /**
@@ -85,15 +91,17 @@ class DBInterfaceUserRights {
   /**
   * Stores the data into the database. Position specified by $uid.
   * @param $uid               The user's unique identifier.
-  * @param $rights            The users rights (bitmask).
+  * @param $rights            The users maximum rights (bitmask).
+  * @param $rights            The users current rights (bitmask).
   * @param $currentTeam       The users currentTeam.
   * @param $history           If present this is set after the user's name.
   */
-  function setData4( $uid, $rights="", $currentTeam="", $history = "" ){
+  function setData4( $uid, $rights="", $enabledRights='', $currentTeam="", $history = "" ){
     global $usr, $cfg;
     $toSet = "";
-    $toSet = ( $rights != "" ?       "rights='".$rights."', " : '' ).
-             ( $currentTeam != "" ?  "currentTeam='".$currentTeam."', "  : '' ).
+    $toSet = ( !empty($rights) ?       "rights='".$rights."', " : '' ).
+      		 ( !empty($enabledRights) ? "enabledRights='".$enabledRights."', "  : '').
+             ( !empty($currentTeam) ?  "currentTeam='".$currentTeam."', "  : '' ).
              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' (rights: '.$rights.'; team: '.$currentTeam.') '.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
 
     $this->myDBC->mkUpdIns( $toSet, "user_rights", "uid='".$uid."'" );

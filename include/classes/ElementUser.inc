@@ -36,17 +36,19 @@ class ElementUser {
   var $foreName;
   var $surName;
   var $currentTeam;
-  var $userRights;
+  var $userRights; // The currentyly set rights out of $userMaximumRights 
+  var $userMaximumRights; // The maximal rights the user can set.
   var $mailAddress;
   var $history;
 
-  function ElementUser( $uid, $userName, $foreName, $surName, $currentTeam, $userRights, $mailAddress, $history ){
+  function ElementUser( $uid, $userName, $foreName, $surName, $currentTeam, $userRights, $userMaximumRights, $mailAddress, $history ){
     $this->uid                      = $uid;
     $this->userName                 = $userName;
     $this->foreName                 = $foreName;
     $this->surName                  = $surName;
     $this->currentTeam              = $currentTeam;
     $this->userRights               = $userRights;
+    $this->userMaximumRights        = $userMaximumRights;
     $this->mailAddress              = $mailAddress;
     $this->history                  = $history;
   }
@@ -80,7 +82,7 @@ class ElementUser {
   function showPropertyRow( $prefix, $disabled=false ){
     global $pge;
     return  "<div class=\"labsys_mop_u_row\">\n".
-            showRightsHorizontal( 'ID'.$this->uid, $this->userRights, $disabled ).
+            showRightsHorizontal( 'ID'.$this->uid, $this->userMaximumRights, $disabled ).
             " <input type=\"text\" name=\"".$this->uid."_team\" tabindex=\"".$pge->nextTab++."\" class=\"labsys_mop_input_team\" value=\"".$this->currentTeam."\" onchange='isDirty=true'>\n".
             " ".$this->surName.", ".$this->foreName." (".$this->userName.")\n".
             " <a href=\"mailto:".$this->mailAddress."\"><img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" title=\"".$this->mailAddress."\" alt=\"".$this->mailAddress."\"></a>\n".

@@ -47,13 +47,17 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
   if ( $lng->get("myRightsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("myRightsNote")."</div>\n" );
 
 require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+
+// Process POST data:
+
+
 $urDBI = new DBInterfaceUserRights();
-$data = $urDBI->getData4( $_SESSION["uid"] );
+$data = $urDBI->getData4( $usr->uid );
 
 $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myRightsEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/changeMyRights.php")."\">\n".
            "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
            "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/myRights.php\">\n".
-           "<fieldset><legend>".$lng->get("rights").' ('.$_SESSION["userRights"].")</legend>\n".
+           "<fieldset><legend>".$lng->get("rights").' ('.$usr->userRights.")</legend>\n".
            "<div class=\"labsys_mop_in_fieldset\">\n" );
 // user's possible rights
   for ($i=2; $i<=MAX_USER_ROLE; $i=$i<<1)

@@ -40,9 +40,34 @@ class Usr extends ElementUser{
   private $iSeeUID;
   private $iSeeDesc;
   function Usr(){
-    $this->ElementUser( "noID", "guest", "M.", "Guest", 0, IS_GUEST, "none@localhost", time() );
+    $this->ElementUser( "noID", "guest", "M.", "Guest", 0, IS_GUEST, IS_GUEST, "none@localhost", time() );
     $this->iSeeUID='';
     $this->iSeeDesc='';
+  }
+  
+  /**
+   * Creates a new user object by retrieving all necessary information from the general and the course specific user database.
+   * $uid The UID of the user.
+   */
+  function Usr( $uid ){
+  	global $urDBI;
+  	// Load the user data from the two data bases:
+  	$globalData = $this->getGlobalUserData( $uid );
+  	$instanceData = $urDBI->getData4( $uid );
+
+  	$this->uid                      = $uid;
+  	$this->userName                 = $globalData['userName'];
+  	$this->foreName                 = $globalData['foreName'];
+  	$this->surName                  = $globalData['name'];
+  	$this->currentTeam              = $instanceData['currentTeam'];
+  	// The config specified user rights editor gets those rights for bootstrapping:
+  	$this->userRights               = ( !$cfg->get("RightsAdminUsername") ? $instanceData['enabledRights'] : $instanceData['enabledRights'] | IS_USER_RIGHTS_EDITOR);
+  	$this->userMaximumRights        = $instanceData['rights'];
+  	$this->mailAddress              = $globalData['eMail'];
+  	
+  	// Initialize them...
+  	$this->iSeeUID='';
+  	$this->iSeeDesc='nobody is seen';
   }
 
   /**
@@ -94,7 +119,7 @@ class Usr extends ElementUser{
         ) return false; // only correctors can do that
     $this->iSeeUID = $uid;
     if ( $this->iSeeUID != 'all' ){ // seeing one member's answers
-                            $userData = $this->getUserInformation( $this->iSeeUID );
+                            $userData = $this->getGlobalUserData( $this->iSeeUID );
                             $currentTeam = 'unk';
                             if (!($url->available('address') && $url->get('address')[0]=='l')){
                             	// We are not viewing a lab => load current team number from the user rights data
@@ -122,28 +147,28 @@ class Usr extends ElementUser{
   * @return Array( "name"     => string,
   *                "foreName" => string,
   *                "userName" => string,
-  *                "link"     => string    // links to ../php/setSeeingUID.php and should be
-  *                                        // used wherever the username is needed to enable switching to the user's data
+  *                "eMail"    => string,
   *               );
   */
-  function getUserInformation( $uid ){
-    global $usr, $url, $lng;
+
+  function getGlobalUserData( $uid ){
+    global $usr, $url, $lng, $uDBI;
     if ( $usr->isOfKind( IS_USER ) ){ // (not) only correctors need to know about other members
                                       // this function is called on the statistics page as well
                                       // if you restrict to correctors users will not see other user's names
                                       // you should remove the history then as well in the statistics
-      global $uDBI;
-      $userData = $uDBI->getData4( $uid );
-      if ( $userData == false ){
-        $userData["name"] = "UID ".$uid;
-        $userData["foreName"] = $lng->get("unknown");
-        $userData["userName"] = $lng->get("unknown");
+      $globalUserData = $uDBI->getData4( $uid );
+      $userData = Array();
+      if ( $globalUserData == false ){
+        $userData['name'] = "UID ".$uid;
+        $userData['foreName'] = $lng->get("unknown");
+        $userData['userName'] = $lng->get("unknown");
+      }else{
+      	$userData['name'] = ( $url->available('pseudoNames') ? randomName():$globalUserData['name'] );
+      	$userData['foreName'] = ( $url->available('pseudoNames') ? randomName():$globalUserData['foreName']);
+      	$userData['userName'] = ( $url->available('pseudoNames')? randomName():$globalUserData['userName'] );
       }
-      $newReturnArray = Array( "name"     => ($url->available('pseudoNames')? randomName():$userData["name"]),
-                    	"foreName" => ($url->available('pseudoNames')? randomName():$userData["foreName"]),
-                    	"userName" => ($url->available('pseudoNames')? randomName():$userData["userName"])
-                   		);
-      return array_merge($userData, $newReturnArray); 
+      return $userData; 
     }
   }
 }

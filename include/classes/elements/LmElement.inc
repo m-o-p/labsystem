@@ -350,7 +350,7 @@ class LmElement extends Element{
                   $this->mcDBI->getAllUIDs( $this->idx );
                   while ( ($nextUID = $this->mcDBI->getNextData()) ){
                     //information row
-                    $userData = $usr->getUserInformation( $nextUID );
+                    $userData = $usr->getGlobalUserData( $nextUID );
                     $answers .= "<div class=\"labsys_mop_m_name\">".$userData['foreName'].' '.$userData['name']."</div>\n";
                     // answer
                     $this->loadUserData4( $nextUID );

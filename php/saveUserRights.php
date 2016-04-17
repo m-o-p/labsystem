@@ -69,10 +69,7 @@ if ( !( isset($_POST['SESSION_ID']) &&
 
     $ur = $urDBI->getData4( $userData["uid"] );
     if ( ( $userRightsNew != $ur['rights'] ) || ( $currentTeam != $ur['currentTeam'] ) ){ // changes?
-      $urDBI->setData4( $userData["uid"], $userRightsNew, $currentTeam );
-      if ($userData['uid']==$_SESSION["uid"]){
-        $_SESSION['userRights']=$userRightsNew; // immediately change my rights after change
-      }
+      $urDBI->setData4( $userData["uid"], $userRightsNew, $userRightsNew, $currentTeam );
     }
   }
 

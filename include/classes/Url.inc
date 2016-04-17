@@ -58,7 +58,7 @@ class Url
           $varContent = 'true';
         }
 
-        if ( isset($_SESSION["uid"]) && // Session running?
+        if ( isset($_SESSION['uid']) && // Session running?
              ( ($varName == 'sysinfo') || ($varName == 'sysalert') )
              ) $_SESSION[$varName]=$varContent; // If session is running use the cookie for transport
         else $this->queryString .= "&".$varName.'='.urlencode( $varContent );
@@ -92,7 +92,7 @@ class Url
                isset($_SESSION[$key])
              ){
                 $val = $_SESSION[$key];
-                $_SESSION[$key] = ''; // empty value as it is only used by page layout and should be empty now
+                unset($_SESSION[$key]); // remove value as it is only used by page layout and should be empty now
                 return urldecode($val); // If session is running use the cookie for transport
               }
     else return '';
@@ -106,7 +106,7 @@ class Url
     return isset( $_GET[$key] ) || ( isset($_SESSION["uid"]) && // Session running?
                                      ( ($key == 'sysinfo') || ($key == 'sysalert') ) &&
                                      isset($_SESSION[$key]) && 
-                                     ($_SESSION[$key] != '')
+                                     (!empty($_SESSION[$key]))
                                     ); // If session is running the cookie can be used for transport;
   }
   
