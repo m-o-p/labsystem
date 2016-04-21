@@ -49,7 +49,7 @@ if ( isset( $NEWSESSION ) ) {
 }
 
 session_start();
-
+print_r($_SESSION);
 require_once( INCLUDE_DIR."/classes/Url.inc");
 if ( strip_tags(SID) != "" ) $url->put( strip_tags(SID) );
 
