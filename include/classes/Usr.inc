@@ -49,7 +49,6 @@ class Usr extends ElementUser{
   }
   
   function __construct0(){
-  	echo('constructor');
   	$this->ElementUser( "noID", "guest", "M.", "Guest", 0, IS_GUEST, IS_GUEST, "none@localhost", time() );
     $this->iSeeUID='';
     $this->iSeeDesc='';
@@ -61,7 +60,6 @@ class Usr extends ElementUser{
    */
   function __construct1( $uid ){
   	global $urDBI, $cfg;
-  	echo('constructor2');
   	// Load the user data from the two data bases:
   	$globalData = $this->getGlobalUserData( $uid );
   	$instanceData = $urDBI->getData4( $uid );
