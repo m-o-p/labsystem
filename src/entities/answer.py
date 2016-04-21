@@ -1,7 +1,9 @@
+import os
+
 from peewee import ForeignKeyField, CharField, TextField, DateTimeField
 from datetime import datetime
 
-from app import database
+from app import database, app
 
 from .team import Team
 from .user import User
@@ -62,6 +64,22 @@ class Answer(database.Model):
         self.save()
 
 
+class File(database.Model):
+    name = CharField()
+    uploader = ForeignKeyField(User, null=True, related_name='files')
+
+    def getPath(self):
+        return os.path.join(app.config['FILES_DIR'], str(self.id))
+
+    def saveData(self, data):
+        with open(self.getPath(), 'wb+') as fd:
+            fd.write(data)
+
+    def loadData(self):
+        with open(self.getPath(), 'rb') as fd:
+            return fd.read()
+
+
 class AnswerContent(database.Model):
     answer = ForeignKeyField(Answer, 'contents')
     content = TextField(null=True)
@@ -70,3 +88,4 @@ class AnswerContent(database.Model):
     correction = TextField(null=True)
     comment = TextField(null=True)
     corrector = ForeignKeyField(User, null=True, related_name='corrections')
+    uploadedFile = ForeignKeyField(File, null=True, related_name='answerContents')

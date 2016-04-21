@@ -1,6 +1,6 @@
 from .user import User, UserForm
 from .team import Team, TeamUser, TeamForm
-from .answer import Answer, AnswerContent
+from .answer import Answer, AnswerContent, File
 from .permission import Role, RoleForm, UserRole, UserRoleForm, Permission, RolePermission, checkPermissionForElement, checkPermissionForCourse, checkPermissionForSystem, PermissionDeniedError, InactiveAssignementError
 
 from .element import Element
@@ -50,6 +50,7 @@ def create_tables():
     RolePermission.create_table(True)
     UserRole.create_table(True)
     Role.create_table(True)
+    File.create_table(True)
 
     if not Permission.table_exists():
         Permission.create_table()

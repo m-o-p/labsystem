@@ -1,6 +1,10 @@
-from flask import redirect, url_for
+import os
+import mimetypes
+
+from flask import redirect, url_for, make_response
 
 from app import app
+import storage
 
 from entities import load_element
 
@@ -17,6 +21,18 @@ def element_view(course, branch, path):
         return redirect(url_for('collection_element_view', course=course, branch=branch, path=path))
     else:
         return ''
+
+
+@app.route("/courses/<course>/branches/<branch>/files/view/<path:path>")
+def file_view(course, branch, path):
+    data = storage.read(course, branch, os.path.join('content', path)).read()
+    (type, encoding) = mimetypes.guess_type(path)
+
+    response = make_response(data)
+
+    response.mimetype = type
+
+    return response
 
 
 @app.route("/courses/<course>/branches/<branch>/element/edit/<path:path>")

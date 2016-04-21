@@ -1,8 +1,9 @@
-from flask import render_template, request, redirect, url_for, g
+from flask import render_template, request, redirect, url_for, g, make_response
+from playhouse.flask_utils import get_object_or_404
 import yaml
 
 from app import app
-from entities import load_element, LockError, AnswerContent, checkPermissionForElement, TextQuestionForm, create_element, MultipleChoiceQuestionForm
+from entities import load_element, LockError, AnswerContent, checkPermissionForElement, TextQuestionForm, create_element, MultipleChoiceQuestionForm, File
 from controllers import MultipleChoiceQuestionController
 
 
@@ -194,12 +195,31 @@ def text_question_element_answer(course, branch, path):
     if not answer.isLocked():
         raise LockError('Answering without a lock')
 
-    answercontent = AnswerContent(answer=answer, content=request.form["answer"])
+    file = None
+
+    if element.meta['hasFileUpload']:
+        fileData = request.files['file']
+        file = File(name=fileData.filename, uploader=g.user)
+        file.save()
+        fileData.save(file.getPath())
+
+    answercontent = AnswerContent(answer=answer, content=request.form["answer"], uploadedFile=file)
     answercontent.save()
 
     answer.unlock(g.user)
 
     return redirect(request.args['back'])
+
+
+@app.route("/files/<int:file_id>")
+def uploaded_file_get(file_id):
+    file = get_object_or_404(File.select(), File.id == file_id)
+
+    response = make_response(file.loadData())
+
+    response.headers["Content-Disposition"] = "attachment; filename=" + file.name
+
+    return response
 
 
 @app.route("/courses/<course>/branches/<branch>/element/question/answer_mc/<path:path>", methods=["POST"])

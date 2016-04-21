@@ -24,9 +24,6 @@ def loadXML(sourceZip, path):
         if result is None:
             return result
 
-        if result.group(1) == "[HTML]\n":
-            print(data)
-
         return result.group(1)
 
     return {
@@ -43,12 +40,14 @@ def loadXML(sourceZip, path):
         'answerArray': findTag('answerArray'),
         'answerExplanation': findTag('answerExplanation'),
         'correctMask': findTag('correctMask'),
+        'possibleCredits': findTag('possibleCredits'),
+        'hasFileUpload': findTag('hasFileUpload'),
         'raw': data
     }
 
 
 def parseDisplay(contents):
-    data = re.search('\\[([a-zA-Z]+)\\](.*)', contents, re.DOTALL)
+    data = re.search('\\[([a-zA-Z]+)\\]\n?(.*)', contents, re.DOTALL)
 
     if data:
         return (data.group(1), data.group(2))
@@ -62,6 +61,9 @@ def findElementById(sourceZip, type, id):
 
         return [x for x in sourceZip.namelist() if regex.match(x)][0]
 
+    if type == 'C':
+        type = 'c'
+
     regex = re.compile(".*/data/" + type + ('{0:07d}'.format(id)) + ".txt")
 
     return [x for x in sourceZip.namelist() if regex.match(x)][0]
@@ -71,7 +73,8 @@ def processChildren(sourceZip, targetZip, childrenString):
     children = []
 
     for element in childrenString.split(' '):
-        data = re.search('([a-z])([0-9]+)', element)
+        data = re.search('([a-zA-Z])([0-9]+)', element)
+
         idx = int(data.group(2))
         elementType = data.group(1)
         elementPath = findElementById(sourceZip, elementType, idx)
@@ -90,12 +93,33 @@ def processChildren(sourceZip, targetZip, childrenString):
     return ret
 
 
+def rewriteImgTags(data, parentPath):
+    def getNewPath(match):
+        mypath = os.path.join('files/view/', match.group(1))
+        newpath = os.path.relpath(mypath, parentPath)
+
+        return match.group(0).replace(match.group(1), newpath)
+
+    return re.sub(r'<img .*?src="(.*?)"', getNewPath, data)
+
+
+def substituteTags(element):
+    withTitle = element['data'].replace('__ELEMENTTITLE__', element['title'])
+
+    return withTitle
+
+
 def saveElement(targetZip, element):
     data = yaml.dump(element['meta'])
 
     targetZip.writestr(element['path'] + '.meta', data.encode())
 
     if 'data' in element:
+        data = element['data']
+
+        element['data'] = rewriteImgTags(data, element['path'])
+        element['data'] = substituteTags(element)
+
         targetZip.writestr(element['path'] + '.data', element['data'].encode())
 
     if 'secret' in element:
@@ -111,6 +135,7 @@ def processCollection(sourceZip, targetZip, elementPath):
     childrenPaths = [child['path'] for child in children if 'indirect' not in child]
 
     return [{
+        'title': source['title'],
         'path': source['title'],
         'meta': {
             'type': 'Collection',
@@ -126,6 +151,7 @@ def processDisplay(sourceZip, targetZip, elementPath):
     (displayType, contents) = parseDisplay(source['contents'])
 
     return [{
+        'title': source['title'],
         'path': source['title'],
         'meta': {
             'type': 'Display',
@@ -155,8 +181,11 @@ def processMC(sourceZip, targetZip, elementPath):
 
     correct = correct[32 - len(questions):32]
 
+    title = contents[:20]
+
     elements = [{
-        'path': source['idx'],
+        'title': title,
+        'path': title,
         'meta': {
             'type': 'Question',
             'questionType': 'MultipleChoice',
@@ -173,7 +202,8 @@ def processMC(sourceZip, targetZip, elementPath):
             'options': correct
         }
     }, {
-        'path': source['idx'] + '-Display',
+        'title': title,
+        'path': title + '-Display',
         'meta': {
             'type': 'Display',
             'displayType': displayType
@@ -186,7 +216,8 @@ def processMC(sourceZip, targetZip, elementPath):
         (displayType, contents) = parseDisplay(question)
 
         elements.append({
-            'path': source['idx'] + '-Option-' + str(id),
+            'title': title,
+            'path': title + '-Option-' + str(id),
             'meta': {
                 'type': 'Display',
                 'displayType': displayType
@@ -195,7 +226,8 @@ def processMC(sourceZip, targetZip, elementPath):
         })
 
         elements.append({
-            'path': source['idx'] + '-Option-Correct-' + str(id),
+            'title': title,
+            'path': title + '-Option-Correct-' + str(id),
             'meta': {
                 'type': 'Display',
                 'displayType': 'Text'
@@ -204,7 +236,8 @@ def processMC(sourceZip, targetZip, elementPath):
         })
 
         elements.append({
-            'path': source['idx'] + '-Option-Hint-' + str(id),
+            'title': title,
+            'path': title + '-Option-Hint-' + str(id),
             'meta': {
                 'type': 'Display',
                 'displayType': 'Text'
@@ -221,26 +254,32 @@ def processQuestion(sourceZip, targetZip, elementPath):
     (displayTypeQ, contentsQ) = parseDisplay(source['question'])
     (displayTypeH, contentsH) = parseDisplay(source['exampleSolution'])
 
+    title = contentsQ[:20]
+
     return [{
-        'path': source['idx'],
+        'title': title,
+        'path': title,
         'meta': {
             'type': 'Question',
             'questionType': 'Text',
-            'sectionCount': 0
+            'sectionCount': 0,
+            'hasFileUpload': 'hasFileUpload' in source
         },
         'secret': {
-            'credits': 1,
+            'credits': int(source['possibleCredits']),
             'sections': 0
         }
     }, {
-        'path': source['idx'] + '-Display',
+        'title': title,
+        'path': title + '-Display',
         'meta': {
             'type': 'Display',
             'displayType': displayTypeQ
         },
         'data': contentsQ
     }, {
-        'path': source['idx'] + '-Hint',
+        'title': title,
+        'path': title + '-Hint',
         'meta': {
             'type': 'Display',
             'displayType': displayTypeH
@@ -251,7 +290,7 @@ def processQuestion(sourceZip, targetZip, elementPath):
 
 
 def processElement(sourceZip, targetZip, elementType, elementPath):
-    if (elementType == 'c'):
+    if (elementType == 'c' or elementType == 'C'):
         return processCollection(sourceZip, targetZip, elementPath)
     elif (elementType == 'p'):
         return processDisplay(sourceZip, targetZip, elementPath)
@@ -270,6 +309,7 @@ def processAssignment(sourceZip, targetZip, assignmentPath):
     childrenPaths = [child['path'] for child in children if 'indirect' not in child]
 
     return {
+        'title': source['title'],
         'path': source['title'],
         'meta': {
             'type': 'Assignment',
@@ -310,6 +350,7 @@ def processLab(sourceZip, targetZip, labPath):
     processChildren('content', preLab)
 
     course = {
+        'title': 'Course',
         'path': 'course',
         'meta': {
             'type': 'Course',
@@ -327,16 +368,25 @@ def copyImages(sourceZip, targetZip):
         match = regex.search(filePath)
 
         if match is not None:
-            targetPath = 'images/' + match.group(1)
+            targetPath = 'content/images/' + match.group(1)
             data = sourceZip.read(filePath)
             targetZip.writestr(targetPath, data)
 
 
+def copyAll(sourceZip, targetZip):
+    for filePath in sourceZip.namelist():
+        data = sourceZip.read(filePath)
+        targetZip.writestr(filePath, data)
+
 sourceZipPath = sys.argv[1]
 sourceZip = ZipFile(sourceZipPath, 'r')
 
+gitZip = ZipFile(".git.zip", 'r')
+
 targetZipPath = sys.argv[2]
 targetZip = ZipFile(targetZipPath, 'w')
+
+copyAll(gitZip, targetZip)
 
 labPathRegex = re.compile(".*/data/l[0-9]{7}.txt")
 labPath = [x for x in sourceZip.namelist() if labPathRegex.match(x)][0]
