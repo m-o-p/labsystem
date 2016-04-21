@@ -5,3 +5,7 @@
 .minidisplayedit select.form-control {
   width: 30%;
 }
+
+.element-header-buttons {
+  float:right;
+}

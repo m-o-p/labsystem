@@ -1,8 +1,20 @@
 <div class="element-header">
   <a class="element-title" href="{{url_for('element_view', course=element.course, branch=element.branch, path=element.path)}}">{{element.getTitle()}}</a>
 
-  <div class="element-header-buttons">
-    <a href="{{url_for('element_edit', course=element.course, branch=element.branch, path=element.path)}}"><i class="fa fa-pencil-square-o"><span class="sr-only">{{gettext('Edit')}}</span></i></a>
-    <a href="{{url_for('element_delete', course=element.course, branch=element.branch, path=element.path)}}"><i class="fa fa-trash-o"><span class="sr-only">{{gettext('Delete')}}</span></i></a>
-  </div>
+  <span class="element-header-buttons">
+    <a href="{{url_for('element_edit', course=element.course, branch=element.branch, path=element.path)}}">
+      <i class="fa fa-pencil-square-o">
+        <span class="sr-only">
+          {{gettext('Edit')}}
+        </span>
+      </i>
+    </a>
+    <a href="{{url_for('element_delete', course=element.course, branch=element.branch, path=element.path)}}">
+      <i class="fa fa-trash-o">
+        <span class="sr-only">
+          {{gettext('Delete')}}
+        </span>
+      </i>
+    </a>
+  </span>
 </div>
