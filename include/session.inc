@@ -49,7 +49,7 @@ if ( isset( $NEWSESSION ) ) {
 }
 
 session_start();
-echo('yo');
+
 require_once( INCLUDE_DIR."/classes/Url.inc");
 // if ( strip_tags(SID) != '' ) $url->put( strip_tags(SID) );
 
@@ -60,7 +60,6 @@ if ( isset($_SESSION['uid']) &&/* if one of the fields is available all must be 
         in for that configuration!
       */
     ) {
-    	echo('yo yo');
   $usr = new Usr($_SESSION['uid']);
   $usr->printMe();
 }
