@@ -66,27 +66,11 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
   require( INCLUDE_DIR."/session.inc" );
 
   $_SESSION["uid"]          = $authUserData["uid"];
-  $_SESSION["userName"]     = $authUserData["userName"];
-  $_SESSION["foreName"]     = $authUserData["foreName"];
-  $_SESSION["surName"]      = $authUserData["name"];
-  $_SESSION["mailAddress"]  = $authUserData["eMail"];
-
-  $_SESSION["userRights"]   = $cfg->get("DefaultAuthUserRights");
-  $_SESSION["currentTeam"]  = $cfg->get("DefaultAuthUserTeam");
 
 // The following field is for security reasons:
 // If the configuration would not be checked you could change the field in the url and would be logged on with your
 // current rights for the different configuration...
   $_SESSION["config"]  = $url->get('config');
-
- // get the user rights from the DB
-  $data = $urDBI->getData4( $_SESSION["uid"] );
-  $_SESSION["userRights"]  = $data['rights'];
-  $_SESSION["currentTeam"] = $data['currentTeam'];
-
-// This special user gets additionally the IS_USER_RIGHTS_EDITOR
-  if ( $_POST['USERNAME'] == $cfg->get("RightsAdminUsername") )
-    $_SESSION["userRights"]  = (intval($_SESSION["userRights"]) | IS_USER_RIGHTS_EDITOR);
 
   makeLogEntry( 'system', 'login' );
   makeLogEntry( 'system', 'loginLog');

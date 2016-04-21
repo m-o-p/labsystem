@@ -49,12 +49,12 @@ function makeLogEntry( $group, $operation, $resource='' ){
   $logEntry = date("Y-m-d\tH:i:s")."\t".
       $configPrefix.$GLOBALS['url']->get('config')."\t".
       ($operation == 'loginLog' ? $_SERVER['REMOTE_ADDR']."\t" : '').
-      $_SESSION['uid']."\t".
-      $_SESSION['surName']."\t".
-      $_SESSION['foreName']."\t".
-      $_SESSION['userName']."\t".
-      $_SESSION['currentTeam']."\t".
-      $_SESSION['userRights']."\t".
+      $usr->uid."\t".
+      $usr->surName."\t".
+      $usr->foreName."\t".
+      $usr->userName."\t".
+      $usr->currentTeam."\t".
+      $usr->userRights."\t".
       $group."\t". /* system, prelab, lab */
       $operation."\t". /* login, save, open */
       $resource."\t".
@@ -195,7 +195,7 @@ class Logger{
 
     $what = array('resourceID' => $this->myDBC->escapeString($resourceID),
                   'referrerID' => $this->myDBC->escapeString($this->getReferrerID()),
-                  'teamNr' => $this->myDBC->escapeString( ($otherTeamID==''?$_SESSION['currentTeam']:$otherTeamID) ),
+                  'teamNr' => $this->myDBC->escapeString( ($otherTeamID==''?$usr->currentTeam:$otherTeamID) ),
                   'userID' => $this->myDBC->escapeString($_SESSION['uid']),
                   'action' => $action );
     $multiRowToInsert = '("'.$what['resourceID'].'","'.$what['referrerID'].'",'.$what['teamNr'].',"'.$what['userID'].'",'.$what['action'].')';

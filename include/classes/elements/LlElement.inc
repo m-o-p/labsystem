@@ -528,7 +528,7 @@ class LlElement extends Element{
             $labName = '<span class="labsys_mop_grayed"> &nbsp;'.$labNameCache[ $labStatus['lIdx'] ].'</span>';
         }
 
-        $userData = $usr->getUserInformation( $labStatus['uid'] );
+        $userData = $usr->getGlobalUserData( $labStatus['uid'] );
 
         $myRetVal .= "<tr class=\"labsys_mop_l_status_table_row_".( ++$i%2 == 0 ?  "light" :  "dark"  )."\">".
                      "<td class=\"labsys_mop_l_status_table_cell_number\">".
@@ -996,7 +996,7 @@ class LlElement extends Element{
                 $myRetVal .= "<div class=\"labsys_mop_l_status_userhead\">";
                 if ( $hasName ) $myRetVal .= $userData['name'].", ".$userData['foreName'];
                 else{
-                        $nameData = $usr->getUserInformation( $userData["uid"] );
+                        $nameData = $usr->getGlobalUserData( $userData["uid"] );
                         $myRetVal .= $nameData["name"].", ".$nameData["foreName"];
 /* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')) echo( "\r\n".$nameData["name"]."\t".$nameData["foreName"]."\t".$nameData["matrikelnummer"]."\t" );
                      }

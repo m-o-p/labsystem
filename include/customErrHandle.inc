@@ -168,11 +168,12 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
 }
 
 function getErrorReport($number, $message, $file, $line, $vars){
+  global $usr;
   return 'URL causing the error:'.
          'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."<br>".
          ( isset($_SERVER['HTTP_REFERER']) ? 'Last page before:<br>'.$_SERVER['HTTP_REFERER'].'<br>' : '').
-         ( isset($_SESSION["uid"]) ? 'User experiencing the error:  '.$_SESSION["foreName"].' '.$_SESSION["surName"].' ('.$_SESSION["mailAddress"].')<br>'.
-          'Rights while error occured:   '.$_SESSION["userRights"]."<br>"
+         ( isset($usr) ? 'User experiencing the error:  '.$usr->foreName.' '.$usr->surName.' ('.$usr->mailAddress.')<br>'.
+          'Rights while error occured:   '.$usr->userRights."<br>"
           : '')."
           <p>An error ($number) occurred on line
           <strong>$line</strong> and in the <strong>file: $file.</strong>
@@ -186,7 +187,7 @@ function mail_error_handler($number, $message, $file, $line, $vars){
 
   if (!$mailSent){
     if ( !empty($ERRORMAIL_RECEIVER_UID)
-         && isset($_SESSION["mailAddress"]) ){ // mail only errors user experience that are logged in
+         && !empty($usr->mailAddress) ){ // mail only errors user experience that are logged in
 
       $headers = 'Content-type: text/html;';
 
