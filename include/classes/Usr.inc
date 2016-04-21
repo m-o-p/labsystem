@@ -39,7 +39,7 @@ require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 class Usr extends ElementUser{
   private $iSeeUID;
   private $iSeeDesc;
-  function Usr(){
+  function __construct(){
     $this->ElementUser( "noID", "guest", "M.", "Guest", 0, IS_GUEST, IS_GUEST, "none@localhost", time() );
     $this->iSeeUID='';
     $this->iSeeDesc='';
@@ -49,7 +49,7 @@ class Usr extends ElementUser{
    * Creates a new user object by retrieving all necessary information from the general and the course specific user database.
    * $uid The UID of the user.
    */
-  function __construct( $uid ){
+  function __construct2( $uid ){
   	global $urDBI;
   	// Load the user data from the two data bases:
   	$globalData = $this->getGlobalUserData( $uid );
