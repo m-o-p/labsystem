@@ -92,7 +92,7 @@ class DBInterfaceUserRights {
   * Stores the data into the database. Position specified by $uid.
   * @param $uid               The user's unique identifier.
   * @param $rights            The users maximum rights (bitmask).
-  * @param $rights            The users current rights (bitmask).
+  * @param $enabledRights     The users current rights (bitmask).
   * @param $currentTeam       The users currentTeam.
   * @param $history           If present this is set after the user's name.
   */
