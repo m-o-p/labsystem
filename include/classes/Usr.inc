@@ -50,7 +50,7 @@ class Usr extends ElementUser{
    * Creates a new user object by retrieving all necessary information from the general and the course specific user database.
    * $uid The UID of the user.
    */
-  function __construct2( $uid ){
+  function __construct( $uid ){
   	global $urDBI;
   	echo('constructor2');
   	// Load the user data from the two data bases:
