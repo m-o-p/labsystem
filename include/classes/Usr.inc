@@ -69,6 +69,10 @@ class Usr extends ElementUser{
   	$this->iSeeUID='';
   	$this->iSeeDesc='nobody is seen';
   }
+  
+  function printMe(){
+  	print_r( get_class_vars( $this ));
+  }
 
   /**
   * Selector to determine if the user is logged in.

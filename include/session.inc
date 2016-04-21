@@ -49,7 +49,7 @@ if ( isset( $NEWSESSION ) ) {
 }
 
 session_start();
-print_r($_SESSION);
+
 require_once( INCLUDE_DIR."/classes/Url.inc");
 if ( strip_tags(SID) != "" ) $url->put( strip_tags(SID) );
 
@@ -61,7 +61,6 @@ if ( isset($_SESSION['uid']) &&/* if one of the fields is available all must be 
       */
     ) {
   $usr = new Usr($_SESSION['uid']);
-}else{
-	echo('Session is not found or not valid for this instance: '.$_SESSION['config'].' != '.$url->get('config'));
+  $usr->printMe();
 }
 ?>
