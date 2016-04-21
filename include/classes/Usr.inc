@@ -60,7 +60,7 @@ class Usr extends ElementUser{
    * $uid The UID of the user.
    */
   function __construct1( $uid ){
-  	global $urDBI;
+  	global $urDBI, $cfg;
   	echo('constructor2');
   	// Load the user data from the two data bases:
   	$globalData = $this->getGlobalUserData( $uid );
