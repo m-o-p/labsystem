@@ -17,16 +17,21 @@ class ElementYAMLError(Exception):
         return repr(self.value)
 
 
-def load_element(course, branch, path, meta=None):
+def load_element(course, branch, path, meta=None, isSecret=False):
     """Get a specific element"""
+    if isSecret:
+        root = 'secret'
+    else:
+        root = 'content'
+
     if meta is None:
-        meta = yaml.load(storage.read(course, branch, os.path.join('content', path + '.meta')))
+        meta = yaml.load(storage.read(course, branch, os.path.join(root, path + '.meta')))
 
     if 'isRedirect' in meta and meta['isRedirect']:
-        return load_element(course, branch, meta.path)
+        return load_element(course, branch, meta.path, isSecret=isSecret)
     else:
         if meta['type'] == 'Display':
-            return load_display_element(course, branch, path, meta)
+            return load_display_element(course, branch, path, meta, isSecret=isSecret)
         elif meta['type'] == 'Question':
             return load_question_element(course, branch, path, meta)
         elif meta['type'] == 'Collection':

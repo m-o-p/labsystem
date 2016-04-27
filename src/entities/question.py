@@ -39,17 +39,17 @@ class QuestionElement(Element):
         Element.__init__(self, course, branch, path, meta)
 
     def getSecret(self):
-        return yaml.load(storage.read(self.course, self.branch, os.path.join('secret', self.path + '.meta')))
+        return yaml.load(storage.read(self.course, self.branch, os.path.join('secret', self.path + '.secret')))
 
     def saveSecret(self, data):
-        yaml.dump(data, storage.write(self.course, self.branch, os.path.join('secret', self.path + '.meta')))
+        yaml.dump(data, storage.write(self.course, self.branch, os.path.join('secret', self.path + '.secret')))
 
     def getQuestionDisplayElement(self):
         return self.getDisplayElement('Display')
 
-    def getDisplayElement(self, name):
+    def getDisplayElement(self, name, isSecret=False):
         from .helpers import load_element
-        return load_element(self.course, self.branch, self.path + '-' + name)
+        return load_element(self.course, self.branch, self.path + '-' + name, isSecret=isSecret)
 
     def getTeamAnswer(self, team):
         answer, created = Answer.get_or_create(
@@ -98,7 +98,7 @@ class TextQuestionElement(QuestionElement):
         return self.getDisplayElement('Section-Content-' + str(index))
 
     def getSectionSecretElement(self, index):
-        return self.getDisplayElement('Section-Secret-' + str(index))
+        return self.getDisplayElement('Section-Secret-' + str(index), isSecret=True)
 
     def getSectionElements(self):
         return [dict(content=self.getSectionContentElement(i), secret=self.getSectionSecretElement(i)) for i in range(self.meta['sectionCount'])]
@@ -154,10 +154,10 @@ class MultipleChoiceQuestionElement(QuestionElement):
         return render_template('elements/question/mc_render.html', **controller.renderParams())
 
     def getOptions(self):
-        return [dict(content=self.getDisplayElement('Option-' + str(i)), hint=self.getDisplayElement('Option-Hint-' + str(i)), correctHint=self.getDisplayElement('Option-Correct-' + str(i))) for i in range(self.meta['optionCount'])]
+        return [dict(content=self.getDisplayElement('Option-' + str(i)), hint=self.getDisplayElement('Option-Hint-' + str(i), isSecret=True), correctHint=self.getDisplayElement('Option-Correct-' + str(i), isSecret=True)) for i in range(self.meta['optionCount'])]
 
     def getRoundHints(self):
-        roundHints = [self.getDisplayElement('RoundHint-' + str(i)) for i in range(self.getSecret()['roundHintCount'])]
+        roundHints = [self.getDisplayElement('RoundHint-' + str(i), isSecret=True) for i in range(self.getSecret()['roundHintCount'])]
 
         return [dict(content=roundHint.getRaw(), displayType=roundHint.meta['displayType']) for roundHint in roundHints]
 

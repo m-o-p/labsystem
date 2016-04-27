@@ -6,10 +6,11 @@ import storage
 
 class Element:
     """Base class for all elements"""
-    def __init__(self, course, branch, path, meta=None):
+    def __init__(self, course, branch, path, meta=None, isSecret=False):
         self.course = course
         self.branch = branch
         self.path = path
+        self.isSecret = isSecret
 
         if meta is not None:
             self.meta = meta
@@ -17,7 +18,12 @@ class Element:
             self.meta = yaml.load(storage.read(self.course, self.branch, self.metaPath()))
 
     def metaPath(self):
-        return os.path.join('content', self.path + '.meta')
+        if self.isSecret:
+            root = 'secret'
+        else:
+            root = 'content'
+
+        return os.path.join(root, self.path + '.meta')
 
     def save(self):
         yaml.dump(self.meta, storage.write(self.course, self.branch, self.metaPath()))
@@ -32,7 +38,12 @@ class Element:
             load_element(self.course, self.branch, parent).removeChild(me)
 
     def move(self, new):
-        storage.rename(self.course, self.branch, self.metaPath(), os.path.join('content', self.getParentPath(), new + '.meta'))
+        if self.isSecret:
+            root = 'secret'
+        else:
+            root = 'content'
+
+        storage.rename(self.course, self.branch, self.metaPath(), os.path.join(root, self.getParentPath(), new + '.meta'))
 
     def getTitle(self):
         (parent, me) = os.path.split(self.path)

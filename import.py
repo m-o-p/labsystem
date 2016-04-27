@@ -6,6 +6,12 @@ import sys
 import re
 import os
 
+from escape import escapePath, unescapePath
+
+
+def unescapePath(path):
+    return path
+
 
 class ImportError(Exception):
     def __init__(self, value):
@@ -95,16 +101,13 @@ def processChildren(sourceZip, targetZip, childrenString):
 
 def rewriteImgTags(data, parentPath):
     def getNewPath(match):
-        mypath = os.path.join('files/view/', match.group(1))
-        newpath = os.path.relpath(mypath, parentPath)
-
-        return match.group(0).replace(match.group(1), newpath)
+        return match.group(0).replace(match.group(1), '$fileroot/' + match.group(1))
 
     return re.sub(r'<img .*?src="(.*?)"', getNewPath, data)
 
 
 def substituteTags(element):
-    withTitle = element['data'].replace('__ELEMENTTITLE__', element['title'])
+    withTitle = element['data'].replace('__ELEMENTTITLE__', '$title')
 
     return withTitle
 
@@ -112,34 +115,43 @@ def substituteTags(element):
 def saveElement(targetZip, element):
     data = yaml.dump(element['meta'])
 
-    targetZip.writestr(element['path'] + '.meta', data.encode())
+    path = element['path']
+
+    if 'isSecret' in element and element['isSecret']:
+        path = re.sub('^content/', 'secret/', path)
+
+    while path + '.meta' in targetZip.namelist():
+        path = path + '_duplicate'
+
+    targetZip.writestr(path + '.meta', data.encode())
 
     if 'data' in element:
         data = element['data']
 
-        element['data'] = rewriteImgTags(data, element['path'])
+        element['data'] = rewriteImgTags(data, path)
         element['data'] = substituteTags(element)
 
-        targetZip.writestr(element['path'] + '.data', element['data'].encode())
+        targetZip.writestr(path + '.data', element['data'].encode())
 
     if 'secret' in element:
-        secretPath = element['path'] + '.meta'
-        secretPath = re.sub('content/', 'secret/', secretPath)
+        secretPath = path + '.secret'
+        secretPath = re.sub('^content/', 'secret/', secretPath)
         targetZip.writestr(secretPath, yaml.dump(element['secret']).encode())
 
 
-def processCollection(sourceZip, targetZip, elementPath):
+def processCollection(sourceZip, targetZip, elementPath, showInCollection):
     source = loadXML(sourceZip, elementPath)
 
     children = processChildren(sourceZip, targetZip, source['contents'])
-    childrenPaths = [child['path'] for child in children if 'indirect' not in child]
+    childrenPaths = [unescapePath(child['path']) for child in children if 'indirect' not in child]
 
     return [{
         'title': source['title'],
-        'path': source['title'],
+        'path': escapePath(source['title']),
         'meta': {
             'type': 'Collection',
-            'children': childrenPaths
+            'children': childrenPaths,
+            'showInCollection': showInCollection
         },
         'children': children
     }]
@@ -152,7 +164,7 @@ def processDisplay(sourceZip, targetZip, elementPath):
 
     return [{
         'title': source['title'],
-        'path': source['title'],
+        'path': escapePath(source['title']),
         'meta': {
             'type': 'Display',
             'displayType': displayType
@@ -181,7 +193,7 @@ def processMC(sourceZip, targetZip, elementPath):
 
     correct = correct[32 - len(questions):32]
 
-    title = contents[:20]
+    title = escapePath(contents[:20].replace("\n", ""))
 
     elements = [{
         'title': title,
@@ -232,7 +244,8 @@ def processMC(sourceZip, targetZip, elementPath):
                 'type': 'Display',
                 'displayType': 'Text'
             },
-            'data': ''
+            'data': '',
+            'isSecret': True
         })
 
         elements.append({
@@ -242,7 +255,8 @@ def processMC(sourceZip, targetZip, elementPath):
                 'type': 'Display',
                 'displayType': 'Text'
             },
-            'data': ''
+            'data': '',
+            'isSecret': True
         })
 
     return elements
@@ -254,7 +268,7 @@ def processQuestion(sourceZip, targetZip, elementPath):
     (displayTypeQ, contentsQ) = parseDisplay(source['question'])
     (displayTypeH, contentsH) = parseDisplay(source['exampleSolution'])
 
-    title = contentsQ[:20]
+    title = escapePath(contentsQ[:20].replace("\n", ""))
 
     return [{
         'title': title,
@@ -284,14 +298,17 @@ def processQuestion(sourceZip, targetZip, elementPath):
             'type': 'Display',
             'displayType': displayTypeH
         },
-        'data': contentsH
+        'data': contentsH,
+        'isSecret': True
     }
     ]
 
 
 def processElement(sourceZip, targetZip, elementType, elementPath):
-    if (elementType == 'c' or elementType == 'C'):
-        return processCollection(sourceZip, targetZip, elementPath)
+    if (elementType == 'c'):
+        return processCollection(sourceZip, targetZip, elementPath, True)
+    elif (elementType == 'C'):
+        return processCollection(sourceZip, targetZip, elementPath, False)
     elif (elementType == 'p'):
         return processDisplay(sourceZip, targetZip, elementPath)
     elif (elementType == 'm'):
@@ -306,11 +323,11 @@ def processAssignment(sourceZip, targetZip, assignmentPath):
     source = loadXML(sourceZip, assignmentPath)
 
     children = processChildren(sourceZip, targetZip, source['contents'])
-    childrenPaths = [child['path'] for child in children if 'indirect' not in child]
+    childrenPaths = [unescapePath(child['path']) for child in children if 'indirect' not in child]
 
     return {
         'title': source['title'],
-        'path': source['title'],
+        'path': escapePath(source['title']),
         'meta': {
             'type': 'Assignment',
             'children': childrenPaths,
@@ -335,7 +352,7 @@ def processLab(sourceZip, targetZip, labPath):
     preLab['meta']['teamwork'] = False
     lab['meta']['teamwork'] = True
 
-    children = [preLab['path'], lab['path']]
+    children = [unescapePath(preLab['path']), unescapePath(lab['path'])]
 
     def processChildren(currentPath, element):
         element['path'] = os.path.join(currentPath, element['path'])

@@ -15,7 +15,10 @@ class CollectionElement(Element):
         elif mode == 'course':
             return ''
         elif mode == 'collection':
-            return ''
+            if self.meta['showInCollection']:
+                return render_template("elements/collection/view.html", element=self)
+            else:
+                return ''
         else:
             raise('Invalid rendering mode')
 
