@@ -6,11 +6,7 @@ import sys
 import re
 import os
 
-from escape import escapePath, unescapePath
-
-
-def unescapePath(path):
-    return path
+from escape import escapePath
 
 
 class ImportError(Exception):
@@ -101,13 +97,13 @@ def processChildren(sourceZip, targetZip, childrenString):
 
 def rewriteImgTags(data, parentPath):
     def getNewPath(match):
-        return match.group(0).replace(match.group(1), '$fileroot/' + match.group(1))
+        return match.group(0).replace(match.group(1), '${fileroot}' + match.group(1))
 
     return re.sub(r'<img .*?src="(.*?)"', getNewPath, data)
 
 
 def substituteTags(element):
-    withTitle = element['data'].replace('__ELEMENTTITLE__', '$title')
+    withTitle = element['data'].replace('__ELEMENTTITLE__', '${title}')
 
     return withTitle
 
@@ -143,7 +139,7 @@ def processCollection(sourceZip, targetZip, elementPath, showInCollection):
     source = loadXML(sourceZip, elementPath)
 
     children = processChildren(sourceZip, targetZip, source['contents'])
-    childrenPaths = [unescapePath(child['path']) for child in children if 'indirect' not in child]
+    childrenPaths = [child['path'] for child in children if 'indirect' not in child]
 
     return [{
         'title': source['title'],
@@ -323,7 +319,7 @@ def processAssignment(sourceZip, targetZip, assignmentPath):
     source = loadXML(sourceZip, assignmentPath)
 
     children = processChildren(sourceZip, targetZip, source['contents'])
-    childrenPaths = [unescapePath(child['path']) for child in children if 'indirect' not in child]
+    childrenPaths = [child['path'] for child in children if 'indirect' not in child]
 
     return {
         'title': source['title'],
@@ -352,7 +348,7 @@ def processLab(sourceZip, targetZip, labPath):
     preLab['meta']['teamwork'] = False
     lab['meta']['teamwork'] = True
 
-    children = [unescapePath(preLab['path']), unescapePath(lab['path'])]
+    children = [preLab['path'], lab['path']]
 
     def processChildren(currentPath, element):
         element['path'] = os.path.join(currentPath, element['path'])

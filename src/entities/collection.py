@@ -16,7 +16,7 @@ class CollectionElement(Element):
             return ''
         elif mode == 'collection':
             if self.meta['showInCollection']:
-                return render_template("elements/collection/view.html", element=self)
+                return render_template("elements/collection/children.html", element=self)
             else:
                 return ''
         else:

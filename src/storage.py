@@ -7,19 +7,10 @@ from git import Repo
 
 from app import app
 
-from escape import escapePath
-
-
-def getRealPath(path):
-    return path
-
-
 shaRegex = re.compile('[a-f0-9]{40}')
 
 
 def read(course, branch, path):
-    path = getRealPath(path)
-
     if shaRegex.match(branch):
         repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
         blob = repo.commit(branch).tree[path]
@@ -37,8 +28,6 @@ class GitStorageError(Exception):
 
 
 def write(course, branch, path):
-    path = getRealPath(path)
-
     if shaRegex.match(branch):
         raise GitStorageError('Can only write to checked out branches')
 
@@ -46,8 +35,6 @@ def write(course, branch, path):
 
 
 def delete(course, branch, path):
-    path = getRealPath(path)
-
     if shaRegex.match(branch):
         raise GitStorageError('Can only delete from checked out branches')
 
@@ -55,8 +42,6 @@ def delete(course, branch, path):
 
 
 def deleteDirectory(course, branch, path):
-    path = getRealPath(path)
-
     if shaRegex.match(branch):
         raise GitStorageError('Can only delete from checked out branches')
 
@@ -105,9 +90,6 @@ def listCourses():
 
 
 def getHistory(course, branch, paths, offset, limit):
-    if paths is not None:
-        paths = map(lambda x: getRealPath(x), paths)
-
     if shaRegex.match(branch):
         repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
         return repo.iter_commits(branch, paths, max_count=limit, skip=offset)

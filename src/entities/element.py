@@ -2,6 +2,7 @@ import yaml
 import os
 
 import storage
+from escape import unescapePath
 
 
 class Element:
@@ -48,7 +49,7 @@ class Element:
     def getTitle(self):
         (parent, me) = os.path.split(self.path)
 
-        return me
+        return unescapePath(me)
 
     def getParentPath(self):
         (parent, me) = os.path.split(self.path)
