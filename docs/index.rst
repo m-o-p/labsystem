@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    internal.rst
+   data.rst
 
 Indices and tables
 ==================
