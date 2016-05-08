@@ -207,6 +207,9 @@ class LiDBInterfaceAnswers {
   }
 
   function deleteFile($team, $iIdx, $fileName) {
-    unlink($this->getUploadDirectory($iIdx, $team).'/'.$fileName);
+  	$filename = $this->getUploadDirectory($iIdx, $team).'/'.$fileName;
+    if (file_exists($filename)){
+    	unlink($filename);
+    }
   }
 }
