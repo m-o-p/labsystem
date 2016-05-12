@@ -40,31 +40,42 @@ class MailFunctionality{
     }
     
     $receiver = '';
+    $allReceivers = ''; // Collect receivers for summary report to sender
+    if ($CCsender){
+    	$receiverUIDs .= ', labsystemReportSender';
+    }
     
     foreach( explode(',', $receiverUIDs) as $receiverUID ){
     	$receiverUID=trim($receiverUID);
 	    // Load receiver data including mail address
-	    $receiverUsrDataArray = $uDBI->getData4( $receiverUID );
-	    $receiverUsrObject = new ElementUser( $receiverUID, 
-	    		                      $receiverUsrDataArray['userName'], 
-	    		 					  $receiverUsrDataArray['foreName'], 
-	    							  $receiverUsrDataArray['name'], 
-	    							  0, 
-	    							  0, 
-	    							  $receiverUsrDataArray['eMail'], 
-	    							  'created just for mail');
-
-	    // replace constants for personalized mails
-	    $text = $this->replaceConstants($text, $receiverUsrObject);
-	    $subject = $this->replaceConstants($subject, $receiverUsrObject);
-	    $receiver = $receiverUsrObject->mailAddress;
+	    if ($receiverUID != 'labsystemReportSender'){
+	    	$receiverUsrDataArray = $uDBI->getData4( $receiverUID );
+	    	$receiverUsrObject = new ElementUser( $receiverUID,
+	    			$receiverUsrDataArray['userName'],
+	    			$receiverUsrDataArray['foreName'],
+	    			$receiverUsrDataArray['name'],
+	    			0,
+	    			0,
+	    			$receiverUsrDataArray['eMail'],
+	    			'created just for mail');
+	    	// replace constants for personalized mails
+	    	$replacedSubject = $this->replaceConstants($subject, $receiverUsrObject);
+	    	$receiver = $receiverUsrObject->mailAddress;
+	    	$allReceivers .= $receiver.PHP_EOL;
+	    	$replacedText = $this->replaceConstants($text, $receiverUsrObject);
+	    } else {
+	    	// Report for sender:
+	    	$replacedSubject = '(report) '.$subject;
+	    	$receiver = $senderMail;
+	    	$replacedText = $text.PHP_EOL.'Sent to:'.PHP_EOL.$allReceivers;
+	    }
 	    
 	    /*$this->printMail*/ 
 	    mail( ($BCC ? $senderMail : $receiver), // TO
-	          '['.$cfg->get("SystemTitle").'] '.$subject,
-	          $text.PHP_EOL.PHP_EOL.
+	          '['.$cfg->get("SystemTitle").'] '.$replacedSubject,
+	          $replacedText.PHP_EOL.PHP_EOL.
 	          stripcslashes($cfg->get('mailFooter')).PHP_EOL,
-	          ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
+// 	          ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
 	          ($BCC ? 'BCC: '.$receiver.PHP_EOL : ''). // BCC
 	          'From: '.$cfg->get('SystemTitle').' <'.$SYSTEMMAIL_SENDER.'>'.PHP_EOL. /* The labsystem is always sending mails using the configured system mail address */
 	    	  'Reply-To: '.$sender.PHP_EOL.
