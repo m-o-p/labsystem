@@ -1,0 +1,10 @@
+<ol class="collection-headers">
+{% for element in element.getChildren() %}
+    {% if element.meta.type == 'Collection' %}
+      <li>
+        {% include "include/element-header.html" %}
+        {{element.render("headers")|safe}}
+      </li>
+    {% endif %}
+{% endfor %}
+</ol>

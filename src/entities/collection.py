@@ -18,7 +18,9 @@ class CollectionElement(Element):
             if self.meta['showInCollection']:
                 return render_template("elements/collection/children.html", element=self)
             else:
-                return ''
+                return render_template("elements/collection/headers.html", element=self)
+        elif mode == 'headers':
+            return render_template("elements/collection/headers.html", element=self)
         else:
             raise('Invalid rendering mode')
 

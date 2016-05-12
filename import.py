@@ -57,6 +57,10 @@ def parseDisplay(contents):
     return ('Text', contents)
 
 
+class ElementNotFound(Exception):
+    pass
+
+
 def findElementById(sourceZip, type, id):
     if type == 'm' or type == 'i':
         regex = re.compile(".*/data/withSolutions/" + type + ('{0:07d}'.format(id)) + ".txt")
@@ -68,7 +72,12 @@ def findElementById(sourceZip, type, id):
 
     regex = re.compile(".*/data/" + type + ('{0:07d}'.format(id)) + ".txt")
 
-    return [x for x in sourceZip.namelist() if regex.match(x)][0]
+    elms = [x for x in sourceZip.namelist() if regex.match(x)]
+
+    if len(elms) == 0:
+        raise ElementNotFound({'type': type, 'id': id})
+
+    return elms[0]
 
 
 def processChildren(sourceZip, targetZip, childrenString):
@@ -276,7 +285,7 @@ def processQuestion(sourceZip, targetZip, elementPath):
             'hasFileUpload': 'hasFileUpload' in source
         },
         'secret': {
-            'credits': int(source['possibleCredits']),
+            'credits': int(float(source['possibleCredits']) * 2),
             'sections': 0
         }
     }, {
@@ -302,9 +311,9 @@ def processQuestion(sourceZip, targetZip, elementPath):
 
 def processElement(sourceZip, targetZip, elementType, elementPath):
     if (elementType == 'c'):
-        return processCollection(sourceZip, targetZip, elementPath, True)
-    elif (elementType == 'C'):
         return processCollection(sourceZip, targetZip, elementPath, False)
+    elif (elementType == 'C'):
+        return processCollection(sourceZip, targetZip, elementPath, True)
     elif (elementType == 'p'):
         return processDisplay(sourceZip, targetZip, elementPath)
     elif (elementType == 'm'):
@@ -339,16 +348,32 @@ def processLab(sourceZip, targetZip, labPath):
     preLabPath = int(source['prelabCollectionIdx'])
     labPath = int(source['labCollectionIdx'])
 
-    preLabPath = findElementById(sourceZip, 'c', preLabPath)
-    labPath = findElementById(sourceZip, 'c', labPath)
+    try:
+        labPath = findElementById(sourceZip, 'c', labPath)
+    except ElementNotFound:
+        labPath = None
 
-    preLab = processAssignment(sourceZip, targetZip, preLabPath)
-    lab = processAssignment(sourceZip, targetZip, labPath)
+    try:
+        preLabPath = findElementById(sourceZip, 'c', preLabPath)
+    except ElementNotFound:
+        preLabPath = None
 
-    preLab['meta']['teamwork'] = False
-    lab['meta']['teamwork'] = True
+    if preLabPath is not None:
+        preLab = processAssignment(sourceZip, targetZip, preLabPath)
+    if labPath is not None:
+        lab = processAssignment(sourceZip, targetZip, labPath)
 
-    children = [preLab['path'], lab['path']]
+    if preLabPath is not None:
+        preLab['meta']['teamwork'] = False
+    if labPath is not None:
+        lab['meta']['teamwork'] = True
+
+    if labPath is not None and preLabPath is not None:
+        children = [preLab['path'], lab['path']]
+    elif preLabPath is not None:
+        children = [preLab['path']]
+    elif labPath is not None:
+        children = [lab['path']]
 
     def processChildren(currentPath, element):
         element['path'] = os.path.join(currentPath, element['path'])
@@ -359,8 +384,10 @@ def processLab(sourceZip, targetZip, labPath):
             for child in element['children']:
                 processChildren(element['path'], child)
 
-    processChildren('content', lab)
-    processChildren('content', preLab)
+    if labPath is not None:
+        processChildren('content', lab)
+    if preLabPath is not None:
+        processChildren('content', preLab)
 
     course = {
         'title': 'Course',
@@ -406,3 +433,11 @@ labPath = [x for x in sourceZip.namelist() if labPathRegex.match(x)][0]
 
 processLab(sourceZip, targetZip, labPath)
 copyImages(sourceZip, targetZip)
+
+if len(sys.argv) > 3:
+    name = sys.argv[3]
+
+    dstPath = os.path.join('data', 'courses', name, 'master')
+    print("Extracting to ", dstPath)
+
+    targetZip.extractall(dstPath)

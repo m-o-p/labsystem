@@ -1,6 +1,11 @@
+<ol class="collection-content">
 {% for element in element.getChildren() %}
-  {% include "include/element-header.html" %}
-  <div class="element-content">
-    {{element.render("collection")|safe}}
-  </div>
+  <li>
+    {% include "include/element-header.html" %}
+
+    <div class="element-content">
+      {{element.render("collection")|safe}}
+    </div>
+  </li>
 {% endfor %}
+</ol>
