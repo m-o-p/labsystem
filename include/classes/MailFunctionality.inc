@@ -65,9 +65,9 @@ class MailFunctionality{
 	    	$replacedText = $this->replaceConstants($text, $receiverUsrObject);
 	    } else {
 	    	// Report for sender:
-	    	$replacedSubject = '(report) '.$subject;
+	    	$replacedSubject = $subject.' (report)';
 	    	$receiver = $senderMail;
-	    	$replacedText = $text.PHP_EOL.'Sent to:'.PHP_EOL.$allReceivers;
+	    	$replacedText = 'Sent to:'.PHP_EOL.$allReceivers.'--'.PHP_EOL.PHP_EOL.$text;
 	    }
 	    
 	    /*$this->printMail*/ 

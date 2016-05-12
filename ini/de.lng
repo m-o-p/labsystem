@@ -317,7 +317,7 @@ message             = "Nachricht"
 individualMails     = "Eine individualle Mail an jeden Empf�nger senden."
 mailViaBcc          = "Mailempf&auml;nger verbergen."
 noCopy2Me           = "Keine Kopie an mich senden."
-copy2Me             = "Eine Kopie dieser Mail(s) an mich senden."
+copy2Me             = "Eine Kopie des Quelltextes dieser Mail und eine Empfängerliste an mich senden."
 
 ; uaMyData.php
 eMail               = "eMail"
