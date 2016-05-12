@@ -61,7 +61,7 @@ class MailFunctionality{
 	    	// replace constants for personalized mails
 	    	$replacedSubject = $this->replaceConstants($subject, $receiverUsrObject);
 	    	$receiver = $receiverUsrObject->mailAddress;
-	    	$allReceivers .= $receiver.PHP_EOL;
+	    	$allReceivers .= '"'.$receiverUsrObject->foreName.' '.$receiverUsrObject->surName.' ('.$receiverUsrObject->currentTeam.')" <'.$receiverUsrObject->mailAddress.'>'.PHP_EOL;
 	    	$replacedText = $this->replaceConstants($text, $receiverUsrObject);
 	    } else {
 	    	// Report for sender:
