@@ -475,6 +475,7 @@ explainSaveElement  = "Das aktuelle Element speichern..."
 explainNext         = "n&auml;chste Seite&gt;&gt;  [ctrl+alt+-&gt;]"
 explainPrev         = "&lt;&lt;vorherige Seite  [ctrl+alt+&lt;-]"
 explainTOC          = "Inhalt... [ctrl+alt+hoch]"
+explainTicket       = "Ein neues Suport Ticket f&uuml;r dieses Element erstellen..."
 
 ;l
 exAllowedToAnswer   = "Darf der Benutzer antworten?"

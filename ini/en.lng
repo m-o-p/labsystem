@@ -473,6 +473,7 @@ explainSaveElement  = "Save the current Element..."
 explainNext         = "next page&gt;&gt; [ctrl+alt+-&gt;]"
 explainPrev         = "&lt;&lt;previous page [ctrl+alt+&lt;-]"
 explainTOC          = "table of contents... [ctrl+alt+UP]"
+explainTicket       = "Create a new support ticket for this element..."
 
 ;l
 exAllowedToAnswer   = "Is the user allowed to answer?"

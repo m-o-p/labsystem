@@ -51,6 +51,7 @@ class EM{ /* ElementMenues */
 //             $fullAddress.
 //             "</span></a>\n".
             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+            EB::ticket ( $fullAddress ).
             EB::history( $theEl->history, $fullAddress ).
             EB::link2Element( $fullAddress, $theEl ).
             //EB::createNew( $elShortcut ).
@@ -76,6 +77,7 @@ class EM{ /* ElementMenues */
     else
       return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
              EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+             EB::ticket ( $fullAddress ).
              EB::history( $theEl->history, $fullAddress ).
              "</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
@@ -142,6 +144,7 @@ class EM{ /* ElementMenues */
             EB::printView( $fullAddress.".all" ).
             // EB::manageElements().
             EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
+            EB::ticket ( $fullAddress ).
             EB::history( $eL->history, $fullAddress ).
             EB::link2Element( $fullAddress, $eL ).
             EB::edit( $fullAddress ).
@@ -150,6 +153,7 @@ class EM{ /* ElementMenues */
                 EB::link2epub( $fullAddress ).
                 EB::printView( $fullAddress.".all" ).
                 EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
+                EB::ticket ( $fullAddress ).
                 EB::history( $eL->history, $fullAddress ).
                 "</div>\n";
   }
@@ -183,6 +187,7 @@ class EM{ /* ElementMenues */
                $menu.
                EB::printView( $fullAddress.".all" ).
                EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
+               EB::ticket ( $fullAddress ).
                EB::history( $eC->history, $fullAddress ).
                //EB::viewStructure( $fullAddress ).
                EB::link2Element( $fullAddress, $eC ).
@@ -228,6 +233,7 @@ class EM{ /* ElementMenues */
                (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
                (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
                (   $nextAddress ?                    EB::next( $nextAddress )  : '' ).
+               EB::ticket ( $fullAddress ).
                EB::history( $eC->history, $fullAddress ).
                "</div>\n".
                "\n\n\t<!-- *************************stop of c-element************************* -->\n\n";
@@ -275,6 +281,7 @@ class EM{ /* ElementMenues */
             ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+            EB::ticket ( $fullAddress ).
             EB::history( $theEl->history, $fullAddress ).
             EB::delete( $fullAddress ).
             // EB::manageElements().
@@ -351,6 +358,7 @@ class EM{ /* ElementMenues */
             EB::viewStructure( $fullAddress ).
             EB::link2Element(  $fullAddress, $eC ).
             EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
+            EB::ticket ( $fullAddress ).
             EB::history( $eC->history, $fullAddress ).
             EB::view(   $fullAddress ).
             //EB::createNew( "c" ).

@@ -296,6 +296,50 @@ height:auto
   table .uaOtherParticipantsTable tr td{
     padding:0.2em;
   }
+
+/******************************* ticket styles *******************************/
+.labsys_mop_ticketElementView{
+	margin-bottom: 5em;
+	background-color: #eee
+}
+
+.labsys_mop_ticketForm{}
+
+.labsys_mop_ticketForm .labsys_mop_ticketLabel{
+	color: #888
+}
+
+.labsys_mop_ticketForm .labsys_mop_ticketInput{
+                    margin: 1px;
+                  	border: solid 1px #4682B4;
+                    text-align: left;
+                    padding: 1px;
+                    padding-left: 5px;
+                    background-color: #f0f0f0;
+                    width: 100%
+}
+
+.labsys_mop_ticketForm .labsys_mop_ticketTextArea{
+                    margin: 1px;
+                  	border: solid 1px #4682B4;
+                    text-align: left;
+                    padding: 1px;
+                    padding-left: 5px;
+                    background-color: #fffff0;
+                    width: 100%;
+                    height:20em
+}
+
+.labsys_mop_ticketForm .labsys_mop_ticketButton{
+                    margin: 1px;
+                  	border: solid 1px #4682B4;
+                    text-align: center;
+                    padding: 5px;
+                    padding-left: 5px;
+                    background-color: #ffff00;
+                    width: 100%
+}
+
 /******************************* form element styles *******************************/
 .labsys_mop_input{
                     margin: 1px;
