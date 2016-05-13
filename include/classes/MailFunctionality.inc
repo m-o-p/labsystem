@@ -58,7 +58,7 @@ class MailFunctionality{
 	    			$receiverUsrDataArray['name'], //$surName
 	    			$userDetailedData['currentTeam'],//$currentTeam
 	    			0,//$userRights
-	    			0,//$userMaximumRights
+	    			//0,//$userMaximumRights
 	    			$receiverUsrDataArray['eMail'],//$mailAddress
 	    			'created just for mail');
 	    	// replace constants for personalized mails
@@ -73,7 +73,7 @@ class MailFunctionality{
 	    	$replacedText = 'Sent to:'.PHP_EOL.$allReceivers.'--'.PHP_EOL.PHP_EOL.$text;
 	    }
 	    
-	    /*$this->printMail*/ 
+	    //$this->printMail 
 	    mail( ($BCC ? $senderMail : $receiver), // TO
 	          '['.$cfg->get("SystemTitle").'] '.$replacedSubject,
 	          $replacedText.PHP_EOL.PHP_EOL.
@@ -120,11 +120,15 @@ class MailFunctionality{
     global $urDBI;
     $urDBI->getAllData();
     // iterate over all users that have rights
+    $receivers = array();
     while( $userRightsData = $urDBI->getNextData() ){
       if (ElementUser::isOfKind($accessRightsMask, $userRightsData["rights"])) {
-        $this->sendMail('', $userRightsData['uid'], $subject, $text);
+        // aggregate users first:
+      	array_push( $receivers, $userRightsData['uid'] );
       }
     }
+    // Send mass mail:
+    $this->sendMail('', implode(',', $receivers), $subject, $text);
   }
 }
 $mailFunc = new MailFunctionality();
