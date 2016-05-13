@@ -390,7 +390,7 @@ class EB{ /* ElementButtons */
   		return;
   	}
   	$link = $url->link2( "../pages/ticket.php?address=".$address.'#subject' );
-  	return EB::mkLink( $link, "<img src=\"../syspix/bug.gif\" width=\"10\" height=\"9\" border=\"0\" alt=\"ticket\" title=\"".$lng->get("explainTicket")."\">" );
+  	return EB::mkLink( $link, "<img src=\"../syspix/button_bug_10x12.gif\" width=\"10\" height=\"12\" border=\"0\" alt=\"ticket\" title=\"".$lng->get("explainTicket")."\">" );
   }
 
   /**
