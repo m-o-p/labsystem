@@ -120,8 +120,11 @@ if (isset($_POST['message'])){
 		$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 	
-		if ($code != 201)
-			throw new Exception('Unable to create ticket: '.$result);
+		if ($code != 201){
+			trigger_error( 'Unable to create ticket: '.$result, E_USER_ERROR );
+			return false;
+			exit;
+		}
 		
 		$ticket_id = (int) $result;
 	}else{
