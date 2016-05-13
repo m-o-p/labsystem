@@ -83,6 +83,7 @@ if (isset($_POST['message'])){
 // 	'attachments' => array(),
 	);
 	$data = array_merge($_POST, $data);
+	$data['link2Element'] = '<a href="'.$data['link2Element'].'">Open the element</a>';
 	
 	#pre-checks
 	if (!$debug){
@@ -137,7 +138,7 @@ $pge->put( '<select name="topicId"'.(isset($_POST['topicId']) ? ' disabled="disa
   <option value="1"'.(isset($_POST['topicId']) && $_POST['topicId']==1 ? ' selected="selected"':'').'>I need help with a lab</option>
 </select>' );
 $pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="message">'.$pge->title.'</label><textarea class="labsys_mop_ticketTextArea" name="message" id="message" onFocus="this.select();"'.($ticket_id!=0?' disabled="disabled"':'').'>'.(isset($_POST['message']) ? $_POST['message'] : 'Your Message...').'</textarea>' );
-$pge->put('<input type="submit" name="login" class="labsys_mop_ticketButton" value="'.($ticket_id==0?$lng->get("save"):'Created ticket '.$ticket_id.'" disabled="disabled').'" />');
+$pge->put('<input type="submit" id="submit-button" class="labsys_mop_ticketButton" value="'.($ticket_id==0?$lng->get("save"):'Created ticket '.$ticket_id.'" disabled="disabled').'" />');
 
 if ($debug) {
 	$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="parentID">ParentID</label>' );
