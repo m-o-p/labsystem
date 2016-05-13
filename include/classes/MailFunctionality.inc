@@ -27,7 +27,7 @@ class MailFunctionality{
    * @param Boolean $BCC                 Send mail via BCC?
    */
   function sendMail( $sender, $receiverUIDs, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
-    global $cfg, $usr, $uDBI, $SYSTEMMAIL_SENDER;
+    global $cfg, $usr, $uDBI, $SYSTEMMAIL_SENDER, $urDBI;
     
     if (empty($sender)){
     	$sender = '<noreply@'.$_SERVER['SERVER_NAME'].'>';
@@ -50,13 +50,16 @@ class MailFunctionality{
 	    // Load receiver data including mail address
 	    if ($receiverUID != 'labsystemReportSender'){
 	    	$receiverUsrDataArray = $uDBI->getData4( $receiverUID );
-	    	$receiverUsrObject = new ElementUser( $receiverUID,
-	    			$receiverUsrDataArray['userName'],
-	    			$receiverUsrDataArray['foreName'],
-	    			$receiverUsrDataArray['name'],
-	    			0,
-	    			0,
-	    			$receiverUsrDataArray['eMail'],
+	    	$userDetailedData = $urDBI->getData4( $receiverUID );
+	    	$receiverUsrObject = new ElementUser( 
+	    			$receiverUID,//$uid
+	    			$receiverUsrDataArray['userName'], //$userName
+	    			$receiverUsrDataArray['foreName'], //$foreName
+	    			$receiverUsrDataArray['name'], //$surName
+	    			$userDetailedData['currentTeam'],//$currentTeam
+	    			0,//$userRights
+	    			0,//$userMaximumRights
+	    			$receiverUsrDataArray['eMail'],//$mailAddress
 	    			'created just for mail');
 	    	// replace constants for personalized mails
 	    	$replacedSubject = $this->replaceConstants($subject, $receiverUsrObject);

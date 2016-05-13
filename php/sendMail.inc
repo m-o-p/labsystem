@@ -57,9 +57,11 @@ if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 			// add all receivers
 			$where= substr($nextID,2)."='1'";
 			$result = $uDBI->myDBC->mkSelect( $what, $cfg->get('UserDatabaseTable'), $where );
+			$receivers = array();
 			while( $data = mysql_fetch_array( $result ) ){
-				$mailFunc->sendMail($sender, $data[ 'uid' ], $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
+				array_push( $receivers, $data[ 'uid' ] );
 			}
+			$mailFunc->sendMail($sender, implode(',', $receivers), $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
 		} else {
 		// // Useradmin "whole course" special treatment
 
