@@ -40,6 +40,12 @@ $config = array(
 	'key'=>'B54467A9901CD2AECA9BB39D32712B39' //<api key>
 );
 
+$ticketCategories = array(
+		"Help! with a lab",
+		"Feedback/ Suggestion",
+		"Inquiry about a correction"
+);
+
 require( "../include/init.inc" );
 require( "../php/getFirstLastFinal.inc" ); 
 
@@ -130,14 +136,19 @@ if ($ticket_id==0){
 	$pge->put( '<div class="labsys_mop_ticketElementView">'.$lastElement->show( $url->get('address'), '' ).'</div>' );
 }
 
+$pge->put( '<h1>'.$pge->title.'</h1>'.PHP_EOL);
 $pge->put( '<form class="labsys_mop_ticketForm" name="ticket" method="post" action="#">');
 $pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="subject">subject</label><input class="labsys_mop_ticketInput" name="subject" id="subject" value="'.(isset($_POST['subject']) ? $_POST['subject'] : $lastElement->title.' <- '.$element->title).'"'.($ticket_id!=0?' disabled="disabled"':'').' /></div>' );
-// 2 = Feedback / Suggestion, 1 = I need help with a lab
-$pge->put( '<select name="topicId"'.(isset($_POST['topicId']) ? ' disabled="disabled"':'').'>
-  <option value="2"'.(isset($_POST['topicId']) && $_POST['topicId']==2 ? ' selected="selected"':'').'>Feedback/ Suggestion</option>
-  <option value="1"'.(isset($_POST['topicId']) && $_POST['topicId']==1 ? ' selected="selected"':'').'>I need help with a lab</option>
-</select>' );
-$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="message">'.$pge->title.'</label><textarea class="labsys_mop_ticketTextArea" name="message" id="message" onFocus="this.select();"'.($ticket_id!=0?' disabled="disabled"':'').'>'.(isset($_POST['message']) ? $_POST['message'] : 'Your Message...').'</textarea>' );
+// Defined in $ticketCategories array.
+$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="topicId">category:</label> ');
+$pge->put( '<select name="topicId"'.(isset($_POST['topicId']) ? ' disabled="disabled"':'').'>');
+		$counter = 0;
+		foreach ($ticketCategories as $ticketCategory){
+			$counter++;
+			$pge->put( '<option value="'.$counter.'"'.(isset($_POST['topicId']) && $_POST['topicId']==$counter ? ' selected="selected"':'').'>'.$ticketCategory.'</option>'.PHP_EOL );
+		}			
+$pge->put( '</select>' );
+$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="message">message</label><textarea class="labsys_mop_ticketTextArea" name="message" id="message" onFocus="this.select();"'.($ticket_id!=0?' disabled="disabled"':'').'>'.(isset($_POST['message']) ? $_POST['message'] : 'Your Message...').'</textarea>' );
 $pge->put('<input type="submit" id="submit-button" class="labsys_mop_ticketButton" value="'.($ticket_id==0?$lng->get("save"):'Created ticket '.$ticket_id.'" disabled="disabled').'" />');
 
 if ($debug) {
