@@ -91,9 +91,11 @@ function showExampleSolutionHere(iIdx,teamNr){
 	exampleSolutionElement=document.getElementById("i"+iIdx+"_exampleSolution");
 	targetElement=document.getElementById("i"+iIdx+"_exampleSolution_"+teamNr);
 	if (targetElement.className==exampleSolutionElement.className){
+		// close
 		targetElement.innerHTML = "";
 		targetElement.className=exampleSolutionElement.className+"_hidden";
 	}else{
+		//open
 		targetElement.innerHTML = exampleSolutionElement.innerHTML;
 		targetElement.className=exampleSolutionElement.className;
 	}
