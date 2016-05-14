@@ -673,7 +673,7 @@ class LiElement extends Element{
                                 while ( ($nextTeam = $this->uaDBI->getNextData()) ){
                                   $this->loadUserData4( $nextTeam );
                                   $link2ThisCorrection=str_replace('seeMe=all', 'seeMe='.$this->utDBI->getUID4( $nextTeam, $this->idx ), $url->link2('../pages/view.php?address='.$url->get('address'))).'#'.$fullAddress.'.'.$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' );
-                                  $answers .= '<div class="labsys_mop_i_teamnr"><a href="javascript:showExampleSolutionHere('.$this->idx.','.$nextTeam.')">s |</a> <a href="'.$link2ThisCorrection.'">'.$lng->get("team")." ".($url->available('pseudoNames')?'':$nextTeam)."</a></div>\n".
+                                  $answers .= '<div class="labsys_mop_i_teamnr"><a href="javascript:showExampleSolutionHere('.$this->idx.','.$nextTeam.')" title="'.$lng->get('exmpleSolutionHere').'">s |</a> <a href="'.$link2ThisCorrection.'">'.$lng->get("team")." ".($url->available('pseudoNames')?'':$nextTeam)."</a></div>\n".
                                     		  '<div class="labsys_mop_i_example_solution_hidden" id="i'.$this->idx.'_exampleSolution_'.$nextTeam.'"></div>'.PHP_EOL.
                                               $this->showAnswerData( $fullAddress );
                                 }
