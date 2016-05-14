@@ -313,11 +313,13 @@ class LiElement extends Element{
   
       // Resample
       $image_p = imagecreatetruecolor ( $width, $height );
-      switch(strtolower ( substr ( $fileSrc, - 3 ) )){
-        case 'gif':
+      
+      // Get mime
+      switch(mime_content_type($fileSrc)){
+        case 'image/gif':
           $image = imagecreatefromgif ( $fileSrc );
           break;
-        case 'png':
+        case 'image/png':
           $image = imagecreatefrompng ( $fileSrc );
           break;
         default:
