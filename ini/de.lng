@@ -425,6 +425,7 @@ closeLab            = "Lab schlie&szlig;en"
 showAllUsersAnswers = "Antworten ALLEr BENUTZER"
 stopSeeingData      = "Ich will keine Daten von anderen mehr sehen." ;; below the user statistic page if the corrector is viewing someones data
 hideExampleSolutionInThisTab = "Musterl&ouml;sungen ausblenden"
+exmpleSolutionHere  = "Musterl&ouml;sungen hier anzeigen/ ausblenden."
 pseudoNames         = "Pseudonamen verwenden"
 updateStatus        = "Status aktualisieren"
 statusOfAllLabs     = "Statistik aller Labs."

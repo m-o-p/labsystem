@@ -83,3 +83,18 @@ function zoomPreviewImage(imageTag){
 		imageTag.style.display="inline";
 	}
 }
+
+/**
+ * Shows the example solution of this input for the given team.
+ */
+function showExampleSolutionHere(iIdx,teamNr){
+	exampleSolutionElement=document.getElementById("i"+iIdx+"_exampleSolution");
+	targetElement=document.getElementById("i"+iIdx+"_exampleSolution_"+teamNr);
+	if (targetElement.className==exampleSolutionElement.className){
+		targetElement.innerHTML = "";
+		targetElement.className=exampleSolutionElement.className+"_hidden";
+	}else{
+		targetElement.innerHTML = exampleSolutionElement.innerHTML;
+		targetElement.className=exampleSolutionElement.className;
+	}
+}

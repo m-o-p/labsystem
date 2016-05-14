@@ -1136,7 +1136,11 @@ fieldset{
                     padding: 5px 5px 5px 5px;
                     background-color: #ffa;
                     border: solid 1px #f0f0a0;
-  } 
+  }
+  
+  .labsys_mop_i_example_solution_hidden{
+  					display:none;
+  }  
   
   /* Has to be limited as much as possible since the pastings have huge width sometimes */
   .labsys_mop_i_example_solution pre {

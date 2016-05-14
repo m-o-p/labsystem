@@ -423,6 +423,7 @@ closeLab            = "close the lab"
 showAllUsersAnswers = "Answers of ALL USERS"
 stopSeeingData      = "Stop seeing someones data." ;; below the user statistic page if the corrector is viewing someones data
 hideExampleSolutionInThisTab = "Hide example solutions"
+exmpleSolutionHere  = "Open/ close the example solution here."
 pseudoNames         = "Show pseudo names"
 updateStatus        = "update status"
 statusOfAllLabs     = "Click here to see the statistics of all labs."
