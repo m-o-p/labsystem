@@ -672,7 +672,8 @@ class LiElement extends Element{
                                 $this->uaDBI->getAllTeams( $this->idx/*, "team"*/ ); // as is unsorted/ order of answering
                                 while ( ($nextTeam = $this->uaDBI->getNextData()) ){
                                   $this->loadUserData4( $nextTeam );
-                                  $answers .= "<div class=\"labsys_mop_i_teamnr\">".$lng->get("team")." ".($url->available('pseudoNames')?'':$nextTeam)."</div>\n".
+                                  $link2ThisCorrection=$url->link2('../pages/view.php?address='.$url->get('address').'&seeMe='.$this->utDBI->getUID4( $nextTeam, $this->idx ).'#'.$fullAddress.'.'.$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' ));
+                                  $answers .= '<div class="labsys_mop_i_teamnr"><a href="'.$link2ThisCorrection.'">'.$lng->get("team")." ".($url->available('pseudoNames')?'':$nextTeam)."</a></div>\n".
                                               $this->showAnswerData( $fullAddress );
                                 }
       }
