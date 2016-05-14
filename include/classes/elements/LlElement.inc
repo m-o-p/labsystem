@@ -1367,7 +1367,7 @@ class LlElement extends Element{
   		$thumbFilePath = $filePath.'.thumb.jpg';
   		LiElement::checkThumb( $filePath, $thumbFilePath );
   		return ' <a href="'.$url->link2($filePath).'">' .
-  				'<img src="'.$thumbFilePath.'">'.
+  				'<img src="'.$thumbFilePath.'" onclick="zoomPreviewImage(this); return false">'.
   				'</a>';
   	}
   }

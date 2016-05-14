@@ -60,3 +60,26 @@ function dirtyWarning(){
   if (isDirty) return confirm(discardChangesWarning);
   return retVal;
 }
+
+/**
+ * Zooms and unzooms a thumbnail.
+ * Used in LiElement.inc.
+ **/
+if (typeof String.prototype.endsWith !== 'function') {
+    String.prototype.endsWith = function(suffix) {
+        return this.indexOf(suffix, this.length - suffix.length) !== -1;
+    };
+}
+
+function zoomPreviewImage(imageTag){
+	var mySuffix=".thumb.jpg";
+	if (imageTag.src.endsWith(mySuffix)){
+		// We see the thumbnail.
+		imageTag.src=imageTag.src.substring(0,imageTag.src.length-mySuffix.length);
+		imageTag.style.display="block";
+	}else{
+		// We see the big image.
+		imageTag.src=imageTag.src+mySuffix;
+		imageTag.style.display="inline";
+	}
+}

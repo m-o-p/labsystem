@@ -356,7 +356,7 @@ class LiElement extends Element{
       $thumbFilePath = $filePath.'.thumb.jpg';
       $this->checkThumb( $filePath, $thumbFilePath );
       return ' <a href="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName)).'">' .
-        '<img src="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName.'.thumb.jpg')).'">'.
+        '<img src="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName.'.thumb.jpg')).'" onclick="zoomPreviewImage(this); return false">'.
         '</a>';
     }
   }
@@ -394,6 +394,9 @@ class LiElement extends Element{
                 '</a> '.
                 '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename']).'&download=true').'">' .
                 '<img src="../syspix/button_down_13x12.gif">'.
+                '</a> '.
+                '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' .
+                '<img src="../syspix/button_view_13x12.gif">'.
                 '</a> '.
                 '<div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.
                 $this->thumbnailHTML($this->idx, $this->getDataOfTeam, $pathInfo['basename']).
