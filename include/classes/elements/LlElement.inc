@@ -31,6 +31,7 @@ require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 require( INCLUDE_DIR."/classes/elements/LlDBInterfaceUidStatus.inc" );
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+require_once( INCLUDE_DIR.'/classes/MailFunctionality.inc' );
 
 class LlElement extends Element{
   var $uniqueID;              // Unique ID for export
@@ -156,7 +157,6 @@ class LlElement extends Element{
         $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
         // send an email if this just got closed
         if ($this->isAfter1stSched && !$this->isInSched && $this->idx!=1){
-          require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
           $mailFunc->mail2groupWithRights( IS_CORRECTOR,
                                            $this->title.' '.$lng->get('labScheduleOverExpl').' ('.$lng->get('team').' '.$usr->currentTeam.')',
                                            'l'.$this->idx.': '.$this->title.PHP_EOL.
@@ -2076,7 +2076,6 @@ class LlElement extends Element{
             $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
             // Collect all team's participant mail addresses
             // Send an email to the participants
-            require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
             $mailFunc->sendMail(  '',
                                   $labStatus['uid'],
                                   $this->title.' ('.$lng->get('team').' '.$labStatus['currentTeam'].'): '.$lng->get('labCorrExplain'),
