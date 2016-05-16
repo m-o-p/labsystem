@@ -74,7 +74,7 @@ class DBInterfaceUserRights {
     }else{
       return Array( "rights"      => $data['rights'],
 					// This ensures you cannot get rights you do not have even though they somehow managed to get into your DB row:
-      				"enabledRights"      => ( !isset($data['enabledRights']) ||  empty($data['enabledRights'] || ($data['rights']&$data['enabledRights']!=$data['enabledRights'])) ? $data['rights'] : $data['enabledRights'] ),
+      				"enabledRights"      => ( !isset($data['enabledRights']) || empty($data['enabledRights'] || ($data['rights']&$data['enabledRights']!=$data['enabledRights'])) ? $data['rights'] : $data['enabledRights'] ),
                     "currentTeam" => $data['currentTeam'],
                     "history"     => $data['history'] );
     }
@@ -96,7 +96,7 @@ class DBInterfaceUserRights {
   * @param $currentTeam       The users currentTeam.
   * @param $history           If present this is set after the user's name.
   */
-  function setData4( $uid, $rights="", $enabledRights='', $currentTeam="", $history = "" ){
+  function setData4( $uid, $rights='', $enabledRights='', $currentTeam='', $history = '' ){
     global $usr, $cfg;
     $toSet = "";
     $toSet = ( !empty($rights) ?       "rights='".$rights."', " : '' ).

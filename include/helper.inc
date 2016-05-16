@@ -49,8 +49,9 @@ function rightsBox( $name, $value, $rights, $disabled=false ){
   global $lng, $usr, $pge;
   return "<input type=\"checkbox\" id=\"".$name."\" name=\"".$name."\" value=\"".$value."\" tabindex=\"".$pge->nextTab++."\"".
          ( $usr->isOfKind($value, $rights) ?  " checked=\"checked\"" : '').
-         ( $disabled ? " disabled=\"disabled\"" : '' ).
-         " onchange='isDirty=true'><label for=\"".$name."\" class=\"labsys_mop_input_field_label\">".infoArrow( $lng->get("Explain_UR_".$value), $disabled )."</label>"/*."\n" removed to save space... */;
+         ( $disabled ? " disabled readonly" : '' ).
+         " onchange='isDirty=true'><label for=\"".$name."\" class=\"labsys_mop_input_field_label\">".infoArrow( $lng->get("Explain_UR_".$value), $disabled )."</label>".
+         (!$disabled ? '':'<input type="hidden" name="'.$name.'" value="'.$value.'"/>')/*."\n" removed to save space... */;
 }
 
 /**

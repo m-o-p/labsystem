@@ -71,12 +71,17 @@ class Usr extends ElementUser{
   	$this->currentTeam              = $instanceData['currentTeam'];
   	$this->userRights               = $instanceData['enabledRights'];
   	// The config specified user rights editor gets those rights for bootstrapping:
-  	if ($cfg->get('RightsAdminUsername')){
+  	if ($cfg->get('RightsAdminUsername') == $this->userName){
   		$this->userRights =  $this->userRights | intval(IS_USER_RIGHTS_EDITOR);
   	}
   	$this->userMaximumRights        = $instanceData['rights'];
   	$this->mailAddress              = $globalData['eMail'];
 
+  	// The maximum rights might have changed in the meantime...
+  	if ($this->userRights > $this->userMaximumRights){
+  		$this->userRights = $this->userMaximumRights; // ensure never to have more rights than currently allowed.
+  	}
+  	
   	// Initialize them...
   	$this->iSeeUID='';
   	$this->iSeeDesc='nobody is seen';
@@ -186,6 +191,13 @@ class Usr extends ElementUser{
       }
       return $userData; 
     }
+  }
+  
+  function setCurrentRights( $newRights ){
+  	global $urDBI;
+  	$approvedRights = ($this->isOfKind($newRights, $this->userMaximumRights)?$newRights:$this->userMaximumRights);
+  	$this->userRights = $approvedRights; // set the rights for this execuion cycle as well...
+  	$urDBI->setData4( $this->uid, '', $approvedRights);
   }
 }
 $usr = new Usr; /** create instance */

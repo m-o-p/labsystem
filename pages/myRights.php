@@ -46,31 +46,23 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
 // note
   if ( $lng->get("myRightsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("myRightsNote")."</div>\n" );
 
-require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
-
-$urDBI = new DBInterfaceUserRights();
-$data = $urDBI->getData4( $usr->uid );
-
-$newRightsSubmitted = false;
 $newUsrRights = 0;
 
-$pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myRightsEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/changeMyRights.php")."\">\n".
-           "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
-           "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/myRights.php\">\n".
-           "<fieldset><legend>".$lng->get("rights").' ('.$usr->userRights.")</legend>\n".
+$pge->put( '<FORM class="labsys_mop_std_form" NAME="myRightsEdit" METHOD="POST" ACTION="#">'.PHP_EOL.
+           "<fieldset><legend>".$lng->get("rights").' ('.$usr->userRights.'/'.$usr->userMaximumRights.')</legend>'.PHP_EOL.
            "<div class=\"labsys_mop_in_fieldset\">\n" );
 // user's possible rights
-  for ($i=2; $i<=MAX_USER_ROLE; $i=$i<<1){
-    if ( $usr->isOfKind( $i, $data['rights'] ) ){ // does the user have this right?
+  for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1){
+    if ( $usr->isOfKind( $i, $usr->userMaximumRights ) ){ // does the user have this right?
     	if (isset($_POST['UR_'.$i]) && $_POST['UR_'.$i]==$i ){
     		$newUsrRights += $i;
-    		$newRightsSubmitted = true;
     	}
-      $pge->put( rightsBox( "UR_".$i, $i, (isset($_POST) ? $newUsrRights : $usr->userRights), false )."<label for=\"UR_".$i."\" class=\"labsys_mop_input_field_label\">".$lng->get("Explain_UR_".$i)." ($i)</label><br>\n" );
+      $pge->put( rightsBox( "UR_".$i, $i, (!empty($_POST) ? $newUsrRights : $usr->userRights), ($i==1) )."<label for=\"UR_".$i."\" class=\"labsys_mop_input_field_label\">".$lng->get("Explain_UR_".$i)." ($i)</label><br>\n" );
     }
   }
-  if ($newRightsSubmitted){
-  	
+  if (!empty($_POST) && ($newUsrRights != $usr->userRights)){
+  	$usr->setCurrentRights($newUsrRights);
+  	makeLogEntry( 'system', 'user rights changed to '.$newUsrRights.'/'.$usr->userMaximumRights );
   }
     
 $pge->put( "</div>\n".
