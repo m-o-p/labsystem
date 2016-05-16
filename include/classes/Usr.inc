@@ -74,6 +74,11 @@ class Usr extends ElementUser{
   	$this->userMaximumRights        = $instanceData['rights'];
   	$this->mailAddress              = $globalData['eMail'];
   	
+  	// If the user did not specify rights restrictions, give the full rights
+  	if (empty($this->userRights)){
+  		$this->userRights = $this->userMaximumRights;
+  	}
+  	
   	// Initialize them...
   	$this->iSeeUID='';
   	$this->iSeeDesc='nobody is seen';
