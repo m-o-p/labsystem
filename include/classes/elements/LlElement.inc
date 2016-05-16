@@ -85,7 +85,7 @@ class LlElement extends Element{
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
   function LlElement( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
-    global $CDBI, $usr, $sDBI, $cfg, $lng, $url;
+    global $CDBI, $usr, $sDBI, $cfg, $lng, $url, $mailFunc;
     $this->elementId                = "l";
 
     $this->idx                      = $idx;
@@ -1972,7 +1972,7 @@ class LlElement extends Element{
   *  - is corrected state ( all checkmarks set? )
   */
   function updateStatus(){
-    global $url, $lng, $usr;
+    global $url, $lng, $usr, $mailFunc;
 
     // If you encounter problems with the statistic or want to recalculate it you have
     // to perform both following steps

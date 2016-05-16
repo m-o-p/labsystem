@@ -292,7 +292,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
         $totaltime = round( ($endtime - $pagecreation_starttime), 4);
 
         echo '<span style="color:#888">*:'.$totaltime.'sec '.
-            '<a href="http://sourceforge.net/p/labsystem/bugtracker/new/" title="'.
+            '<a href="https://github.com/m-o-p/labsystem/issues/new?title=Explanatory%20description&body='.urlencode('http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . $_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI']).'" title="'.
             $lng->get("newTicket").'"><img src="../syspix/bug.gif" width="10" height="9" onmouseover="this.setAttribute(\'src\', \'../syspix/bug_hover.gif\')" onmouseout="this.setAttribute(\'src\', \'../syspix/bug.gif\')"></a> '.
              '| </span>';
 
@@ -301,8 +301,8 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
             *   Please keep the link to the project page here to enable other people to find and use the system...
             *   Thank you!
             */
-          echo(' &copy; <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem"></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
-               $_SERVER['SERVER_NAME'].'" target="_blank">mop</a> 2005-2014'); // Please do not remove this acknowledgement to me thanks!
+          echo(' <span style="color:#888">|</span> <a href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" style="border: 0;" alt="labsystem"></a> <a href="http://www.pahl.de?site=__contact&amp;subject=labsystem@'.
+               $_SERVER['SERVER_NAME'].'" target="_blank">mop</a>'); // Please do not remove this acknowledgement to me thanks!
         ?>
       </td></tr>
     </table>
