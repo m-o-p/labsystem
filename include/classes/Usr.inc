@@ -69,16 +69,14 @@ class Usr extends ElementUser{
   	$this->foreName                 = $globalData['foreName'];
   	$this->surName                  = $globalData['name'];
   	$this->currentTeam              = $instanceData['currentTeam'];
+  	$this->userRights               = $instanceData['enabledRights'];
   	// The config specified user rights editor gets those rights for bootstrapping:
-  	$this->userRights               = ( !$cfg->get("RightsAdminUsername") ? $instanceData['enabledRights'] : $instanceData['enabledRights'] | IS_USER_RIGHTS_EDITOR);
+  	if ($cfg->get('RightsAdminUsername')){
+  		$this->userRights =  $this->userRights | intval(IS_USER_RIGHTS_EDITOR);
+  	}
   	$this->userMaximumRights        = $instanceData['rights'];
   	$this->mailAddress              = $globalData['eMail'];
-  	
-  	// If the user did not specify rights restrictions, give the full rights
-  	if (empty($this->userRights)){
-  		$this->userRights = $this->userMaximumRights;
-  	}
-  	
+
   	// Initialize them...
   	$this->iSeeUID='';
   	$this->iSeeDesc='nobody is seen';
