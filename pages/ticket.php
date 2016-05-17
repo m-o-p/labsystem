@@ -128,7 +128,7 @@ if (isset($_POST['message'])){
 		
 		$ticket_id = (int) $result;
 	}else{
-		$pge->put('<div class="labsys_mop_ticketElementView">'.json_encode($data).'</div>');
+		$pge->put('<div class="labsys_mop_ticketElementView">'.htmlentities(json_encode($data)).'</div>');
 		$ticket_id = 23;
 	}
 	
