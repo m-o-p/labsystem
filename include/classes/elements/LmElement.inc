@@ -393,7 +393,7 @@ class LmElement extends Element{
     if ($this->question == ""){ echo "'()"; exit; }
 
     parseHTML( $this->question ); // Process [HTML].
-    $this->question( $pge->replaceConstants( $this->question ) ); // Process custon fields
+    $this->question = ( $pge->replaceConstants( $this->question ) ); // Process custon fields
 
     $epubExporter = LSE_Exporter::getInstance();
     $answerArray = array();
