@@ -723,7 +723,7 @@ class LiElement extends Element{
     }
 
     parseHTML( $this->question );
-    $pge->replaceConstants( $this->question ); // Process custon fields
+    $this->question = $pge->replaceConstants( $this->question ); // Process custon fields
 
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Li',

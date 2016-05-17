@@ -393,7 +393,7 @@ class LmElement extends Element{
     if ($this->question == ""){ echo "'()"; exit; }
 
     parseHTML( $this->question ); // Process [HTML].
-    $pge->replaceConstants( $this->question ); // Process custon fields
+    $this->question( $pge->replaceConstants( $this->question ) ); // Process custon fields
 
     $epubExporter = LSE_Exporter::getInstance();
     $answerArray = array();
@@ -404,7 +404,7 @@ class LmElement extends Element{
     for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
       parseHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
       //$pge->replaceConstants( $this->answerArray[ $this->displayPermutation[$i] ] ); // Process custon fields
-      $answerArray[] = $this->answerArray[ $this->displayPermutation[$i] ] ;
+      $answerArray[] = $pge->replaceConstants( $this->answerArray[ $this->displayPermutation[$i] ] );
       // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ ).'<br>' );
     }
 

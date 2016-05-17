@@ -135,9 +135,8 @@ class LpElement extends Element{
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
     parseHTML( $this->contents );              // Process [HTML]. (../include/helper.inc).
-    $pge->replaceConstants( $this->contents ); // Process custon fields
 
-    return $this->contents;
+    return $pge->replaceConstants( $this->contents ); // Process custon fields;
   }
 
 // The next functions are used for the element's edit page. *************************************************
