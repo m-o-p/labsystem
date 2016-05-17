@@ -61,6 +61,6 @@ if ( isset($_SESSION['uid']) &&/* if one of the fields is available all must be 
       */
     ) {
   $usr = new Usr($_SESSION['uid']);
-  //$usr->printMe();
+  //echo(nl2br($usr->printMe()));
 }
 ?>

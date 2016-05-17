@@ -52,6 +52,19 @@ class ElementUser {
     $this->mailAddress              = $mailAddress;
     $this->history                  = $history;
   }
+  
+
+  function printMe(){
+  	return htmlentities('uid: '.$this->uid.PHP_EOL.
+  		   'userName: '.$this->userName.PHP_EOL.
+  		   'foreName: '.$this->foreName.PHP_EOL.
+  		   'surName: '.$this->surName.PHP_EOL.
+  		   'currentTeam: '.$this->currentTeam.PHP_EOL.
+  		   'userRights: '.$this->userRights.PHP_EOL.
+  		   'userMaximumRights: '.$this->userMaximumRights.PHP_EOL.
+  		   'mailAddress: '.$this->mailAddress.PHP_EOL.
+  		   'history: '.$this->history);
+  }
 
   /**
   * Checks if the $usr->userRights or $ownRole are fulfilled.

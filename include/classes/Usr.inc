@@ -60,14 +60,10 @@ class Usr extends ElementUser{
    */
   function __construct1( $uid ){
   	global $urDBI, $cfg, $url;
-  	// Load the user data from the two data bases:
-  	$globalData = $this->getGlobalUserData( $uid );
+  	// Load the instance specific user data:
   	$instanceData = $urDBI->getData4( $uid );
 
   	$this->uid                      = $uid;
-  	$this->userName                 = $globalData['userName'];
-  	$this->foreName                 = $globalData['foreName'];
-  	$this->surName                  = $globalData['name'];
   	$this->currentTeam              = $instanceData['currentTeam'];
   	$this->userRights               = $instanceData['enabledRights'];
   	// The config specified user rights editor gets those rights for bootstrapping:
@@ -75,6 +71,15 @@ class Usr extends ElementUser{
   		$this->userRights =  $this->userRights | intval(IS_USER_RIGHTS_EDITOR);
   	}
   	$this->userMaximumRights        = $instanceData['rights'];
+
+  	// Load the globally defined data:
+  	// !This requires the rights to be set!
+  	$globalData = $this->getGlobalUserData( $uid );
+  	 
+  	$this->userName                 = $globalData['userName'];
+  	$this->foreName                 = $globalData['foreName'];
+  	$this->surName                  = $globalData['name'];
+
   	$this->mailAddress              = $globalData['eMail'];
 
   	// It might be handy to have different rights in different tabs only... Here we go:
@@ -89,10 +94,6 @@ class Usr extends ElementUser{
   	// Initialize them...
   	$this->iSeeUID='';
   	$this->iSeeDesc='nobody is seen';
-  }
-  
-  function printMe(){
-  	print_r( get_class_vars( $this ));
   }
 
   /**
@@ -177,8 +178,8 @@ class Usr extends ElementUser{
   */
 
   function getGlobalUserData( $uid ){
-    global $usr, $url, $lng, $uDBI;
-    if ( $usr->isOfKind( IS_USER ) ){ // (not) only correctors need to know about other members
+    global $url, $lng, $uDBI;
+    if ( $this->isOfKind( IS_USER ) ){ // (not) only correctors need to know about other members
                                       // this function is called on the statistics page as well
                                       // if you restrict to correctors users will not see other user's names
                                       // you should remove the history then as well in the statistics
@@ -188,10 +189,12 @@ class Usr extends ElementUser{
         $userData['name'] = "UID ".$uid;
         $userData['foreName'] = $lng->get("unknown");
         $userData['userName'] = $lng->get("unknown");
+        $userData['eMail'] = 'me@unknown.tld';
       }else{
       	$userData['name'] = ( $url->available('pseudoNames') ? randomName():$globalUserData['name'] );
       	$userData['foreName'] = ( $url->available('pseudoNames') ? randomName():$globalUserData['foreName']);
       	$userData['userName'] = ( $url->available('pseudoNames')? randomName():$globalUserData['userName'] );
+      	$userData['eMail'] = $globalUserData['eMail'];
       }
       return $userData; 
     }
