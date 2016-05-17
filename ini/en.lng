@@ -83,6 +83,7 @@ Explain_UR_128      = "is able to correct the closed labs"                  ; IS
 Explain_UR_256      = "is able to view the example solutions"               ; IS_EX_SOLUTION_VIEWER
 Explain_UR_512      = "is able to administrate users at the uai"            ; IS_DB_USER_ADMIN (only necessary if you use the uai)
 Explain_UR_1024     = "is able to edit and create config, css, menu files in the uai" ; IS_CONFIG_EDITOR (only necessary if you edit configs in the uai)
+changeRightsInThisTabOnly = "Change user rights in this TAB only."
 
 
 ;; page titles ****************************************************************************************

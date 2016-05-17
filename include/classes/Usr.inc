@@ -59,7 +59,7 @@ class Usr extends ElementUser{
    * $uid The UID of the user.
    */
   function __construct1( $uid ){
-  	global $urDBI, $cfg;
+  	global $urDBI, $cfg, $url;
   	// Load the user data from the two data bases:
   	$globalData = $this->getGlobalUserData( $uid );
   	$instanceData = $urDBI->getData4( $uid );
@@ -77,6 +77,10 @@ class Usr extends ElementUser{
   	$this->userMaximumRights        = $instanceData['rights'];
   	$this->mailAddress              = $globalData['eMail'];
 
+  	// It might be handy to have different rights in different tabs only... Here we go:
+  	if ($url->available('myRights') && is_numeric($url->get('myRights'))){
+  		$this->userRights = intval($url->get('myRights'));
+  	}
   	// The maximum rights might have changed in the meantime...
   	if ($this->userRights > $this->userMaximumRights){
   		$this->userRights = $this->userMaximumRights; // ensure never to have more rights than currently allowed.
@@ -193,7 +197,11 @@ class Usr extends ElementUser{
     }
   }
   
-  function setCurrentRights( $newRights ){
+  /**
+   * Saves the given user rights as enabledRights for the current user.
+   * @param unknown $newRights The new rights as bit mask.
+   */
+  function saveCurrentRights( $newRights ){
   	global $urDBI;
   	$approvedRights = ($this->isOfKind($newRights, $this->userMaximumRights)?$newRights:$this->userMaximumRights);
   	$this->userRights = $approvedRights; // set the rights for this execuion cycle as well...

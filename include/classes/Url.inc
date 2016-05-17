@@ -43,12 +43,12 @@ class Url
   * @param $string  The content to be added.
   */
   function put( $string ){
-    if ( $string != "" ){
+    if ( !empty($string) ){
       $string = urldecode( html_entity_decode( $string ) ); // remove any escapes as they are added again here
       if ( strpos( $string, '&' ) === false) $string.='&';
       $strings = explode( '&', $string);
       foreach ($strings as $string){
-        if ($string == '') continue; // jump over empty strings...
+        if (empty($string)) continue; // jump over empty strings...
         $posEq = strpos( $string, '=' );
         if ($posEq !== false){
           $varName = substr( $string, 0, $posEq );
@@ -61,7 +61,16 @@ class Url
         if ( isset($_SESSION['uid']) && // Session running?
              ( ($varName == 'sysinfo') || ($varName == 'sysalert') )
              ) $_SESSION[$varName]=$varContent; // If session is running use the cookie for transport
-        else $this->queryString .= "&".$varName.'='.urlencode( $varContent );
+        else{
+        	if (strpos($this->queryString, $varName) === false){
+        		// new: add it
+        		$this->queryString .= "&".$varName.'='.urlencode( $varContent );
+        	}else{
+        		// existing: replace it
+        		$this->queryString = str_replace($varName.'='.$this->get($varName), $varName.'='.urlencode( $varContent ), $this->queryString);
+        	}
+        	
+        }
       }
     }
   }
@@ -115,7 +124,16 @@ class Url
   * @param $string  The text to be removed.
   */
   function rem( $string ){ 
-    $this->queryString = str_replace( '&'.$string, '', $this->queryString );
+  	if ($this->available($string) && !empty($this->get($string))){
+  		$string = $string.'='.$this->get($string);
+  	}
+  	// take one ampersand with you if available...
+  	if (strpos($this->queryString, $string.'&') !== false){
+  		$string = $string.'&';
+  	}elseif (strpos($this->queryString, '&'.$string) !== false){
+  		$string = '&'.$string;
+  	}
+    $this->queryString = str_replace( $string, '', $this->queryString );
   }
   
   /**

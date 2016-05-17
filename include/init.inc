@@ -60,6 +60,7 @@ $url->preserve("hideAnswers");                  //  keep in url if present (hide
 $url->preserve("seeMe");                        //  keep in url if present (seeMe if in seeing mode)
 $url->preserve('hideExampleSolutionInThisTab');
 $url->preserve('pseudoNames');                  //  provides random names instead of real names
+$url->preserve('myRights');						// For reducing the access rights in a tab only (pages/myRights.php)
 
 require( INCLUDE_DIR."/classes/ElementUser.inc" );                // user
 require( INCLUDE_DIR."/classes/Usr.inc" );      /* Creates a current user with default values for accessLevel, name, ...
