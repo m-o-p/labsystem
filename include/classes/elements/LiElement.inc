@@ -557,10 +557,9 @@ class LiElement extends Element{
                 "\">\n".
 
                 (  $isInCorrection ?
-                            ( $isInCorrection ?
                                        // the corrector has opened this for correction
-                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveCorrectorStuff()\">\n" : ''
-                                      ) :
+                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveCorrectorStuff()\">\n"
+                                      :
                             ( $isGettingAnswered ?
                                        // user set lock to this
                                        "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveUserAnswer()\">\n" :
@@ -587,7 +586,7 @@ class LiElement extends Element{
     // button
       if ( $usr->isOfKind( IS_CORRECTOR ) ){
         // corrector:
-        if ( !$this->isClosed ){ $ret .= "<input id=\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\" tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button_warn\" ".
+        if ( !$this->isClosed && !$isInCorrection ){ $ret .= "<input id=\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\" tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button_warn\" ".
                                                                    "value=\"".$lng->get("correctThoughNotClosed")."\" onclick='isDirty=false;'>\n";
                                 }
         elseif ( $isInCorrection ){ $ret .= '<input tabindex="'.$pge->nextTab++.'" type="submit" class="labsys_mop_i_save_button'.($this->isClosed?'':'_warn').'" '.
