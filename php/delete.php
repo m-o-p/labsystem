@@ -57,14 +57,18 @@ else{
       }else{
       	// For non-s elements: remove them from the next enclosing collection:
       	$fulladdress = $url->get('address');
+      	// Remove the entity to be deleted:
+      	$remainingAddr = substr($fulladdress, 0, strpos($fulladdress, $id.$num));
       	// Identify last c:
-      	$posLastC = strrpos($fulladdress, 'c');
+      	$posLastC = strrpos($remainingAddr, 'c');
       	if (!$posLastC){
-      		$posLastC = strrpos($fulladdress, 'C');
+      		$posLastC = strrpos($remainingAddr, 'C');
       	}
       	if ($posLastC){
-      		$destinationAddress = substr($fulladdress,0,strpos($fulladdress, '.', $posLastC));
-      		$url->put('deleteChild='.$id.$num);
+      		$destinationAddress = substr($remainingAddr,0,strpos($remainingAddr, '.', $posLastC));
+  			$url->put('deleteChild='.$id.$num);
+      	}else{
+      		$destinationAddress = $fulladdress; // do nothing.
       	}
       }
 }
