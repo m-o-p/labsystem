@@ -314,6 +314,33 @@ class LcElement extends Element{
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /**
+   * Removes a child.
+   */
+  function deleteChildren(){
+  	global $usr, $url, $cDBI, $SYSINFO;
+  	if ($usr->isOfKind(IS_CONTENT_EDITOR) && $url->available('deleteChild')){
+  		$elementToRemove = $url->get('deleteChild');
+  		if (is_numeric(substr($elementToRemove,1))){
+  			// Is it not the last element?
+  			$newContent = str_replace($elementToRemove.' ', '', $this->contents);
+  			if ($newContent == $this->contents){
+  				// If not, is it the last element?
+  				$newContent = str_replace(' '.$elementToRemove, '', $this->contents);
+  			}
+  			if ($newContent != $this->contents){
+  				// Changes? save!
+  				$this->contents = $newContent;
+  				$this->history = $usr->foreName.' '.$usr->surName.': -'.$elementToRemove.PHP_EOL.$this->history;
+  				$cDBI->setData( $this );
+  				$SYSINFO = $this->elementId.$this->idx.': -'.$elementToRemove;
+  				return true;
+  			}
+  		}
+  	}
+  	return false;
+  }
+  
+  /**
    * Handles the inserts that happen when the edit buttons to insert new *p *i *m *c *C
    * are pressed.
    *
@@ -345,6 +372,7 @@ class LcElement extends Element{
     if ( !$this->isVisible() ){ return $this->notFoundVisibleNote( $fullAddress ); exit; }
 
     $this->handleInsertElement( $fullAddress );
+    $this->deleteChildren();
 
    // Address splitting.
     $parentAddr = $fullAddress;

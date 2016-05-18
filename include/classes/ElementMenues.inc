@@ -44,18 +44,21 @@ class EM{ /* ElementMenues */
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
      return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
             "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
-            '<div class="labsys_mop_element_title_in_header">'.'<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$theEl->title.'</a> | </div>'.
+            '<div class="labsys_mop_element_title_in_header">'.
+            "<span class=\"labsys_mop_element_description_in_header\">".
+            //             $fullAddress.
+            $theEl->elementId.$theEl->idx.(isset($theEl->visibleFor)?' ('.$theEl->visibleFor.')':'').
+            ":</span>".PHP_EOL.
+            
+            '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$theEl->title.'</a> | </div>'.
             ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
 //             '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
-//             "<span class=\"labsys_mop_element_description_in_header\">".
-//             $fullAddress.
-//             "</span></a>\n".
             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
             EB::ticket ( $fullAddress ).
             EB::history( $theEl->history, $fullAddress ).
             EB::link2Element( $fullAddress, $theEl ).
             //EB::createNew( $elShortcut ).
-            EB::delete( $fullAddress ).
+            (strpos(strtolower($fullAddress),'c') ? EB::delete( $fullAddress ):'').
             // EB::manageElements().
             EB::edit( $fullAddress ).
             "</div>\n";
@@ -192,7 +195,7 @@ class EM{ /* ElementMenues */
                //EB::viewStructure( $fullAddress ).
                EB::link2Element( $fullAddress, $eC ).
                //EB::createNew( "c" ).
-               EB::delete( $fullAddress ).
+//                EB::delete( $fullAddress ).
                // EB::manageElements().
                EB::edit( $fullAddress );
     else $menu .= EB::printView( $fullAddress.".all" );
@@ -283,7 +286,7 @@ class EM{ /* ElementMenues */
             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
             EB::ticket ( $fullAddress ).
             EB::history( $theEl->history, $fullAddress ).
-            EB::delete( $fullAddress ).
+//             EB::delete( $fullAddress ).
             // EB::manageElements().
             EB::link2Element(  $fullAddress, $theEl ).
             EB::view(   $fullAddress ).
@@ -393,8 +396,8 @@ class EM{ /* ElementMenues */
     global $lng, $url;
     return  EB::history( $eC->history, "p1", true ).
             EB::view(           "C".$eC->idx ).
-    		EB::link2Element(   "C".$eC->idx ).
-            EB::delete(         "C".$eC->idx );
+    		EB::link2Element(   "C".$eC->idx );
+//             EB::delete(         "C".$eC->idx );
             //EB::viewStructure(  "C".$eC->idx ).
             // EB::manageElements().
   }
@@ -488,7 +491,7 @@ class EM{ /* ElementMenues */
     return EB::history(     $theEl->history, $fullAddress ).
     	   EB::link2Element(  $fullAddress ).
 //            EB::createNew(     $elShortcut  ).
-           EB::delete(        $fullAddress ).
+//            EB::delete(        $fullAddress ).
            EB::view(          $fullAddress ).
            EB::edit(          $fullAddress ).
            EB::cloneMe(   $theEl->elementId.$theEl->idx );
@@ -529,7 +532,7 @@ class EM{ /* ElementMenues */
            EB::history( $eC->history, $fullAddress ).
            EB::link2Element( $fullAddress, $eC ).
            EB::createNew( "c" ).
-           EB::delete( $fullAddress ).
+//            EB::delete( $fullAddress ).
            EB::view( $fullAddress ).
            EB::edit( $fullAddress ).
            EB::cloneMe( 'c'.$eC->idx );
