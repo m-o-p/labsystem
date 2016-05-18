@@ -432,7 +432,7 @@ class LiElement extends Element{
             // the "is corrected" checkbox
             ( $usr->isOfKind( IS_CORRECTOR ) 
 //             		&& $this->isClosed 
-            		&& ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
+            		&& ($isInCorrection || ($this->isClosed && !$this->isCorrected)) && $usr->isSeeingSomeonesData() ?
                 "<input type=\"checkbox\" id=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" name=\"IS_CORRECTED\" value=\"1\" ".
                 "tabindex=\"".$pge->nextTab++.'"'.
                 ( $this->isCorrected ? ' checked="checked"' : '' ). // so it will be checked by default
@@ -463,7 +463,7 @@ class LiElement extends Element{
                        // show input
                        "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".
                        // on first entering set the points to full points
-                       ( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || $this->answerComment!='' ?  $this->givenCredits :  $this->possibleCredits  ).
+                       ( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || !$this->isClosed || !empty($this->answerComment) ?  $this->givenCredits :  $this->possibleCredits  ).
                        "\" onchange='isDirty=true'>"."/ " :
                        ( !$possiblePtsOnly ?
                                   ( ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )) ?
