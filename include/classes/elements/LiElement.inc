@@ -389,11 +389,8 @@ class LiElement extends Element{
         $filesize = round($file['size'] / 1024).' KB';
         $fileTime = date('H:i j.n.Y', $file['timestamp']);
         $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />';
-        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' .
+        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename']).'&download=true').'">' .
                 $pathInfo['basename'].
-                '</a> '.
-                '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename']).'&download=true').'">' .
-                '<img src="../syspix/button_down_13x12.gif">'.
                 '</a> '.
                 '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' .
                 '<img src="../syspix/button_view_13x12.gif">'.
@@ -588,7 +585,7 @@ class LiElement extends Element{
     // button
       if ( $usr->isOfKind( IS_CORRECTOR ) ){
         // corrector:
-        if ( !$this->isClosed ){ ; }
+        if ( !$this->isClosed ){ $ret.='<div>closeMe!</div>'; }
         elseif ( $isInCorrection ){ $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
                                                    "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
                                             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".

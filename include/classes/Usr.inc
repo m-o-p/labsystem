@@ -71,6 +71,7 @@ class Usr extends ElementUser{
   		$this->userRights =  $this->userRights | intval(IS_USER_RIGHTS_EDITOR);
   	}
   	$this->userMaximumRights        = $instanceData['rights'];
+  	$this->history 			        = $instanceData['history'];
 
   	// Load the globally defined data:
   	// !This requires the rights to be set!
