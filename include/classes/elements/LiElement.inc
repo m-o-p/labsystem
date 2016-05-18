@@ -430,7 +430,9 @@ class LiElement extends Element{
                      ( $this->isCorrected ?  "_green" :  "_red" ) : '' ).
           "\">".
             // the "is corrected" checkbox
-            ( $usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
+            ( $usr->isOfKind( IS_CORRECTOR ) 
+//             		&& $this->isClosed 
+            		&& ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
                 "<input type=\"checkbox\" id=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" name=\"IS_CORRECTED\" value=\"1\" ".
                 "tabindex=\"".$pge->nextTab++.'"'.
                 ( $this->isCorrected ? ' checked="checked"' : '' ). // so it will be checked by default
@@ -590,7 +592,7 @@ class LiElement extends Element{
                                                                    "value=\"".$lng->get("correctThoughNotClosed")."\" onclick='isDirty=false;'>\n";
                                 }
         elseif ( $isInCorrection ){ $ret .= '<input tabindex="'.$pge->nextTab++.'" type="submit" class="labsys_mop_i_save_button'.($this->isClosed?'':'_warn').'" '.
-                                                   "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
+                                                   "value=\"".($this->isClosed?$lng->get("save"):$lng->get("correctThoughNotClosed"))."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
                                             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
                                                    "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
                                    }
@@ -602,7 +604,7 @@ class LiElement extends Element{
         // user
         if ( $this->isClosed ){ ; }
         elseif ( $isGettingAnswered ){ $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                      "value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
+                                                      "value=\"".$lng->get('save')."\" onclick='isDirty=false'>\n".
                                                "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
                                                       "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
                                        }
