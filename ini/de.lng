@@ -418,6 +418,7 @@ apply               = "&auml;ndern"
 ;i
 giveAnswer          = "antworten..."
 correct             = "korrigieren"                 ;; button for corector
+correctThoughNotClosed = "!geschlossen, trotzdem KORRIGIEREN"
 
 ;l
 checkPrelab         = "PreLab-Fragen korrigieren" ; label of the button...

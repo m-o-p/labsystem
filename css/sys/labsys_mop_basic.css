@@ -1147,7 +1147,7 @@ fieldset{
                     font-size: 11px;
   }
   
-  .labsys_mop_i_save_button{
+  .labsys_mop_i_save_button, .labsys_mop_i_save_button_warn{
                     margin: 5px 0px 5px 0px;
                   	font-size: 0.8em;
                   	color:#000000;
@@ -1155,6 +1155,10 @@ fieldset{
                   	border: solid 1px #000000;
                     width: 100%;
                     background-color: transparent;
+  }
+  .labsys_mop_i_save_button_warn{
+  					background-color:red;
+  					color:fff
   }
   
   .labsys_mop_i_cancel_button{

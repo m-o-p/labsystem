@@ -417,6 +417,7 @@ apply               = "apply"
 ;i
 giveAnswer          = "give answer..."
 correct             = "correct"                 ;; button for corector
+correctThoughNotClosed = "!closed, CORRECT anyways"
 
 ;l
 checkPrelab         = "check up if the prelab questions are answered correctly" ; label of the button...
