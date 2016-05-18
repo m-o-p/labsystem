@@ -530,7 +530,7 @@ class LiElement extends Element{
      */
 
          $isInCorrection  = ( $usr->isOfKind( IS_CORRECTOR ) &&
-                              $this->isClosed &&
+//                               $this->isClosed &&
                               isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) &&
                               $_POST['TEAM'] == $this->getDataOfTeam
                              );
@@ -546,7 +546,9 @@ class LiElement extends Element{
 
       $ret =   '<a name="i'.$this->idx.'"></a>'."<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
                "<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
-               "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && !$isInCorrection) ?
+               "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR ) 
+//                		         && $this->isClosed 
+               		         && !$isInCorrection) ?
                                       // link for the corrector to unlock... (-> see description above method)
                                       $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' )) :
                                       // normal handling -> pass method to executeCommandOnElement.php
@@ -588,7 +590,7 @@ class LiElement extends Element{
         if ( !$this->isClosed ){ $ret .= "<input id=\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\" tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button_warn\" ".
                                                                    "value=\"".$lng->get("correctThoughNotClosed")."\" onclick='isDirty=false;'>\n";
                                 }
-        elseif ( $isInCorrection ){ $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
+        elseif ( $isInCorrection ){ $ret .= '<input tabindex="'.$pge->nextTab++.'" type="submit" class="labsys_mop_i_save_button'.($this->isClosed?'':'_warn').'" '.
                                                    "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
                                             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
                                                    "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
@@ -1035,14 +1037,15 @@ class LiElement extends Element{
     }
 
     if (!isset($_POST['cancel'])){ // cancel? -> do nothing
+      $isCorrected=isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1;
       $this->uaDBI->setData4( $_POST['TEAM'],
                               $this->idx,
                               $this->userAnswer,
                               $_POST['CREDITS'],
                               ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ),
                               ( isset($_POST['CORRECTORS_NOTE']) ?  $_POST['CORRECTORS_NOTE'] :  $this->correctorsNote ),
-                              true,
-                              isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1,
+                              $this->isClosed || $isCorrected,
+                              $isCorrected,
                               $this->answerHistory );
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorSave, $_POST['TEAM']);
     }else{
