@@ -1,0 +1,41 @@
+{% macro buld_tree(element, current) %}
+  {% if current.meta['children'] %}
+  <ol>
+    {% for child in current.getChildren() %}
+      <li>
+        {{child.getId()}}
+        <a class="element-title" href="{{url_for('element_view', course=child.course, branch=child.branch, path=child.path)}}">{{child.getTitle()}}</a>
+
+        {% if child.getName() in element.getParentList() %}
+          {{buld_tree(element, child)}}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+{% endmacro %}
+
+<div class="menu">
+  <ol>
+    <li>
+      <ul class="courses">
+        {% for course in getCourses() %}
+          {% if element and element.course == course.course %}
+            <li class="active">
+              <a href="{{url_for('course_element_view', course=course.course, branch="master")}}">
+                {{course.course}}
+              </a>
+              {{buld_tree(element, course)}}
+            </li>
+          {% else %}
+            <li>
+              <a href="{{url_for('course_element_view', course=course.course, branch="master")}}">
+                {{course.course}}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </li>
+  </ol>
+</div>

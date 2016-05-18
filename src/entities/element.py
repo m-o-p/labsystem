@@ -63,8 +63,29 @@ class Element:
             from .helpers import load_element
             return load_element(self.course, self.branch, parent)
 
+    def getParentList(self):
+        return self.path.split('/')
+
+    def getName(self):
+        (parent, me) = os.path.split(self.path)
+
+        return me
+
     def getCommit(self):
         return str(next(storage.getHistory(self.course, self.branch, "", 0, 1)))
 
     def getAssignment(self):
         return self.getParent().getAssignment()
+
+    def getId(self):
+        (parent, me) = os.path.split(self.path)
+
+        if parent is not None and parent != '':
+            from .helpers import load_element
+            parent = load_element(self.course, self.branch, parent)
+
+            for index, child in enumerate(parent.meta['children']):
+                if me == child:
+                    return parent.getId() + str(index + 1) + '.'
+        else:
+            return ''

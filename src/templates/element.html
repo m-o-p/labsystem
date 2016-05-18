@@ -2,13 +2,15 @@
 
 {% block content %}
 <div class="row">
-  <div class="col-xs-0 col-md-2"></div>
-  <div class="col-xs-12 col-md-8">
+  <div class="col-xs-12 col-sm-3 col-md-3">
+    {% include "include/menu.html" %}
+  </div>
+  <div class="col-xs-12 col-sm-8 col-md-6">
     {% include "include/element-header.html" %}
 
     {% block element %}
     {% endblock element %}
   </div>
-  <div class="col-xs-0 col-md-2"></div>
+  <div class="col-xs-0 col-sm-1 col-md-3"></div>
 </div>
 {% endblock content%}
