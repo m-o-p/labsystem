@@ -1,6 +1,6 @@
 {% macro buld_tree(element, current) %}
   {% if current.meta['children'] %}
-  <ol>
+  <ol class="menu-course">
     {% for child in current.getChildren() %}
       <li>
         {{child.getId()}}

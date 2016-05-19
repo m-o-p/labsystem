@@ -54,6 +54,9 @@ class DisplayHTMLElement(DisplayElement):
         DisplayElement.__init__(self, course, branch, path, meta, isSecret=isSecret)
 
     def render(self, mode):
+        if mode == 'headers':
+            return ''
+
         t = Template(self.getRaw())
 
         return t.substitute(self.getTemplateParams())
@@ -64,6 +67,9 @@ class DisplayTextElement(DisplayElement):
         DisplayElement.__init__(self, course, branch, path, meta, isSecret=isSecret)
 
     def render(self, mode):
+        if mode == 'headers':
+            return ''
+
         t = Template(self.getRaw())
 
         return escape(t.substitute(self.getTemplateParams()))
@@ -74,6 +80,9 @@ class DisplayMarkdownElement(DisplayElement):
         DisplayElement.__init__(self, course, branch, path, meta, isSecret=isSecret)
 
     def render(self, mode):
+        if mode == 'headers':
+            return ''
+
         t = Template(self.getRaw())
 
         return markdown.markdown(t.substitute(self.getTemplateParams()))

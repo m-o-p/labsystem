@@ -1,14 +1,5 @@
 {% extends "element.html" %}
 
 {% block element %}
-<ol class="collection-content">
-  {% for element in element.getChildren() %}
-    <li>
-      {% include "include/element-header.html" %}
-      <div class="element-content">
-        {{element.render("collection")|safe}}
-      </div>
-    </li>
-  {% endfor %}
-</ol>
+  {{element.render('self') | safe}}
 {% endblock element%}

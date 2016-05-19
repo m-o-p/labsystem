@@ -9,3 +9,11 @@
 .element-header-buttons {
   float:right;
 }
+
+ol.collection-headers > li {
+  list-style-type: none;
+}
+
+ol.menu-course > li {
+  list-style-type: none;
+}

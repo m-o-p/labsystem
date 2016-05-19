@@ -1,5 +1,5 @@
 <div class="element-header">
-  {{element.getId()}}
+  <span> {{element.getId()}} </span>
   <a class="element-title" href="{{url_for('element_view', course=element.course, branch=element.branch, path=element.path)}}">{{element.getTitle()}}</a>
 
   <span class="element-header-buttons">

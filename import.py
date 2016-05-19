@@ -144,7 +144,7 @@ def saveElement(targetZip, element):
         targetZip.writestr(secretPath, yaml.dump(element['secret']).encode())
 
 
-def processCollection(sourceZip, targetZip, elementPath, showInCollection):
+def processCollection(sourceZip, targetZip, elementPath, showOnlyHeaders):
     source = loadXML(sourceZip, elementPath)
 
     children = processChildren(sourceZip, targetZip, source['contents'])
@@ -156,7 +156,7 @@ def processCollection(sourceZip, targetZip, elementPath, showInCollection):
         'meta': {
             'type': 'Collection',
             'children': childrenPaths,
-            'showInCollection': showInCollection
+            'showOnlyHeaders': showOnlyHeaders
         },
         'children': children
     }]
@@ -311,9 +311,9 @@ def processQuestion(sourceZip, targetZip, elementPath):
 
 def processElement(sourceZip, targetZip, elementType, elementPath):
     if (elementType == 'c'):
-        return processCollection(sourceZip, targetZip, elementPath, False)
-    elif (elementType == 'C'):
         return processCollection(sourceZip, targetZip, elementPath, True)
+    elif (elementType == 'C'):
+        return processCollection(sourceZip, targetZip, elementPath, False)
     elif (elementType == 'p'):
         return processDisplay(sourceZip, targetZip, elementPath)
     elif (elementType == 'm'):
@@ -336,7 +336,8 @@ def processAssignment(sourceZip, targetZip, assignmentPath):
         'meta': {
             'type': 'Assignment',
             'children': childrenPaths,
-            'teamwork': False
+            'teamwork': False,
+            'showOnlyHeaders': True
         },
         'children': children
     }
@@ -394,7 +395,8 @@ def processLab(sourceZip, targetZip, labPath):
         'path': 'course',
         'meta': {
             'type': 'Course',
-            'children': children
+            'children': children,
+            'showOnlyHeaders': True
         }
     }
 

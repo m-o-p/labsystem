@@ -11,14 +11,14 @@ class CollectionElement(Element):
 
     def render(self, mode):
         if mode == 'self':
-            return render_template("elements/collection/view.html", element=self)
-        elif mode == 'course':
-            return ''
-        elif mode == 'collection':
-            if self.meta['showInCollection']:
+            if self.meta['showOnlyHeaders']:
                 return render_template("elements/collection/children.html", element=self)
             else:
                 return render_template("elements/collection/headers.html", element=self)
+        elif mode == 'course':
+            return ''
+        elif mode == 'collection':
+            return render_template("elements/collection/headers.html", element=self)
         elif mode == 'headers':
             return render_template("elements/collection/headers.html", element=self)
         else:

@@ -88,4 +88,7 @@ class Element:
                 if me == child:
                     return parent.getId() + str(index + 1) + '.'
         else:
-            return ''
+            from .course import CourseElement
+            for index, child in enumerate(CourseElement(self.course, self.branch).meta['children']):
+                if me == child:
+                    return str(index + 1) + '.'
