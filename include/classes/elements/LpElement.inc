@@ -88,7 +88,7 @@ class LpElement extends Element{
 
     // replace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     
-	$pge->setTitle( '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>' );
+	$pge->setElementTitle( '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>' );
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
 
     
@@ -133,7 +133,7 @@ class LpElement extends Element{
     }  // is empty
 
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
-    $pge->setTitle( ( $paragraph != "" ?  $paragraph.". "  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false) );
+    $pge->setElementTitle( ( $paragraph != "" ?  $paragraph.". "  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false) );
     
     parseHTML( $this->contents );              // Process [HTML]. (../include/helper.inc).
 

@@ -36,7 +36,7 @@
 class Pge extends LpElement{
   var $nextTab = 1; // the value of the next available TabNumber (for forms and menu elements)
   var $replaceKey;
-  var $title; // The title for the replacement
+  var $elementTitle; // The title for the replacement
 
   /**
   * In this function the strings that will be replaced when displaying and their replacements are initialized.
@@ -129,7 +129,7 @@ class Pge extends LpElement{
   			$usr->currentTeam,
   			$usr->mailAddress,
   			$_SERVER['SERVER_NAME'],
-  			$this->title,
+  			$this->elementTitle,
   			$_SERVER['REQUEST_URI'],
   			$cfg->get("Link2UserAdminInterface"),
   			date( $lng->get("DateFormat") ) );
@@ -143,8 +143,8 @@ class Pge extends LpElement{
    * Sets the page title.
    * @param unknown $title The title.
    */
-  function setTitle( $title ){
-  	$this->title = $title;
+  function setElementTitle( $elementTitle ){
+  	$this->title = $elementTitle;
   }
   
   /**
@@ -163,7 +163,7 @@ class Pge extends LpElement{
     	                             htmlentities( $usr->currentTeam ),
     	                             htmlentities( $usr->mailAddress ),
     	                             $_SERVER['SERVER_NAME'],
-    	                             $this->title,
+    	                             $this->elementTitle,
     	                             urlencode( $_SERVER['REQUEST_URI'] ),
     	                             $cfg->get("Link2UserAdminInterface"),
     	                             htmlentities( date( $lng->get("DateFormat") ) ) );
