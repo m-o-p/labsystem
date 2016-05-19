@@ -385,8 +385,8 @@ class EB{ /* ElementButtons */
    * @return          The button's html-code.
    */
   static function ticket( $address ){
-  	global $lng, $url,$configPrefix, $usr, $cfg; // Links are defined in /include/helper.inc
-  	if ( !$usr->isOfKind( IS_USER ) || !$cfg->doesExist('enableTicketLinks') || !($cfg->get('enableTicketLinks')==1) ){
+  	global $lng, $url, $usr, $cfg; // Links are defined in /include/helper.inc
+  	if ( !$usr->isOfKind( IS_USER ) || !$cfg->doesExist('enableTicketLinks') || $cfg->get('enableTicketLinks')!=1 ){
   		return;
   	}
   	$link = $url->link2( "../pages/ticket.php?address=".$address.'#subject' );
