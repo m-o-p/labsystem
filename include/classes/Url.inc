@@ -165,7 +165,7 @@ class Url
     	$urlParameters = explode('&', $this->get('newQueryStringRaw'));
     	foreach( $urlParameters as $nextURLparameter){
     		if(strpos($linkMe, $nextURLparameter)===false){
-    			$linkMe .= '&'.$nextURLparameter;
+    			$linkMe = str_replace('?', '?'.$nextURLparameter.'&', $linkMe);
     		}
     	}
     	return $linkMe;
