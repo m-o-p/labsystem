@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
@@ -87,7 +87,7 @@ class LpElement extends Element{
     if ($this->contents == "") return "'()";  // is empty
 
     // replace the tag __ELEMENTTITLE__ by $paragraph.$this->title
-    $this->contents = str_replace( '__ELEMENTTITLE__', '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->title.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>', $this->contents );
+    $this->contents = str_replace( '__ELEMENTTITLE__', '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>', $this->contents );
 
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
 
@@ -132,7 +132,7 @@ class LpElement extends Element{
     }  // is empty
 
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
-    $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
+    $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false), $this->contents );
     parseHTML( $this->contents );              // Process [HTML]. (../include/helper.inc).
 
     return $pge->replaceConstants( $this->contents ); // Process custon fields;
