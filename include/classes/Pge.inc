@@ -144,7 +144,7 @@ class Pge extends LpElement{
    * @param unknown $title The title.
    */
   function setElementTitle( $elementTitle ){
-  	$this->title = $elementTitle;
+  	$this->elementTitle = $elementTitle;
   }
   
   /**
