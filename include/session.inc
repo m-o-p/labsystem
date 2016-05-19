@@ -51,15 +51,16 @@ if ( isset( $NEWSESSION ) ) {
 session_start();
 
 require_once( INCLUDE_DIR."/classes/Url.inc");
-if ( strip_tags(SID) != "" ) $url->put( strip_tags(SID) );
+// if ( strip_tags(SID) != '' ) $url->put( strip_tags(SID) );
 
-if ( isset($_SESSION["uid"]) &&/* if one of the fields is available all must be */
-     ( isset($_SESSION['config']) && ($_SESSION['config'] != '') && ( $GLOBALS['url']->available('config') && ($_SESSION["config"] == $url->get('config') ) ) )
+if ( isset($_SESSION['uid']) &&/* if one of the fields is available all must be */
+     ( isset($_SESSION['config']) && !empty($_SESSION['config']) && ( $GLOBALS['url']->available('config') && ($_SESSION['config'] == $url->get('config') ) ) )
      /* This second check (you view data for your configuration) is important because otherwise
         one could change to another configuration and keep his rights even though he did never log
         in for that configuration!
       */
     ) {
   $usr = new Usr($_SESSION['uid']);
+//   echo(nl2br($usr->printMe()));
 }
 ?>

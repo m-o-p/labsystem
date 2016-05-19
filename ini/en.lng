@@ -83,6 +83,7 @@ Explain_UR_128      = "is able to correct the closed labs"                  ; IS
 Explain_UR_256      = "is able to view the example solutions"               ; IS_EX_SOLUTION_VIEWER
 Explain_UR_512      = "is able to administrate users at the uai"            ; IS_DB_USER_ADMIN (only necessary if you use the uai)
 Explain_UR_1024     = "is able to edit and create config, css, menu files in the uai" ; IS_CONFIG_EDITOR (only necessary if you edit configs in the uai)
+changeRightsInThisTabOnly = "Change user rights in this TAB only."
 
 
 ;; page titles ****************************************************************************************
@@ -315,7 +316,7 @@ message             = "message"
 individualMails     = "Send an individual mail to each receiver."
 mailViaBcc          = "Send Mail via BCC."
 noCopy2Me           = "Do not send a copy of the mail to me."
-copy2Me             = "Send me a copy of this mail(s)."
+copy2Me             = "Send me a report including the source of this mail."
 
 ; uaMyData.php
 eMail               = "eMail"
@@ -416,6 +417,7 @@ apply               = "apply"
 ;i
 giveAnswer          = "give answer..."
 correct             = "correct"                 ;; button for corector
+correctThoughNotClosed = "!closed, CORRECT anyways"
 
 ;l
 checkPrelab         = "check up if the prelab questions are answered correctly" ; label of the button...
@@ -423,6 +425,7 @@ closeLab            = "close the lab"
 showAllUsersAnswers = "Answers of ALL USERS"
 stopSeeingData      = "Stop seeing someones data." ;; below the user statistic page if the corrector is viewing someones data
 hideExampleSolutionInThisTab = "Hide example solutions"
+exmpleSolutionHere  = "Open/ close the example solution here."
 pseudoNames         = "Show pseudo names"
 updateStatus        = "update status"
 statusOfAllLabs     = "Click here to see the statistics of all labs."
@@ -473,6 +476,7 @@ explainSaveElement  = "Save the current Element..."
 explainNext         = "next page&gt;&gt; [ctrl+alt+-&gt;]"
 explainPrev         = "&lt;&lt;previous page [ctrl+alt+&lt;-]"
 explainTOC          = "table of contents... [ctrl+alt+UP]"
+explainTicket       = "Create a new support ticket for this element..."
 
 ;l
 exAllowedToAnswer   = "Is the user allowed to answer?"

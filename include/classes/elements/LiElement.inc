@@ -313,11 +313,13 @@ class LiElement extends Element{
   
       // Resample
       $image_p = imagecreatetruecolor ( $width, $height );
-      switch(strtolower ( substr ( $fileSrc, - 3 ) )){
-        case 'gif':
+      
+      // Get mime
+      switch(mime_content_type($fileSrc)){
+        case 'image/gif':
           $image = imagecreatefromgif ( $fileSrc );
           break;
-        case 'png':
+        case 'image/png':
           $image = imagecreatefrompng ( $fileSrc );
           break;
         default:
@@ -354,7 +356,7 @@ class LiElement extends Element{
       $thumbFilePath = $filePath.'.thumb.jpg';
       $this->checkThumb( $filePath, $thumbFilePath );
       return ' <a href="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName)).'">' .
-        '<img src="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName.'.thumb.jpg')).'">'.
+        '<img src="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName.'.thumb.jpg')).'" onclick="zoomPreviewImage(this); return false">'.
         '</a>';
     }
   }
@@ -387,11 +389,11 @@ class LiElement extends Element{
         $filesize = round($file['size'] / 1024).' KB';
         $fileTime = date('H:i j.n.Y', $file['timestamp']);
         $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />';
-        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' .
+        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename']).'&download=true').'">' .
                 $pathInfo['basename'].
                 '</a> '.
-                '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename']).'&download=true').'">' .
-                '<img src="../syspix/button_down_13x12.gif">'.
+                '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' .
+                '<img src="../syspix/button_view_13x12.gif">'.
                 '</a> '.
                 '<div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.
                 $this->thumbnailHTML($this->idx, $this->getDataOfTeam, $pathInfo['basename']).
@@ -428,7 +430,9 @@ class LiElement extends Element{
                      ( $this->isCorrected ?  "_green" :  "_red" ) : '' ).
           "\">".
             // the "is corrected" checkbox
-            ( $usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && ($isInCorrection || !$this->isCorrected) && $usr->isSeeingSomeonesData() ?
+            ( $usr->isOfKind( IS_CORRECTOR ) 
+//             		&& $this->isClosed 
+            		&& ($isInCorrection || ($this->isClosed && !$this->isCorrected)) && $usr->isSeeingSomeonesData() ?
                 "<input type=\"checkbox\" id=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" name=\"IS_CORRECTED\" value=\"1\" ".
                 "tabindex=\"".$pge->nextTab++.'"'.
                 ( $this->isCorrected ? ' checked="checked"' : '' ). // so it will be checked by default
@@ -459,7 +463,7 @@ class LiElement extends Element{
                        // show input
                        "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".
                        // on first entering set the points to full points
-                       ( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || $this->answerComment!='' ?  $this->givenCredits :  $this->possibleCredits  ).
+                       ( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || !$this->isClosed || !empty($this->answerComment) ?  $this->givenCredits :  $this->possibleCredits  ).
                        "\" onchange='isDirty=true'>"."/ " :
                        ( !$possiblePtsOnly ?
                                   ( ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )) ?
@@ -528,7 +532,7 @@ class LiElement extends Element{
      */
 
          $isInCorrection  = ( $usr->isOfKind( IS_CORRECTOR ) &&
-                              $this->isClosed &&
+//                               $this->isClosed &&
                               isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) &&
                               $_POST['TEAM'] == $this->getDataOfTeam
                              );
@@ -544,7 +548,9 @@ class LiElement extends Element{
 
       $ret =   '<a name="i'.$this->idx.'"></a>'."<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
                "<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
-               "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR ) && $this->isClosed && !$isInCorrection) ?
+               "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR ) 
+//                		         && $this->isClosed 
+               		         && !$isInCorrection) ?
                                       // link for the corrector to unlock... (-> see description above method)
                                       $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' )) :
                                       // normal handling -> pass method to executeCommandOnElement.php
@@ -553,10 +559,9 @@ class LiElement extends Element{
                 "\">\n".
 
                 (  $isInCorrection ?
-                            ( $isInCorrection ?
                                        // the corrector has opened this for correction
-                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveCorrectorStuff()\">\n" : ''
-                                      ) :
+                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveCorrectorStuff()\">\n"
+                                      :
                             ( $isGettingAnswered ?
                                        // user set lock to this
                                        "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveUserAnswer()\">\n" :
@@ -583,9 +588,11 @@ class LiElement extends Element{
     // button
       if ( $usr->isOfKind( IS_CORRECTOR ) ){
         // corrector:
-        if ( !$this->isClosed ){ ; }
-        elseif ( $isInCorrection ){ $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                   "value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
+        if ( !$this->isClosed && !$isInCorrection ){ $ret .= "<input id=\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\" tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button_warn\" ".
+                                                                   "value=\"".$lng->get("correctThoughNotClosed")."\" onclick='isDirty=false;'>\n";
+                                }
+        elseif ( $isInCorrection ){ $ret .= '<input tabindex="'.$pge->nextTab++.'" type="submit" class="labsys_mop_i_save_button'.($this->isClosed?'':'_warn').'" '.
+                                                   "value=\"".($this->isClosed?$lng->get("save"):$lng->get("correctThoughNotClosed"))."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
                                             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
                                                    "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
                                    }
@@ -597,7 +604,7 @@ class LiElement extends Element{
         // user
         if ( $this->isClosed ){ ; }
         elseif ( $isGettingAnswered ){ $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                      "value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
+                                                      "value=\"".$lng->get('save')."\" onclick='isDirty=false'>\n".
                                                "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
                                                       "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
                                        }
@@ -667,7 +674,9 @@ class LiElement extends Element{
                                 $this->uaDBI->getAllTeams( $this->idx/*, "team"*/ ); // as is unsorted/ order of answering
                                 while ( ($nextTeam = $this->uaDBI->getNextData()) ){
                                   $this->loadUserData4( $nextTeam );
-                                  $answers .= "<div class=\"labsys_mop_i_teamnr\">".$lng->get("team")." ".($url->available('pseudoNames')?'':$nextTeam)."</div>\n".
+                                  $link2ThisCorrection=str_replace('seeMe=all', 'seeMe='.$this->utDBI->getUID4( $nextTeam, $this->idx ), $url->link2('../pages/view.php?address='.$url->get('address'))).'#'.$fullAddress.'.'.$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' );
+                                  $answers .= '<div class="labsys_mop_i_teamnr"><a href="javascript:showExampleSolutionHere('.$this->idx.','.$nextTeam.')" title="'.$lng->get('exmpleSolutionHere').'">s |</a> <a href="'.$link2ThisCorrection.'">'.$lng->get("team")." ".($url->available('pseudoNames')?'':$nextTeam)."</a></div>\n".
+                                    		  '<div class="labsys_mop_i_example_solution_hidden" id="i'.$this->idx.'_exampleSolution_'.$nextTeam.'"></div>'.PHP_EOL.
                                               $this->showAnswerData( $fullAddress );
                                 }
       }
@@ -676,16 +685,16 @@ class LiElement extends Element{
     parseHTML( $this->question ); // Process [HTML].
 
     return "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
-           "<div class=\"labsys_mop_elements_i_around\">".
+           '<div id="'.$fullAddress.'" class="labsys_mop_elements_i_around">'.
            EM::viewTopInput( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
-             "<div class=\"labsys_mop_i_question\">".
-               ( ($paragraph!="") ?  $paragraph.". "  : '' ).$this->question.
+             '<div class="labsys_mop_i_question" id="'.$fullAddress.'">'.
+             '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->question.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>'.
              "</div>\n".
 
            // example solution
              ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !$url->available('hideExampleSolutionInThisTab') ?
-                                   "<div class=\"labsys_mop_i_example_solution\">".
+                                   '<div id="i'.$this->idx.'_exampleSolution" class="labsys_mop_i_example_solution">'.
                                    '<!-- example solution -->'."\r\n".
                                    $this->returnPREformatted( $this->exampleSolution ).
                                    '<!-- /example solution -->'."\r\n".
@@ -716,7 +725,7 @@ class LiElement extends Element{
     }
 
     parseHTML( $this->question );
-    $pge->replaceConstants( $this->question ); // Process custon fields
+    $this->question = $pge->replaceConstants( $this->question ); // Process custon fields
 
     $epubExporter = LSE_Exporter::getInstance();
     $epubExporter->save('Li',
@@ -1029,14 +1038,15 @@ class LiElement extends Element{
     }
 
     if (!isset($_POST['cancel'])){ // cancel? -> do nothing
+      $isCorrected=isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1;
       $this->uaDBI->setData4( $_POST['TEAM'],
                               $this->idx,
                               $this->userAnswer,
                               $_POST['CREDITS'],
                               ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ),
                               ( isset($_POST['CORRECTORS_NOTE']) ?  $_POST['CORRECTORS_NOTE'] :  $this->correctorsNote ),
-                              true,
-                              isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1,
+                              $this->isClosed || $isCorrected,
+                              $isCorrected,
                               $this->answerHistory );
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorSave, $_POST['TEAM']);
     }else{

@@ -52,6 +52,19 @@ class ElementUser {
     $this->mailAddress              = $mailAddress;
     $this->history                  = $history;
   }
+  
+
+  function printMe(){
+  	return htmlentities('uid: '.$this->uid.PHP_EOL.
+  		   'userName: '.$this->userName.PHP_EOL.
+  		   'foreName: '.$this->foreName.PHP_EOL.
+  		   'surName: '.$this->surName.PHP_EOL.
+  		   'currentTeam: '.$this->currentTeam.PHP_EOL.
+  		   'userRights: '.$this->userRights.PHP_EOL.
+  		   'userMaximumRights: '.$this->userMaximumRights.PHP_EOL.
+  		   'mailAddress: '.$this->mailAddress.PHP_EOL.
+  		   'history: '.$this->history);
+  }
 
   /**
   * Checks if the $usr->userRights or $ownRole are fulfilled.
@@ -59,7 +72,7 @@ class ElementUser {
   * @param $ownRole       If given, the $role is checked against this. (p.e. in helper.inc::rightsBox() ).
   * @return BOOL          True, if the rights are fulfilled false otherwise.
   */
-  function isOfKind( $role, $ownRole="" ){
+  function isOfKind( $role, $ownRole=-1 ){
     if (!is_numeric( $role ) && !defined ( $role )){
       trigger_error( $role.": is not defined (ElementUser::isOfKind)", E_USER_WARNING );
       return false; // user role is not defined
@@ -69,8 +82,10 @@ class ElementUser {
                             trigger_error( $role.": ElementUser::isOfKind: checked for 0", E_USER_WARNING );
                             return false;
                         }
-    if ($ownRole == "") $ownRole = $this->userRights;
-    return ( (intval($ownRole) & intval($role)) == $role ); // checks whether all bits of $role are set in $ownRole
+    if ($ownRole==-1){
+    	$ownRole = $this->userRights;
+    }
+    return ( (intval($ownRole) & intval($role)) == intval($role) ); // checks whether all bits of $role are set in $ownRole
   }
 
   /**

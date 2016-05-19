@@ -40,6 +40,7 @@ require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 	$sender = $usr->foreName.' '.$usr->surName.' <'.$usr->mailAddress.'>';
 	$i = 0;
+	$receivers = array();
 	while( ++$i <= $_POST['POSSIBLE_RECVR'] ) if ( isset( $_POST['MAIL2_'.$i] ) ){
 		$nextID = $_POST['MAIL2_'.$i];
 		
@@ -49,27 +50,22 @@ if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 			// collect all participants of the course
 			// new Interface to the userDB
 			// The field names are taken from the config*.ini file
-			$what = $cfg->get("UserDBField_name")." AS name, ".
-					$cfg->get("UserDBField_forename")." AS forename, ".
-					$cfg->get('UserDBField_username')." AS username, ".
-					$cfg->get('UserDBField_uid').' AS uid, '.
-					$cfg->get("UserDBField_email")." AS email";
+			$what = $cfg->get('UserDBField_uid').' AS uid';
 			// add all receivers
 			$where= substr($nextID,2)."='1'";
 			$result = $uDBI->myDBC->mkSelect( $what, $cfg->get('UserDatabaseTable'), $where );
 			while( $data = mysql_fetch_array( $result ) ){
-				$mailFunc->sendMail($sender, $data[ 'uid' ], $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
+				array_push( $receivers, $data[ 'uid' ] );
 			}
 		} else {
-		// // Useradmin "whole course" special treatment
-
-			$mailFunc->sendMail($sender, $nextID, $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
+		// Single receiver:
+			array_push( $receivers, $nextID );
 		}
-		
-		makeLogEntry( 'system', 'mail sent' );
-		
-		$url->put( "sysinfo=".$lng->get("MailHasBeenSent")." ".htmlentities($sender) );
 	}
+	$mailFunc->sendMail($sender, implode(',', $receivers), $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
+	makeLogEntry( 'system', 'mail sent' );
+	
+	$url->put( "sysinfo=".$lng->get("MailHasBeenSent")." ".htmlentities($sender) );
 }else{
 	$url->put( "sysalert=".$lng->get("NoReceiver") );
 }

@@ -53,6 +53,23 @@ a:hover {             text-decoration:underline; color: #0065BD;}
                       font-size: 0.9em; 
 }
 
+/* Link Anchors */
+.labsys_mop_contentArea .withLinkAnchor a.link-anchor, .labsys_mop_contentAreaL .withLinkAnchor a.link-anchor{
+    display: none;
+    margin-left: 6px;
+    text-decoration: none;
+}
+
+.labsys_mop_contentArea .withLinkAnchor a.link-anchor:hover, .labsys_mop_contentAreaL .withLinkAnchor a.link-anchor:hover{
+	color: #aaa !important;
+	text-decoration: none;
+}
+
+.labsys_mop_contentArea .withLinkAnchor:hover a.link-anchor, .labsys_mop_contentAreaL .withLinkAnchor:hover a.link-anchor{
+	display: inline;
+	color: #ddd;
+}
+
 /* Scale images */
 img {
 max-width:100%;
@@ -296,6 +313,50 @@ height:auto
   table .uaOtherParticipantsTable tr td{
     padding:0.2em;
   }
+
+/******************************* ticket styles *******************************/
+.labsys_mop_ticketElementView{
+	margin-bottom: 5em;
+	background-color: #eee
+}
+
+.labsys_mop_ticketForm{}
+
+.labsys_mop_ticketForm .labsys_mop_ticketLabel{
+	color: #888
+}
+
+.labsys_mop_ticketForm .labsys_mop_ticketInput{
+                    margin: 1px;
+                  	border: solid 1px #4682B4;
+                    text-align: left;
+                    padding: 1px;
+                    padding-left: 5px;
+                    background-color: #f0f0f0;
+                    width: 100%
+}
+
+.labsys_mop_ticketForm .labsys_mop_ticketTextArea{
+                    margin: 1px;
+                  	border: solid 1px #4682B4;
+                    text-align: left;
+                    padding: 1px;
+                    padding-left: 5px;
+                    background-color: #fffff0;
+                    width: 100%;
+                    height:20em
+}
+
+.labsys_mop_ticketForm .labsys_mop_ticketButton{
+                    margin: 1px;
+                  	border: solid 1px #4682B4;
+                    text-align: center;
+                    padding: 5px;
+                    padding-left: 5px;
+                    background-color: #ffff00;
+                    width: 100%
+}
+
 /******************************* form element styles *******************************/
 .labsys_mop_input{
                     margin: 1px;
@@ -1092,14 +1153,18 @@ fieldset{
                     padding: 5px 5px 5px 5px;
                     background-color: #ffa;
                     border: solid 1px #f0f0a0;
-  } 
+  }
+  
+  .labsys_mop_i_example_solution_hidden{
+  					display:none;
+  }  
   
   /* Has to be limited as much as possible since the pastings have huge width sometimes */
   .labsys_mop_i_example_solution pre {
                     font-size: 11px;
   }
   
-  .labsys_mop_i_save_button{
+  .labsys_mop_i_save_button, .labsys_mop_i_save_button_warn{
                     margin: 5px 0px 5px 0px;
                   	font-size: 0.8em;
                   	color:#000000;
@@ -1107,6 +1172,10 @@ fieldset{
                   	border: solid 1px #000000;
                     width: 100%;
                     background-color: transparent;
+  }
+  .labsys_mop_i_save_button_warn{
+  					background-color:red;
+  					color:fff
   }
   
   .labsys_mop_i_cancel_button{

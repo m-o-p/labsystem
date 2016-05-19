@@ -33,7 +33,7 @@ require( "../include/init.inc" );
 require( "../php/getFirstLastFinal.inc" ); $id = $lastFinal{0}; $num = substr( $lastFinal, 1);
 
 if ( ( !$usr->isOfKind( IS_CONTENT_EDITOR ) &&       // only content editors
-       !($usr->isOfKind( IS_SCHEDULER ) && $id=="s" ) // or in case of a schedule element schedulers are allowed to delete.
+       !($id=="s" && $usr->isOfKind( IS_SCHEDULER )) // or in case of a schedule element schedulers are allowed to delete.
       ) || ($num == 1)                                // prototype 1 can't be deleted
     ) $text = $lng->get("notAllowed");
 
@@ -42,13 +42,37 @@ else{
         header("Location: ".$url->rawLink2( "../pages/confirm.php?text=".urlencode( $lastFinal.$lng->get("confirmDelete") )."&redirectTo=".urlencode( $_SERVER["REQUEST_URI"] ) ) );
         exit;
       }
-      require( "../php/getDBIbyID.inc" ); // -> $DBI
-      if ( !$DBI->deleteData( $num ) ) $text = $DBI->reportErrors();
-      else{
-        $text = $lastFinal.": ".$lng->get( "deleted" );
-        makeLogEntry( 'edit', 'deleted', $lastFinal );
+      if ($id=='s' ){
+      	// regular delete that works for all element classes
+      	// we only want to delete s elements as for the others it makes no sense.
+	      require( "../php/getDBIbyID.inc" ); // -> $DBI
+	      if ( !$DBI->deleteData( $num ) ){
+	      	$text = $DBI->reportErrors();
+	      }else{
+	        $text = $lastFinal.": ".$lng->get( "deleted" );
+	        makeLogEntry( 'edit', 'deleted', $lastFinal );
+	        $url->put('sysalert='.urlencode( $text ));
+	        $destinationAddress='s1';
+	      }
+      }else{
+      	// For non-s elements: remove them from the next enclosing collection:
+      	$fulladdress = $url->get('address');
+      	// Remove the entity to be deleted:
+      	$remainingAddr = substr($fulladdress, 0, strpos($fulladdress, $id.$num));
+      	// Identify last c:
+      	$posLastC = strrpos($remainingAddr, 'c');
+      	if (!$posLastC){
+      		$posLastC = strrpos($remainingAddr, 'C');
+      	}
+      	if ($posLastC){
+      		$destinationAddress = substr($remainingAddr,0,strpos($remainingAddr, '.', $posLastC));
+  			$url->put('deleteChild='.$id.$num);
+      	}else{
+      		$destinationAddress = $fulladdress; // do nothing.
+      	}
       }
 }
 
-header("Location: ".$url->rawLink2( "../pages/manage.php?address=".$id."&sysalert=".urlencode( $text ) ) );
+
+header("Location: ".$url->rawLink2( "../pages/view.php?address=".$destinationAddress.'#'.$destinationAddress ) );
 ?>

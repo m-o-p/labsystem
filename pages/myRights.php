@@ -46,32 +46,38 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
 // note
   if ( $lng->get("myRightsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("myRightsNote")."</div>\n" );
 
-require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
+$newUsrRights = 0;
 
-// Process POST data:
-
-
-$urDBI = new DBInterfaceUserRights();
-$data = $urDBI->getData4( $usr->uid );
-
-$pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myRightsEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/changeMyRights.php")."\">\n".
-           "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
-           "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/myRights.php\">\n".
-           "<fieldset><legend>".$lng->get("rights").' ('.$usr->userRights.")</legend>\n".
+$pge->put( '<FORM class="labsys_mop_std_form" NAME="myRightsEdit" METHOD="POST" ACTION="#">'.PHP_EOL.
+           "<fieldset><legend>".$lng->get("rights").' ('.$usr->userRights.'/'.$usr->userMaximumRights.')</legend>'.PHP_EOL.
            "<div class=\"labsys_mop_in_fieldset\">\n" );
 // user's possible rights
-  for ($i=2; $i<=MAX_USER_ROLE; $i=$i<<1)
-    if ( $usr->isOfKind( $i, $usr->userRights ) ||  // is the user having this right
-                                                    // only SU in not licensed mode (-> wont b
-                                                    // able to change cause script checks!
-         $usr->isOfKind( $i, $data['rights'] )      // is the user able to have this right
-        )
-      $pge->put( rightsBox( "UR_".$i, $i, $usr->userRights, false )."<label for=\"UR_".$i."\" class=\"labsys_mop_input_field_label\">".$lng->get("Explain_UR_".$i)." ($i)</label><br>\n" );
-
+  for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1){
+    if ( $usr->isOfKind( $i, $usr->userMaximumRights ) ){ // does the user have this right?
+    	if (isset($_POST['UR_'.$i]) && $_POST['UR_'.$i]==$i ){
+    		$newUsrRights += $i;
+    	}
+      $pge->put( rightsBox( "UR_".$i, $i, (!empty($_POST) ? $newUsrRights : $usr->userRights), ($i==1) )."<label for=\"UR_".$i."\" class=\"labsys_mop_input_field_label\">".$lng->get("Explain_UR_".$i)." ($i)</label><br>\n" );
+    }
+  }
+  if (!empty($_POST) && ($newUsrRights != $usr->userRights)){
+  	if (!isset($_POST['thisTabOnly'])){
+  		$usr->saveCurrentRights($newUsrRights);
+  		makeLogEntry( 'system', 'user rights changed to '.$newUsrRights.'/'.$usr->userMaximumRights );
+  		$url->rem('myRights');
+  	}else{
+  		//only in this tab...
+  		$url->put('myRights='.$newUsrRights);
+  		$usr->userRights=$newUsrRights; // validity checked above already!
+  	}
+  }
+    
 $pge->put( "</div>\n".
            "</fieldset>\n".
-           "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
-           "</FORM>"
+           "<input tabindex=\"".++$pge->nextTab."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>".PHP_EOL.
+		   '<input type="checkbox" id="thisTabOnly" name="thisTabOnly" value="1" tabindex="'.$pge->nextTab++.'"'.( isset($_POST['thisTabOnly'])?' checked="checked"':'').' onchange="isDirty=true"/>'.PHP_EOL.
+		   '<label for="thisTabOnly" class="labsys_mop_input_field_label">'.infoArrow( $lng->get('changeRightsInThisTabOnly'), false ).' '.$lng->get('changeRightsInThisTabOnly').'</label>'.PHP_EOL.
+		   "</FORM>"
           );
 
 // show!

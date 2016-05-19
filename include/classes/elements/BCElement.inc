@@ -150,7 +150,7 @@ class BCElement extends LcElement{
         if ( $last == "" ){
                            $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::cOpen);
                            $myRetVal .= "<div class=\"labsys_mop_contentArea\">".
-                                        "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>".
+                                        '<div class="labsys_mop_h2" id="'.$parentAddr.$me.'"><div class="withLinkAnchor">'.( !empty($extParagraph) ?  $extParagraph.'. '  : '' ).$this->title.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$parentAddr.$me).'" class="link-anchor">¶</a></div></div>'.
                                         $this->getTOC( $fullAddress, $extParagraph ).
                                         "</div>";
    // ePub

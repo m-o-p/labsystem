@@ -39,8 +39,17 @@ require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 class Usr extends ElementUser{
   private $iSeeUID;
   private $iSeeDesc;
-  function Usr(){
-    $this->ElementUser( "noID", "guest", "M.", "Guest", 0, IS_GUEST, IS_GUEST, "none@localhost", time() );
+  function __construct()
+  {
+  	$a = func_get_args();
+  	$i = func_num_args();
+  	if (method_exists($this,$f='__construct'.$i)) {
+  		call_user_func_array(array($this,$f),$a);
+  	}
+  }
+  
+  function __construct0(){
+  	$this->ElementUser( "noID", "guest", "M.", "Guest", 0, IS_GUEST, IS_GUEST, "none@localhost", time() );
     $this->iSeeUID='';
     $this->iSeeDesc='';
   }
@@ -49,21 +58,39 @@ class Usr extends ElementUser{
    * Creates a new user object by retrieving all necessary information from the general and the course specific user database.
    * $uid The UID of the user.
    */
-  function Usr( $uid ){
-  	global $urDBI;
-  	// Load the user data from the two data bases:
-  	$globalData = $this->getGlobalUserData( $uid );
+  function __construct1( $uid ){
+  	global $urDBI, $cfg, $url;
+  	// Load the instance specific user data:
   	$instanceData = $urDBI->getData4( $uid );
 
   	$this->uid                      = $uid;
+  	$this->currentTeam              = $instanceData['currentTeam'];
+  	$this->userRights               = $instanceData['enabledRights'];
+  	// The config specified user rights editor gets those rights for bootstrapping:
+  	if ($cfg->get('RightsAdminUsername') == $this->userName){
+  		$this->userRights =  $this->userRights | intval(IS_USER_RIGHTS_EDITOR);
+  	}
+  	$this->userMaximumRights        = $instanceData['rights'];
+  	$this->history 			        = $instanceData['history'];
+
+  	// Load the globally defined data:
+  	// !This requires the rights to be set!
+  	$globalData = $this->getGlobalUserData( $uid );
+  	 
   	$this->userName                 = $globalData['userName'];
   	$this->foreName                 = $globalData['foreName'];
   	$this->surName                  = $globalData['name'];
-  	$this->currentTeam              = $instanceData['currentTeam'];
-  	// The config specified user rights editor gets those rights for bootstrapping:
-  	$this->userRights               = ( !$cfg->get("RightsAdminUsername") ? $instanceData['enabledRights'] : $instanceData['enabledRights'] | IS_USER_RIGHTS_EDITOR);
-  	$this->userMaximumRights        = $instanceData['rights'];
+
   	$this->mailAddress              = $globalData['eMail'];
+
+  	// It might be handy to have different rights in different tabs only... Here we go:
+  	if ($url->available('myRights') && is_numeric($url->get('myRights'))){
+  		$this->userRights = intval($url->get('myRights'));
+  	}
+  	// The maximum rights might have changed in the meantime...
+  	if ($this->userRights > $this->userMaximumRights){
+  		$this->userRights = $this->userMaximumRights; // ensure never to have more rights than currently allowed.
+  	}
   	
   	// Initialize them...
   	$this->iSeeUID='';
@@ -152,8 +179,8 @@ class Usr extends ElementUser{
   */
 
   function getGlobalUserData( $uid ){
-    global $usr, $url, $lng, $uDBI;
-    if ( $usr->isOfKind( IS_USER ) ){ // (not) only correctors need to know about other members
+    global $url, $lng, $uDBI;
+    if ( $this->isOfKind( IS_USER ) ){ // (not) only correctors need to know about other members
                                       // this function is called on the statistics page as well
                                       // if you restrict to correctors users will not see other user's names
                                       // you should remove the history then as well in the statistics
@@ -163,13 +190,26 @@ class Usr extends ElementUser{
         $userData['name'] = "UID ".$uid;
         $userData['foreName'] = $lng->get("unknown");
         $userData['userName'] = $lng->get("unknown");
+        $userData['eMail'] = 'me@unknown.tld';
       }else{
       	$userData['name'] = ( $url->available('pseudoNames') ? randomName():$globalUserData['name'] );
       	$userData['foreName'] = ( $url->available('pseudoNames') ? randomName():$globalUserData['foreName']);
       	$userData['userName'] = ( $url->available('pseudoNames')? randomName():$globalUserData['userName'] );
+      	$userData['eMail'] = $globalUserData['eMail'];
       }
       return $userData; 
     }
+  }
+  
+  /**
+   * Saves the given user rights as enabledRights for the current user.
+   * @param unknown $newRights The new rights as bit mask.
+   */
+  function saveCurrentRights( $newRights ){
+  	global $urDBI;
+  	$approvedRights = ($this->isOfKind($newRights, $this->userMaximumRights)?$newRights:$this->userMaximumRights);
+  	$this->userRights = $approvedRights; // set the rights for this execuion cycle as well...
+  	$urDBI->setData4( $this->uid, '', $approvedRights);
   }
 }
 $usr = new Usr; /** create instance */

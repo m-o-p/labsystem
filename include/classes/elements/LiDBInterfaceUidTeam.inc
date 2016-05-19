@@ -69,6 +69,22 @@ class LiDBInterfaceUidTeam {
       return $data['team'];
     }
   }
+  
+  /**
+   * Returns the team to the given uid and iIdx.
+   * @param $team              Team to retrieve a UID for.
+   * @param $iIdx              The index of the input the answer is for.
+   * @return                   A UID that is mapped to the given team.
+   */
+  function getUID4( $team, $iIdx ){
+  	global $cfg, $usr;
+  	$result = $this->myDBC->mkSelect( "uid", $this->myTable, "team='".$team."' && i_idx='".$iIdx."'" );
+  	if ( !($data = mysql_fetch_array( $result )) ){
+  		return 'all';
+  	}else{
+  		return $data['uid'];
+  	}
+  }
 
   /**
   * Stores the mapping (uid, iIdx)->team into the database.

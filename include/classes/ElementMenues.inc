@@ -44,17 +44,21 @@ class EM{ /* ElementMenues */
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
      return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
             "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
-            '<div class="labsys_mop_element_title_in_header">'.'<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$theEl->title.'</a> | </div>'.
+            '<div class="labsys_mop_element_title_in_header">'.
+            "<span class=\"labsys_mop_element_description_in_header\">".
+            //             $fullAddress.
+            $theEl->elementId.$theEl->idx.(isset($theEl->visibleFor)?' ('.$theEl->visibleFor.')':'').
+            "</span>".PHP_EOL.
+            
+            '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$theEl->title.'</a> | </div>'.
             ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
 //             '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
-//             "<span class=\"labsys_mop_element_description_in_header\">".
-//             $fullAddress.
-//             "</span></a>\n".
-            EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+//             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+            EB::ticket ( $fullAddress ).
             EB::history( $theEl->history, $fullAddress ).
             EB::link2Element( $fullAddress, $theEl ).
             //EB::createNew( $elShortcut ).
-            EB::delete( $fullAddress ).
+            (strpos(strtolower($fullAddress),'c') ? EB::delete( $fullAddress ):'').
             // EB::manageElements().
             EB::edit( $fullAddress ).
             "</div>\n";
@@ -75,7 +79,8 @@ class EM{ /* ElementMenues */
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
     else
       return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
-             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+//              EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+             EB::ticket ( $fullAddress ).
              EB::history( $theEl->history, $fullAddress ).
              "</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
@@ -131,6 +136,10 @@ class EM{ /* ElementMenues */
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
      return "\n\n\t<!-- *************************start of ".$elShortcut."-element************************* -->\n\n".
             "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
+            "<span class=\"labsys_mop_element_description_in_header\">".
+            //             $fullAddress.
+            $eL->elementId.$eL->idx.
+            "</span>".PHP_EOL.
             ( $eL->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
             '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
             //"<span class=\"labsys_mop_element_description_in_header\">".
@@ -141,7 +150,8 @@ class EM{ /* ElementMenues */
             EB::link2epub( $fullAddress ).
             EB::printView( $fullAddress.".all" ).
             // EB::manageElements().
-            EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
+//             EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
+            EB::ticket ( $fullAddress ).
             EB::history( $eL->history, $fullAddress ).
             EB::link2Element( $fullAddress, $eL ).
             EB::edit( $fullAddress ).
@@ -149,8 +159,9 @@ class EM{ /* ElementMenues */
     else return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
                 EB::link2epub( $fullAddress ).
                 EB::printView( $fullAddress.".all" ).
-                EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
-                EB::history( $eL->history, $fullAddress ).
+//                 EB::mail ( $fullAddress, $eL->elementId.$eL->idx.': '.$eL->title ).
+//                 EB::ticket ( $fullAddress ).
+//                 EB::history( $eL->history, $fullAddress ).
                 "</div>\n";
   }
   static function viewBottomLab( &$eL, $fullAddress ){
@@ -170,32 +181,40 @@ class EM{ /* ElementMenues */
   */
   static function viewTopCollection( &$eC, $fullAddress, $prevAddress=false, $nextAddress=false, $topAddress=false, $add2Style="" ){
     global $usr, $lng;
-     $menu = (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
+     $navigation = (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
              (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
              (   $nextAddress ?                    EB::next( $nextAddress )  : '' );
     if ( $usr->isOfKind( IS_CONTENT_EDITOR ) )
-      $menu  = '<div class="labsys_mop_element_title_in_header">'.'<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$eC->title.'</a> | </div>'.
+      $menu  = '<div class="labsys_mop_element_title_in_header">'.
+			      "<span class=\"labsys_mop_element_description_in_header\">".
+			      //             $fullAddress.
+			      $eC->elementId.$eC->idx.
+			      "</span>".PHP_EOL.
+      		   '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$eC->title.'</a> | </div>'.
       		   ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
 //                '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
 //                "<span class=\"labsys_mop_element_description_in_header\">".
 //                $fullAddress.
 //                "</span></a>\n".
-               $menu.
                EB::printView( $fullAddress.".all" ).
-               EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
+//                EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
+               EB::ticket ( $fullAddress ).
                EB::history( $eC->history, $fullAddress ).
                //EB::viewStructure( $fullAddress ).
                EB::link2Element( $fullAddress, $eC ).
                //EB::createNew( "c" ).
-               EB::delete( $fullAddress ).
+//                EB::delete( $fullAddress ).
+               
+    		   (strpos(strtolower($fullAddress), 'c') < strpos(strtolower($fullAddress), 'c'.$eC->idx) ? EB::delete( $fullAddress ):'').
                // EB::manageElements().
                EB::edit( $fullAddress );
-    else $menu .= EB::printView( $fullAddress.".all" );
+    else $menu = EB::printView( $fullAddress.".all" );
 
     return "\n\n\t<!-- *************************start of c-element************************* -->\n\n".
-           "<div class=\"labsys_mop_elements_menu_c".$add2Style."\">\n".
+           '<div class="labsys_mop_elements_menu_c'.$add2Style.'">'.PHP_EOL.
            $menu.
-           "</div>\n";
+    	   $navigation.
+    	   '</div>'.PHP_EOL;
   }
 
   /**
@@ -224,12 +243,15 @@ class EM{ /* ElementMenues */
                 "\n".
                 '</div>';
     }else if ($prevAddress || $nextAddress){
-        return "<div class=\"labsys_mop_elements_menu_c\">\n".
-               (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
+        return '<div class="labsys_mop_elements_menu_c">'.PHP_EOL.
+	           (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
                (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
                (   $nextAddress ?                    EB::next( $nextAddress )  : '' ).
-               EB::history( $eC->history, $fullAddress ).
-               "</div>\n".
+               '</div>'.PHP_EOL.
+               '<div class="labsys_mop_elements_menu_c">'.PHP_EOL.
+	           EB::ticket ( $fullAddress ).
+	           EB::history( $eC->history, $fullAddress ).
+	           '</div>'.PHP_EOL.
                "\n\n\t<!-- *************************stop of c-element************************* -->\n\n";
     }
   }
@@ -274,9 +296,10 @@ class EM{ /* ElementMenues */
     return  "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
             ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
-            EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+//             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+            EB::ticket ( $fullAddress ).
             EB::history( $theEl->history, $fullAddress ).
-            EB::delete( $fullAddress ).
+//             EB::delete( $fullAddress ).
             // EB::manageElements().
             EB::link2Element(  $fullAddress, $theEl ).
             EB::view(   $fullAddress ).
@@ -350,7 +373,8 @@ class EM{ /* ElementMenues */
             "<span class=\"labsys_mop_element_description_in_header\">".$fullAddress."</span>\n".
             EB::viewStructure( $fullAddress ).
             EB::link2Element(  $fullAddress, $eC ).
-            EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
+//             EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
+            EB::ticket ( $fullAddress ).
             EB::history( $eC->history, $fullAddress ).
             EB::view(   $fullAddress ).
             //EB::createNew( "c" ).
@@ -385,8 +409,8 @@ class EM{ /* ElementMenues */
     global $lng, $url;
     return  EB::history( $eC->history, "p1", true ).
             EB::view(           "C".$eC->idx ).
-    		EB::link2Element(   "C".$eC->idx ).
-            EB::delete(         "C".$eC->idx );
+    		EB::link2Element(   "C".$eC->idx );
+//             EB::delete(         "C".$eC->idx );
             //EB::viewStructure(  "C".$eC->idx ).
             // EB::manageElements().
   }
@@ -480,7 +504,7 @@ class EM{ /* ElementMenues */
     return EB::history(     $theEl->history, $fullAddress ).
     	   EB::link2Element(  $fullAddress ).
 //            EB::createNew(     $elShortcut  ).
-           EB::delete(        $fullAddress ).
+//            EB::delete(        $fullAddress ).
            EB::view(          $fullAddress ).
            EB::edit(          $fullAddress ).
            EB::cloneMe(   $theEl->elementId.$theEl->idx );
@@ -521,7 +545,7 @@ class EM{ /* ElementMenues */
            EB::history( $eC->history, $fullAddress ).
            EB::link2Element( $fullAddress, $eC ).
            EB::createNew( "c" ).
-           EB::delete( $fullAddress ).
+//            EB::delete( $fullAddress ).
            EB::view( $fullAddress ).
            EB::edit( $fullAddress ).
            EB::cloneMe( 'c'.$eC->idx );

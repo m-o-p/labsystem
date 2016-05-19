@@ -376,6 +376,22 @@ class EB{ /* ElementButtons */
     $linkToTOCPage = $url->rawLink2( "../pages/view.php?address=".$address );
     return EB::mkLink( $link, "<img src=\"../syspix/button_toc_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"TOC\" title=\"".$lng->get("explainTOC")."\">" );
   }
+  
+  /**
+   * This button is used for creating a ticket on the current element.
+   *
+   * @param $address  The link2element's address.
+   *
+   * @return          The button's html-code.
+   */
+  static function ticket( $address ){
+  	global $lng, $url, $usr, $cfg; // Links are defined in /include/helper.inc
+  	if ( !$usr->isOfKind( IS_USER ) || !$cfg->doesExist('enableTicketLinks') || $cfg->get('enableTicketLinks')!=1 ){
+  		return;
+  	}
+  	$link = $url->link2( "../pages/ticket.php?address=".$address.'#subject' );
+  	return EB::mkLink( $link, "<img src=\"../syspix/button_bug_10x12.gif\" width=\"10\" height=\"12\" border=\"0\" alt=\"ticket\" title=\"".$lng->get("explainTicket")."\">" );
+  }
 
   /**
   * This button is used next to the history button for regular users.
@@ -394,7 +410,7 @@ class EB{ /* ElementButtons */
       return;
     }
     $link = $url->link2( '../pages/mailForm.php?subject='.urlencode( '[><] '.$subject ).'&text='.urlencode( "\r\n\r\n".'-> http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$address.( $usr->isOfKind(IS_CORRECTOR) && $usr->isSeeingSomeonesData() && (strrpos($_SERVER['REQUEST_URI'], 'seeMe')===false)?'&seeMe='.urlencode($usr->theSeeingUid()):'') ) );
-    return EB::mkLink( $link, "<img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"next\" title=\"".$lng->get("explainMailLink2")."\">" );
+    return EB::mkLink( $link, "<img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"mail\" title=\"".$lng->get("explainMailLink2")."\">" );
   }
 }
 ?>

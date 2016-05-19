@@ -156,7 +156,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
     if ( !$slaveData ) continue;
 
     $userData = array_merge( $masterData, $slaveData );
-    $user = new ElementUser( $userData["uid"], $userData["userName"], $userData["foreName"], $userData["name"], $userData["currentTeam"], $userData["rights"], $userData["eMail"], $userData["history"] );
+    $user = new ElementUser( $userData["uid"], $userData["userName"], $userData["foreName"], $userData["name"], $userData["currentTeam"], $userData["rights"], $userData["rights"], $userData["eMail"], $userData["history"] );
     $pge->put( '<input type="hidden" name="'.$userData[ 'uid' ].'_present" value="1">'."\n" ); // necessary to identify available users
     $pge->put( $user->showPropertyRow( $userData["uid"] ) );
   }

@@ -136,7 +136,7 @@ class Menu{
 
     // If not absolute link add url stuff.
     if ( !(strtoupper( substr( $link, 0, 4 ) ) == 'HTTP' &&
-           (strpos( $link, $_SERVER[ 'SERVER_NAME' ].'/pages/login.php' ) === false) // pages within the system should be linked with additional tags...
+           (strpos( $link, '/pages/login.php' ) === false) // pages within the system should be linked with additional tags...
            ) ) $link = $GLOBALS['url']->link2( $link );
 
     if ( $isOn ){ // All states should be on.

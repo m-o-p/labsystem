@@ -317,7 +317,7 @@ class LsElement extends Element{
     // return the whole element
     return EM::viewTopSchedule( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
-           "<div class=\"labsys_mop_h2\">".$lng->get("titleSchedules")." - ".$cfg->get("SystemTitle")."</div>".
+           '<div class="labsys_mop_h2" id="'.$fullAddress.'"><div class="withLinkAnchor">'.$lng->get("titleSchedules")." - ".$cfg->get("SystemTitle").'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div></div>'.
            ( $lng->get("showScheduleNote") != '' ? "<div class=\"labsys_mop_note\">\n".$lng->get("showScheduleNote")."</div>\n" : '' ). // note
            "<table class=\"labsys_mop_s_table\">\n".
            $this->emptyRow().

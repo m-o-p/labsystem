@@ -51,7 +51,10 @@ class DBInterfaceUserRights {
   */
   function getData4( $uid ){
     global $usr, $cfg, $lng;
-    $result = $this->myDBC->mkSelect( "rights, enabledRights, currentTeam, history", $this->myTable, "uid='".$uid."'" );
+    // The star is needed as the enabledRights will be missing for old instances...
+    // mysql #1054 - Unknown column
+    // "rights, enabledRights, currentTeam, history"
+    $result = $this->myDBC->mkSelect( '*', $this->myTable, "uid='".$uid."'" );
     if ( !($data = mysql_fetch_array( $result )) ){
       /* no dataset found => create a new one with the default values */
       // each new member should get his own team number
@@ -72,9 +75,13 @@ class DBInterfaceUserRights {
       				"currentTeam" => $currentTeam,
                     "history"     => "");
     }else{
+      $enabledRights = ( !isset($data['enabledRights']) 
+      		             || empty($data['enabledRights']) 
+      		             || (intval($data['rights'])&intval($data['enabledRights'])!=intval($data['enabledRights']))
+      					 ? $data['rights'] : $data['enabledRights'] );
       return Array( "rights"      => $data['rights'],
 					// This ensures you cannot get rights you do not have even though they somehow managed to get into your DB row:
-      				"enabledRights"      => ( !isset($data['enabledRights']) ||  empty($data['enabledRights'] || ($data['rights']&$data['enabledRights']!=$data['enabledRights'])) ? $data['rights'] : $data['enabledRights'] ),
+      				"enabledRights"      => $enabledRights,
                     "currentTeam" => $data['currentTeam'],
                     "history"     => $data['history'] );
     }
@@ -96,7 +103,7 @@ class DBInterfaceUserRights {
   * @param $currentTeam       The users currentTeam.
   * @param $history           If present this is set after the user's name.
   */
-  function setData4( $uid, $rights="", $enabledRights='', $currentTeam="", $history = "" ){
+  function setData4( $uid, $rights='', $enabledRights='', $currentTeam='', $history = '' ){
     global $usr, $cfg;
     $toSet = "";
     $toSet = ( !empty($rights) ?       "rights='".$rights."', " : '' ).

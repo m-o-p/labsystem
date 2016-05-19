@@ -361,12 +361,11 @@ class LmElement extends Element{
 
     return "<div class=\"labsys_mop_elements_m_around\">".
            EM::viewTopMultipleChoice( $this, $fullAddress ).
-           "<div class=\"labsys_mop_contentArea\">\n".
-             "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
+           '<div id="'.$fullAddress.'" class="labsys_mop_contentArea">'.PHP_EOL. // anchor for retrieving after saving
              "<div class=\"labsys_mop_m_question\">".
               "<label for=\"aTable".$this->idx."\">".
                ( $this->isAnswered || $this->isChangedByUser( end($this->previousAnswersArray) ) ? '' : "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get('explainUnChanged')."\"> ").
-               ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->question.
+               '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->question.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>'.
               "</label>".
              "</div>\n".
                $answers.
@@ -393,7 +392,7 @@ class LmElement extends Element{
     if ($this->question == ""){ echo "'()"; exit; }
 
     parseHTML( $this->question ); // Process [HTML].
-    $pge->replaceConstants( $this->question ); // Process custon fields
+    $this->question = ( $pge->replaceConstants( $this->question ) ); // Process custon fields
 
     $epubExporter = LSE_Exporter::getInstance();
     $answerArray = array();
@@ -404,7 +403,7 @@ class LmElement extends Element{
     for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
       parseHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
       //$pge->replaceConstants( $this->answerArray[ $this->displayPermutation[$i] ] ); // Process custon fields
-      $answerArray[] = $this->answerArray[ $this->displayPermutation[$i] ] ;
+      $answerArray[] = $pge->replaceConstants( $this->answerArray[ $this->displayPermutation[$i] ] );
       // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ ).'<br>' );
     }
 
