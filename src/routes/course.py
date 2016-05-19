@@ -13,6 +13,13 @@ def course_element_list():
     return render_template('elements/course/list.html', courses=courses)
 
 
+@app.context_processor
+def inject_getCourses():
+    def getCourses():
+        return map(lambda el: CourseElement(el), storage.listCourses())
+    return dict(getCourses=getCourses)
+
+
 @app.route("/courses/<course>/delete")
 def course_element_delete(course):
     """Delete a course"""
