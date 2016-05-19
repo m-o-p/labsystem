@@ -1100,9 +1100,11 @@ class LlElement extends Element{
     else { return "l".$this->idx.": ".$lng->get("elNotFoundVisible")." (".$fullAddress.") "; exit; }
 
     return EM::viewTopLab( $this, $parentAddr.$me ).
-           "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>\n".
+    	   '<div id="'.$parentAddr.$me.'" class="labsys_mop_contentAreaL">'.PHP_EOL. // anchor for retrieving after saving
+           '<div class="labsys_mop_h2"><div class="withLinkAnchor">'.( !empty($extParagraph) ?  $extParagraph.'. '  : '' ).$this->title.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$parentAddr.$me).'" class="link-anchor">¶</a></div></div>'.
            ( ($this->authors != '') ? '<div class="labsys_mop_l_authors">'.returnHTML($this->authors).'</div>' : '' ).
            $myRetVal.
+           '</div>'.
            EM::viewBottomLab( $this, $parentAddr.$me );
   }
 

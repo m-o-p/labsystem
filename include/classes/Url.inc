@@ -157,12 +157,21 @@ class Url
   * @return The full link.
   */
   function rawLink2( $destUrl ){
+  	$linkMe = $destUrl;
     if ( $this->get('newQueryStringRaw') == '' )
-      return $destUrl; /* no query string */
-    else if ( strpos( $destUrl, '?' ) !== false )
-           return str_replace( '?', '?'.$this->get('newQueryStringRaw').'&', $destUrl ); // contains query
-         else
+      return $linkMe; /* no query string */
+    else if ( strpos( $linkMe, '?' ) !== false ){
+    	// this is the interesting part. Only add new query strings!
+    	$urlParameters = explode('&', $this->get('newQueryStringRaw'));
+    	foreach( $urlParameters as $nextURLparameter){
+    		if(strpos($linkMe, $nextURLparameter)===false){
+    			$linkMe .= '&'.$nextURLparameter;
+    		}
+    	}
+    	return $linkMe;
+    }else{
           return $destUrl.'?'.$this->get('newQueryStringRaw'); // not found
+  }
   }
   
   /**

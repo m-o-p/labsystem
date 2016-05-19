@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
@@ -75,8 +75,8 @@ class LpElement extends Element{
   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   * @return string        The html code of the element's view view.
   */
-  function show( $fullAddress, $paragraph="" ){
-    global $usr, $lng;
+  function show( $fullAddress, $paragraph='' ){
+    global $usr, $lng, $url;
     if (  !$this->isVisible() ){              // not enough rights->no content
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
@@ -86,14 +86,13 @@ class LpElement extends Element{
 
     if ($this->contents == "") return "'()";  // is empty
 
-    // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
-    $this->contents = str_replace( "__ELEMENTTITLE__", ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->title, $this->contents );
+    // replace the tag __ELEMENTTITLE__ by $paragraph.$this->title
+    $this->contents = str_replace( '__ELEMENTTITLE__', '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->title.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>', $this->contents );
 
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
 
     return EM::viewTopPage( $this, $fullAddress ).
-           "<div class=\"labsys_mop_contentArea\">".
-           "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
+           '<div id="'.$fullAddress.'" class="labsys_mop_contentArea">'.// anchor for retrieving after saving
            "<div class=\"labsys_mop_elements_p_around\">".
            $this->contents."</div></div>".
            EM::viewBottomPage( $this, $fullAddress );

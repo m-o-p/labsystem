@@ -53,6 +53,23 @@ a:hover {             text-decoration:underline; color: #0065BD;}
                       font-size: 0.9em; 
 }
 
+/* Link Anchors */
+.labsys_mop_contentArea .withLinkAnchor a.link-anchor, .labsys_mop_contentAreaL .withLinkAnchor a.link-anchor{
+    display: none;
+    margin-left: 6px;
+    text-decoration: none;
+}
+
+.labsys_mop_contentArea .withLinkAnchor a.link-anchor:hover, .labsys_mop_contentAreaL .withLinkAnchor a.link-anchor:hover{
+	color: #aaa !important;
+	text-decoration: none;
+}
+
+.labsys_mop_contentArea .withLinkAnchor:hover a.link-anchor, .labsys_mop_contentAreaL .withLinkAnchor:hover a.link-anchor{
+	display: inline;
+	color: #ddd;
+}
+
 /* Scale images */
 img {
 max-width:100%;

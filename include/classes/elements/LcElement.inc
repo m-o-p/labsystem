@@ -421,9 +421,8 @@ class LcElement extends Element{
 
 
     return  EM::viewTopCollection( $this, $parentAddr.$me ).
-            "<a name=\"".$parentAddr.$me."\"></a>\n".
             "<div class=\"labsys_mop_contentArea\">\n".
-            "<div class=\"labsys_mop_h2\">".( $extParagraph != "" ?  $extParagraph.". "  : '' ).$this->title."</div>\n".
+            '<div class="labsys_mop_h2" id="'.$parentAddr.$me.'"><div class="withLinkAnchor">'.( !empty($extParagraph) ?  $extParagraph.'. '  : '' ).$this->title.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$parentAddr.$me).'" class="link-anchor">¶</a></div></div>'.
             "</div>\n".
             $myRetVal.
             EM::viewBottomCollection( $this, $parentAddr.$me );
