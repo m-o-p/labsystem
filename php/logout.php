@@ -38,9 +38,8 @@ $GLOBALS['Logger']->logToDatabase('system', logActions::logout);
 
 if ( strip_tags(SID) != "" )
   $url->rem( strip_tags(SID) ); // remove SID from url
-else
-  setcookie( session_name(), "", time()-3600 ); // remove cookie
 
+setcookie(session_name(), NULL, 1, '/');
 session_unset();
 session_destroy();
 

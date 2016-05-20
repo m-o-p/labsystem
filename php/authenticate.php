@@ -62,10 +62,8 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
     session_set_cookie_params ( 365 * 24 * 60 * 60 );
     $url->put( "sysinfo=".$lng->get('StayLoggedIn') );
   }
-  $NEWSESSION = true;
+  $NEWSESSION = $authUserData["uid"];
   require( INCLUDE_DIR."/session.inc" );
-
-  $_SESSION["uid"]          = $authUserData["uid"];
   
 // The following field is for security reasons:
 // If the configuration would not be checked you could change the field in the url and would be logged on with your
