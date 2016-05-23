@@ -49,7 +49,7 @@ class Usr extends ElementUser{
   }
   
   function __construct0(){
-  	$this->ElementUser( "noID", "guest", "M.", "Guest", 0, IS_GUEST, IS_GUEST, "none@localhost", time() );
+  	$this->ElementUser( FALSE, "guest", "M.", "Guest", 0, IS_GUEST, IS_GUEST, "none@localhost", time() );
     $this->iSeeUID='';
     $this->iSeeDesc='';
   }

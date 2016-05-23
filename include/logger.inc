@@ -29,11 +29,11 @@
 * If the operation if loginLog
 */
 function makeLogEntry( $group, $operation, $resource='' ){
-  global $cfg, $configPrefix;
+  global $cfg, $configPrefix, $usr;
 
   $doLogging = $cfg->doesExist('logDir') && ($cfg->get('logDir') != '');
 
-  if (!isset($doLogging) || !$doLogging || !isset($_SESSION['uid'])) return; // only log for authenticated users
+  if (!isset($doLogging) || !$doLogging || !$usr->uid) return; // only log for authenticated users
 
   if ( !file_exists($cfg->get('logDir')))
     mkdir($cfg->get('logDir'), 0755, true) or trigger_error("Error creating folder ".$cfg->get('logDir'), E_USER_ERROR);
@@ -189,9 +189,9 @@ class Logger{
    * @param unknown $otherTeamID If set this team ID is used instead of the one of the user (e.g. for the correction).
    */
   function logToDatabase($resourceID, $action, $otherTeamID=''){
-    global $cfg, $configPrefix;
+    global $cfg, $configPrefix, $usr;
     $doLogging = $this->doTheLogging && $cfg->doesExist('logDir') && ($cfg->get('logDir') != '');
-    if (!isset($doLogging) || !$doLogging || !isset($_SESSION['uid'])) return; // only log for authenticated users
+    if (!isset($doLogging) || !$doLogging || !$usr->uid) return; // only log for authenticated users
 
     $what = array('resourceID' => $this->myDBC->escapeString($resourceID),
                   'referrerID' => $this->myDBC->escapeString($this->getReferrerID()),

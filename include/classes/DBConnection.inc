@@ -86,6 +86,7 @@ Comment by Marc-oliver Pahl: In my php version this doesn't take effect :(
   * @return             The return value of the query.
   */
   function query( $theQuery ){
+//   	echo( 'query: '.htmlentities($theQuery).'<br>'.PHP_EOL );
     mysql_select_db( $this->dataBase, $this->link );
     $ret = mysql_query( $theQuery, $this->link );
     $this->reportErrors( $theQuery ); // If there was an error, it gets reported immediately. Debug.

@@ -25,7 +25,7 @@
 * @module     ../include/customErrorHandler.inc
 */
 require_once INCLUDE_DIR.'/config.inc'; // for errormail_receiver
-require_once INCLUDE_DIR.'/classes/MailFunctionality.inc';
+
 $mailSent = FALSE;
 $errorMailUID = ( !empty($_POST['errorMailUID']) ? $_POST['errorMailUID'] : uniqid());
 /**
@@ -53,7 +53,7 @@ function displayError( $cssColor, $html ){
 
 function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
 {
-  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc, $errorMailUID;
+  global $pge, $cfg, $lng, $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc, $errorMailUID, $usr;
   if ( defined ( 'E_STRICT' ) && ($errno == constant ( 'E_STRICT' ) ) ) return; // ignore php5 warnings of missing public etc.
 
   $errno = htmlentities( $errno );
@@ -62,7 +62,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
   $errline = htmlentities( $errline );
   
   // Immediately send a mail in case the user does not provide more details:
-  if (empty($_POST['ERROR_EXPLANATION'])){
+  if (empty($_POST['ERROR_EXPLANATION']) && $usr->uid){
   	$mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
 				  		$ERRORMAIL_RECEIVER_UID,
 				  		'Error Report '.$errorMailUID.': ['.$errno.'] '.$errstr,
@@ -82,7 +82,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
         ($_POST['ERROR_EXPLANATION']!=$lng->get('detailedFeedBack'))){
       $errorDetailsProvided=TRUE;
       
-      $mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
+      $mailFunc->sendMail((!empty($usr->mailAddress) && $usr->uid ? $usr->mailAddress : ''),
           $ERRORMAIL_RECEIVER_UID,
           'Error Report '.$errorMailUID.': '.$_POST['ERROR_REFERRER'],
           nl2br(htmlentities($_POST['ERROR_EXPLANATION'])).'<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
@@ -172,23 +172,20 @@ function getErrorReport($number, $message, $file, $line, $vars){
   return 'URL causing the error:'.
          'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."<br>".
          ( isset($_SERVER['HTTP_REFERER']) ? 'Last page before:<br>'.$_SERVER['HTTP_REFERER'].'<br>' : '').
-         ( isset($usr) ? 'User experiencing the error:  '.$usr->foreName.' '.$usr->surName.' ('.$usr->mailAddress.')<br>'.
+         ( isset($usr) && $usr->uid ? 'User experiencing the error:  '.$usr->foreName.' '.$usr->surName.' ('.$usr->mailAddress.')<br>'.
           'Rights while error occured:   '.$usr->userRights."<br>"
-          : '')."
-          <p>An error ($number) occurred on line
+          : '').PHP_EOL.
+          "<p>An error ($number) occurred on line
           <strong>$line</strong> and in the <strong>file: $file.</strong>
           <p> $message </p>".
-          "<pre>" . print_r($vars, 1) . "</pre>";
+          '<pre>' . print_r($vars, 1) . '</pre>';
 }
 
 //This error handler sends an email with all relevant information
 function mail_error_handler($number, $message, $file, $line, $vars){
-  global $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc, $errorUID;
+  global $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc, $errorUID, $usr;
 
   if (!$mailSent){
-    if ( !empty($ERRORMAIL_RECEIVER_UID)
-         && !empty($usr->mailAddress) ){ // mail only errors user experience that are logged in
-
       $headers = 'Content-type: text/html;';
 
       // Email the error to someone...
@@ -205,9 +202,6 @@ function mail_error_handler($number, $message, $file, $line, $vars){
         }
       }
     }
-  }
-
-
 }
 
 // Install the new error handler.

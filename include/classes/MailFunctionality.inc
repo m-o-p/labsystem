@@ -34,7 +34,7 @@ class MailFunctionality{
     }
     
     preg_match("/\<(.*)\>/", $sender, $output_array);
-    $senderMail = $output_array[1];
+    $senderMail = (!empty($output_array) ? $output_array[1] : $sender);
     if (empty($senderMail)){
     	$senderMail = $sender;
     }
@@ -58,7 +58,7 @@ class MailFunctionality{
 	    			$receiverUsrDataArray['name'], //$surName
 	    			$userDetailedData['currentTeam'],//$currentTeam
 	    			0,//$userRights
-	    			//0,//$userMaximumRights
+	    			0,//$userMaximumRights
 	    			$receiverUsrDataArray['eMail'],//$mailAddress
 	    			'created just for mail');
 	    	// replace constants for personalized mails

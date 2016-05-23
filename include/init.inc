@@ -44,8 +44,6 @@ define( "INCLUDE_DIR", "../include" );
 
 require( INCLUDE_DIR."/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
                                                 // needed to get parameters from the url ($url->get, ->available)
-
-require( INCLUDE_DIR."/customErrHandle.inc" );  // The custom Error handler.
 require( INCLUDE_DIR."/helper.inc" );           // Some helper functions that are used.
 
 require( INCLUDE_DIR."/configuration.inc" );    // Include the global configuration. => Object $cfg.
@@ -69,6 +67,7 @@ require( INCLUDE_DIR."/classes/Usr.inc" );      /* Creates a current user with d
 require( INCLUDE_DIR."/session.inc" );          /* Include session management (db based) and, if available,
                                                    set the information ($usr data) from the session.
                                                  */
+require( INCLUDE_DIR."/customErrHandle.inc" );  // The custom Error handler.
 require( INCLUDE_DIR."/logger.inc" );          /* Include to enable logging. */
                                                // activated when config contains lagDir = "someDirectory"
 
