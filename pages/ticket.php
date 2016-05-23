@@ -102,7 +102,8 @@ if (isset($_POST['message'])){
 // 			'data:application/pdf;base64,' .
 // 			base64_encode(file_get_contents('/path/to/filename.pdf')));
 	
-	if (!$debug){
+	if (!$debug&&!($cfg->doesExist('ticketReceiverUID')&&!empty($cfg->get('ticketReceiverUID')))){
+		// normal ticket system handler
 		#set timeout
 		set_time_limit(30);
 		
@@ -128,8 +129,26 @@ if (isset($_POST['message'])){
 		
 		$ticket_id = (int) $result;
 	}else{
-		$pge->put('<div class="labsys_mop_ticketElementView">'.htmlentities(json_encode($data)).'</div>');
-		$ticket_id = 23;
+		$text = $data['message'].PHP_EOL.
+		PHP_EOL.'-- '.PHP_EOL;
+		foreach( $data as $itemName=>$itemValue){
+			if ($itemName == 'message'){
+				continue; // handled before
+			}
+			$text.=$itemName.': '.($itemName=='topicId'?$ticketCategories[$itemValue]:$itemValue).PHP_EOL;
+		}
+		
+		if (!$debug&&($cfg->doesExist('ticketReceiverUID')&&!empty($cfg->get('ticketReceiverUID')))){
+			// Mail handler
+			$mailFunc->sendMail($usr->mailAddress, $cfg->get('ticketReceiverUID'), '['.$ticketCategories[$data['topicId']].'] '.$data['subject'], $text);
+			$ticket_id = 42; // why 42? well.
+		}else{
+			// Debug handler
+			$pge->put('<div class="labsys_mop_ticketElementView">'.htmlentities(json_encode($data)).'</div>');
+			
+			$pge->put(nl2br($text));
+			$ticket_id = 23;
+		}
 	}
 	
 	# Continue onward here if necessary. $ticket_id has the ID number of the
