@@ -92,7 +92,7 @@ if (isset($_POST['message'])){
 	$data['link2Element'] = '<a href="'.$data['link2Element'].'">Open the element</a>';
 	
 	#pre-checks
-	if (!$debug){
+	if (!$debug&&!($cfg->doesExist('ticketReceiverUID')&&!empty($cfg->get('ticketReceiverUID')))){
  		function_exists('curl_version') or die('CURL support required');
 	}
 	function_exists('json_encode') or die('JSON support required');
@@ -104,6 +104,7 @@ if (isset($_POST['message'])){
 	
 	if (!$debug&&!($cfg->doesExist('ticketReceiverUID')&&!empty($cfg->get('ticketReceiverUID')))){
 		// normal ticket system handler
+		$data['topicId'] = $data['topicId']+1; // osTicket categories start with 1...
 		#set timeout
 		set_time_limit(30);
 		
@@ -166,8 +167,8 @@ $pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLab
 $pge->put( '<select name="topicId"'.(isset($_POST['topicId']) ? ' disabled="disabled"':'').'>');
 		$counter = 0;
 		foreach ($ticketCategories as $ticketCategory){
-			$counter++;
 			$pge->put( '<option value="'.$counter.'"'.(isset($_POST['topicId']) && $_POST['topicId']==$counter ? ' selected="selected"':'').'>'.$ticketCategory.'</option>'.PHP_EOL );
+			$counter++;
 		}			
 $pge->put( '</select>' );
 $pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="message">message</label><textarea class="labsys_mop_ticketTextArea" name="message" id="message" onFocus="this.select();"'.($ticket_id!=0?' disabled="disabled"':'').'>'.(isset($_POST['message']) ? $_POST['message'] : 'Your Message...').'</textarea>' );
