@@ -98,7 +98,7 @@ $urDBI->getAllData ();
 while ( $userRightsData = $urDBI->getNextData () ) {
 	$userData = $uDBI->getData4 ( $userRightsData ["uid"] );
 	// create the user element
-	$user = new ElementUser ( $userData ["uid"], $userData ["userName"], $userData ["foreName"], $userData ["name"], $userRightsData ["currentTeam"], $userRightsData ["rights"], $userData ["eMail"], $userRightsData ["history"] );
+	$user = new ElementUser ( $userData ["uid"], $userData ["userName"], $userData ["foreName"], $userData ["name"], $userRightsData ["currentTeam"], $userRightsData ["rights"], $userRightsData ["rights"], $userData ["eMail"], $userRightsData ["history"] );
 	// ignore user that have no mailaddress or are no IS_MAIL_RECEIVER
 	if (! $user->isOfKind ( IS_MAIL_RECEIVER ) || ! $userData || empty ( $userData ["eMail"] ))
 		continue;
