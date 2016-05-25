@@ -205,9 +205,9 @@ if ($debug) {
 $pge->put( '<input '.($debug?'':'type="hidden" ').'class="labsys_mop_ticketInput" name="email" id="email" readonly="readonly" value="'.$usr->mailAddress.'" /></div>' );
 
 if ($debug) {
-	$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="team">team</label>' );
+	$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="currentTeam">current team</label>' );
 }
-$pge->put( '<input '.($debug?'':'type="hidden" ').'class="labsys_mop_ticketInput" name="team" id="team" readonly="readonly" value="'.$usr->currentTeam.'" /></div>' );
+$pge->put( '<input '.($debug?'':'type="hidden" ').'class="labsys_mop_ticketInput" name="currentTeam" id="currentTeam" readonly="readonly" value="'.$usr->currentTeam.'" /></div>' );
 
 if ($debug) {
 	$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="link2Element">link2Element</label>' );
