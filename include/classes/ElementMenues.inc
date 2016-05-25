@@ -58,7 +58,7 @@ class EM{ /* ElementMenues */
             EB::history( $theEl->history, $fullAddress ).
             EB::link2Element( $fullAddress, $theEl ).
             //EB::createNew( $elShortcut ).
-            (strpos(strtolower($fullAddress),'c') ? EB::delete( $fullAddress ):'').
+            (strpos(strtolower($fullAddress),'c') !== FALSE ? EB::delete( $fullAddress ):'').
             // EB::manageElements().
             EB::edit( $fullAddress ).
             "</div>\n";
