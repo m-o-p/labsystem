@@ -36,7 +36,6 @@
 class Pge extends LpElement{
   var $nextTab = 1; // the value of the next available TabNumber (for forms and menu elements)
   var $replaceKey;
-  var $elementTitle; // The title for the replacement
 
   /**
   * In this function the strings that will be replaced when displaying and their replacements are initialized.
@@ -120,7 +119,7 @@ class Pge extends LpElement{
    */
   function replaceConstantsNonHTML( $text ){
   	global $url, $usr, $lng, $cfg;
-  	$replaceValue = Array( $this->sanitizedKey[1], // This might change during the generation and should be replaced last...
+  	$replaceValue = Array( $url->get('newQueryString'), // This might change during the generation and should be replaced last...
   			$this->title,
   			$cfg->get("SystemTitle"),
   			$usr->foreName,
@@ -140,11 +139,11 @@ class Pge extends LpElement{
   }
   
   /**
-   * Sets the page title.
+   * Returns the $content with __ELEMENTTITLE__ replacesd by $elementTitle.
    * @param unknown $title The title.
    */
-  function setElementTitle( $elementTitle ){
-  	$this->elementTitle = $elementTitle;
+  function replaceElementTitle( $content, $elementTitle ){
+  	return str_replace( array( $this->replaceKey[0], $this->sanitizeKey[0]), array($elementTitle, $elementTitle), $content );
   }
   
   /**
@@ -153,8 +152,8 @@ class Pge extends LpElement{
   * @return The string with the replaced constants.
   */
   function replaceConstants( $text ){
-    global $usr, $lng, $cfg;
-    	$replaceValue = Array( 		 $this->sanitizedKey[1], // This might change during the generation and should be replaced last...,
+    global $url, $usr, $lng, $cfg;
+    	$replaceValue = Array( $url->get('newQueryString'), // This might change during the generation and should be replaced last...,
     	                             htmlentities( $this->title ),
     	                             htmlentities( $cfg->get("SystemTitle") ),
     	                             htmlentities( $usr->foreName ),
@@ -178,12 +177,12 @@ class Pge extends LpElement{
   * This function overrides the one from LpElement.
   */
   function show(){
-    global $lng, $url;
+    global $lng;
     if ( !$this->isVisible() ) // not enough rights->no content
       $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
 
     // The __LINKQUERY__ replacements must be set here since they may not be correct before.
-    echo( str_replace( $this->sanitizedKey[1], $url->get('newQueryString'), $this->contents ) );
+    echo( str_replace( $this->contents ) );
   }
 
   /**
