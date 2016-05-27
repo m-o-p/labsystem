@@ -303,7 +303,7 @@ class EM{ /* ElementMenues */
             // EB::manageElements().
             EB::link2Element(  $fullAddress, $theEl ).
             EB::view(   $fullAddress ).
-            //EB::createNew( $elShortcut ).
+            EB::createNew( $elShortcut ).
             "</div>\n";
   }
   /**
@@ -377,7 +377,7 @@ class EM{ /* ElementMenues */
             EB::ticket ( $fullAddress ).
             EB::history( $eC->history, $fullAddress ).
             EB::view(   $fullAddress ).
-            //EB::createNew( "c" ).
+            EB::createNew( "c" ).
             //EB::delete( $fullAddress ).
             // EB::manageElements().
             "</div>\n";
@@ -544,7 +544,7 @@ class EM{ /* ElementMenues */
     return //EB::viewStructure( $fullAddress ).
            EB::history( $eC->history, $fullAddress ).
            EB::link2Element( $fullAddress, $eC ).
-           EB::createNew( "c" ).
+           // EB::createNew( "c" ).
 //            EB::delete( $fullAddress ).
            EB::view( $fullAddress ).
            EB::edit( $fullAddress ).
