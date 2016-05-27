@@ -118,9 +118,9 @@ class Pge extends LpElement{
    * @param String The content the constants should be replaced in.
    * @return The string with the replaced constants.
    */
-  function replaceConstantsNonHTML( $text, $alsoURL=FALSE ){
+  function replaceConstantsNonHTML( $text ){
   	global $url, $usr, $lng, $cfg;
-  	$replaceValue = Array( ($alsoURL ? $url->get("newQueryString") : $this->sanitizedKey[1] ), // This might change during the generation and should be replaced last...
+  	$replaceValue = Array( $this->sanitizedKey[1], // This might change during the generation and should be replaced last...
   			$this->title,
   			$cfg->get("SystemTitle"),
   			$usr->foreName,
@@ -150,12 +150,11 @@ class Pge extends LpElement{
   /**
   * Replaces the constants with the values.
   * @param String The content the constants should be replaced in.
-  * @param alsoURL Should the __LINKQUERY__ tag be replaced? This should happen only in $pge->show since more variables might be added on the way...
   * @return The string with the replaced constants.
   */
-  function replaceConstants( $text, $alsoURL=FALSE ){
-    global $url, $usr, $lng, $cfg;
-    	$replaceValue = Array( ($alsoURL ? $url->get("newQueryString") : $this->sanitizedKey[1] ), // This might change during the generation and should be replaced last...,
+  function replaceConstants( $text ){
+    global $usr, $lng, $cfg;
+    	$replaceValue = Array( 		 $this->sanitizedKey[1], // This might change during the generation and should be replaced last...,
     	                             htmlentities( $this->title ),
     	                             htmlentities( $cfg->get("SystemTitle") ),
     	                             htmlentities( $usr->foreName ),
@@ -179,12 +178,12 @@ class Pge extends LpElement{
   * This function overrides the one from LpElement.
   */
   function show(){
-    global $lng;
+    global $lng, $url;
     if ( !$this->isVisible() ) // not enough rights->no content
       $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
 
     // The __LINKQUERY__ replacements must be set here since they may not be correct before.
-    echo( $this->replaceConstants( $this->contents, TRUE ) );
+    echo( str_replace( $this->sanitizedKey[1], $url->get('newQueryString'), $this->contents ) );
   }
 
   /**
