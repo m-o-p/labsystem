@@ -90,7 +90,7 @@ class LpElement extends Element{
     
 	$pge->setElementTitle( '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>' );
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
-
+	$this->contents = $pge->replaceConstants($this->contents);
     
     return EM::viewTopPage( $this, $fullAddress ).
            '<div id="'.$fullAddress.'" class="labsys_mop_contentArea">'.// anchor for retrieving after saving
