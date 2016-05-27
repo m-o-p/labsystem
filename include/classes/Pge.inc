@@ -118,9 +118,9 @@ class Pge extends LpElement{
    * @param String The content the constants should be replaced in.
    * @return The string with the replaced constants.
    */
-  function replaceConstantsNonHTML( $text ){
+  function replaceConstantsNonHTML( $text, $alsoURL=FALSE ){
   	global $url, $usr, $lng, $cfg;
-  	$replaceValue = Array( $url->get("newQueryString"),
+  	$replaceValue = Array( ($alsoURL ? $url->get("newQueryString") : $this->sanitizedKey[1] ), // This might change during the generation and should be replaced last...
   			$this->title,
   			$cfg->get("SystemTitle"),
   			$usr->foreName,
@@ -150,11 +150,12 @@ class Pge extends LpElement{
   /**
   * Replaces the constants with the values.
   * @param String The content the constants should be replaced in.
+  * @param alsoURL Should the __LINKQUERY__ tag be replaced? This should happen only in $pge->show since more variables might be added on the way...
   * @return The string with the replaced constants.
   */
-  function replaceConstants( $text ){
+  function replaceConstants( $text, $alsoURL=FALSE ){
     global $url, $usr, $lng, $cfg;
-    	$replaceValue = Array( $url->get("newQueryString"),
+    	$replaceValue = Array( ($alsoURL ? $url->get("newQueryString") : $this->sanitizedKey[1] ), // This might change during the generation and should be replaced last...,
     	                             htmlentities( $this->title ),
     	                             htmlentities( $cfg->get("SystemTitle") ),
     	                             htmlentities( $usr->foreName ),
@@ -182,8 +183,8 @@ class Pge extends LpElement{
     if ( !$this->isVisible() ) // not enough rights->no content
       $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
 
-    // Some replacements must be set here since they may not be correct before.
-    echo( $this->contents );
+    // The __LINKQUERY__ replacements must be set here since they may not be correct before.
+    echo( $this->replaceConstants( $this->contents, TRUE ) );
   }
 
   /**
