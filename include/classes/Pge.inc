@@ -128,7 +128,7 @@ class Pge extends LpElement{
   			$usr->currentTeam,
   			$usr->mailAddress,
   			$_SERVER['SERVER_NAME'],
-  			$this->elementTitle,
+  			$this->replaceKey[9],
   			$_SERVER['REQUEST_URI'],
   			$cfg->get("Link2UserAdminInterface"),
   			date( $lng->get("DateFormat") ) );
@@ -143,7 +143,7 @@ class Pge extends LpElement{
    * @param unknown $title The title.
    */
   function replaceElementTitle( $content, $elementTitle ){
-  	return str_replace( array( $this->replaceKey[0], $this->sanitizeKey[0]), array($elementTitle, $elementTitle), $content );
+  	return str_replace( array( $this->replaceKey[9], $this->sanitizeKey[9]), array($elementTitle, $elementTitle), $content );
   }
   
   /**
@@ -182,7 +182,7 @@ class Pge extends LpElement{
       $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
 
     // The __LINKQUERY__ replacements must be set here since they may not be correct before.
-    echo( str_replace( $this->contents ) );
+    echo( $this->replaceConstants( $this->contents ) );
   }
 
   /**
