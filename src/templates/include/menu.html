@@ -1,17 +1,17 @@
 {% macro buld_tree(element, current) %}
   {% if current.meta['children'] %}
-  <ol class="menu-course">
-    {% for child in current.getChildren() %}
-      <li>
-        {{child.getId()}}
-        <a class="element-title" href="{{url_for('element_view', course=child.course, branch=child.branch, path=child.path)}}">{{child.getTitle()}}</a>
+    <ol class="menu-course">
+      {% for child in current.getChildren() %}
+        <li>
+          {{child.getId()}}
+          <a class="element-title" href="{{url_for('element_view', course=child.course, branch=child.branch, path=child.path)}}">{{child.getTitle()}}</a>
 
-        {% if child.getName() in element.getParentList() %}
-          {{buld_tree(element, child)}}
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ol>
+          {% if child.getName() in element.getParentList() %}
+            {{buld_tree(element, child)}}
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ol>
   {% endif %}
 {% endmacro %}
 
@@ -19,7 +19,7 @@
   <ol>
     <li>
       <ul class="courses">
-        {% for course in getCourses() %}
+        {% for course in getCourses() if hasPermissionForElement(g.user, 'view', course) %}
           {% if element and element.course == course.course %}
             <li class="active">
               <a href="{{url_for('course_element_view', course=course.course, branch="master")}}">

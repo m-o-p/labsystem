@@ -78,6 +78,20 @@ class QuestionElement(Element):
     def needTeamAnswer(self):
         return self.getAssignment().meta['teamwork']
 
+    def getUserCredits(self, user):
+        answer = self.getAnswer(user)
+
+        if not answer.hasCorrection():
+            return
+
+        correction = answer.getLatestCorrection()
+        correction = yaml.load(correction.correction)
+
+        return correction['credits']
+
+    def getCredits(self):
+        return self.getSecret()['credits']
+
 
 class TextQuestionElement(QuestionElement):
     def __init__(self, course, branch, path, meta=None):

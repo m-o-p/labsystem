@@ -28,4 +28,25 @@
     {% endfor %}
   </ol>
 
+  <h2>{{gettext('Branches')}}</h2>
+
+  <ol>
+    {% for branch in element.getCheckedOutBranches() %}
+      <li>
+        <a href="{{url_for('course_element_view', course=element.course, branch=branch)}}">
+          {{branch}}
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+
+  <form method="POST"  action="{{url_for('course_element_branch', course=element.course, branch=element.branch)}}">
+    <div class="form-group">
+      <label for="credits">{{gettext('Branch Name')}}</label>
+      <input type="text" class="form-control" id="branch" name="branch">
+    </div>
+
+    <button type="submit" class="btn btn-default">{{gettext('Create Branch')}}</button>
+  </form>
+
 {% endblock element %}

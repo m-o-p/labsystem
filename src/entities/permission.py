@@ -6,7 +6,7 @@ from wtforms import Form, validators
 from wtforms import StringField, SelectMultipleField, SelectField
 from flask_babel import lazy_gettext
 
-from app import database
+from app import app, database
 
 from .user import User
 from .schedule import Schedule
@@ -126,3 +126,16 @@ def checkPermissionForElement(user, permission, element):
 
     if not user.can(permission, course=element.course, assignment=assignment.path):
         raise PermissionDeniedError(user=user, permission=permission, element=element)
+
+
+def hasPermissionForElement(user, permission, element):
+    try:
+        checkPermissionForElement(user, permission, element)
+        return True
+    except:
+        return False
+
+
+@app.context_processor
+def inject_PermissionChecks():
+    return dict(hasPermissionForElement=hasPermissionForElement)

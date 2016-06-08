@@ -32,11 +32,8 @@ class Element:
     def delete(self):
         storage.delete(self.course, self.branch, self.metaPath())
 
-        (parent, me) = os.path.split(self.path)
-
-        if parent is not None:
-            from .helpers import load_element
-            load_element(self.course, self.branch, parent).removeChild(me)
+        if self.hasParent():
+            self.getParent().removeChild(self)
 
     def move(self, new):
         if self.isSecret:
@@ -45,6 +42,12 @@ class Element:
             root = 'content'
 
         storage.rename(self.course, self.branch, self.metaPath(), os.path.join(root, self.getParentPath(), new + '.meta'))
+
+        if self.hasParent():
+            self.getParent().removeChild(self)
+        self.path = new
+        if self.hasParent():
+            self.getParent().addChild(self)
 
     def getTitle(self):
         (parent, me) = os.path.split(self.path)
@@ -55,6 +58,11 @@ class Element:
         (parent, me) = os.path.split(self.path)
 
         return parent
+
+    def hasParent(self):
+        (parent, me) = os.path.split(self.path)
+
+        return parent is not None
 
     def getParent(self):
         (parent, me) = os.path.split(self.path)

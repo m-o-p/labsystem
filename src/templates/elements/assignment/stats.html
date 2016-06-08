@@ -1,0 +1,26 @@
+{% extends "element.html" %}
+
+{% block element %}
+
+  {% if 'user' in request.args %}
+    {{getUser(request.args['user']).name}} <br />
+
+    {{element.getUserCredits(getUser(request.args['user']))}} / {{element.getCredits()}}
+  {% else %}
+    Me <br />
+
+    {{element.getUserCredits(g.user)}} / {{element.getCredits()}}
+  {% endif%}
+
+  {% for element in element.getQuestions() %}
+    {% include "include/element-header.html" %}
+    <div class="element-stats">
+      {% if 'user' in request.args %}
+        {{element.getUserCredits(getUser(request.args['user']))}} / {{element.getCredits()}}
+      {% else %}
+        {{element.getUserCredits(g.user)}} / {{element.getCredits()}}
+      {% endif%}
+    </div>
+  {% endfor %}
+
+{% endblock element%}

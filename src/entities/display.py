@@ -4,7 +4,7 @@ from string import Template
 import markdown
 from wtforms import Form, StringField, TextAreaField, SelectField, validators
 from flask_babel import lazy_gettext
-from flask import escape, url_for
+from flask import escape, url_for, g
 
 import storage
 
@@ -26,6 +26,13 @@ class DisplayElement(Element):
     def getRaw(self):
         return storage.read(self.course, self.branch, self.getRawPath()).read().decode()
 
+    def move(self, new):
+        oldraw = self.getRawPath()
+        Element.move(self, new)
+        newraw = self.getRawPath()
+
+        storage.rename(self.course, self.branch, oldraw, newraw)
+
     def save(self, content):
         Element.save(self)
 
@@ -45,7 +52,8 @@ class DisplayElement(Element):
     def getTemplateParams(self):
         return {
             'title': self.getTitle(),
-            'fileroot': url_for('file_view', course=self.course, branch=self.branch, path='')
+            'fileroot': url_for('file_view', course=self.course, branch=self.branch, path=''),
+            'user': g.user
         }
 
 

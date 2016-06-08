@@ -54,12 +54,12 @@ class MultipleChoiceQuestionController:
         correctArray = self.correctArray(self.getPreviousAnswers()[-1])
         for idx, el in enumerate(correctArray):
             if el:
-                hints.append(self.element.getDisplayElement('Option-Correct-' + str(idx)))
+                hints.append(self.element.getDisplayElement('Option-Correct-' + str(idx), isSecret=True))
             else:
-                hints.append(self.element.getDisplayElement('Option-Hint-' + str(idx)))
+                hints.append(self.element.getDisplayElement('Option-Hint-' + str(idx), isSecret=True))
 
         for idx in range(self.element.getSecret()['roundHintCount']):
-            hints.append(self.element.getDisplayElement('RoundHint-' + str(idx)))
+            hints.append(self.element.getDisplayElement('RoundHint-' + str(idx), isSecret=True))
 
         random.shuffle(hints)
 
@@ -139,11 +139,17 @@ class MultipleChoiceQuestionController:
             teamanswercontent = AnswerContent(answer=self.answer, content=yaml.dump(answers))
             teamanswercontent.save()
 
+        credits = self.secret['credits']
+
         correction = {
             'isCorrect': self.isCorrect(answers),
             'incorrectCount': self.incorrectCount(answers),
-            'correctArray': self.correctArray(answers)
+            'correctArray': self.correctArray(answers),
+            'credits': credits
         }
+
+        if not correction['isCorrect']:
+            correction['credits'] = 0
 
         if self.needTeamAnswer:
             teamanswercontent.correction = yaml.dump(correction)

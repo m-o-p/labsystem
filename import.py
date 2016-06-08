@@ -167,6 +167,9 @@ def processDisplay(sourceZip, targetZip, elementPath):
 
     (displayType, contents) = parseDisplay(source['contents'])
 
+    if displayType == 'MD':
+        displayType = 'Markdown'
+
     return [{
         'title': source['title'],
         'path': escapePath(source['title']),
@@ -402,6 +405,8 @@ def processLab(sourceZip, targetZip, labPath):
 
     saveElement(targetZip, course)
 
+    return source['Name']
+
 
 def copyImages(sourceZip, targetZip):
     regex = re.compile('.*/images/(.*)')
@@ -433,13 +438,11 @@ copyAll(gitZip, targetZip)
 labPathRegex = re.compile(".*/data/l[0-9]{7}.txt")
 labPath = [x for x in sourceZip.namelist() if labPathRegex.match(x)][0]
 
-processLab(sourceZip, targetZip, labPath)
+labName = processLab(sourceZip, targetZip, labPath)
 copyImages(sourceZip, targetZip)
 
-if len(sys.argv) > 3:
-    name = sys.argv[3]
-
-    dstPath = os.path.join('data', 'courses', name, 'master')
+if len(sys.argv) > 3 and sys.argv[3] == 'true':
+    dstPath = os.path.join('data', 'courses', labName, 'master')
     print("Extracting to ", dstPath)
 
     targetZip.extractall(dstPath)

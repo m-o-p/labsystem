@@ -29,9 +29,20 @@ class CollectionElement(Element):
 
         return map(lambda el: load_element(self.course, self.branch, os.path.join(self.path, el)), self.meta['children'])
 
+    def getRecursiveChildren(self):
+        def process(el):
+            if 'children' in el.meta:
+                return el.getRecursiveChildren() + [el]
+            else:
+                return [el]
+
+        tmp = map(process, self.getChildren())
+        return [el for lst in tmp for el in lst]
+
     def removeChild(self, child):
         self.meta['children'].remove(child)
         self.save()
 
     def addChild(self, child):
         self.meta['children'].append(child)
+        self.save()

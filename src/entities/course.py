@@ -26,6 +26,7 @@ class CourseElement(Element):
 
     def addChild(self, child):
         self.meta['children'].append(child)
+        self.save()
 
     def getCheckedOutBranches(self):
         return storage.listCheckedOutBranches(self.course)
@@ -41,3 +42,9 @@ class CourseElement(Element):
 
     def getAssignments(self):
         return sum(lambda el: el.getAssignments(), self.getChildren())
+
+    def getTitle(self):
+        return self.course
+
+    def getId(self):
+        return ''

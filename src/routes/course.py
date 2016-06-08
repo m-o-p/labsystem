@@ -49,3 +49,12 @@ def course_element_create():
     create_element(courseName, 'master', 'course', {'type': 'Course'})
 
     return redirect(url_for('course_element_view', course=courseName, branch='master'))
+
+
+@app.route("/courses/<course>/branches/<branch>", methods=["POST"])
+def course_element_branch(course, branch):
+    """Create a new branch of a course"""
+    branchName = request.form['branch']
+    storage.createBranch(course, branch, branchName)
+
+    return redirect(url_for('course_element_view', course=course, branch=branchName))

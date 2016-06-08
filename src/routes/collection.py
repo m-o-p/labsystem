@@ -10,7 +10,6 @@ def collection_element_view(course, branch, path):
     """Show a Collection"""
     element = load_element(course, branch, path)
     checkPermissionForElement(g.user, 'view', element)
-    
 
     return render_template('elements/collection/view.html', element=element)
 
@@ -22,3 +21,12 @@ def collection_element_correct(course, branch, path):
     checkPermissionForElement(g.user, 'correct', element)
 
     return render_template('elements/collection/correct.html', element=element)
+
+
+@app.route("/courses/<course>/branches/<branch>/element/assignment/stats/<path:path>")
+def assignment_element_stats(course, branch, path):
+    """Show a Collection"""
+    element = load_element(course, branch, path)
+    checkPermissionForElement(g.user, 'correct', element)
+
+    return render_template('elements/assignment/stats.html', element=element)

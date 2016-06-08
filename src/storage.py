@@ -49,12 +49,10 @@ def deleteDirectory(course, branch, path):
 
 
 def createBranch(course, source, to):
-    mainRepo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
-    repo = mainRepo.clone(os.path.join(app.config['COURSES_DIR'], course, to))
-    branch = repo.create_head(to, source)
-    repo.head.reference = branch
-    repo.head.reset(index=True, working_tree=True)
-    repo.remotes.origin.push()
+    repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
+    repo.create_head(to, source)
+
+    repo.git.worktree('add', os.path.abspath(os.path.join(app.config['COURSES_DIR'], course, to)), to)
 
 
 def deleteBranch(course, branch):
@@ -90,9 +88,5 @@ def listCourses():
 
 
 def getHistory(course, branch, paths, offset, limit):
-    if shaRegex.match(branch):
-        repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
-        return repo.iter_commits(branch, paths, max_count=limit, skip=offset)
-    else:
-        repo = Repo(os.path.join(app.config['COURSES_DIR'], course, branch))
-        return repo.iter_commits(branch, paths, max_count=limit, skip=offset)
+    repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
+    return repo.iter_commits(branch, paths, max_count=limit, skip=offset)

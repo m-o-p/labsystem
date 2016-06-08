@@ -48,8 +48,32 @@ class AssignmentElement(CollectionElement):
         return self.correct_schedule.isActive()
 
     def getAssignments(self):
-        asignments = filter(lambda el: el.meta['type'] == 'Asignment', self.getChildren())
+        asignments = filter(lambda el: el.meta['type'] == 'Asignment', self.getRecursiveChildren())
         return sum(lambda el: el.getAssignments(), asignments)
+
+    def getCredits(self, questions=None):
+        if questions is None:
+            questions = self.getQuestions()
+
+        credits = sum(map(lambda el: el.getCredits(), questions))
+
+        return credits
+
+    def getUserCredits(self, user, questions=None):
+        if questions is None:
+            questions = self.getQuestions()
+
+        credits = map(lambda el: el.getUserCredits(user), questions)
+
+        sum = 0
+        for el in credits:
+            if el is None:
+                return
+            else:
+                sum += el
+
+    def getQuestions(self):
+        return filter(lambda el: el.meta['type'] == 'Question', self.getRecursiveChildren())
 
     def getAssignment(self):
         return self
