@@ -167,14 +167,14 @@ def mc_element_edit(course, branch, path):
         return render_template('elements/question/mc_edit.html', form=form, element=element)
 
 
-@app.route("/courses/<course>/branches/<branch>/element/question/text/create", methods=["GET", "POST"])
-def question_element_create(course, branch):
+@app.route("/courses/<course>/branches/<branch>/element/question/<type>/create", methods=["GET", "POST"])
+def question_element_create(course, branch, type):
     if 'path' in request.form:
-        create_element(course, branch, request.form['path'], {'type': 'Question', 'questionType': 'Text'})
+        create_element(course, branch, request.form['path'], {'type': 'Question', 'questionType': type}, addToParent=True)
 
-        return redirect(url_for('question_element_edit', course=course, branch=branch, path=request.form['path']))
+        return redirect(url_for('element_edit', course=course, branch=branch, path=request.form['path']))
     else:
-        return render_template('elements/question/text_create.html')
+        return render_template('elements/question/create.html', path=request.args['path'])
 
 
 @app.route("/courses/<course>/branches/<branch>/element/question/delete/<path:path>")

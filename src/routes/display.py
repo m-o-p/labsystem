@@ -14,7 +14,7 @@ def display_element_view(course, branch, path):
 
 @app.route("/courses/<course>/branches/<branch>/element/display/create", methods=["GET", "POST"])
 def display_element_create(course, branch):
-    form = DisplayForm(request.form)
+    form = DisplayForm(request.form, path=request.args['path'])
 
     if request.method == 'POST' and form.validate():
         meta = {
@@ -22,7 +22,7 @@ def display_element_create(course, branch):
             'type': 'Display'
         }
 
-        create_element(course, branch, form['path'].data, meta, content=form['content'].data)
+        create_element(course, branch, form['path'].data, meta, content=form['content'].data, addToParent=True)
 
         return redirect(url_for('display_element_view', course=course, branch=branch, path=form['path'].data))
     else:

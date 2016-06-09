@@ -175,6 +175,21 @@ class MultipleChoiceQuestionElement(QuestionElement):
 
         return [dict(content=roundHint.getRaw(), displayType=roundHint.meta['displayType']) for roundHint in roundHints]
 
+    def create(self):
+        from .helpers import create_element
+        displayElement = create_element(self.course, self.branch, self.path + '-Display', {'type': 'Display', 'displayType': 'HTML'})
+        displayElement.save('Question')
+
+        self.meta['optionCount'] = 0
+        self.meta['shuffle'] = True
+        self.meta['shuffleHints'] = True
+        self.meta['singleChoice'] = False
+        self.meta['maxAllowedMistakes'] = 0
+        self.meta['maxAllowedAnswers'] = 3
+        self.save()
+
+        self.saveSecret({'roundHintCount': 0, 'credits': 1})
+
 
 class OptionForm(Form):
     content = FormField(MiniDisplayForm)

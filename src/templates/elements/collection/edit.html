@@ -1,0 +1,21 @@
+{% import 'include/forms.html' as forms %}
+
+{% extends "form.html" %}
+
+{% block form %}
+
+{{forms.render_form(form)}}
+
+<form method="POST" action="{{url_for("course_element_delete", course=element.course, branch=element.branch, path=element.path)}}">
+  <button type="submit" class="btn btn-danger">{{gettext("Delete")}}</button>
+</form>
+
+{% include 'include/edit-children.html'%}
+
+<a href="{{url_for("assignment_element_create", course=element.course, branch=element.branch, path=element.path + "/")}}"> Create Assignment</a> <br />
+<a href="{{url_for("collection_element_create", course=element.course, branch=element.branch, path=element.path + "/")}}"> Create Collection</a> <br />
+<a href="{{url_for("display_element_create", course=element.course, branch=element.branch, path=element.path + "/")}}"> Create Display Element</a> <br />
+<a href="{{url_for("question_element_create", course=element.course, branch=element.branch, path=element.path + "/", type="Text")}}"> Create Text Question</a> <br />
+<a href="{{url_for("question_element_create", course=element.course, branch=element.branch, path=element.path + "/", type="MultipleChoice")}}"> Create Multiple Choice Question</a> <br />
+
+{% endblock form %}

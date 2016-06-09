@@ -7,6 +7,7 @@ from .display import load_display_element
 from .question import load_question_element
 from .collection import CollectionElement
 from .assignment import AssignmentElement
+from .course import CourseElement
 
 
 class ElementYAMLError(Exception):
@@ -24,6 +25,9 @@ def load_element(course, branch, path, meta=None, isSecret=False):
     else:
         root = 'content'
 
+    if path == "course":
+        root = ""
+
     if meta is None:
         meta = yaml.load(storage.read(course, branch, os.path.join(root, path + '.meta')))
 
@@ -38,14 +42,19 @@ def load_element(course, branch, path, meta=None, isSecret=False):
             return CollectionElement(course, branch, path, meta)
         elif meta['type'] == 'Assignment':
             return AssignmentElement(course, branch, path, meta)
+        elif meta['type'] == 'Course':
+            return CourseElement(course, branch)
         else:
             raise ElementYAMLError('Invalid type')
 
 
-def create_element(course, branch, path, meta, **kwargs):
+def create_element(course, branch, path, meta, addToParent=False, **kwargs):
     """Create a new element"""
     element = load_element(course, branch, path, meta)
 
     element.create(**kwargs)
+
+    if addToParent:
+        element.getParent().addChild(element.getName())
 
     return element

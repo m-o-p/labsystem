@@ -6,9 +6,9 @@ from .permission import Role, RoleForm, UserRole, UserRoleForm, Permission, Role
 from .element import Element
 from .display import DisplayElement, DisplayHTMLElement, DisplayMarkdownElement, DisplayForm
 from .question import QuestionElement, TextQuestionElement, MultipleChoiceQuestionElement, LockError, AlreadyLockedError, TextQuestionForm, MultipleChoiceQuestionForm
-from .collection import CollectionElement
-from .assignment import AssignmentElement, Assignment
-from .course import CourseElement
+from .collection import CollectionElement, CollectionForm
+from .assignment import AssignmentElement, Assignment, AssignmentForm
+from .course import CourseElement, CourseForm
 from .schedule import Schedule, ScheduleForm
 
 from .helpers import load_element, create_element

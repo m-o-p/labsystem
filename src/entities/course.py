@@ -1,5 +1,8 @@
 import storage
 
+from wtforms import Form, StringField, validators
+from flask_babel import lazy_gettext
+
 from .element import Element
 
 
@@ -11,9 +14,10 @@ class CourseElement(Element):
         return self.path + '.meta'
 
     def delete(self):
-        Element.delete(self)
+        storage.deleteCourse(self.course)
 
-        storage.remoteCourse(self.course)
+    def move(self, newpath):
+        storage.renameCourse(self.course, self.newpath)
 
     def getChildren(self):
         from .helpers import load_element
@@ -28,6 +32,16 @@ class CourseElement(Element):
         self.meta['children'].append(child)
         self.save()
 
+    def moveChild(self, index, direction):
+        if direction == "up":
+            self.meta['children'][index - 1], self.meta['children'][index] = self.meta['children'][index], self.meta['children'][index - 1]
+        elif direction == "down":
+            self.meta['children'][index + 1], self.meta['children'][index] = self.meta['children'][index], self.meta['children'][index + 1]
+        else:
+            pass
+
+        self.save()
+
     def getCheckedOutBranches(self):
         return storage.listCheckedOutBranches(self.course)
 
@@ -40,11 +54,12 @@ class CourseElement(Element):
     def history(self, offset=0, limit=10):
         return storage.getHistory(self.course, self.branch, "", offset, limit)
 
-    def getAssignments(self):
-        return sum(lambda el: el.getAssignments(), self.getChildren())
-
     def getTitle(self):
         return self.course
 
     def getId(self):
         return ''
+
+
+class CourseForm(Form):
+    name = StringField(lazy_gettext('Name'), [validators.required()])

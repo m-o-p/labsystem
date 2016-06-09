@@ -1,0 +1,33 @@
+<ol class="collection-headers">
+{% set collection = element%}
+
+{% for element in element.getChildren() %}
+  <li>
+    <a class="element-title" href="{{url_for('element_view', course=element.course, branch=element.branch, path=element.path)}}">{{element.getTitle()}}</a>
+
+    {% if not loop.first %}
+    <form method="POST" action="{{url_for("collection_move_element", course=element.course, branch=element.branch, path=collection.path, index=loop.index0, direction="up")}}" style="display:inline">
+      <button type="submit" class="btn btn-link">
+        <i class="fa fa-arrow-up">
+          <span class="sr-only">
+            {{gettext('Move up')}}
+          </span>
+        </i>
+      </button>
+    </form>
+    {% endif %}
+
+    {% if not loop.last %}
+    <form method="POST" action="{{url_for("collection_move_element", course=element.course, branch=element.branch, path=collection.path, index=loop.index0, direction="down")}}" style="display:inline">
+      <button type="submit" class="btn btn-link">
+        <i class="fa fa-arrow-down">
+          <span class="sr-only">
+            {{gettext('Move down')}}
+          </span>
+        </i>
+      </button>
+    </form>
+    {% endif %}
+  </li>
+{% endfor %}
+</ol>

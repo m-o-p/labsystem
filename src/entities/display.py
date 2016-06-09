@@ -42,7 +42,7 @@ class DisplayElement(Element):
             stream.close()
 
     def delete(self):
-        DisplayElement.delete(self)
+        Element.delete(self)
 
         return storage.delete(self.course, self.branch, self.getRawPath())
 

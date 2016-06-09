@@ -41,11 +41,25 @@ def delete(course, branch, path):
     os.remove(os.path.join(app.config['COURSES_DIR'], course, branch, path))
 
 
+def rename(course, branch, path, newpath):
+    if shaRegex.match(branch):
+        raise GitStorageError('Can only rename files in checked out branches')
+
+    os.rename(os.path.join(app.config['COURSES_DIR'], course, branch, path), os.path.join(app.config['COURSES_DIR'], course, branch, newpath))
+
+
 def deleteDirectory(course, branch, path):
     if shaRegex.match(branch):
         raise GitStorageError('Can only delete from checked out branches')
 
     shutil.rmtree(os.path.join(app.config['COURSES_DIR'], course, branch, path))
+
+
+def createDirectory(course, branch, path):
+    if shaRegex.match(branch):
+        raise GitStorageError('Can only delete from checked out branches')
+
+    os.makedirs(os.path.join(app.config['COURSES_DIR'], course, branch, path))
 
 
 def createBranch(course, source, to):
@@ -71,16 +85,25 @@ def listAvailableBranches(course):
 
 
 def createCourse(course):
-    os.makedirs(app.config['COURSES_DIR'], course)
+    os.makedirs(os.path.join(app.config['COURSES_DIR'], course))
     repo = Repo.init(os.path.join(app.config['COURSES_DIR'], course, 'master'))
-    os.makedirs(app.config['COURSES_DIR'], course, 'master', 'content')
-    io.open(app.config['COURSES_DIR'], course, 'master', 'README', 'w+').close()
-    repo.git.add('README')
+    os.makedirs(os.path.join(app.config['COURSES_DIR'], course, 'master', 'content'))
+    os.makedirs(os.path.join(app.config['COURSES_DIR'], course, 'master', 'secret'))
+
+    stream = io.open(os.path.join(app.config['COURSES_DIR'], course, 'master', 'course.meta'), 'w+')
+    stream.write("type: Course\nchildren: []\nshowOnlyHeaders: true")
+    stream.close()
+
+    repo.git.add('course.meta')
     repo.git.commit('-m', 'Initial commit')
 
 
 def deleteCourse(course):
     shutil.rmtree(os.path.join(app.config['COURSES_DIR'], course))
+
+
+def renameCourse(course, newcourse):
+    os.rename(os.path.join(app.config['COURSES_DIR'], course), os.path.join(app.config['COURSES_DIR'], newcourse))
 
 
 def listCourses():
@@ -90,3 +113,22 @@ def listCourses():
 def getHistory(course, branch, paths, offset, limit):
     repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
     return repo.iter_commits(branch, paths, max_count=limit, skip=offset)
+
+
+def isRepoDirty(course, branch):
+    if shaRegex.match(branch):
+        return False
+
+    repo = Repo(os.path.join(app.config['COURSES_DIR'], course, branch))
+
+    return repo.is_dirty()
+
+
+def commit(course, branch, message, user):
+    if shaRegex.match(branch):
+        raise GitStorageError('Can only commit on branches')
+
+    repo = Repo(os.path.join(app.config['COURSES_DIR'], course, branch))
+
+    repo.git.add('.')
+    repo.git.commit('-m', message, "--author", user.name + '<' + user.email + '>')

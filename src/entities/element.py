@@ -30,10 +30,9 @@ class Element:
         yaml.dump(self.meta, storage.write(self.course, self.branch, self.metaPath()))
 
     def delete(self):
-        storage.delete(self.course, self.branch, self.metaPath())
+        self.getParent().removeChild(self.getName())
 
-        if self.hasParent():
-            self.getParent().removeChild(self)
+        storage.delete(self.course, self.branch, self.metaPath())
 
     def move(self, new):
         if self.isSecret:
@@ -41,13 +40,11 @@ class Element:
         else:
             root = 'content'
 
-        storage.rename(self.course, self.branch, self.metaPath(), os.path.join(root, self.getParentPath(), new + '.meta'))
+        storage.rename(self.course, self.branch, self.metaPath(), os.path.join(root, new + '.meta'))
 
-        if self.hasParent():
-            self.getParent().removeChild(self)
+        self.getParent().removeChild(self.getName())
         self.path = new
-        if self.hasParent():
-            self.getParent().addChild(self)
+        self.getParent().addChild(self.getName())
 
     def getTitle(self):
         (parent, me) = os.path.split(self.path)
@@ -59,17 +56,15 @@ class Element:
 
         return parent
 
-    def hasParent(self):
-        (parent, me) = os.path.split(self.path)
-
-        return parent is not None
-
     def getParent(self):
         (parent, me) = os.path.split(self.path)
 
-        if parent is not None:
+        if parent is not None and parent is not '':
             from .helpers import load_element
             return load_element(self.course, self.branch, parent)
+        else:
+            from .course import CourseElement
+            return CourseElement(self.course, self.branch)
 
     def getParentList(self):
         return self.path.split('/')

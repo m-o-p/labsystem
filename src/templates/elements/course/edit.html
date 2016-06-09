@@ -1,0 +1,23 @@
+{% import 'include/forms.html' as forms %}
+
+{% extends "form.html" %}
+
+{% block form %}
+
+{{forms.render_form(form)}}
+
+<form method="POST" action="{{url_for("course_element_delete", course=element.course, branch=element.branch, path=element.path)}}">
+  <button type="submit" class="btn btn-danger">{{gettext("Delete")}}</button>
+</form>
+
+{% include 'include/edit-children.html'%}
+
+<a href="{{url_for("assignment_element_create", course=element.course, branch=element.branch, path="")}}">{{gettext("Create Assignment")}}</a> <br />
+
+{% if is_dirty %}
+
+<a href="{{url_for("course_commit", course=element.course, branch=element.branch)}}">{{gettext("Branch contains uncommited changes")}}</a> <br />
+
+{% endif %}
+
+{% endblock form %}

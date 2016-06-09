@@ -50,6 +50,10 @@ def element_edit(course, branch, path):
             return redirect(url_for('mc_element_edit', course=course, branch=branch, path=path))
         else:
             return ''
+    elif element.meta['type'] == 'Course':
+        return redirect(url_for('course_element_edit', course=course, branch=branch))
+    elif element.meta['type'] == 'Assignment':
+        return redirect(url_for('assignment_element_edit', course=course, branch=branch, path=path))
     else:
         return ''
 
@@ -58,9 +62,6 @@ def element_edit(course, branch, path):
 def element_delete(course, branch, path):
     element = load_element(course, branch, path)
 
-    if element.meta['type'] == 'Display':
-        return redirect(url_for('display_element_delete', course=course, branch=branch, path=path))
-    elif element.meta['type'] == 'Collection':
-        return redirect(url_for('collection_element_delete', course=course, branch=branch, path=path))
-    else:
-        return ''
+    element.delete()
+
+    return redirect(url_for('element_view', course=course, branch=branch, path=element.getParentPath()))

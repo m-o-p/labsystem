@@ -1,8 +1,10 @@
 from peewee import CharField, ForeignKeyField
+from wtforms import BooleanField, validators
+from flask_babel import lazy_gettext
 
 from app import database
 
-from .collection import CollectionElement
+from .collection import CollectionElement, CollectionForm
 from .schedule import Schedule
 
 
@@ -23,6 +25,10 @@ class Assignment(database.Model):
 class AssignmentElement(CollectionElement):
     def __init__(self, course, branch, path, meta=None, **kwargs):
         CollectionElement.__init__(self, course, branch, path, meta)
+
+    def create(self):
+        self.meta['teamwork'] = False
+        CollectionElement.create(self)
 
     def getDBData(self):
         assignment, created = Assignment.get_or_create(course=self.course, assignment=self.path)
@@ -77,3 +83,7 @@ class AssignmentElement(CollectionElement):
 
     def getAssignment(self):
         return self
+
+
+class AssignmentForm(CollectionForm):
+    teamwork = BooleanField(lazy_gettext('Requires teamwork'))
