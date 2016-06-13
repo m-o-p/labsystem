@@ -87,7 +87,6 @@ class LpElement extends Element{
     if ($this->contents == "") return "'()";  // is empty
 
     // replace the tag __ELEMENTTITLE__ by $paragraph.$this->title
-    
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
 	$this->contents = $pge->replaceElementTitle( $this->contents, '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>' );
     

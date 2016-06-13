@@ -143,7 +143,9 @@ class Pge extends LpElement{
    * @param unknown $title The title.
    */
   function replaceElementTitle( $content, $elementTitle ){
-  	return str_replace( array( $this->replaceKey[9], $this->sanitizeKey[9]), array($elementTitle, $elementTitle), $content );
+  	$needle = array( $this->replaceKey[9], $this->sanitizedKey[9]);
+  	$replace = array($elementTitle, $elementTitle);
+  	return str_replace( $needle, $replace, $content );
   }
   
   /**
