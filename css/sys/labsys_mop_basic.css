@@ -468,6 +468,16 @@ fieldset{
   }
   
 /******************************* styles for the elements *******************************/
+  .labsys_mop_element_visibleFor_special {
+  					padding:0.5em;
+  					padding-left:3em;
+  					padding-right:3em;
+  					background-color:#ff0;
+  					color:f00;
+  					font-weight:bold
+  }
+  .labsys_mop_element_visibleFor_regular {
+  }
   /* u element */
   .labsys_mop_elements_menu_u{ /* The element's menu above/ below the its display area. */
                     border-right: solid 1em #FFA07A; padding-right: 5px; margin-right: -15px;

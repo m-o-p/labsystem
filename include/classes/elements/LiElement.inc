@@ -798,7 +798,7 @@ class LiElement extends Element{
                     "</div>\n".
                   "</fieldset>\n".
               "</td><td valign=\"top\" width=\"60%\">\n".
-                "<fieldset><legend>".$lng->get("rights")."</legend>\n".
+                "<fieldset><legend>".$lng->get("rights")." (".$this->visibleFor.")</legend>\n".
                 "<div class=\"labsys_mop_input_field_note\">".$lng->get("visibleFor")."</div>\n".
                 "<div class=\"labsys_mop_in_fieldset\">\n".
                 showRightsVertical( "UR", $this->visibleFor, false ).
