@@ -171,7 +171,7 @@ $pge->put( '<select name="topicId"'.(isset($_POST['topicId']) ? ' disabled="disa
 			$counter++;
 		}			
 $pge->put( '</select>' );
-$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="message">message</label><textarea class="labsys_mop_ticketTextArea" name="message" id="message" onFocus="this.select();"'.($ticket_id!=0?' disabled="disabled"':'').'>'.(isset($_POST['message']) ? $_POST['message'] : 'Your Message...').'</textarea>' );
+$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="message">message</label><textarea class="labsys_mop_ticketTextArea" name="message" id="message" onFocus="if (this.value==\'Your Message...\'){this.select();}"'.($ticket_id!=0?' disabled="disabled"':'').'>'.(isset($_POST['message']) ? $_POST['message'] : 'Your Message...').'</textarea>' );
 $pge->put('<input type="submit" id="submit-button" class="labsys_mop_ticketButton" value="'.($ticket_id==0?$lng->get("save"):'Created ticket '.$ticket_id.'" disabled="disabled').'" />');
 
 if ($debug) {
