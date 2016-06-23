@@ -568,18 +568,15 @@ class LmElement extends Element{
                                                 }
 
     // create answerArray + compute correctMask
-    $toDoArray = "\$answerArray = Array(";
+    $answerArray = array();
     $correctMask=0;
     $j=0;
     for ( $i = 0; isset( $_POST['ANSWER'.$i] ); $i++ )
       if ($_POST['ANSWER'.$i] != ""){
-        if ( $j > 0 ) $toDoArray .= ", ";
-        $toDoArray .= "\"".addslashes($_POST['ANSWER'.$i])."\"";
+        array_push($answerArray, $_POST['ANSWER'.$i]);
         if ( isset( $_POST[ "CORRECTMASK".$i] ) ) $correctMask += (1 << $j);
         $j++;
       }
-    eval( $toDoArray." );" );
-    $answerArray = array_map( "stripslashes", $answerArray );
 
     // compute user rights:
     $userRights=0;
