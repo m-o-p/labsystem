@@ -78,6 +78,8 @@ class AssignmentElement(CollectionElement):
             else:
                 sum += el
 
+        return sum
+
     def getQuestions(self):
         return filter(lambda el: el.meta['type'] == 'Question', self.getRecursiveChildren())
 

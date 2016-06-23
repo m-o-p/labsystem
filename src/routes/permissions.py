@@ -7,6 +7,13 @@ from app import app
 import storage
 
 
+@app.route("/roles")
+def role_list():
+    roles = Role.select()
+
+    return render_template('roles/list.html', roles=roles)
+
+
 @app.route("/roles/<int:role_id>/edit", methods=["GET", "POST"])
 def role_edit(role_id):
     role = get_object_or_404(Role.select(), Role.id == role_id)
@@ -74,6 +81,13 @@ def userrole_add():
             form.schedule.data = None
 
         form.populate_obj(role)
+
+        if role.assignment == '':
+            role.assignment = None
+
+        if role.course == '':
+            role.course = None
+
         role.save()
         return redirect(url_for('user_view', user_id=form.user.data))
     else:

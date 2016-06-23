@@ -16,26 +16,22 @@
 {% endmacro %}
 
 <div class="menu">
-  <ol>
-    <li>
-      <ul class="courses">
-        {% for course in getCourses() if hasPermissionForElement(g.user, 'view', course) %}
-          {% if element and element.course == course.course %}
-            <li class="active">
-              <a href="{{url_for('course_element_view', course=course.course, branch="master")}}">
-                {{course.course}}
-              </a>
-              {{buld_tree(element, course)}}
-            </li>
-          {% else %}
-            <li>
-              <a href="{{url_for('course_element_view', course=course.course, branch="master")}}">
-                {{course.course}}
-              </a>
-            </li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </li>
-  </ol>
+    <ul class="courses">
+      {% for course in getCourses() if hasPermissionForElement(g.user, 'view', course) %}
+        {% if element is defined and element.course == course.course %}
+          <li class="active">
+            <a href="{{url_for('course_element_view', course=course.course, branch="master")}}">
+              {{course.course}}
+            </a>
+            {{buld_tree(element, course)}}
+          </li>
+        {% else %}
+          <li>
+            <a href="{{url_for('course_element_view', course=course.course, branch="master")}}">
+              {{course.course}}
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
 </div>

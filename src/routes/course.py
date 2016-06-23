@@ -95,3 +95,10 @@ def course_commit(course, branch):
     else:
 
         return render_template('elements/course/commit.html', form=form, element=element, is_dirty=storage.isRepoDirty(course, branch))
+
+
+@app.route("/course/<course>/branches/<branch>/merge", methods=["POST"])
+def course_merge(course, branch):
+    storage.mergeBranches(course, branch, request.form['source'])
+
+    return redirect(url_for('course_element_view', course=course, branch=branch))

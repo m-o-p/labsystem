@@ -60,6 +60,12 @@ class CourseElement(Element):
     def getId(self):
         return ''
 
+    def getAssignment(self):
+        return self
+
+    def canView(self):
+        return True
+
 
 class CourseForm(Form):
     name = StringField(lazy_gettext('Name'), [validators.required()])

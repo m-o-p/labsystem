@@ -48,9 +48,9 @@ def load_element(course, branch, path, meta=None, isSecret=False):
             raise ElementYAMLError('Invalid type')
 
 
-def create_element(course, branch, path, meta, addToParent=False, **kwargs):
+def create_element(course, branch, path, meta, addToParent=False, isSecret=False, **kwargs):
     """Create a new element"""
-    element = load_element(course, branch, path, meta)
+    element = load_element(course, branch, path, meta, isSecret)
 
     element.create(**kwargs)
 

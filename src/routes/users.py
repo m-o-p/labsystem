@@ -30,6 +30,13 @@ def user_create():
         return render_template('users/new.html', form=form)
 
 
+@app.route("/users")
+def user_list():
+    users = User.select()
+
+    return render_template('users/list.html', users=users)
+
+
 @app.route("/users/<int:user_id>", methods=["GET", "POST"])
 def user_view(user_id):
     user = get_object_or_404(User.select(), User.id == user_id)

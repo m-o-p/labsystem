@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <ul class="users">
+    {% for user in users %}
+      <li>
+        <a href="{{url_for('user_view', user_id=user.id)}}">
+          {{user.name}}
+        </a>
+    {% endfor %}
+
+    <br />
+
+    <a href="{{url_for("user_create")}}">{{gettext('Create User')}}</a> <br />
+    <a href="{{url_for("team_create")}}">{{gettext('Create Team')}}</a> <br />
+  </ul>
+{% endblock content %}

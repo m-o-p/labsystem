@@ -3,7 +3,7 @@ import os
 import io
 import shutil
 
-from git import Repo
+from git import Repo, cmd
 
 from app import app
 
@@ -11,10 +11,10 @@ shaRegex = re.compile('[a-f0-9]{40}')
 
 
 def read(course, branch, path):
-    if shaRegex.match(branch):
+    if shaRegex.match(branch) is not None:
         repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
         blob = repo.commit(branch).tree[path]
-        return blob.data_stream
+        return io.BytesIO(blob.data_stream.read())
     else:
         return io.open(os.path.join(app.config['COURSES_DIR'], course, branch, path), 'rb')
 
@@ -69,6 +69,15 @@ def createBranch(course, source, to):
     repo.git.worktree('add', os.path.abspath(os.path.join(app.config['COURSES_DIR'], course, to)), to)
 
 
+def mergeBranches(course, branch, source):
+    if shaRegex.match(source):
+        raise GitStorageError('Can only merge branches')
+
+    git = cmd.Git(os.path.join(app.config['COURSES_DIR'], course, branch))
+
+    git.merge(source)
+
+
 def deleteBranch(course, branch):
     repo = Repo(os.path.join(app.config['COURSES_DIR'], course, 'master'))
     repo.delete_head(branch)
@@ -119,16 +128,16 @@ def isRepoDirty(course, branch):
     if shaRegex.match(branch):
         return False
 
-    repo = Repo(os.path.join(app.config['COURSES_DIR'], course, branch))
+    git = cmd.Git(os.path.join(app.config['COURSES_DIR'], course, branch))
 
-    return repo.is_dirty()
+    return len(git.diff()) > 0
 
 
 def commit(course, branch, message, user):
     if shaRegex.match(branch):
         raise GitStorageError('Can only commit on branches')
 
-    repo = Repo(os.path.join(app.config['COURSES_DIR'], course, branch))
+    git = cmd.Git(os.path.join(app.config['COURSES_DIR'], course, branch))
 
-    repo.git.add('.')
-    repo.git.commit('-m', message, "--author", user.name + '<' + user.email + '>')
+    git.add('.')
+    git.commit('-m', message, "--author", user.name + '<' + user.email + '>')

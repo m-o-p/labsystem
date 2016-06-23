@@ -66,6 +66,10 @@ class MultipleChoiceQuestionController:
         return hints
 
     def setupShuffle(self):
+        if self.userAnswer.meta is not None:
+            if len(yaml.load(self.userAnswer.meta)) != self.element.meta['optionCount']:
+                self.userAnswer.meta = None
+
         if self.userAnswer.meta is None:
             array = [i for i in range(0, self.element.meta['optionCount'])]
 

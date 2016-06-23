@@ -106,7 +106,7 @@ class TextQuestionElement(QuestionElement):
             return render_template('elements/question/text_render.html', element=self)
 
     def getHintElement(self):
-        return self.getDisplayElement('Hint')
+        return self.getDisplayElement('Hint', isSecret=True)
 
     def getSectionContentElement(self, index):
         return self.getDisplayElement('Section-Content-' + str(index))
@@ -121,10 +121,11 @@ class TextQuestionElement(QuestionElement):
         from .helpers import create_element
         displayElement = create_element(self.course, self.branch, self.path + '-Display', {'type': 'Display', 'displayType': 'HTML'})
         displayElement.save('Question')
-        hintElement = create_element(self.course, self.branch, self.path + '-Hint', {'type': 'Display', 'displayType': 'HTML'})
+        hintElement = create_element(self.course, self.branch, self.path + '-Hint', {'type': 'Display', 'displayType': 'HTML'}, isSecret=True)
         hintElement.save('Hint')
 
         self.meta['sectionCount'] = 0
+        self.meta['hasFileUpload'] = False
         self.save()
 
         self.saveSecret({'credits': 0, 'sections': []})
@@ -188,7 +189,7 @@ class MultipleChoiceQuestionElement(QuestionElement):
         self.meta['maxAllowedAnswers'] = 3
         self.save()
 
-        self.saveSecret({'roundHintCount': 0, 'credits': 1})
+        self.saveSecret({'roundHintCount': 0, 'credits': 1, 'options': []})
 
 
 class OptionForm(Form):

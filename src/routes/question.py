@@ -3,7 +3,7 @@ from playhouse.flask_utils import get_object_or_404
 import yaml
 
 from app import app
-from entities import load_element, LockError, AnswerContent, checkPermissionForElement, TextQuestionForm, create_element, MultipleChoiceQuestionForm, File
+from entities import load_element, LockError, AnswerContent, checkPermissionForElement, TextQuestionForm, create_element, MultipleChoiceQuestionForm, File, User
 from controllers import MultipleChoiceQuestionController
 
 
@@ -60,7 +60,7 @@ def question_element_edit(course, branch, path):
             entryContentElement = create_element(course, branch, path + '-Section-Content-' + str(index), {'type': 'Display', 'displayType': entry.content.displayType.data})
             entryContentElement.save(entry.content.content.data)
 
-            entrySecretElement = create_element(course, branch, path + '-Section-Secret-' + str(index), {'type': 'Display', 'displayType': entry.secret.displayType.data})
+            entrySecretElement = create_element(course, branch, path + '-Section-Secret-' + str(index), {'type': 'Display', 'displayType': entry.secret.displayType.data}, isSecret=True)
             entrySecretElement.save(entry.secret.content.data)
 
             if index >= len(secret['sections']):
@@ -127,10 +127,10 @@ def mc_element_edit(course, branch, path):
             entryContentElement = create_element(course, branch, path + '-Option-' + str(index), {'type': 'Display', 'displayType': entry.content.displayType.data})
             entryContentElement.save(entry.content.content.data)
 
-            entryHintElement = create_element(course, branch, path + '-Option-Hint-' + str(index), {'type': 'Display', 'displayType': entry.hint.displayType.data})
+            entryHintElement = create_element(course, branch, path + '-Option-Hint-' + str(index), {'type': 'Display', 'displayType': entry.hint.displayType.data}, isSecret=True)
             entryHintElement.save(entry.hint.content.data)
 
-            entryCorrectElement = create_element(course, branch, path + '-Option-Correct-' + str(index), {'type': 'Display', 'displayType': entry.correctHint.displayType.data})
+            entryCorrectElement = create_element(course, branch, path + '-Option-Correct-' + str(index), {'type': 'Display', 'displayType': entry.correctHint.displayType.data}, isSecret=True)
             entryCorrectElement.save(entry.correctHint.content.data)
 
             if index >= len(secret['options']):
@@ -145,7 +145,7 @@ def mc_element_edit(course, branch, path):
             if entry.remove.data is True:
                 continue
 
-            roundHintElement = create_element(course, branch, path + '-RoundHint-' + str(roundHintIndex), {'type': 'Display', 'displayType': entry.displayType.data})
+            roundHintElement = create_element(course, branch, path + '-RoundHint-' + str(roundHintIndex), {'type': 'Display', 'displayType': entry.displayType.data}, isSecret=True)
             roundHintElement.save(entry.content.data)
 
             roundHintIndex = roundHintIndex + 1
@@ -263,7 +263,8 @@ def question_element_unlock(course, branch, path):
 def question_element_correct(course, branch, path):
     element = load_element(course, branch, path)
     checkPermissionForElement(g.user, 'correct', element)
-    answer = element.getAnswer(g.user)
+
+    answer = element.getAnswer(get_object_or_404(User, User.id == request.form['user']))
     secret = element.getSecret()
     answercontent = answer.getLatestContent()
 

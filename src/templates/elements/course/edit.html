@@ -20,4 +20,17 @@
 
 {% endif %}
 
+
+<form method="POST" action="{{url_for("course_merge", course=element.course, branch=element.branch)}}">
+  <select name="source">
+    {% for branch in element.getCheckedOutBranches() if branch != element.branch %}
+        <option value="{{branch}}">
+          {{branch}}
+        </option>
+    {% endfor %}
+  </select>
+
+    <button type="submit" class="btn btn-danger">{{gettext("Merge")}}</button>
+</form>
+
 {% endblock form %}

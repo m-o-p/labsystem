@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {{user.name}}
+  {{user.name}} <a href="{{url_for('user_edit', user_id=user.id)}}">{{gettext('Edit')}} </a>
   </br>
 
   {% for role in user.roles %}

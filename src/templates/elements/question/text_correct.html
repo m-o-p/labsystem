@@ -17,6 +17,8 @@
 {{element.getHintElement().render('question')|safe}}
 
 <form method="POST" action="{{url_for("question_element_correct", course=element.course, branch=element.branch, path=element.path, back=request.url)}}">
+  <input type="hidden" name="user" value="{{request.args['user']}}">
+
   <fieldset class="form-group">
     <div class="form-group">
       <label for="text">{{gettext('Correction')}}</label>

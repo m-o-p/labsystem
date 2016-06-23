@@ -110,6 +110,9 @@ def checkPermissionForElement(user, permission, element):
     if hasPermissionForSystem(user, 'admin') or hasPermissionForCourse(user, 'admin', element.course):
         return
 
+    if hasPermissionForCourse(user, permission, element.course):
+        return
+
     assignment = element.getAssignment()
 
     if permission == 'view':

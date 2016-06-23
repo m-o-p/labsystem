@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <ul class="roles">
+    {% for role in roles %}
+      <li>
+        <a href="{{url_for('role_edit', role_id=role.id)}}">
+          {{role.name}}
+        </a>
+    {% endfor %}
+
+     <br />
+
+    <a href="{{url_for("role_create")}}">{{gettext('Create Role')}}</a> <br />
+  </ul>
+{% endblock content %}
