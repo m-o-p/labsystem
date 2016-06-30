@@ -37,13 +37,13 @@ require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
 // Only predefined functions are allowed
 // Otherwise this would be a security hole since any LOGGED IN USER (sessionId) could post any function...
-$allowedFunctions = Array( "saveUserAnswer()",
-                           "closeLabInputs()",
-                           "setUserAnswerLock()",
-                           "checkPreLab()",
-                           "saveCorrectorStuff()",
-                           "updateStatus()",
-                           "save()"
+$allowedFunctions = Array( "saveUserAnswer",
+                           "closeLabInputs",
+                           "setUserAnswerLock",
+                           "checkPreLab",
+                           "saveCorrectorStuff",
+                           "updateStatus",
+                           "save"
                           );
 
 if ( !( isset($_POST['SESSION_ID']) && 
@@ -65,5 +65,5 @@ $num = $_POST['IDX'];
                                                }
 
 // call the function
-  eval("\$element->".$_POST['FUNCTIONNAME'].";");
+  call_user_func(array($element, $_POST['FUNCTIONNAME']));
 ?>
