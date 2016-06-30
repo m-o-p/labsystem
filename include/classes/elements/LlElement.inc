@@ -543,7 +543,7 @@ class LlElement extends Element{
             ){
           global $urDBI;
           $ur = $urDBI->getData4( $labStatus['uid'] );
-          $myRetVal .= " <a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reMapUidTeam&param=".urlencode( "\"".$labStatus['uid']."\", ".$ur['currentTeam'] )."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">".
+          $myRetVal .= " <a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reMapUidTeam&param0=".urlencode($labStatus['uid'])."&param1=".urlencode($ur['currentTeam'])."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">".
                        "<img src=\"../syspix/reMapUsr_26x12.gif\" width=\"26\" height=\"12\" border=\"0\" title=\"".$lng->get("reMapUsrTo")." ".$ur['currentTeam']."\">".
                        "</a>";
         }
@@ -653,7 +653,7 @@ class LlElement extends Element{
                                          $labStatus['labClosed'] &&
                                          $this->isInSched
                                         ) ?
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reOpenAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
+                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reOpenAllLabInputs&param0=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
                                         : '' ).
                   // close lab
                      ( !$open && ($open = ($usr->isOfKind( IS_CORRECTOR ) &&
@@ -661,7 +661,7 @@ class LlElement extends Element{
                                                     !$labStatus['labClosed'] /* &&
                                                     !$this->isInSched always allow closing */)
                                                    ) ?
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=closeAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
+                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=closeAllLabInputs&param0=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
                                                    : '' ).
                      " <img src=\"../syspix/button_lock_".
                      ( $labStatus['labClosed'] ?  "closed" :  "open"  ).
@@ -1800,23 +1800,6 @@ class LlElement extends Element{
            // create dataset
             $this->usDBI->setData4( $uid, $teamNumber, true, 0, 0, true, false, false, '', 0, 0, '', $lng->get("userReMapped")." (".$teamNumber.")" );
           }
-  }
-
-  /**
-  * Called by ../php/executeOnLab.php.
-  * Acquires the lock not taking care of any existing locks.
-  *
-  * @param $i_idx         The index of the input the lock should get acquired on.
-  * @param $fullAddress   The element's full address (p.e. l23.C42.i17)
-  */
-  static function forceLockOn( $i_idx, $fullAddress ){
-    global $url;
-
-    $element = $GLOBALS[ 'iDBI' ]->getData2idx( $i_idx );
-    $element->acquireLock4( $fullAddress );
-
-    // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
   }
 
   /**
