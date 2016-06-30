@@ -833,15 +833,14 @@ class LcElement extends Element{
     }
     $structureArray = explode( " ", $this->getStructure() );
 
-    $arrayText = "";
+    $ret = array();
     $elNumber = 0;
 
     foreach( $structureArray as $value ){
       $elNumber++;
-      if ($value{0} != "*") $arrayText .= ", \"".$value."\"=>\"".$elNumber."\"";
+      if ($value{0} != "*")
+        $ret[$value] = $elNumber;
     }
-
-    eval( "\$ret = Array( ".substr( $arrayText, 2 )." );" );
 
     return $ret;
   }
