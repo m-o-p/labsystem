@@ -139,7 +139,7 @@ class LcElement extends Element{
 
         $element = $GLOBALS[ $id."DBI" ]->getData2idx( $num, true, $this->isInLab );
 
-        if ( !$element ) eval( "\$myRetVal .= ".( strtoupper($id) == $id ?  'B' : 'L' ).$id."Element::showNoFoundRowColl( \$id.\$num );" );
+        if ( !$element ) $myRetVal .= call_user_func(array((strtoupper($id) == $id ?  'B' : 'L' ).$id."Element", "showNoFoundRowColl"), $id . $num);
                    else if ( ($id == "c") || ($id == "C") ) $myRetVal .= $element->showStructure( $fullAddress.".".$value, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ) );
                                      else $myRetVal .= $element->showPropertyRowColl( $fullAddress.".".$value, true, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ).". " );
       }
