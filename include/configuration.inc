@@ -41,6 +41,7 @@
 if ( isset($cfg) ) return;
 
 require_once( INCLUDE_DIR."/classes/Rom.inc" );
+require_once( INCLUDE_DIR."/config.inc" );
 
 // use the hostname prefix as base for the config?
   $configPrefix='';
@@ -76,7 +77,7 @@ require_once( INCLUDE_DIR."/classes/Rom.inc" );
     if ( $GLOBALS['url']->available("config") )
       $configFile = "../ini/config_".$configPrefix.$GLOBALS['url']->get("config").".ini";
     else
-      $configFile = "../ini/config_demo.ini";
+      $configFile = "../ini/config_" . $configPrefix . $DEFAULT_INSTANCE . ".ini";
   } else {
     // CLI mode -> take config from command line:
     if ($argc < 2){
