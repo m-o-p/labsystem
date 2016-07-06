@@ -11,8 +11,14 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   internal.rst
+   configuration.rst
+   running.rst
+   importing.rst
+   database.rst
    data.rst
+   workflow.rst
+   comparison.rst
+   internal.rst
 
 Indices and tables
 ==================
