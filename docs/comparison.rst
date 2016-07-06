@@ -22,7 +22,7 @@ Email notifications       Yes           Not implemented
 User management           Yes           Yes                 Using DB
 Permissions               Matrix        Role based          Using DB
                                         Flexible
-Answer history            ?             Yes                 Using DB
+Answer history            Yes           Yes                 Using DB
 File upload               Yes           Only answers
 Language                  PHP           Python
 Database support          MySQL         ORM allows many     Rewrite uses
