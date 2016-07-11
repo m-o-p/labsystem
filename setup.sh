@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-virtualenv-3.4 env
+virtualenv-3.5 env
 source ./env.sh
 pip install -r requirements.txt
 
