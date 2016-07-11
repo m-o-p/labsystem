@@ -4,16 +4,17 @@ Configuration
 Firs time configuration
 -----------------------
 
-The project is designed to run inside an virtualenv environment. First we set up that environment::
+The installation requires python3, virtualenv and bower.
 
-  virtualenv env
+bower can be installed by using::
 
-Depencies are manged using pip::
+  npm install -g bower
 
-  source ./env.sh
-  pip install -r requirements.txt
+The project is designed to run inside a dedicated environment. A setup script is provided to create it::
 
-The project is now set up. On first run a database is created and the default administrator is inserted with the username *admin* and the password *123456*
+  ./setup.sh
+
+The project is now set up. On first run a database is created and the default administrator is inserted with the username *admin* and the password *admin*
 
 Configuration
 -------------
