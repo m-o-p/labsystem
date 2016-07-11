@@ -19,6 +19,7 @@ Contents:
    workflow.rst
    comparison.rst
    internal.rst
+   git.rst
 
 Indices and tables
 ==================
