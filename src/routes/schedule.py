@@ -37,3 +37,10 @@ def schedule_create():
         return redirect(url_for('schedule_view', schedule_id=schedule.id))
     else:
         return render_template('schedule/new.html', form=form)
+
+
+@app.route("/schedules")
+def schedule_list():
+    schedules = Schedule.select()
+
+    return render_template('schedule/list.html', schedules=schedules)

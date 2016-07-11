@@ -21,6 +21,9 @@ def collection_element_correct(course, branch, path):
     element = load_element(course, branch, path)
     checkPermissionForElement(g.user, 'correct', element)
 
+    if 'user' not in request.args:
+        return redirect(url_for('collection_element_correct', course=course, branch=branch, path=path, user=g.user.id))
+
     return render_template('elements/collection/correct.html', element=element)
 
 

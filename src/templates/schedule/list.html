@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <ul class="schedules">
+    {% for schedule in schedules %}
+      <li>
+        <a href="{{url_for('schedule_view', schedule_id=schedule.id)}}">
+          {{schedule.name}}
+        </a>
+    {% endfor %}
+
+    <br />
+
+    <a href="{{url_for("schedule_create")}}">{{gettext('Create Schedule')}}</a> <br />
+  </ul>
+{% endblock content %}

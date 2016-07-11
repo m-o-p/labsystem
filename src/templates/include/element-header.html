@@ -17,5 +17,25 @@
         </span>
       </i>
     </a>
+
+    {% if element.meta['type'] == 'Assignment' or element.meta['type'] == 'Collection' %}
+      <a href="{{url_for('collection_element_correct', course=element.course, branch=element.branch, path=element.path)}}">
+        <i class="fa fa-graduation-cap">
+          <span class="sr-only">
+            {{gettext('Correct')}}
+          </span>
+        </i>
+      </a>
+    {% endif %}
+
+    {% if element.meta['type'] == 'Assignment' %}
+      <a href="{{url_for('assignment_element_stats', course=element.course, branch=element.branch, path=element.path)}}">
+        <i class="fa fa-tasks">
+          <span class="sr-only">
+            {{gettext('Statistics')}}
+          </span>
+        </i>
+      </a>
+    {% endif %}
   </span>
 </div>

@@ -3,5 +3,9 @@
 {% block content %}
   <p>{{schedule.name}}</p>
   <span>{{schedule.start}}</span> - <span>{{schedule.end}}</span>
-  <p>{{schedule.isActive()}}</p>
+  <p>{{gettext('Active')}}: {{schedule.isActive()}}</p>
+
+  <a href="{{url_for('schedule_edit', schedule_id=schedule.id)}}">
+    {{gettext('Edit')}}
+  </a>
 {% endblock %}
