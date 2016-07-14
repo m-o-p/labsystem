@@ -184,20 +184,19 @@ class Usr extends ElementUser{
                                       // this function is called on the statistics page as well
                                       // if you restrict to correctors users will not see other user's names
                                       // you should remove the history then as well in the statistics
-      $globalUserData = $uDBI->getData4( $uid );
-      $userData = Array();
-      if ( $globalUserData == false ){
+      $userData = $uDBI->getData4( $uid );
+      if ( $userData == false ){
+        $userData = Array();
         $userData['name'] = "UID ".$uid;
         $userData['foreName'] = $lng->get("unknown");
         $userData['userName'] = $lng->get("unknown");
         $userData['eMail'] = 'me@unknown.tld';
       }else{
-      	$userData['name'] = ( $url->available('pseudoNames') ? randomName():$globalUserData['name'] );
-      	$userData['foreName'] = ( $url->available('pseudoNames') ? randomName():$globalUserData['foreName']);
-      	$userData['userName'] = ( $url->available('pseudoNames')? randomName():$globalUserData['userName'] );
-      	$userData['eMail'] = $globalUserData['eMail'];
+        $userData['name'] = ( $url->available('pseudoNames') ? randomName():$userData['name'] );
+        $userData['foreName'] = ( $url->available('pseudoNames') ? randomName():$userData['foreName']);
+        $userData['userName'] = ( $url->available('pseudoNames')? randomName():$userData['userName'] );
       }
-      return $userData; 
+      return $userData;
     }
   }
   
