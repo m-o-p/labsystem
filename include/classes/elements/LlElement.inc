@@ -309,51 +309,13 @@ class LlElement extends Element{
                     ( $lng->get("labCloseNote") != '' ? "<div class=\"labsys_mop_note\">\n".$lng->get("labCloseNote")."</div>\n" : '');
 
    // The following is a slightly modified ( add amount of questions and their possibleCredits) of LcElement::showAllElementsOfType();
-    $parameter = Array( 'addr' => $fullAddress.".C".$this->labCollectionIdx,
-                        'paragraph' => $extParagraph,
-                        'myRetVal' => '',
-                        'count' => 0,
-                        'sumPossibleCredits' => 0,
-                        'alreadyInSum' => Array() ); // some inputs might be more than one time inside the collection...
-                                                     // p.e. I use an input for data that are reshown on a later page for comparison
-    $functionCode = "
-    \$elementAddr = ( \$parameter['addr'] != '' ?  \$parameter['addr'].'.'  : '' ).\$value;
-    \$elParagraph = ( \$parameter['paragraph'] != '' ?  \$parameter['paragraph'].'.'  : '' ).\$this->getParagraph( \$value );
-
-    if ( \$element->elementId == 'i'){
-      \$parameter['myRetVal'] .= \$element->show( \$elementAddr, \$elParagraph ); // If you pout this into the parantheses only the first appearance of an input is shown !
-      if ( !(in_array( \$value, \$parameter['alreadyInSum'] )) ){
-        array_push( \$parameter['alreadyInSum'], \$value ); // no double count
-        \$parameter['count']++;
-        \$parameter['sumPossibleCredits'] += \$element->possibleCredits;
-      }
-    }elseif ( (\$element->elementId == 'c') || (\$element->elementId == 'C') ){
-      // recursion
-      \$newParam = Array( 'addr' => \$elementAddr,
-                          'paragraph' => \$elParagraph,
-                          'myRetVal' => '',
-                          'count' => 0,
-                          'sumPossibleCredits' => 0,
-                          'alreadyInSum' => \$parameter['alreadyInSum'] ); // no double count
-      \$element->extMap( \$functionCode, \$newParam );
-      \$parameter['alreadyInSum'] = \$newParam['alreadyInSum'];
-      \$parameter['count'] += \$newParam['count'];
-      \$parameter['sumPossibleCredits'] += \$newParam['sumPossibleCredits'];
-      if ( \$newParam['myRetVal'] != '' )
-        \$parameter['myRetVal'] .=  \"<div class=\\\"labsys_mop_contentArea\\\">\\n\".
-                                    // header inclusive link to the enclosing element (this)
-                                    '<div class=\"labsys_mop_h2\"><a href=\"'.str_replace( array('&#x005F;','&amp;'), array('_', '&'), EB::getLink2ElementURL( \$elementAddr ) ).'\">'.( \$elParagraph != '' ?  \$elParagraph.'. '  : '' ).\$element->title.'</a> '.EB::link2Element( \$elementAddr ).\"</div>\\n\".
-                                    \"</div>\\n\".
-                                    \$newParam['myRetVal'];
-    }";
-
-    $this->lab->extMap( $functionCode, $parameter );
+    $parameter = $this->lab->showAllElementsOfType("i", $fullAddress.".C".$this->labCollectionIdx, $extParagraph, true);
 
     return "<div class=\"labsys_mop_l_all_inputs_stats\">\n".
            "[".$parameter['count']." ".$lng->get("inputs")."; ".$parameter['sumPossibleCredits']." ".$lng->get("Credits")."]".
            "</div>\n".
            $myRetVal.
-           $parameter['myRetVal'];
+           $parameter['retVal'];
   }
 
   /**

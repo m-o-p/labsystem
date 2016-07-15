@@ -281,21 +281,29 @@ class LcElement extends Element{
   * Generates a page with all the collection's elements of a special type (given by $typePrefix ).
   *
   * @param $typePrefix    Element's type (p.e. p, m, i).
-  * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
-  * @param $extParagraph  The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  * @param $address       The element's full address (p.e. C23.c42.p13)
+  * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  * @param $counted       Return the result as array with count data instead of as string
+  * (other parameters are for internal use of the function)
   *
   * @return string        The html code of the element's view view.
   */
-  function showAllElementsOfType( $typePrefix, $address, $paragraph="" ){
+  function showAllElementsOfType( $typePrefix, $address, $paragraph="", $counted=false, &$count = 0, &$sumPossibleCredits = 0, &$inSum = array() ){
     $retVal = "";
     foreach ($this->simpleIterate(array("c", $typePrefix)) as list($value, $element)) {
         $elementAddr = ($address != '' ? $address . "." : "") . $value;
         $elParagraph = ($paragraph != '' ? $paragraph . "." : "") . $this->getParagraph($value);
-        if ($element->elementId == $typePrefix)
+        if ($element->elementId == $typePrefix) {
           $retVal .= $element->show($elementAddr, $elParagraph);
+          if (!array_key_exists($value, $inSum) && $element->elementId == "i") {
+            $inSum[$value] = true;
+            $count += 1;
+            $sumPossibleCredits += $element->possibleCredits;
+          }
+        }
         elseif (strtolower($element->elementId) == "c") {
             // recursion
-            $subRetVal = $element->showAllElementsOfType($typePrefix, $elementAddr, $elParagraph);
+            $subRetVal = $element->showAllElementsOfType($typePrefix, $elementAddr, $elParagraph, false, $count, $sumPossibleCredits, $inSum);
             if ($subRetVal != '') {
               $retVal .= "<div class=\"labsys_mop_contentArea\">\n" .
                          // header inclusive link to the enclosing element (this)
@@ -305,7 +313,10 @@ class LcElement extends Element{
             }
         }
     }
-    return $retVal;
+    if (!$counted)
+        return $retVal;
+    else
+        return array("retVal" => $retVal, "count" => $count, "sumPossibleCredits" => $sumPossibleCredits);
   }
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
