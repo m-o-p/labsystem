@@ -286,30 +286,26 @@ class LcElement extends Element{
   *
   * @return string        The html code of the element's view view.
   */
-  function showAllElementsOfType( $typePrefix, $fullAddress, $extParagraph="" ){
-    $parameter = Array( 'addr' => $fullAddress,
-                        'paragraph' => $extParagraph,
-                        'myRetVal' => '' );
-    $functionCode = "
-    \$elementAddr = ( \$parameter['addr'] != '' ?  \$parameter['addr'].'.'  : '' ).\$value;
-    \$elParagraph = ( \$parameter['paragraph'] != '' ?  \$parameter['paragraph'].'.'  : '' ).\$this->getParagraph( \$value );
-
-    if ( \$element->elementId == '".$typePrefix."') \$parameter['myRetVal'] .= \$element->show( \$elementAddr, \$elParagraph );
-    elseif ( (\$element->elementId == 'c') || (\$element->elementId == 'C') ){
-      // recursion
-      \$newParam = Array( 'addr' => \$elementAddr, 'paragraph' => \$elParagraph, 'myRetVal' => '' );
-      \$element->extMap( \$functionCode, \$newParam );
-      if ( \$newParam['myRetVal'] != '' )
-        \$parameter['myRetVal'] .=  \"<div class=\\\"labsys_mop_contentArea\\\">\\n\".
-                                    // header inclusive link to the enclosing element (this)
-                                    '<div class=\"labsys_mop_h2\"><a href=\"'.str_replace( array('&#x005F;','&amp;'), array('_', '&'), EB::getLink2ElementURL( \$elementAddr ) ).'\">'.( \$elParagraph != '' ?  \$elParagraph.'. '  : '' ).\$element->title.'</a> '.EB::link2Element( \$elementAddr ).\"</div>\\n\".
-                                    \"</div>\\n\".
-                                    \$newParam['myRetVal'];
-    }";
-
-    $this->extMap( $functionCode, $parameter );
-
-    return $parameter['myRetVal'];
+  function showAllElementsOfType( $typePrefix, $address, $paragraph="" ){
+    $retVal = "";
+    foreach ($this->simpleIterate(array("c", $typePrefix)) as list($value, $element)) {
+        $elementAddr = ($address != '' ? $address . "." : "") . $value;
+        $elParagraph = ($paragraph != '' ? $paragraph . "." : "") . $this->getParagraph($value);
+        if ($element->elementId == $typePrefix)
+          $retVal .= $element->show($elementAddr, $elParagraph);
+        elseif (strtolower($element->elementId) == "c") {
+            // recursion
+            $subRetVal = $element->showAllElementsOfType($typePrefix, $elementAddr, $elParagraph);
+            if ($subRetVal != '') {
+              $retVal .= "<div class=\"labsys_mop_contentArea\">\n" .
+                         // header inclusive link to the enclosing element (this)
+                         "<div class=\"labsys_mop_h2\"><a href=\"" . str_replace( array('&#x005F;','&amp;'), array('_', '&'), EB::getLink2ElementURL( $elementAddr ) ). "\">" .
+                         $elParagraph. ". " . $element->title . "</a>" . EB::link2Element( $elementAddr ) . "</div>\n" .
+                         "</div>\n" . $subRetVal;
+            }
+        }
+    }
+    return $retVal;
   }
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -901,6 +897,20 @@ class LcElement extends Element{
     }
   }
 
+  function simpleIterate($withId=false){
+    $myVisEl = $this->getMyVisibleElements();
+
+    foreach( $myVisEl as $value ){
+     // load element
+      $id = $value{0}; $num = substr( $value, 1 );
+      if ($withId && !in_array(strtolower($id), $withId))
+        continue; // no need to load that element
+      require( "../php/getDBIbyID.inc" );
+      $element = $DBI->getData2idx( $num, true, $this->isInLab );
+      yield array($value, $element);
+    }
+  }
+
   /**
   * Inserts a new element of type $elementID using the [ID]1 element as template.
   *
@@ -916,4 +926,3 @@ class LcElement extends Element{
   }
 
 }
-?>
