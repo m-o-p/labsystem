@@ -1749,16 +1749,14 @@ class LlElement extends Element{
     global $lng, $usr;
    // close all lab inputs:
    // also reMap all inputs  (necessary for users that never entered a question (done together).
-    $parameter = Array(); //teamUIDs
+    $teamUIDs = Array();
     $this->usDBI->getAllTeamData( $team );
-    while( ($labStatus = $this->usDBI->getNextData()) ) array_push( $parameter, $labStatus['uid'] );
+    while( ($labStatus = $this->usDBI->getNextData()) ) array_push( $teamUIDs, $labStatus['uid'] );
 
-    $this->lab->extMap( "if ( \$element->elementId == 'i' ){
-                           \$element->closeInput( ".$team." ); // close the input.
-                           foreach( \$parameter as \$uidVal ) \$element->mapInput( \$uidVal, ".$team." ); // map UID->Team.
-                        }".
-                        "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                        $parameter );
+    foreach ($this->lab->deepIterate("i") as list( , $element)) {
+        $element->closeInput( $team ); // close the input.
+        foreach( $teamUIDs as $uidVal ) $element->mapInput( $uidVal, $team ); // map UID->Team.
+    }
 
     if ( !$labStatus['labClosed'] ){ // Status changed?
       $this->usDBI->closeLab( $team, $lng->get("labClosed") );
