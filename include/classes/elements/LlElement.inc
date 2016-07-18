@@ -1642,31 +1642,29 @@ class LlElement extends Element{
 
     if( $this->preLabIsVisible2Me && !$this->preLabIsFinished ){
    // Are all multiple choice questions answered (->LmElement)?
-    $parameter = Array( 'allPreLabAnswered' => true,
-                        'givenCredits' => 0,
-                        'possibleCredits' => 0,
-                        'numberOfPrelabMC' => 0 );
+    $allPreLabAnswered = true;
+    $givenCredits = 0;
+    $possibleCredits = 0;
+    $numberOfPrelabMC = 0;
 
-    $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
-                              "\$parameter['numberOfPrelabMC']+=1;".
-                              "\$element->loadUserData4( '".$usr->uid."' ); ".
-                              "if ( \$parameter[ 'allPreLabAnswered' ] &= \$element->checkUserAnswer() ){ ". // check the answer (if not closed this adds an attempt!).
-                                "\$parameter[ 'givenCredits' ] += \$element->getGivenCredits();".
-                              "}".
-                              "\$parameter[ 'possibleCredits' ] += \$element->getPossibleCredits();".
-                            "}".
-                            "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                            $parameter );
+    foreach ($this->preLab->deepIterate("m") as list( , $element)) {
+        $numberOfPrelabMC += 1;
+        $element->loadUserData4($usr->uid);
+        if ($allPreLabAnswered &= $element->checkUserAnswer()) {
+            $givenCredits += $element->getGivenCredits();
+        }
+        $possibleCredits += $element->getPossibleCredits();
+    }
 
-      if( $parameter[ 'allPreLabAnswered' ] ){
+      if( $allPreLabAnswered ){
 
          // create my dataset
           $this->usDBI->setData4( $usr->uid,                        // $uid
                                   $usr->currentTeam,                // $currentTeam
                                   true,                             // $prelabFinished
-                                  $parameter[ 'givenCredits' ],     // $prelabGivenCredits
-                                  $parameter[ 'possibleCredits' ],  // $prelabPossibleCredits
-                                  ($parameter[ 'numberOfPrelabMC' ] == 0), // $prelabAllTeammembersFinished
+                                  $givenCredits,                    // $prelabGivenCredits
+                                  $possibleCredits,                 // $prelabPossibleCredits
+                                  ($numberOfPrelabMC == 0),         // $prelabAllTeammembersFinished
                                   false,                            // $labClosed
                                   false,                            // $labCorrected
                                   "",                               // $whichCorrected

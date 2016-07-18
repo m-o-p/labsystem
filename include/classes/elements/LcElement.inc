@@ -922,7 +922,7 @@ class LcElement extends Element{
     }
   }
 
-  function deepIterate($elId, $addrPrefix, $fragmentPrefix, $pSmallC=false){
+  function deepIterate($elId, $addrPrefix="", $fragmentPrefix="", $pSmallC=false){
     foreach ($this->simpleIterate(array("c", $elId)) as $data) {
         list($value, $element) = $data;
         if ($value{0} == $elId) {
