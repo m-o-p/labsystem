@@ -922,6 +922,21 @@ class LcElement extends Element{
     }
   }
 
+  function deepIterate($elId, $addrPrefix, $fragmentPrefix, $pSmallC=false){
+    foreach ($this->simpleIterate(array("c", $elId)) as $data) {
+        list($value, $element) = $data;
+        if ($value{0} == $elId) {
+            array_push($data, $addrPrefix, $fragmentPrefix . "." . $value);
+            yield $data;
+        }
+        else { // must be c or C
+            $subAddrPrefix = ($pSmallC ? $addrPrefix : $addrPrefix . "." . $value);
+            foreach ($element->deepIterate($elId, $subAddrPrefix, $fragmentPrefix . "." . $value, ($value{0} == "c" ? true : false)) as $subData)
+                yield $subData;
+        }
+    }
+  }
+
   /**
   * Inserts a new element of type $elementID using the [ID]1 element as template.
   *

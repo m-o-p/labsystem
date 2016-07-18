@@ -525,42 +525,19 @@ class LlElement extends Element{
 
         // <Collect the references to all i-elements for click to jump to the question>
       if (!empty($labStatus['whichCorrected']) || !empty($labStatus['detailedCredits'])){
-        $element = $lDBI->getData2idx( $labStatus['lIdx'] );
-        $parameter = Array( 'currentPage' => 'l'.$element->idx.'.C'.$element->labCollectionIdx,
-            'currentFragment' => '#l'.$element->idx.'.C'.$element->labCollectionIdx,
-            'iElementLinks' => Array(),
-            'iElementTitles' => Array(),
-            'myParentIsASmallc' => false,
-            'alreadyInSum' => Array());// some inputs might be more than one time inside the collection...
-        // p.e. I use an input for data that are reshown on a later page for comparison
-        $element->lab->extMap( "if ( (\$element->elementId == 'i') && !(in_array( \$element->idx, \$parameter['alreadyInSum'] )) ){
-                              array_push( \$parameter['alreadyInSum'], \$element->idx ); // no double count
-                              array_push( \$parameter['iElementLinks'], \$parameter['currentPage'].\$parameter['currentFragment'].'.i'.\$element->idx);
-                              array_push( \$parameter['iElementTitles'], \$element->title );
-                          }".
-            "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ){
-                              \$oldcurrentPage = \$parameter['currentPage'];
-                              \$oldFragment = \$parameter['currentFragment'];
-                              \$oldParentSmallc = \$parameter['myParentIsASmallc'];
-                              \$parameter['currentFragment'] .= '.'.\$element->elementId.\$element->idx;
-                              if (!\$parameter['myParentIsASmallc']){
-                                \$parameter['currentPage'] .= '.'.\$element->elementId.\$element->idx;
-                              }
-                              if (\$element->elementId == 'c'){
-                                \$parameter['myParentIsASmallc'] = true;
-                              }
-
-                              \$element->extMap( \$functionCode, \$parameter );
-
-                              \$parameter['currentPage'] = \$oldcurrentPage;
-                              \$parameter['currentFragment'] = \$oldFragment;
-                              \$parameter['myParentIsASmallc'] = \$oldParentSmallc;
-                          }", // recurse
-                                  $parameter );
-
-        $iElementLinks = $parameter['iElementLinks'];
-        $iElementTitles = $parameter['iElementTitles'];
+        $base = $lDBI->getData2idx( $labStatus['lIdx'] );
+        $currentPage = 'l'.$base->idx.'.C'.$base->labCollectionIdx;
+        $iElementLinks = array();
+        $iElementTitles = array();
+        $alreadyInSum = array();
+        foreach ($base->lab->deepIterate('i', $currentPage, '#' . $currentPage) as list($value, $element, $addr, $fragment)) {
+          if (!array_key_exists($value, $alreadyInSum)) {
+              $alreadyInSum[$value] = true;
+              array_push($iElementLinks, $addr . $fragment);
+              array_push($iElementTitles, $element->title);
+          }
         }
+      }
         // </ Collect the references to all i-elements for click to jump to the question>
        // Use the backlinks to the questions from the cache...
         if ( $labStatus['labClosed'] && !$labStatus['labCorrected'] && ($labStatus['whichCorrected'] != "") &&
