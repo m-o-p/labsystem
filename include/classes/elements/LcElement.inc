@@ -880,34 +880,11 @@ class LcElement extends Element{
   }
 
   /**
-  * Loads each visible element into $element and evaluates $functionCode.
-  * You can use $value      IdNum of current element
-  *             $element    Reference to the element
-  *             $parameter  The parameter.
-  *
-  * The function is very mighty. Only the passing of the function is kind of lame...
-  * So I used this function rarely since the code get's kind of unreadable (but short).
-  * You can find an example in showAllElementsOfType() above.
-  *
-  * @param $functionCode  Code to be exectued on each element.
-  * @param &$parameter    You can use $parameter in $functionCode.
-  *                                     example: ( adds the possible credits of the inputs )
-  *                                         $information = Array( "count" => 0, "sumPossibleCredits" => 0 );
-  *                                         $myRetVal .= $this->lab->showAllElementsOfTypePlus( "i", $fullAddress.".C".$this->labCollectionIdx, $lng->get("labTOCparagraph"), "\$parameter['count']++; \$parameter['sumPossibleCredits'] += \$element->possibleCredits;", $information );
-  */
-  function extMap( $functionCode, &$parameter ){
-    $myVisEl = $this->getMyVisibleElements();
-
-    foreach( $myVisEl as $value ){
-     // load element
-      $id = $value{0}; $num = substr( $value, 1 );
-      require( "../php/getDBIbyID.inc" );
-      $element = $DBI->getData2idx( $num, true, $this->isInLab );
-     // evaluate $functionCode
-      eval( $functionCode );
-    }
-  }
-
+  * Generator functions that returns all the elements of a collection (as an
+  * array that contains the identifier, e.g. p12, and a reference to the
+  * element)
+  * @param $withId        Array containing the element tyeps you are interested in (optional)
+   */
   function simpleIterate($withId=false){
     $myVisEl = $this->getMyVisibleElements();
 
@@ -922,6 +899,15 @@ class LcElement extends Element{
     }
   }
 
+  /**
+  * Generator functions that recursivley returns all subelements elements
+  * (array with identifier, reference, address and fragment) of a collection of
+  * a specific type
+  * @param $elId            type to look at
+  * @param $addrPrefix      address prefix (subaddresses will be appended)
+  * @param $fragmentPrefix  fragment prefix (subfragments will be appended)
+  * @param $pSmallC         only for internal use; keep track if parent element was a small c element
+   */
   function deepIterate($elId, $addrPrefix="", $fragmentPrefix="", $pSmallC=false){
     foreach ($this->simpleIterate(array("c", $elId)) as $data) {
         list($value, $element) = $data;
