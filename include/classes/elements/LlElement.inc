@@ -1812,10 +1812,8 @@ class LlElement extends Element{
     global $usr, $lng, $url;
 
    // reOpen all lab inputs
-    $dummy = false;
-    $this->lab->extMap( "if ( \$element->elementId == 'i' ) \$element->reOpenInput( ".$team." );". // reOpen the input.
-                        "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                        $dummy );
+    foreach ($this->lab->deepIterate("i") as list( , $element))
+        $element->reOpenInput($team); // reOpen the input.
 
     $this->usDBI->reOpenLab( $team, $lng->get("labReOpened") );
 
@@ -1836,10 +1834,8 @@ class LlElement extends Element{
   */
   function mapAllLabInputs( $uid, $team ){
    // remap all lab inputs:
-    $dummy = false;
-    $this->lab->extMap( "if ( \$element->elementId == 'i' ) \$element->mapInput( '".$uid."', '".$team."' );". // reMap UID->Team.
-                        "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                        $dummy );
+    foreach ($this->lab->deepIterate("i") as list( , $element))
+        $element->mapInput($uid, $team); // reMap UID->Team.
 
     $labStatus = $this->usDBI->getData4( $uid );
     if ( $labStatus['labClosed'] ) // if the lab is closed the input has to be closed too.
