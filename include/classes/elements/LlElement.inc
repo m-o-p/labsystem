@@ -1918,58 +1918,48 @@ class LlElement extends Element{
 //    This is extremly performant because it touches each input only once!
 //    The previous "normal" iteration took about three times longer...
    // iterate over statistics
-    $parameter = Array(); // all teams
+    $teams = Array(); // all teams
     $this->usDBI->getAllData( "current_team" );
     while( ($labStatus = $this->usDBI->getNextData()) )
-      if ( !(in_array( $labStatus['currentTeam'], $parameter ) ) )
-        array_push( $parameter, $labStatus['currentTeam'] );
-      array_push( $parameter, 'alreadyInSum' ); // takes the indices of the inputs so that none is handled twice...
-
-   // flip keys and values
-    $parameter = array_flip( $parameter );
-
-   // fill with empty containers
-    foreach ( array_keys($parameter) as $val )
-      if ( $val != 'alreadyInSum' ) $parameter[$val] = Array( 'areAllClosed' => true,
-                                                              'areAllCorrected' => true,
-                                                              'correctedString' => "",
-                                                              'detailedCredits' => Array(),
-                                                              'sumGivenCredits' => 0,
-                                                              'sumPossibleCredits' => 0 );
-
-    $parameter['alreadyInSum'] = Array(); // some inputs might be more than one time inside the collection...
-                                          // p.e. I use an input for data that are reshown on a later page for comparison
+      if ( !(array_key_exists( $labStatus['currentTeam'], $teams ) ) )
+          $teams[$labStatus['currentTeam']] = Array('areAllClosed' => true,
+                                                   'areAllCorrected' => true,
+                                                   'correctedString' => "",
+                                                   'detailedCredits' => Array(),
+                                                   'sumGivenCredits' => 0,
+                                                   'sumPossibleCredits' => 0 );
+    $alreadyInSum = Array(); // some inputs might be more than one time inside the collection...
+                             // p.e. I use an input for data that are reshown on a later page for comparison
 
    // check all lab inputs and close them if necessary
-      $this->lab->extMap( "if ( (\$element->elementId == 'i') && !(in_array( \$element->idx, \$parameter['alreadyInSum'] )) ){
-                              array_push( \$parameter['alreadyInSum'], \$element->idx ); // no double count
-                              foreach( \$parameter as \$mKey => \$mValue ){
-                                if ( \$mKey == 'alreadyInSum' ) continue; // jump over
-                                \$element->loadUserData4( \$mKey );
-                                if ( !\$element->isClosed && ".( $is2bClosed ?  'true' :  'false'  )." ) \$element->closeInput( \$mKey ); // if necessary close labinput
-                                \$parameter[\$mKey]['areAllClosed']       &= \$element->isClosed;
-                                \$parameter[\$mKey]['areAllCorrected']    &= \$element->isCorrected;
-                                \$parameter[\$mKey]['correctedString']    .= ( \$element->isCorrected ?  't' :  'f'  );
-                                if ( \$element->isCorrected ){ // only add points of corrected
-                                    \$parameter[\$mKey]['sumGivenCredits']  += \$element->getGivenCredits();
-                                }
-                                array_push(\$parameter[\$mKey]['detailedCredits'], \$element->getGivenCredits().'/'.\$element->getPossibleCredits());
-                                \$parameter[\$mKey]['sumPossibleCredits'] += \$element->getPossibleCredits();
-                              }
-                          }".
-                          "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                          $parameter );
+    foreach ($this->lab->deepIterate('i') as list($index , $element)) {
+        if (!array_key_exists($index, $alreadyInSum)) {
+            $alreadyInSum[$index] = true;
+            foreach ($teams as $team => &$teamData) {
+                $element->loadUserData4($team);
+                if (!$element->isClosed && $is2bClosed) $element->closeInput($team); // if necessary close labinput
+                $teamData['areAllClosed']    &= $element->isClosed;
+                $teamData['areAllCorrected'] &= $element->isCorrected;
+                $teamData['correctedString'] .= ($element->isCorrected ?  't' :  'f');
+                if ($element->isCorrected) // only add points of corrected
+                    $teamData['sumGivenCredits']  += $element->getGivenCredits();
+                array_push($teamData['detailedCredits'], $element->getGivenCredits() . "/" . $element->getPossibleCredits());
+                $teamData['sumPossibleCredits'] += $element->getPossibleCredits();
+            }
+            unset($teamData);
+        }
+    }
 
     // iterate over statistics
     $this->usDBI->getAllData( "current_team" );
     while( ($labStatus = $this->usDBI->getNextData()) ){
        // changes?
-        $detailedCredits=implode(';',$parameter[$labStatus['currentTeam']]['detailedCredits']);
-        if ( ($labStatus['labClosed']          != $parameter[$labStatus['currentTeam']]['areAllClosed']) || // might happen after remapping...
-             ($labStatus['labCorrected']       != $parameter[$labStatus['currentTeam']]['areAllCorrected']) ||
-             ($labStatus['labGivenCredits']    != $parameter[$labStatus['currentTeam']]['sumGivenCredits']) ||
-             ($labStatus['labPossibleCredits'] != $parameter[$labStatus['currentTeam']]['sumPossibleCredits']) ||
-             ($labStatus['whichCorrected'] != $parameter[$labStatus['currentTeam']]['correctedString']) ||
+        $detailedCredits=implode(';',$teams[$labStatus['currentTeam']]['detailedCredits']);
+        if ( ($labStatus['labClosed']          != $teams[$labStatus['currentTeam']]['areAllClosed']) || // might happen after remapping...
+             ($labStatus['labCorrected']       != $teams[$labStatus['currentTeam']]['areAllCorrected']) ||
+             ($labStatus['labGivenCredits']    != $teams[$labStatus['currentTeam']]['sumGivenCredits']) ||
+             ($labStatus['labPossibleCredits'] != $teams[$labStatus['currentTeam']]['sumPossibleCredits']) ||
+             ($labStatus['whichCorrected'] != $teams[$labStatus['currentTeam']]['correctedString']) ||
              ($labStatus['detailedCredits'] != $detailedCredits)
             ){ // yes -> save them.
               $this->usDBI->setData4( $labStatus['uid'],
@@ -1978,15 +1968,15 @@ class LlElement extends Element{
                                       $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
                                       $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
                                       $labStatus['preLabAllTeammFinished'],
-                                      $parameter[$labStatus['currentTeam']]['areAllClosed'],
-                                      $parameter[$labStatus['currentTeam']]['areAllCorrected'],
-                                      $parameter[$labStatus['currentTeam']]['correctedString'],
-                                      $parameter[$labStatus['currentTeam']]['sumGivenCredits'],
-                                      $parameter[$labStatus['currentTeam']]['sumPossibleCredits'],
+                                      $teams[$labStatus['currentTeam']]['areAllClosed'],
+                                      $teams[$labStatus['currentTeam']]['areAllCorrected'],
+                                      $teams[$labStatus['currentTeam']]['correctedString'],
+                                      $teams[$labStatus['currentTeam']]['sumGivenCredits'],
+                                      $teams[$labStatus['currentTeam']]['sumPossibleCredits'],
                                       $detailedCredits,
                                       $lng->get("statusUpdated") ); // create my dataset
 
-          if ($parameter[$labStatus['currentTeam']]['areAllCorrected'] &&
+          if ($teams[$labStatus['currentTeam']]['areAllCorrected'] &&
               !$labStatus['labCorrected'] //and it was not corrected before
              ){
             $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
