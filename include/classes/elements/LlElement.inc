@@ -2014,24 +2014,21 @@ class LlElement extends Element{
     while( ($labStatus = $this->usDBI->getNextData()) ){
 
       // Are all multiple choice questions answered (->LmElement)?
-      $parameter2 = Array( 'allPreLabAnswered' => true,
-          'givenCredits' => 0,
-          'possibleCredits' => 0,
-          'numberOfPrelabMC' => 0 );
+      $allPreLabAnswered = true;
+      $givenCredits = 0;
+      $possibleCredits = 0;
+      $numberOfPrelabMC = 0;
 
-      $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
-          "\$parameter['numberOfPrelabMC']+=1;".
-          "\$element->loadUserData4( '".$labStatus['uid']."' ); ".
-          "if ( \$parameter[ 'allPreLabAnswered' ] &= \$element->checkUserAnswer() ){ ". // check the answer (if not closed this adds an attempt!).
-          "\$parameter[ 'givenCredits' ] += \$element->getGivenCredits();".
-          "}".
-          "\$parameter[ 'possibleCredits' ] += \$element->getPossibleCredits();".
-          "}".
-          "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-          $parameter2 );
+      foreach ($this->preLab->deepIterate('m') as list( , $element)) {
+          $numberOfPrelabMC += 1;
+          $element->loadUserData4($labStatus['uid']);
+          if ($allPreLabAnswered &= $element->checkUserAnswer()) // check the answer (if not closed this adds an attempt!).
+              $givenCredits += $element->getGivenCredits();
+          $possibleCredits += $element->getPossibleCredits();
+      }
 
     // check DURING and after 1st schedule if all teammates finished to set this status correctly:
-    $prelabFinishedByTeam = ($parameter2['numberOfPrelabMC'] == 0) || // no questions
+    $prelabFinishedByTeam = ($numberOfPrelabMC == 0) || // no questions
                             ( // if it is running do a check
                                 ($this->isInSched || $this->visibleBefore1stSched) &&
                                 $this->isPrelabFinishedByAllCurrentTeammates( $labStatus['currentTeam'] )
@@ -2045,15 +2042,15 @@ class LlElement extends Element{
             $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lPreLabFinished, $labStatus['currentTeam']);
     }
 
-//echo( $parameter2['givenCredits'].'/ '.$parameter2['possibleCredits'].'<br>' );
+//echo( $givenCredits.'/ '.$possibleCredits.'<br>' );
        // changes?
         //if ( true// $labStatus['preLabPossibleCredits'] == 0
         //    ) // yes -> save them.
               $this->usDBI->setData4( $labStatus['uid'],
                                       $labStatus['currentTeam'],
-                                      $parameter2['allPreLabAnswered'], // $labStatus['preLabFinished'],
-                                      $parameter2['givenCredits'], // $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
-                                      $parameter2['possibleCredits'], // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
+                                      $allPreLabAnswered, // $labStatus['preLabFinished'],
+                                      $givenCredits, // $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
+                                      $possibleCredits, // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
                                       $prelabFinishedByTeam, // $labStatus['preLabAllTeammFinished'],
                                       $labStatus['labClosed'],
                                       $labStatus['labCorrected'],
