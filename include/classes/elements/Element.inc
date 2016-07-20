@@ -294,8 +294,7 @@ class Element{
   function showPropertyRow( $prefix, $disabled=false ){
     return  "<div class=\"labsys_mop_".$this->elementId."_row\">\n".
             $this->getPropertyRow( $prefix, $disabled )." ".
-            eval( "return EM::manageRow_".$this->elementId."( \$this );" ).
-            "</div>\n";
+            EM::manageRow($this) . "</div>\n";
   }
 
   /**
@@ -329,8 +328,7 @@ class Element{
     return  "<div class=\"labsys_mop_".$this->elementId."_row\">\n".
               '<div class="labsys_mop_c_structure_address">'.$prefix.$address.'</div>'.
               $this->getPropertyRow( $address, $disabled )." ".
-              eval( "return EM::collectionRow_".$this->elementId."( \$this, \$address );" ).
-            "</div>\n";
+              EM::collectionRow( $this, $address )."</div>\n";
   }
 
   /**

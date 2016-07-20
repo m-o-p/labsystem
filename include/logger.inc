@@ -172,10 +172,10 @@ class Logger{
       $previousFinal = array_pop( explode ( ".", $previousAddress ) );
       $previousElementID = strtolower(substr($previousFinal,0,1));
       if (in_array($previousElementID, array('p', 'l', 'm', 'c', 'i'))){
-        $GLOBALS['Logger']->logToDatabase($previousAddress, eval('return logActions::'.$previousElementID.'Close;'));
+        $GLOBALS['Logger']->logToDatabase($previousAddress, constant('logActions::'.$previousElementID.'Close'));
       }else{
         if (in_array($previousFinal, array('allPrelabQ', 'preLabStatus', 'allLabQ', 'ALLlabStatus', 'labStatus', 'all', 'epub'))){
-          $GLOBALS['Logger']->logToDatabase($previousAddress, eval('return logActions::lClose;'));
+          $GLOBALS['Logger']->logToDatabase($previousAddress, logActions::lClose);
         }
       }
     }

@@ -139,7 +139,7 @@ class LcElement extends Element{
 
         $element = $GLOBALS[ $id."DBI" ]->getData2idx( $num, true, $this->isInLab );
 
-        if ( !$element ) eval( "\$myRetVal .= ".( strtoupper($id) == $id ?  'B' : 'L' ).$id."Element::showNoFoundRowColl( \$id.\$num );" );
+        if ( !$element ) $myRetVal .= call_user_func(array((strtoupper($id) == $id ?  'B' : 'L' ).$id."Element", "showNoFoundRowColl"), $id . $num);
                    else if ( ($id == "c") || ($id == "C") ) $myRetVal .= $element->showStructure( $fullAddress.".".$value, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ) );
                                      else $myRetVal .= $element->showPropertyRowColl( $fullAddress.".".$value, true, ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value ).". " );
       }
@@ -281,35 +281,42 @@ class LcElement extends Element{
   * Generates a page with all the collection's elements of a special type (given by $typePrefix ).
   *
   * @param $typePrefix    Element's type (p.e. p, m, i).
-  * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
-  * @param $extParagraph  The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  * @param $address       The element's full address (p.e. C23.c42.p13)
+  * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+  * @param $counted       Return the result as array with count data instead of as string
+  * (other parameters are for internal use of the function)
   *
   * @return string        The html code of the element's view view.
   */
-  function showAllElementsOfType( $typePrefix, $fullAddress, $extParagraph="" ){
-    $parameter = Array( 'addr' => $fullAddress,
-                        'paragraph' => $extParagraph,
-                        'myRetVal' => '' );
-    $functionCode = "
-    \$elementAddr = ( \$parameter['addr'] != '' ?  \$parameter['addr'].'.'  : '' ).\$value;
-    \$elParagraph = ( \$parameter['paragraph'] != '' ?  \$parameter['paragraph'].'.'  : '' ).\$this->getParagraph( \$value );
-
-    if ( \$element->elementId == '".$typePrefix."') \$parameter['myRetVal'] .= \$element->show( \$elementAddr, \$elParagraph );
-    elseif ( (\$element->elementId == 'c') || (\$element->elementId == 'C') ){
-      // recursion
-      \$newParam = Array( 'addr' => \$elementAddr, 'paragraph' => \$elParagraph, 'myRetVal' => '' );
-      \$element->extMap( \$functionCode, \$newParam );
-      if ( \$newParam['myRetVal'] != '' )
-        \$parameter['myRetVal'] .=  \"<div class=\\\"labsys_mop_contentArea\\\">\\n\".
-                                    // header inclusive link to the enclosing element (this)
-                                    '<div class=\"labsys_mop_h2\"><a href=\"'.str_replace( array('&#x005F;','&amp;'), array('_', '&'), EB::getLink2ElementURL( \$elementAddr ) ).'\">'.( \$elParagraph != '' ?  \$elParagraph.'. '  : '' ).\$element->title.'</a> '.EB::link2Element( \$elementAddr ).\"</div>\\n\".
-                                    \"</div>\\n\".
-                                    \$newParam['myRetVal'];
-    }";
-
-    $this->extMap( $functionCode, $parameter );
-
-    return $parameter['myRetVal'];
+  function showAllElementsOfType( $typePrefix, $address, $paragraph="", $counted=false, &$count = 0, &$sumPossibleCredits = 0, &$inSum = array() ){
+    $retVal = "";
+    foreach ($this->simpleIterate(array("c", $typePrefix)) as list($value, $element)) {
+        $elementAddr = ($address != '' ? $address . "." : "") . $value;
+        $elParagraph = ($paragraph != '' ? $paragraph . "." : "") . $this->getParagraph($value);
+        if ($element->elementId == $typePrefix) {
+          $retVal .= $element->show($elementAddr, $elParagraph);
+          if (!array_key_exists($value, $inSum) && $element->elementId == "i") {
+            $inSum[$value] = true;
+            $count += 1;
+            $sumPossibleCredits += $element->possibleCredits;
+          }
+        }
+        elseif (strtolower($element->elementId) == "c") {
+            // recursion
+            $subRetVal = $element->showAllElementsOfType($typePrefix, $elementAddr, $elParagraph, false, $count, $sumPossibleCredits, $inSum);
+            if ($subRetVal != '') {
+              $retVal .= "<div class=\"labsys_mop_contentArea\">\n" .
+                         // header inclusive link to the enclosing element (this)
+                         "<div class=\"labsys_mop_h2\"><a href=\"" . str_replace( array('&#x005F;','&amp;'), array('_', '&'), EB::getLink2ElementURL( $elementAddr ) ). "\">" .
+                         $elParagraph. ". " . $element->title . "</a>" . EB::link2Element( $elementAddr ) . "</div>\n" .
+                         "</div>\n" . $subRetVal;
+            }
+        }
+    }
+    if (!$counted)
+        return $retVal;
+    else
+        return array("retVal" => $retVal, "count" => $count, "sumPossibleCredits" => $sumPossibleCredits);
   }
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -409,7 +416,7 @@ class LcElement extends Element{
     if (!empty($GLOBALS['linkForMCcheckUp'])){
       // Show check up button
       $myRetVal .=  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=".$GLOBALS['firstFinal'])."\">\n".
-          "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab()\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
+          "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
           "<input type=\"hidden\" name=\"IDX\" value=\"".substr($GLOBALS['firstFinal'],1)."\">\n".            // needed by ../php/executeCommandOnElement.php
           "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n". // to check whether the call is valid
           "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."#".$GLOBALS['linkForMCcheckUp']."\">\n".
@@ -446,7 +453,7 @@ class LcElement extends Element{
     if ( $url->available('insert') ){ $url->rem('insert'); $this->insertNew( $GLOBALS['url']->get('insert') ); } // inserts an element of the given type at the end of the collection
 
     $myRetVal =  "<FORM class=\"labsys_mop_std_form\" NAME=\"collectionEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=c")."\">\n".
-                 "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
+                 "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
                  "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
                  "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
                  "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n".  // index of saved el. will be added by save() below
@@ -833,15 +840,14 @@ class LcElement extends Element{
     }
     $structureArray = explode( " ", $this->getStructure() );
 
-    $arrayText = "";
+    $ret = array();
     $elNumber = 0;
 
     foreach( $structureArray as $value ){
       $elNumber++;
-      if ($value{0} != "*") $arrayText .= ", \"".$value."\"=>\"".$elNumber."\"";
+      if ($value{0} != "*")
+        $ret[$value] = $elNumber;
     }
-
-    eval( "\$ret = Array( ".substr( $arrayText, 2 )." );" );
 
     return $ret;
   }
@@ -874,31 +880,46 @@ class LcElement extends Element{
   }
 
   /**
-  * Loads each visible element into $element and evaluates $functionCode.
-  * You can use $value      IdNum of current element
-  *             $element    Reference to the element
-  *             $parameter  The parameter.
-  *
-  * The function is very mighty. Only the passing of the function is kind of lame...
-  * So I used this function rarely since the code get's kind of unreadable (but short).
-  * You can find an example in showAllElementsOfType() above.
-  *
-  * @param $functionCode  Code to be exectued on each element.
-  * @param &$parameter    You can use $parameter in $functionCode.
-  *                                     example: ( adds the possible credits of the inputs )
-  *                                         $information = Array( "count" => 0, "sumPossibleCredits" => 0 );
-  *                                         $myRetVal .= $this->lab->showAllElementsOfTypePlus( "i", $fullAddress.".C".$this->labCollectionIdx, $lng->get("labTOCparagraph"), "\$parameter['count']++; \$parameter['sumPossibleCredits'] += \$element->possibleCredits;", $information );
-  */
-  function extMap( $functionCode, &$parameter ){
+  * Generator functions that returns all the elements of a collection (as an
+  * array that contains the identifier, e.g. p12, and a reference to the
+  * element)
+  * @param $withId        Array containing the element tyeps you are interested in (optional)
+   */
+  function simpleIterate($withId=false){
     $myVisEl = $this->getMyVisibleElements();
 
     foreach( $myVisEl as $value ){
      // load element
       $id = $value{0}; $num = substr( $value, 1 );
+      if ($withId && !in_array(strtolower($id), $withId))
+        continue; // no need to load that element
       require( "../php/getDBIbyID.inc" );
       $element = $DBI->getData2idx( $num, true, $this->isInLab );
-     // evaluate $functionCode
-      eval( $functionCode );
+      yield array($value, $element);
+    }
+  }
+
+  /**
+  * Generator functions that recursivley returns all subelements elements
+  * (array with identifier, reference, address and fragment) of a collection of
+  * a specific type
+  * @param $elId            type to look at
+  * @param $addrPrefix      address prefix (subaddresses will be appended)
+  * @param $fragmentPrefix  fragment prefix (subfragments will be appended)
+  * @param $pSmallC         only for internal use; keep track if parent element was a small c element
+   */
+  function deepIterate($elId, $addrPrefix="", $fragmentPrefix="", $pSmallC=false){
+    foreach ($this->simpleIterate(array("c", $elId)) as $data) {
+        list($value, $element) = $data;
+        if ($value{0} == $elId) {
+            array_push($data, $addrPrefix, $fragmentPrefix . "." . $value);
+            yield $data;
+        }
+        else { // must be c or C
+            $subAddrPrefix = ($pSmallC ? $addrPrefix : $addrPrefix . "." . $value);
+            foreach ($element->deepIterate($elId, $subAddrPrefix, $fragmentPrefix . "." . $value, ($value{0} == "c" ? true : false)) as $subData)
+                yield $subData;
+        }
     }
   }
 
@@ -917,4 +938,3 @@ class LcElement extends Element{
   }
 
 }
-?>

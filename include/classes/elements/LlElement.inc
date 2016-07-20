@@ -258,7 +258,7 @@ class LlElement extends Element{
 
     if ( !$this->preLabIsFinished && $this->userIsViewing ){ // the "check prelab" button
       $preLabCheckUpButton =  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l".$this->idx)."\">\n".
-                              "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab()\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
+                              "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
                               "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
                               "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n". // to check whether the call is valid
                               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
@@ -298,7 +298,7 @@ class LlElement extends Element{
        $myRetVal .= "<FORM class=\"labsys_mop_std_form\" NAME=\"closeLab\" METHOD=\"POST\" ACTION=\"".
                     $url->link2("../php/executeCommandOnElement.php?address=l".$this->idx).
                     "\">\n".
-                    "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"closeLabInputs()\">\n". // this function will statically be called by ../php/executeCommandOnElement.php
+                    "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"closeLabInputs\">\n". // this function will statically be called by ../php/executeCommandOnElement.php
                     "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
                     "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".   // to check whether the call is valid
                     "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
@@ -309,51 +309,13 @@ class LlElement extends Element{
                     ( $lng->get("labCloseNote") != '' ? "<div class=\"labsys_mop_note\">\n".$lng->get("labCloseNote")."</div>\n" : '');
 
    // The following is a slightly modified ( add amount of questions and their possibleCredits) of LcElement::showAllElementsOfType();
-    $parameter = Array( 'addr' => $fullAddress.".C".$this->labCollectionIdx,
-                        'paragraph' => $extParagraph,
-                        'myRetVal' => '',
-                        'count' => 0,
-                        'sumPossibleCredits' => 0,
-                        'alreadyInSum' => Array() ); // some inputs might be more than one time inside the collection...
-                                                     // p.e. I use an input for data that are reshown on a later page for comparison
-    $functionCode = "
-    \$elementAddr = ( \$parameter['addr'] != '' ?  \$parameter['addr'].'.'  : '' ).\$value;
-    \$elParagraph = ( \$parameter['paragraph'] != '' ?  \$parameter['paragraph'].'.'  : '' ).\$this->getParagraph( \$value );
-
-    if ( \$element->elementId == 'i'){
-      \$parameter['myRetVal'] .= \$element->show( \$elementAddr, \$elParagraph ); // If you pout this into the parantheses only the first appearance of an input is shown !
-      if ( !(in_array( \$value, \$parameter['alreadyInSum'] )) ){
-        array_push( \$parameter['alreadyInSum'], \$value ); // no double count
-        \$parameter['count']++;
-        \$parameter['sumPossibleCredits'] += \$element->possibleCredits;
-      }
-    }elseif ( (\$element->elementId == 'c') || (\$element->elementId == 'C') ){
-      // recursion
-      \$newParam = Array( 'addr' => \$elementAddr,
-                          'paragraph' => \$elParagraph,
-                          'myRetVal' => '',
-                          'count' => 0,
-                          'sumPossibleCredits' => 0,
-                          'alreadyInSum' => \$parameter['alreadyInSum'] ); // no double count
-      \$element->extMap( \$functionCode, \$newParam );
-      \$parameter['alreadyInSum'] = \$newParam['alreadyInSum'];
-      \$parameter['count'] += \$newParam['count'];
-      \$parameter['sumPossibleCredits'] += \$newParam['sumPossibleCredits'];
-      if ( \$newParam['myRetVal'] != '' )
-        \$parameter['myRetVal'] .=  \"<div class=\\\"labsys_mop_contentArea\\\">\\n\".
-                                    // header inclusive link to the enclosing element (this)
-                                    '<div class=\"labsys_mop_h2\"><a href=\"'.str_replace( array('&#x005F;','&amp;'), array('_', '&'), EB::getLink2ElementURL( \$elementAddr ) ).'\">'.( \$elParagraph != '' ?  \$elParagraph.'. '  : '' ).\$element->title.'</a> '.EB::link2Element( \$elementAddr ).\"</div>\\n\".
-                                    \"</div>\\n\".
-                                    \$newParam['myRetVal'];
-    }";
-
-    $this->lab->extMap( $functionCode, $parameter );
+    $parameter = $this->lab->showAllElementsOfType("i", $fullAddress.".C".$this->labCollectionIdx, $extParagraph, true);
 
     return "<div class=\"labsys_mop_l_all_inputs_stats\">\n".
            "[".$parameter['count']." ".$lng->get("inputs")."; ".$parameter['sumPossibleCredits']." ".$lng->get("Credits")."]".
            "</div>\n".
            $myRetVal.
-           $parameter['myRetVal'];
+           $parameter['retVal'];
   }
 
   /**
@@ -543,7 +505,7 @@ class LlElement extends Element{
             ){
           global $urDBI;
           $ur = $urDBI->getData4( $labStatus['uid'] );
-          $myRetVal .= " <a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reMapUidTeam&param=".urlencode( "\"".$labStatus['uid']."\", ".$ur['currentTeam'] )."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">".
+          $myRetVal .= " <a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reMapUidTeam&param0=".urlencode($labStatus['uid'])."&param1=".urlencode($ur['currentTeam'])."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">".
                        "<img src=\"../syspix/reMapUsr_26x12.gif\" width=\"26\" height=\"12\" border=\"0\" title=\"".$lng->get("reMapUsrTo")." ".$ur['currentTeam']."\">".
                        "</a>";
         }
@@ -563,42 +525,19 @@ class LlElement extends Element{
 
         // <Collect the references to all i-elements for click to jump to the question>
       if (!empty($labStatus['whichCorrected']) || !empty($labStatus['detailedCredits'])){
-        $element = $lDBI->getData2idx( $labStatus['lIdx'] );
-        $parameter = Array( 'currentPage' => 'l'.$element->idx.'.C'.$element->labCollectionIdx,
-            'currentFragment' => '#l'.$element->idx.'.C'.$element->labCollectionIdx,
-            'iElementLinks' => Array(),
-            'iElementTitles' => Array(),
-            'myParentIsASmallc' => false,
-            'alreadyInSum' => Array());// some inputs might be more than one time inside the collection...
-        // p.e. I use an input for data that are reshown on a later page for comparison
-        $element->lab->extMap( "if ( (\$element->elementId == 'i') && !(in_array( \$element->idx, \$parameter['alreadyInSum'] )) ){
-                              array_push( \$parameter['alreadyInSum'], \$element->idx ); // no double count
-                              array_push( \$parameter['iElementLinks'], \$parameter['currentPage'].\$parameter['currentFragment'].'.i'.\$element->idx);
-                              array_push( \$parameter['iElementTitles'], \$element->title );
-                          }".
-            "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ){
-                              \$oldcurrentPage = \$parameter['currentPage'];
-                              \$oldFragment = \$parameter['currentFragment'];
-                              \$oldParentSmallc = \$parameter['myParentIsASmallc'];
-                              \$parameter['currentFragment'] .= '.'.\$element->elementId.\$element->idx;
-                              if (!\$parameter['myParentIsASmallc']){
-                                \$parameter['currentPage'] .= '.'.\$element->elementId.\$element->idx;
-                              }
-                              if (\$element->elementId == 'c'){
-                                \$parameter['myParentIsASmallc'] = true;
-                              }
-
-                              \$element->extMap( \$functionCode, \$parameter );
-
-                              \$parameter['currentPage'] = \$oldcurrentPage;
-                              \$parameter['currentFragment'] = \$oldFragment;
-                              \$parameter['myParentIsASmallc'] = \$oldParentSmallc;
-                          }", // recurse
-                                  $parameter );
-
-        $iElementLinks = $parameter['iElementLinks'];
-        $iElementTitles = $parameter['iElementTitles'];
+        $base = $lDBI->getData2idx( $labStatus['lIdx'] );
+        $currentPage = 'l'.$base->idx.'.C'.$base->labCollectionIdx;
+        $iElementLinks = array();
+        $iElementTitles = array();
+        $alreadyInSum = array();
+        foreach ($base->lab->deepIterate('i', $currentPage, '#' . $currentPage) as list($value, $element, $addr, $fragment)) {
+          if (!array_key_exists($value, $alreadyInSum)) {
+              $alreadyInSum[$value] = true;
+              array_push($iElementLinks, $addr . $fragment);
+              array_push($iElementTitles, $element->title);
+          }
         }
+      }
         // </ Collect the references to all i-elements for click to jump to the question>
        // Use the backlinks to the questions from the cache...
         if ( $labStatus['labClosed'] && !$labStatus['labCorrected'] && ($labStatus['whichCorrected'] != "") &&
@@ -653,7 +592,7 @@ class LlElement extends Element{
                                          $labStatus['labClosed'] &&
                                          $this->isInSched
                                         ) ?
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reOpenAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
+                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reOpenAllLabInputs&param0=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
                                         : '' ).
                   // close lab
                      ( !$open && ($open = ($usr->isOfKind( IS_CORRECTOR ) &&
@@ -661,7 +600,7 @@ class LlElement extends Element{
                                                     !$labStatus['labClosed'] /* &&
                                                     !$this->isInSched always allow closing */)
                                                    ) ?
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=closeAllLabInputs&param=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
+                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=closeAllLabInputs&param0=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
                                                    : '' ).
                      " <img src=\"../syspix/button_lock_".
                      ( $labStatus['labClosed'] ?  "closed" :  "open"  ).
@@ -918,7 +857,7 @@ class LlElement extends Element{
                       "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
                       "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
                       "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
-                      "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"updateStatus()\">\n".
+                      "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"updateStatus\">\n".
                       "<input tabindex=\"".$pge->nextTab++."\"
                                type=\"submit\"
                                class=\"labsys_mop_button_fullwidth\"
@@ -1240,7 +1179,7 @@ class LlElement extends Element{
         );
      return EM::editTopLab( $this, $fullAddress ).
             "<FORM  enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"labEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l")."\">\n".
-            "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save()\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
+            "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".   // to check whether the call is valid            "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n". // index of saved el. will be added on save.php!
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
             "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php^
@@ -1703,31 +1642,29 @@ class LlElement extends Element{
 
     if( $this->preLabIsVisible2Me && !$this->preLabIsFinished ){
    // Are all multiple choice questions answered (->LmElement)?
-    $parameter = Array( 'allPreLabAnswered' => true,
-                        'givenCredits' => 0,
-                        'possibleCredits' => 0,
-                        'numberOfPrelabMC' => 0 );
+    $allPreLabAnswered = true;
+    $givenCredits = 0;
+    $possibleCredits = 0;
+    $numberOfPrelabMC = 0;
 
-    $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
-                              "\$parameter['numberOfPrelabMC']+=1;".
-                              "\$element->loadUserData4( '".$usr->uid."' ); ".
-                              "if ( \$parameter[ 'allPreLabAnswered' ] &= \$element->checkUserAnswer() ){ ". // check the answer (if not closed this adds an attempt!).
-                                "\$parameter[ 'givenCredits' ] += \$element->getGivenCredits();".
-                              "}".
-                              "\$parameter[ 'possibleCredits' ] += \$element->getPossibleCredits();".
-                            "}".
-                            "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                            $parameter );
+    foreach ($this->preLab->deepIterate("m") as list( , $element)) {
+        $numberOfPrelabMC += 1;
+        $element->loadUserData4($usr->uid);
+        if ($allPreLabAnswered &= $element->checkUserAnswer()) {
+            $givenCredits += $element->getGivenCredits();
+        }
+        $possibleCredits += $element->getPossibleCredits();
+    }
 
-      if( $parameter[ 'allPreLabAnswered' ] ){
+      if( $allPreLabAnswered ){
 
          // create my dataset
           $this->usDBI->setData4( $usr->uid,                        // $uid
                                   $usr->currentTeam,                // $currentTeam
                                   true,                             // $prelabFinished
-                                  $parameter[ 'givenCredits' ],     // $prelabGivenCredits
-                                  $parameter[ 'possibleCredits' ],  // $prelabPossibleCredits
-                                  ($parameter[ 'numberOfPrelabMC' ] == 0), // $prelabAllTeammembersFinished
+                                  $givenCredits,                    // $prelabGivenCredits
+                                  $possibleCredits,                 // $prelabPossibleCredits
+                                  ($numberOfPrelabMC == 0),         // $prelabAllTeammembersFinished
                                   false,                            // $labClosed
                                   false,                            // $labCorrected
                                   "",                               // $whichCorrected
@@ -1803,23 +1740,6 @@ class LlElement extends Element{
   }
 
   /**
-  * Called by ../php/executeOnLab.php.
-  * Acquires the lock not taking care of any existing locks.
-  *
-  * @param $i_idx         The index of the input the lock should get acquired on.
-  * @param $fullAddress   The element's full address (p.e. l23.C42.i17)
-  */
-  static function forceLockOn( $i_idx, $fullAddress ){
-    global $url;
-
-    $element = $GLOBALS[ 'iDBI' ]->getData2idx( $i_idx );
-    $element->acquireLock4( $fullAddress );
-
-    // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
-  }
-
-  /**
   * Closes all lab inputs. The function below has this function's name
   * because it gets called via url...
   *
@@ -1829,16 +1749,14 @@ class LlElement extends Element{
     global $lng, $usr;
    // close all lab inputs:
    // also reMap all inputs  (necessary for users that never entered a question (done together).
-    $parameter = Array(); //teamUIDs
+    $teamUIDs = Array();
     $this->usDBI->getAllTeamData( $team );
-    while( ($labStatus = $this->usDBI->getNextData()) ) array_push( $parameter, $labStatus['uid'] );
+    while( ($labStatus = $this->usDBI->getNextData()) ) array_push( $teamUIDs, $labStatus['uid'] );
 
-    $this->lab->extMap( "if ( \$element->elementId == 'i' ){
-                           \$element->closeInput( ".$team." ); // close the input.
-                           foreach( \$parameter as \$uidVal ) \$element->mapInput( \$uidVal, ".$team." ); // map UID->Team.
-                        }".
-                        "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                        $parameter );
+    foreach ($this->lab->deepIterate("i") as list( , $element)) {
+        $element->closeInput( $team ); // close the input.
+        foreach( $teamUIDs as $uidVal ) $element->mapInput( $uidVal, $team ); // map UID->Team.
+    }
 
     if ( !$labStatus['labClosed'] ){ // Status changed?
       $this->usDBI->closeLab( $team, $lng->get("labClosed") );
@@ -1894,10 +1812,8 @@ class LlElement extends Element{
     global $usr, $lng, $url;
 
    // reOpen all lab inputs
-    $dummy = false;
-    $this->lab->extMap( "if ( \$element->elementId == 'i' ) \$element->reOpenInput( ".$team." );". // reOpen the input.
-                        "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                        $dummy );
+    foreach ($this->lab->deepIterate("i") as list( , $element))
+        $element->reOpenInput($team); // reOpen the input.
 
     $this->usDBI->reOpenLab( $team, $lng->get("labReOpened") );
 
@@ -1918,10 +1834,8 @@ class LlElement extends Element{
   */
   function mapAllLabInputs( $uid, $team ){
    // remap all lab inputs:
-    $dummy = false;
-    $this->lab->extMap( "if ( \$element->elementId == 'i' ) \$element->mapInput( '".$uid."', '".$team."' );". // reMap UID->Team.
-                        "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                        $dummy );
+    foreach ($this->lab->deepIterate("i") as list( , $element))
+        $element->mapInput($uid, $team); // reMap UID->Team.
 
     $labStatus = $this->usDBI->getData4( $uid );
     if ( $labStatus['labClosed'] ) // if the lab is closed the input has to be closed too.
@@ -2004,58 +1918,48 @@ class LlElement extends Element{
 //    This is extremly performant because it touches each input only once!
 //    The previous "normal" iteration took about three times longer...
    // iterate over statistics
-    $parameter = Array(); // all teams
+    $teams = Array(); // all teams
     $this->usDBI->getAllData( "current_team" );
     while( ($labStatus = $this->usDBI->getNextData()) )
-      if ( !(in_array( $labStatus['currentTeam'], $parameter ) ) )
-        array_push( $parameter, $labStatus['currentTeam'] );
-      array_push( $parameter, 'alreadyInSum' ); // takes the indices of the inputs so that none is handled twice...
-
-   // flip keys and values
-    $parameter = array_flip( $parameter );
-
-   // fill with empty containers
-    foreach ( array_keys($parameter) as $val )
-      if ( $val != 'alreadyInSum' ) $parameter[$val] = Array( 'areAllClosed' => true,
-                                                              'areAllCorrected' => true,
-                                                              'correctedString' => "",
-                                                              'detailedCredits' => Array(),
-                                                              'sumGivenCredits' => 0,
-                                                              'sumPossibleCredits' => 0 );
-
-    $parameter['alreadyInSum'] = Array(); // some inputs might be more than one time inside the collection...
-                                          // p.e. I use an input for data that are reshown on a later page for comparison
+      if ( !(array_key_exists( $labStatus['currentTeam'], $teams ) ) )
+          $teams[$labStatus['currentTeam']] = Array('areAllClosed' => true,
+                                                   'areAllCorrected' => true,
+                                                   'correctedString' => "",
+                                                   'detailedCredits' => Array(),
+                                                   'sumGivenCredits' => 0,
+                                                   'sumPossibleCredits' => 0 );
+    $alreadyInSum = Array(); // some inputs might be more than one time inside the collection...
+                             // p.e. I use an input for data that are reshown on a later page for comparison
 
    // check all lab inputs and close them if necessary
-      $this->lab->extMap( "if ( (\$element->elementId == 'i') && !(in_array( \$element->idx, \$parameter['alreadyInSum'] )) ){
-                              array_push( \$parameter['alreadyInSum'], \$element->idx ); // no double count
-                              foreach( \$parameter as \$mKey => \$mValue ){
-                                if ( \$mKey == 'alreadyInSum' ) continue; // jump over
-                                \$element->loadUserData4( \$mKey );
-                                if ( !\$element->isClosed && ".( $is2bClosed ?  'true' :  'false'  )." ) \$element->closeInput( \$mKey ); // if necessary close labinput
-                                \$parameter[\$mKey]['areAllClosed']       &= \$element->isClosed;
-                                \$parameter[\$mKey]['areAllCorrected']    &= \$element->isCorrected;
-                                \$parameter[\$mKey]['correctedString']    .= ( \$element->isCorrected ?  't' :  'f'  );
-                                if ( \$element->isCorrected ){ // only add points of corrected
-                                    \$parameter[\$mKey]['sumGivenCredits']  += \$element->getGivenCredits();
-                                }
-                                array_push(\$parameter[\$mKey]['detailedCredits'], \$element->getGivenCredits().'/'.\$element->getPossibleCredits());
-                                \$parameter[\$mKey]['sumPossibleCredits'] += \$element->getPossibleCredits();
-                              }
-                          }".
-                          "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-                          $parameter );
+    foreach ($this->lab->deepIterate('i') as list($index , $element)) {
+        if (!array_key_exists($index, $alreadyInSum)) {
+            $alreadyInSum[$index] = true;
+            foreach ($teams as $team => &$teamData) {
+                $element->loadUserData4($team);
+                if (!$element->isClosed && $is2bClosed) $element->closeInput($team); // if necessary close labinput
+                $teamData['areAllClosed']    &= $element->isClosed;
+                $teamData['areAllCorrected'] &= $element->isCorrected;
+                $teamData['correctedString'] .= ($element->isCorrected ?  't' :  'f');
+                if ($element->isCorrected) // only add points of corrected
+                    $teamData['sumGivenCredits']  += $element->getGivenCredits();
+                array_push($teamData['detailedCredits'], $element->getGivenCredits() . "/" . $element->getPossibleCredits());
+                $teamData['sumPossibleCredits'] += $element->getPossibleCredits();
+            }
+            unset($teamData);
+        }
+    }
 
     // iterate over statistics
     $this->usDBI->getAllData( "current_team" );
     while( ($labStatus = $this->usDBI->getNextData()) ){
        // changes?
-        $detailedCredits=implode(';',$parameter[$labStatus['currentTeam']]['detailedCredits']);
-        if ( ($labStatus['labClosed']          != $parameter[$labStatus['currentTeam']]['areAllClosed']) || // might happen after remapping...
-             ($labStatus['labCorrected']       != $parameter[$labStatus['currentTeam']]['areAllCorrected']) ||
-             ($labStatus['labGivenCredits']    != $parameter[$labStatus['currentTeam']]['sumGivenCredits']) ||
-             ($labStatus['labPossibleCredits'] != $parameter[$labStatus['currentTeam']]['sumPossibleCredits']) ||
-             ($labStatus['whichCorrected'] != $parameter[$labStatus['currentTeam']]['correctedString']) ||
+        $detailedCredits=implode(';',$teams[$labStatus['currentTeam']]['detailedCredits']);
+        if ( ($labStatus['labClosed']          != $teams[$labStatus['currentTeam']]['areAllClosed']) || // might happen after remapping...
+             ($labStatus['labCorrected']       != $teams[$labStatus['currentTeam']]['areAllCorrected']) ||
+             ($labStatus['labGivenCredits']    != $teams[$labStatus['currentTeam']]['sumGivenCredits']) ||
+             ($labStatus['labPossibleCredits'] != $teams[$labStatus['currentTeam']]['sumPossibleCredits']) ||
+             ($labStatus['whichCorrected'] != $teams[$labStatus['currentTeam']]['correctedString']) ||
              ($labStatus['detailedCredits'] != $detailedCredits)
             ){ // yes -> save them.
               $this->usDBI->setData4( $labStatus['uid'],
@@ -2064,15 +1968,15 @@ class LlElement extends Element{
                                       $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
                                       $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
                                       $labStatus['preLabAllTeammFinished'],
-                                      $parameter[$labStatus['currentTeam']]['areAllClosed'],
-                                      $parameter[$labStatus['currentTeam']]['areAllCorrected'],
-                                      $parameter[$labStatus['currentTeam']]['correctedString'],
-                                      $parameter[$labStatus['currentTeam']]['sumGivenCredits'],
-                                      $parameter[$labStatus['currentTeam']]['sumPossibleCredits'],
+                                      $teams[$labStatus['currentTeam']]['areAllClosed'],
+                                      $teams[$labStatus['currentTeam']]['areAllCorrected'],
+                                      $teams[$labStatus['currentTeam']]['correctedString'],
+                                      $teams[$labStatus['currentTeam']]['sumGivenCredits'],
+                                      $teams[$labStatus['currentTeam']]['sumPossibleCredits'],
                                       $detailedCredits,
                                       $lng->get("statusUpdated") ); // create my dataset
 
-          if ($parameter[$labStatus['currentTeam']]['areAllCorrected'] &&
+          if ($teams[$labStatus['currentTeam']]['areAllCorrected'] &&
               !$labStatus['labCorrected'] //and it was not corrected before
              ){
             $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabCorrected, $labStatus['currentTeam']);
@@ -2110,24 +2014,21 @@ class LlElement extends Element{
     while( ($labStatus = $this->usDBI->getNextData()) ){
 
       // Are all multiple choice questions answered (->LmElement)?
-      $parameter2 = Array( 'allPreLabAnswered' => true,
-          'givenCredits' => 0,
-          'possibleCredits' => 0,
-          'numberOfPrelabMC' => 0 );
+      $allPreLabAnswered = true;
+      $givenCredits = 0;
+      $possibleCredits = 0;
+      $numberOfPrelabMC = 0;
 
-      $this->preLab->extMap(  "if ( \$element->elementId == 'm' ){ ".
-          "\$parameter['numberOfPrelabMC']+=1;".
-          "\$element->loadUserData4( '".$labStatus['uid']."' ); ".
-          "if ( \$parameter[ 'allPreLabAnswered' ] &= \$element->checkUserAnswer() ){ ". // check the answer (if not closed this adds an attempt!).
-          "\$parameter[ 'givenCredits' ] += \$element->getGivenCredits();".
-          "}".
-          "\$parameter[ 'possibleCredits' ] += \$element->getPossibleCredits();".
-          "}".
-          "else if ( (\$element->elementId == 'C') || (\$element->elementId == 'c') ) \$element->extMap( \$functionCode, \$parameter );", // recurse
-          $parameter2 );
+      foreach ($this->preLab->deepIterate('m') as list( , $element)) {
+          $numberOfPrelabMC += 1;
+          $element->loadUserData4($labStatus['uid']);
+          if ($allPreLabAnswered &= $element->checkUserAnswer()) // check the answer (if not closed this adds an attempt!).
+              $givenCredits += $element->getGivenCredits();
+          $possibleCredits += $element->getPossibleCredits();
+      }
 
     // check DURING and after 1st schedule if all teammates finished to set this status correctly:
-    $prelabFinishedByTeam = ($parameter2['numberOfPrelabMC'] == 0) || // no questions
+    $prelabFinishedByTeam = ($numberOfPrelabMC == 0) || // no questions
                             ( // if it is running do a check
                                 ($this->isInSched || $this->visibleBefore1stSched) &&
                                 $this->isPrelabFinishedByAllCurrentTeammates( $labStatus['currentTeam'] )
@@ -2141,15 +2042,15 @@ class LlElement extends Element{
             $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lPreLabFinished, $labStatus['currentTeam']);
     }
 
-//echo( $parameter2['givenCredits'].'/ '.$parameter2['possibleCredits'].'<br>' );
+//echo( $givenCredits.'/ '.$possibleCredits.'<br>' );
        // changes?
         //if ( true// $labStatus['preLabPossibleCredits'] == 0
         //    ) // yes -> save them.
               $this->usDBI->setData4( $labStatus['uid'],
                                       $labStatus['currentTeam'],
-                                      $parameter2['allPreLabAnswered'], // $labStatus['preLabFinished'],
-                                      $parameter2['givenCredits'], // $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
-                                      $parameter2['possibleCredits'], // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
+                                      $allPreLabAnswered, // $labStatus['preLabFinished'],
+                                      $givenCredits, // $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
+                                      $possibleCredits, // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
                                       $prelabFinishedByTeam, // $labStatus['preLabAllTeammFinished'],
                                       $labStatus['labClosed'],
                                       $labStatus['labCorrected'],

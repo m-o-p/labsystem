@@ -40,15 +40,12 @@ require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0}; $num = substr( 
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
 // functionName => callerRestriction
-  $allowedFunctions = Array( "forceLockOn" => IS_USER,              // sets the lock not taking respect of an existing lock
-                             "setSeeingUID" => IS_CORRECTOR,        // sets the observed UID (for correctors).
-                             "reOpenAllLabInputs" => IS_CORRECTOR,
+  $allowedFunctions = Array( "reOpenAllLabInputs" => IS_CORRECTOR,
                              "closeAllLabInputs" => IS_CORRECTOR,
                              "reMapUidTeam" => IS_USER_RIGHTS_EDITOR
                             );
 
-if ( !( $GLOBALS['url']->available('param') && 
-        $GLOBALS['url']->available('function') &&
+if ( !( $GLOBALS['url']->available('function') &&
         $GLOBALS['url']->available('redirectTo') &&
         array_key_exists( $GLOBALS['url']->get('function'), $allowedFunctions ) && 
         $usr->isOfKind( $allowedFunctions[$GLOBALS['url']->get('function')] ) // retriction fulfilled?
@@ -57,11 +54,19 @@ if ( !( $GLOBALS['url']->available('param') &&
         trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
         exit;
       }
-       
+
 if ( !$element = $DBI->getData2idx( $num ) ){
                                               trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
                                               exit;
                                              }
 
-eval( '$element->'.$GLOBALS['url']->get('function')."( ".stripslashes( $GLOBALS['url']->get('param') )." );" );
+// assemble the parameters
+$param_arr = array();
+$counter = 0;
+while ( $GLOBALS['url']->available('param'. $counter) ) {
+    array_push($param_arr, $GLOBALS['url']->get('param'. $counter));
+    $counter++;
+}
+call_user_func_array(array($element, $GLOBALS['url']->get('function')), $param_arr);
+
 ?>

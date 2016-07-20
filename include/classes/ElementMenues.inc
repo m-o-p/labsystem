@@ -452,34 +452,22 @@ class EM{ /* ElementMenues */
   }
 
   /**
-  * The following functions return the elements' manage rows.
+  * The following function returns the elements' manage rows.
   * @param &$e?   A reference to the element the row is for.
   * @return       The html code of the menu.
   */
-  static function manageRow_p( &$eP ){
-    return EM::manageRowStandard( $eP, "p" );
-  }
-
-  static function manageRow_m( &$eMC ){
-    return EM::manageRowStandard( $eMC, "m" );
-  }
-
-  static function manageRow_i( &$eI ){
-    return EM::manageRowStandard( $eI, "i" );
-  }
-
-  static function manageRow_s( &$eS ){
-    return EM::manageRowStandard( $eS, "s" );
-  }
-
-  static function manageRow_l( &$eL ){
-    return EM::manageRowStandard( $eL, "l" );
+  static function manageRow( &$theEl ){
+    $elShortcut = $this->elementId;
+    if (strtolower($elShortcut) == "c") {
+      return EM::manageRow_c( $theEl );
+    }
+    return EM::manageRowStandard( $theEl, $elShortcut );
   }
 
   /**
   * The collection adds the "view structure" button.
   */
-  static function manageRow_C( &$eC ){ /* one row on the overview page */
+  static function manageRow_c( &$eC ){ /* one row on the overview page */
     global $lng, $url;
     return  //EB::viewStructure(  "c".$eC->idx ).
             EB::history( $eC->history, "c".$eC->idx ).
@@ -511,29 +499,17 @@ class EM{ /* ElementMenues */
   }
 
   /**
-  * The following functions return the elements' collection overview rows.
+  * The following function returns the elements' collection overview rows.
   * @param &$e?   A reference to the element the row is for.
   * @param $fullAddress   The element's full address.
   * @return       The html code of the menu.
   */
-  static function collectionRow_p( &$eP, $fullAddress ){
-    return EM::collectionRowStandard( $eP, $fullAddress, "p" );
-  }
-
-  static function collectionRow_m( &$eMC, $fullAddress ){
-    return EM::collectionRowStandard( $eMC, $fullAddress, "m" );
-  }
-
-  static function collectionRow_i( &$eI, $fullAddress ){
-    return EM::collectionRowStandard( $eI, $fullAddress, "i" );
-  }
-
-  static function collectionRow_s( &$eS, $fullAddress ){
-    return EM::collectionRowStandard( $eS, $fullAddress, "s" );
-  }
-
-  static function collectionRow_l( &$eL, $fullAddress ){
-    return EM::collectionRowStandard( $eL, $fullAddress, "l" );
+  static function collectionRow( &$theEl, $fullAddress ){
+    $elShortcut = $this->elementId;
+    if (strtolower($elShortcut) == "c") {
+      return EM::collectionRow_c( $theEl, $fullAddress );
+    }
+    return EM::collectionRowStandard( $eP, $fullAddress, $elShortcut );
   }
 
   /**
