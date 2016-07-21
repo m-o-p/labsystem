@@ -505,11 +505,11 @@ class EM{ /* ElementMenues */
   * @return       The html code of the menu.
   */
   static function collectionRow( &$theEl, $fullAddress ){
-    $elShortcut = $this->elementId;
+    $elShortcut = $theEl->elementId;
     if (strtolower($elShortcut) == "c") {
       return EM::collectionRow_c( $theEl, $fullAddress );
     }
-    return EM::collectionRowStandard( $eP, $fullAddress, $elShortcut );
+    return EM::collectionRowStandard( $theEl, $fullAddress, $elShortcut );
   }
 
   /**
