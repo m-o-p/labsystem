@@ -1107,7 +1107,8 @@ class LiElement extends Element{
     global $usr, $lng;
     $this->loadUserData4( $teamNumber );
     $this->removeLock();
-    if (!$this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, true, false, $lng->get("closesInput")."\n".$this->answerHistory  );
+//                                                      $team, $iIdx,      $answer="",        $givenCredits="0",   $comment="",          $correctorsNote='', $closed=false, $corrected=false, $history = ""
+    if (!$this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, true, $this->isCorrected, $lng->get("closesInput")."\n".$this->answerHistory  );
     $this->isClosed = true;
     $this->isCorrected = false;
     //makeLogEntry( 'i', 'closed', 'i'.$this->idx );
