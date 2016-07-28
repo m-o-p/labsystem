@@ -385,7 +385,7 @@ comment             = "Kommentar"
 ;many
 properties          = "Eigenschaften"
 visibility          = "Sichtbarkeit"
-visOnlyInColl       = "<b>nur innerhalb einer Collection</b> sichtbar"
+visOnlyInColl       = "<b>nur innerhalb eines Lab</b> sichtbar"
 visAlways           = "immer sichtbar"
 visibleFor          = "Die Seite ist sichtbar f&uuml;r Benutzer mit folgenden <b>Rechten</b>:"
 

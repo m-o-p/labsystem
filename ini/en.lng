@@ -384,7 +384,7 @@ comment             = "comment"
 ;many
 properties          = "properties"
 visibility          = "visibility"
-visOnlyInColl       = "will <b>only</b> be visible <b>inside</b> a <b>collection</b>"
+visOnlyInColl       = "will <b>only</b> be visible <b>inside</b> a <b>lab</b>"
 visAlways           = "will be visible"
 visibleFor          = "To <b>view</b> the page the user has to have set the following <b>rights</b>:"
 
