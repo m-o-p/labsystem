@@ -509,7 +509,7 @@ class LmElement extends Element{
                   "</div>\n".
                   "<div>".
                     "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
-                    "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInColl")."</label>".
+                    "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInLab")."</label>".
                   "</div>\n".
                 "</fieldset>\n".
               "</td><td valign=\"top\" width=\"60%\">\n".
@@ -718,12 +718,12 @@ class LmElement extends Element{
              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled>".
                 infoArrow( $lng->get("visAlways"), false ).
                 "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" checked=\"checked\">".
-                infoArrow( $lng->get("visOnlyInColl") ).
-                $lng->get("visOnlyInColl")."<br>\n";
+                infoArrow( $lng->get("visOnlyInLab") ).
+                $lng->get("visOnlyInLab")."<br>\n";
 
     // rights
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1){
-      $lgnd .= "<input type=\"radio\" disabled>".infoArrow( $lng->get("visAlways"), true )."<input type=\"radio\" disabled>".infoArrow( $lng->get("visOnlyInColl"), true )." | ";
+      $lgnd .= "<input type=\"radio\" disabled>".infoArrow( $lng->get("visAlways"), true )."<input type=\"radio\" disabled>".infoArrow( $lng->get("visOnlyInLab"), true )." | ";
       for ($j=1; $j<$i; $j=$j<<1) $lgnd .= '<input type="checkbox" disabled>'.infoArrow( $lng->get("Explain_UR_".$j), true )/* ."\n" saves space! */;
       $lgnd .= rightsBox( "legend_".$i, $i, $i )." ".$lng->get("Explain_UR_".$i)."<br>\n";
     }
@@ -745,7 +745,7 @@ class LmElement extends Element{
     return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visAlways"), $disabled ).
               "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
-              infoArrow( $lng->get("visOnlyInColl"), $disabled ).
+              infoArrow( $lng->get("visOnlyInLab"), $disabled ).
             ( $disabled ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
             " | ".
             ( $disabled ?  "</span>"  : '' ).

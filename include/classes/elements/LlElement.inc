@@ -1233,7 +1233,7 @@ class LlElement extends Element{
                     "</div>\n".
                     "<div>".
                       "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
-                      "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInColl")."</label>".
+                      "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInLab")."</label>".
                     "</div>\n".
                   "</fieldset>\n".
               "</td><td valign=\"top\" width=\"67%\">\n".
@@ -1536,13 +1536,13 @@ class LlElement extends Element{
             "<input type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled=\"disabled\">".
             infoArrow( $lng->get("visAlways"), true ).
             "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" checked=\"checked\">".
-            infoArrow( $lng->get("visOnlyInColl") ).
-            $lng->get("visOnlyInColl")."<br />\n".
+            infoArrow( $lng->get("visOnlyInLab") ).
+            $lng->get("visOnlyInLab")."<br />\n".
 
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled=\"disabled\">".
             infoArrow( $lng->get("visAlways"), true ).
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" disabled=\"disabled\">".
-            infoArrow( $lng->get("visOnlyInColl"), true ).
+            infoArrow( $lng->get("visOnlyInLab"), true ).
           " | ".
             "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend3_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\" checked=\"checked\">".
             infoArrow( $lng->get("visibleBef1stSched") ).
@@ -1551,7 +1551,7 @@ class LlElement extends Element{
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled=\"disabled\">".
             infoArrow( $lng->get("visAlways"), true ).
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" disabled=\"disabled\">".
-            infoArrow( $lng->get("visOnlyInColl"), true ).
+            infoArrow( $lng->get("visOnlyInLab"), true ).
           " | ".
            // schedule issues
             "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend4_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\" disabled=\"disabled\">".
@@ -1563,7 +1563,7 @@ class LlElement extends Element{
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled=\"disabled\">".
             infoArrow( $lng->get("visAlways"), true ).
             "<input type=\"radio\" name=\"legend2a_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" disabled=\"disabled\">".
-            infoArrow( $lng->get("visOnlyInColl"), true ).
+            infoArrow( $lng->get("visOnlyInLab"), true ).
           " | ".
             "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" name=\"legend5_VISIBLE_BEFORE_FIRST_SCHED\" value=\"1\" disabled=\"disabled\">".
             infoArrow( $lng->get("visibleBef1stSched"), true ).
@@ -1588,7 +1588,7 @@ class LlElement extends Element{
     return    "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
               infoArrow( $lng->get("visAlways"), $disabled ).
               "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
-              infoArrow( $lng->get("visOnlyInColl"), $disabled ).
+              infoArrow( $lng->get("visOnlyInLab"), $disabled ).
             ( $disabled ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
             " | ".
            // schedule issues
