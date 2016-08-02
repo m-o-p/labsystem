@@ -457,7 +457,7 @@ class EM{ /* ElementMenues */
   * @return       The html code of the menu.
   */
   static function manageRow( &$theEl ){
-    $elShortcut = $this->elementId;
+    $elShortcut = $theEl->elementId;
     if (strtolower($elShortcut) == "c") {
       return EM::manageRow_c( $theEl );
     }
