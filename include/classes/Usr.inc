@@ -192,10 +192,10 @@ class Usr extends ElementUser{
         $userData['foreName'] = $lng->get("unknown");
         $userData['userName'] = $lng->get("unknown");
         $userData['eMail'] = 'me@unknown.tld';
-      }else{
-        $userData['name'] = ( $url->available('pseudoNames') ? randomName():$userData['name'] );
-        $userData['foreName'] = ( $url->available('pseudoNames') ? randomName():$userData['foreName']);
-        $userData['userName'] = ( $url->available('pseudoNames')? randomName():$userData['userName'] );
+      } else if ($url->available('pseudoNames')) {
+        $userData['name'] = randomName();
+        $userData['foreName'] = randomName();
+        $userData['userName'] = randomName();
       }
       return $userData;
     }
