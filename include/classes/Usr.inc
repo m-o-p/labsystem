@@ -66,10 +66,6 @@ class Usr extends ElementUser{
   	$this->uid                      = $uid;
   	$this->currentTeam              = $instanceData['currentTeam'];
   	$this->userRights               = $instanceData['enabledRights'];
-  	// The config specified user rights editor gets those rights for bootstrapping:
-  	if ($cfg->get('RightsAdminUsername') == $this->userName){
-  		$this->userRights =  $this->userRights | intval(IS_USER_RIGHTS_EDITOR);
-  	}
   	$this->userMaximumRights        = $instanceData['rights'];
   	$this->history 			        = $instanceData['history'];
 
@@ -90,6 +86,11 @@ class Usr extends ElementUser{
   	// The maximum rights might have changed in the meantime...
   	if ($this->userRights > $this->userMaximumRights){
   		$this->userRights = $this->userMaximumRights; // ensure never to have more rights than currently allowed.
+  	}
+
+  	// The config specified user rights editor gets those rights for bootstrapping:
+  	if ($cfg->get('RightsAdminUsername') == $this->userName){
+  		$this->userRights =  $this->userRights | intval(IS_USER_RIGHTS_EDITOR);
   	}
   	
   	// Initialize them...
@@ -191,10 +192,10 @@ class Usr extends ElementUser{
         $userData['foreName'] = $lng->get("unknown");
         $userData['userName'] = $lng->get("unknown");
         $userData['eMail'] = 'me@unknown.tld';
-      }else{
-        $userData['name'] = ( $url->available('pseudoNames') ? randomName():$userData['name'] );
-        $userData['foreName'] = ( $url->available('pseudoNames') ? randomName():$userData['foreName']);
-        $userData['userName'] = ( $url->available('pseudoNames')? randomName():$userData['userName'] );
+      } else if ($url->available('pseudoNames')) {
+        $userData['name'] = randomName();
+        $userData['foreName'] = randomName();
+        $userData['userName'] = randomName();
       }
       return $userData;
     }

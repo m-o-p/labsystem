@@ -187,7 +187,7 @@ class LcElement extends Element{
 
       // only enumerate if shown separately (otherwhise each m element etc. has a number...).
        if ( $allSeparate ||
-            $id == "i" || $id == "m"// so the i and m elements get numbered
+            $id == "i" || $id == "m" || strtolower($id) == "c" // so the i, m and c elements get numbered
                          ) $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
                       else $paragraph = "";
 
