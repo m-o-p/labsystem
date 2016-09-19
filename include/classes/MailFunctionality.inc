@@ -86,7 +86,7 @@ class MailFunctionality{
 	          (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
 	          stripcslashes($additionalHeaders).
 	          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle").PHP_EOL. // this is for identifying a user (username must be correct...)
-	          $cfg->get('mailHeaderAdd')
+	          stripcslashes($cfg->get('mailHeaderAdd'))
 	    );
      }
   }
