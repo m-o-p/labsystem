@@ -162,27 +162,46 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
       } elseif ( !empty($_POST['save']) ) {
         // preview checked... CREATE users!
         foreach ( $data AS $row ) {
-          // Use the email as user name
+          // Use the email as user name by default
+          $username = $row[$cfg->get('UserDBField_email')];
           $insertString = '';
-          foreach ( $row AS $key => $val ) {
-            if (strpos($key, $ignorePrefix) !== 0){
-              $insertString .= (empty($insertString)?'':',').$key.'='.($key!='last_registered' ? '"'.$userDBC->escapeString($val).'"' : 'FROM_UNIXTIME('.strtotime($val).')');
+          $foundExisting = false;
+          // if an extraid was configured by the admin, check if a user already exists based on that id (and update $username as appropriate)
+          if ( $cfg->doesExist('UserDBField_extraid') && isset($row[$cfg->get('UserDBField_extraid')]) ) {
+            $result=$userDBC->mkSelect($cfg->get('UserDBField_username'), $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_extraid').'="'.$userDBC->escapeString($row[$cfg->get('UserDBField_extraid')]).'"');
+            $existingData=mysql_fetch_array($result);
+            if (!empty($existingData)) {
+              $username = $existingData[$cfg->get('UserDBField_username')];
+              $foundExisting = true;
             }
           }
+          // check if a user with the same username already exists (if the mapping based on extraid was not performed)
+          // NOTE: this is somewhat dangerous: if a user intentionally sets his username to an e-mail address of someone who will join the course, they will get the access rights to the instances instead of creating a new user
+          // However, the missing access rights for participants should be discovered before the course starts and then the problem can be corrected by hand, so this is not considered to be a critical problem
+          if ( !$foundExisting ) {
+            $result=$userDBC->mkSelect($cfg->get('UserDBField_uid'), $cfg->get('UserDatabaseTable'),$cfg->get('UserDBField_username').'="'.$userDBC->escapeString($username).'"');
+            $existingData=mysql_fetch_array($result);
+            if (!empty($existingData)){
+              $foundExisting = true;
+            }
+          }
+          // Set userdata only for new users (do not update it)
+          if ( !$foundExisting ) {
+            foreach ( $row AS $key => $val ) {
+              if (strpos($key, $ignorePrefix) !== 0){
+                $insertString .= (empty($insertString)?'':',').$key.'='.($key!='last_registered' ? '"'.$userDBC->escapeString($val).'"' : 'FROM_UNIXTIME('.strtotime($val).')');
+              }
+            }
+            srand((double)microtime()*1000000);
+            $UID         = md5( $row[$cfg->get('UserDBField_email')].uniqid( rand() ) );
+            $insertString .= ','.$cfg->get('UserDBField_uid').'="'.$UID.'"';
+          }
+          // add newly subscribed courses for all users (also existing ones)
           foreach ($subscribedCourses as $value){
-            $insertString .= ','.$value.'=1';
+            $insertString .= (empty($insertString) ? '' : ',') . $value . '=1';
           }
-          // UID is missing... but we do not want to create a new one for existing users, so:
-          $result=$userDBC->mkSelect($cfg->get('UserDBField_uid'), $cfg->get('UserDatabaseTable'),$cfg->get('UserDBField_username').'="'.$userDBC->escapeString($row[$cfg->get('UserDBField_email')]).'"');
-          $existingData=mysql_fetch_array($result);
-          srand((double)microtime()*1000000);
-          $UID         = md5( $row[$cfg->get('UserDBField_email')].uniqid( rand() ) );
-          if (!empty($existingData)){
-            $UID = $existingData[$cfg->get('UserDBField_uid')];
-          }
-          $insertString .= ','.$cfg->get('UserDBField_uid').'="'.$UID.'"';
-          $userDBC->mkUpdIns($insertString, $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_username').'="'.$userDBC->escapeString($row[$cfg->get('UserDBField_email')]).'"' );
-          makeLogEntry( 'useradmin', 'new user '.$userDBC->escapeString($row[$cfg->get('UserDBField_email')]).' created' );
+          $userDBC->mkUpdIns($insertString, $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_username').'="'.$userDBC->escapeString($username).'"' );
+          makeLogEntry( 'useradmin', 'user '.$userDBC->escapeString($username).' created or updated' );
         }
 
         // note
