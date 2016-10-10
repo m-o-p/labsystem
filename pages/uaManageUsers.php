@@ -94,7 +94,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
     // list all columns
     $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
     $courseArray = Array();
-    while( $data = mysql_fetch_array( $result ) )
+    while( $data = $result->fetch_array() )
       if ( substr( $data[0], 0, 1 ) == '_' ) array_push( $courseArray, $data[0] );
 
     // now the array is [n] => $key but for sorting it has to be $keyExpl => $key
@@ -134,7 +134,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
                                  $cfg->get('UserDBField_password')
                                 );
       $printLegend = true;
-      while($data = mysql_fetch_assoc($result)){
+      while($data = $result->fetch_assoc()){
         if ($printLegend){
           $printLegend = false;
           foreach( $data as $key => $value ) if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ) ; else echo( $key."\t" );
@@ -211,7 +211,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
 
     $currElNr = 0;
     $stopAt = $startFrom+$frameSize;
-    while( $data = mysql_fetch_assoc( $result ) ){
+    while( $data = $result->fetch_assoc() ){
       // skip not wanted
       $currElNr++; if ( $currElNr < $startFrom ) continue; if ( $currElNr >= $stopAt ) break;
       $pge->put( '<div class="labsys_mop_u_row">'."\n" );

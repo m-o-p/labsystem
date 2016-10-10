@@ -49,11 +49,11 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 	
 	// check if the mailAddress exists:
 	$result = $userDBC->mkSelect ( 'pwReminderToken,pwReminderValidUntil,' . $cfg->get ( 'UserDBField_uid' ) . ' AS uid', $cfg->get ( 'UserDatabaseTable' ), 'UPPER(' . $cfg->get ( 'UserDBField_email' ) . ")=UPPER('" . $requesterEmail . "')" );
-	if (mysql_num_rows ( $result ) < 1)
+	if ($result->num_rows < 1)
 		$pge->put ( "<div class=\"labsys_mop_note\">\n" . $requesterEmail . ' ' . $lng->get ( 'uaNotBelong2Usr' ) . "\n</div>" );
 	else {
 		$mailPage = $GLOBALS ["pDBI"]->getData2idx ( $cfg->get ( 'PidPasswordMail' ) );
-		while ( $data = mysql_fetch_assoc ( $result ) ) {
+		while ( $data = $result->fetch_assoc() ) {
 			if (isset ( $_GET ['TOKEN'] ) && ($data ['pwReminderToken'] == $_GET ['TOKEN']) && ($data ['pwReminderValidUntil'] - time () > 0)) {
 				// Token fits and is still valid
 				// generate new Password:
@@ -66,7 +66,7 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 				// find out where the user can log in:
 				$groupMemberships = '';
 				$result = $userDBC->mkSelect ( '*', $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . '="' . $data ['uid'] . '"' );
-				while ( $memberData = mysql_fetch_assoc ( $result ) ) {
+				while ( $memberData = $result->fetch_assoc() ) {
 					foreach ( $memberData as $key => $value ) {
 						if ($key [0] == '_' && $value == 1) {
 							$groupMemberships .= substr ( $key, 1 ) . PHP_EOL;

@@ -64,7 +64,7 @@ class LsDBInterface {
   function getSchedule4( $id, $num ){
     global $cfg, $usr;
     $result = $this->myDBC->mkSelect( "start, stop", $this->myTable, "id='".$id."' && num='".$num."'", "'start' ASC" );
-    if ( mysql_num_rows($result) == 0 ){ // no dataset found
+    if ( $result->num_rows == 0 ){ // no dataset found
       return Array( "isBefore1stSched" => false,
                     "isInSched" => false,
                     "isAfter1stSched" => false,
@@ -79,7 +79,7 @@ class LsDBInterface {
       $is1stSched = true;
 
       // walk thru all schedules for this element
-      while( $data = mysql_fetch_array($result) ){
+      while( $data = $result->fetch_array() ){
         $start = strtotime($data['start']);
         $stop = strtotime($data['stop']);
         if ( $is1stSched ){ // some values are only influenced by the first schedule
@@ -135,8 +135,8 @@ class LsDBInterface {
   function getData2idx( $idx, $isInColl=false ){
     global $cfg,$url,$lng,$usr;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      //trigger_error( mysql_error(). "mc with idx not found: ".$idx, E_USER_WARNING );
+    if ( !($data = $result->fetch_array()) ){
+      //trigger_error( $this->myDBC->link->error. "mc with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
@@ -149,8 +149,8 @@ class LsDBInterface {
         $backupIdx = $data['idx'];
         $backupHistory = $data['history'];
         $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
-        if ( !($data = mysql_fetch_array( $result )) ){
-          trigger_error( mysql_error(). 'Version '.$historyIdx.' of '.$myId.$idx.' not found.', E_USER_WARNING );
+        if ( !($data = $result->fetch_array()) ){
+          trigger_error( $this->myDBC->link->error. 'Version '.$historyIdx.' of '.$myId.$idx.' not found.', E_USER_WARNING );
           return false;
           exit;
         }
@@ -180,8 +180,8 @@ class LsDBInterface {
   function getMenuData2idx( $idx, $isInColl=false ){
     global $cfg;
     $result = $this->myDBC->mkSelect( "idx, num, id", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      //trigger_error( mysql_error(). "mc with idx not found: ".$idx, E_USER_WARNING );
+    if ( !($data = $result->fetch_array()) ){
+      //trigger_error( $this->myDBC->link->error. "mc with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
@@ -278,7 +278,7 @@ class LsDBInterface {
   * @return FALSE     If no more datasets are available.
   */
   function getNextData( $isInColl=false ){
-    if ( $data = mysql_fetch_array($this->queryResult) ){
+    if ( $data = $this->queryResult->fetch_array() ){
       return $this->createElementFromDbResult($data, $isInColl);
     }else{
       return false;

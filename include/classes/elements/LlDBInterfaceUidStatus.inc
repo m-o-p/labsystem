@@ -65,7 +65,7 @@ class LlDBInterfaceUidStatus {
   function getData4( $uid ){
     global $cfg, $usr;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "l_idx='".$this->labIdx."' && uid='".$uid."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
+    if ( !($data = $result->fetch_array()) ){
       /* no dataset found */
       return Array( "currentTeam" => false,
                     "preLabFinished" => false,
@@ -234,7 +234,7 @@ class LlDBInterfaceUidStatus {
   * @return FALSE   If no more datasets are available.
   */
   function getNextData(){
-    if ($data = mysql_fetch_array( $this->queryResult ))
+    if ($data = $this->queryResult->fetch_array())
       return Array( "lIdx" => $data['l_idx'],
                     "uid" => $data['uid'],
                     "currentTeam" => $data['current_team'],

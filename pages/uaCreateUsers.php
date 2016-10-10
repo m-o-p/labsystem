@@ -69,7 +69,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
     $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
     $courseArray = Array();
     $otherFieldsArray = Array();
-    while( $data = mysql_fetch_array( $result ) ){
+    while( $data = $result->fetch_array() ){
       if ( substr( $data[0], 0, 1 ) == '_' ){
         array_push( $courseArray, $data[0] );
       } elseif (!in_array( $data[0], $doNotListFromUser )){
@@ -169,7 +169,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
           // if an extraid was configured by the admin, check if a user already exists based on that id (and update $username as appropriate)
           if ( $cfg->doesExist('UserDBField_extraid') && isset($row[$cfg->get('UserDBField_extraid')]) ) {
             $result=$userDBC->mkSelect($cfg->get('UserDBField_username'), $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_extraid').'="'.$userDBC->escapeString($row[$cfg->get('UserDBField_extraid')]).'"');
-            $existingData=mysql_fetch_array($result);
+            $existingData=$result->fetch_array();
             if (!empty($existingData)) {
               $username = $existingData[$cfg->get('UserDBField_username')];
               $foundExisting = true;
@@ -180,7 +180,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
           // However, the missing access rights for participants should be discovered before the course starts and then the problem can be corrected by hand, so this is not considered to be a critical problem
           if ( !$foundExisting ) {
             $result=$userDBC->mkSelect($cfg->get('UserDBField_uid'), $cfg->get('UserDatabaseTable'),$cfg->get('UserDBField_username').'="'.$userDBC->escapeString($username).'"');
-            $existingData=mysql_fetch_array($result);
+            $existingData=$result->fetch_array();
             if (!empty($existingData)){
               $foundExisting = true;
             }

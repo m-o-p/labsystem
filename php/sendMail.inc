@@ -54,7 +54,7 @@ if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 			// add all receivers
 			$where= substr($nextID,2)."='1'";
 			$result = $uDBI->myDBC->mkSelect( $what, $cfg->get('UserDatabaseTable'), $where );
-			while( $data = mysql_fetch_array( $result ) ){
+			while( $data = $result->fetch_array() ){
 				array_push( $receivers, $data[ 'uid' ] );
 			}
 		} else {

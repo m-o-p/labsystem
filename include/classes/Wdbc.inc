@@ -34,10 +34,10 @@ class Wdbc extends DBConnection{
   /**
   * @return           A mysql connection identifier or false
   */
-  function Wdbc(){
+  function __construct(){
     global $cfg;
 
-    return $this->DBConnection( $cfg->get("WorkingDatabaseHost"),
+    return parent::__construct( $cfg->get("WorkingDatabaseHost"),
                                 $cfg->get("WorkingDatabaseUserName"),
                                 $cfg->get("WorkingDatabasePassWord"),
                                 $cfg->get("WorkingDatabaseName"));

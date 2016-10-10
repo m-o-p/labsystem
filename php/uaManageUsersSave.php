@@ -58,7 +58,7 @@ $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
   // list all columns
   $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
   $courseArray = Array();
-  while( $data = mysql_fetch_array( $result ) )
+  while( $data = $result->fetch_array() )
     if ( substr( $data[0], 0, 1 ) == '_' ) array_push( $courseArray, $data[0] );
       
 // query for all datasets for iterating over the uids
@@ -68,7 +68,7 @@ $result = $userDBC->mkSelect( '*',
                              );
 
 $noCourses = count( $courseArray );
-while ( $data = mysql_fetch_assoc( $result ) ){
+while ( $data = $result->fetch_assoc() ){
   // only take present users! (selection)
   if ( !isset( $_POST[ $data[ $cfg->get('UserDBField_uid') ] ] ) ) continue;
 

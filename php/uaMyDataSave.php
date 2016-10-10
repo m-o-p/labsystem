@@ -83,8 +83,8 @@ else{
                                   $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $_POST['USERNAME'] )."' && ".
                                   $cfg->get('UserDBField_uid')."!='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
                                  );
-    $data = mysql_fetch_assoc( $result );
-    if ( mysql_num_rows( $result ) != 0){
+    $data = $result->fetch_assoc();
+    if ( $result->num_rows != 0){
       // alert
       $url->put( 'sysalert='.$_POST['USERNAME'].' '.$lng->get('uaAsUsrNmeIsUsedBy').' '.$data[ $cfg->get('UserDBField_forename') ].' '.$data[  $cfg->get('UserDBField_name') ] );
     }

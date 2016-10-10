@@ -54,7 +54,7 @@ class LiDBInterfaceAnswers {
     global $cfg, $usr, $lng, $url;
 
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "team='".$team."' && i_idx='".$iIdx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
+    if ( !($data = $result->fetch_array()) ){
       /* no dataset found && $createNewRecord => create a new one */
       if ( $createNewRecord ) $this->setData4( $team, $iIdx, "", 0, "", "", false, false, $lng->get("dataSetCreated") );
       return Array( "answer" => "",
@@ -72,8 +72,8 @@ class LiDBInterfaceAnswers {
         $historyIdx = substr($url->get('answerVersion'), strpos($url->get('answerVersion'),'-')+1);
         $backupHistory = $data['history'];
         $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."' && team='".$team."' && i_idx='".$iIdx."'" );
-        if ( !($data2 = mysql_fetch_array( $result )) ){
-          //trigger_error( mysql_error(). 'Version '.$historyIdx.' of the answer to i'.$iIdx.'could not be found for team '.$team, E_USER_WARNING );
+        if ( !($data2 = $result->fetch_array()) ) {
+          //trigger_error( $this->myDBC->link->error. 'Version '.$historyIdx.' of the answer to i'.$iIdx.'could not be found for team '.$team, E_USER_WARNING );
           // Could just not load history... no big deal
         }else{
           // Found a history -> replace the content
@@ -150,7 +150,7 @@ class LiDBInterfaceAnswers {
   * @return FALSE   If no more datasets are available.
   */
   function getNextData(){
-    if ( $data = mysql_fetch_array($this->queryResult) ) return $data['team'];
+    if ( $data = $this->queryResult->fetch_array() ) return $data['team'];
                                                     else return false;
   }
 

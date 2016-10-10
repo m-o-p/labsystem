@@ -37,7 +37,7 @@ $otherVisibleLabs = array();
 // Currently scheduled in order of schedule
 //SELECT `num` FROM `schedules` WHERE 1 GROUP BY num ORDER BY `start`
 $sDBI->queryResult = $sDBI->myDBC->mkSelect( 'id, num', $sDBI->myTable, 'idx!=1', '`start`', 'num' );
-while( $nextData=mysql_fetch_array($sDBI->queryResult) ){
+while( $nextData=$sDBI->queryResult->fetch_array() ){
   $otherVisibleLabs[] = $nextData['id'].$nextData['num'];
 }
 
@@ -45,7 +45,7 @@ while( $nextData=mysql_fetch_array($sDBI->queryResult) ){
 // get pushed to the front.
 //SELECT `idx` FROM `labs` WHERE `visible_before_first_sched`=1
 $lDBI->queryResult = $lDBI->myDBC->mkSelect( 'idx', $lDBI->myTable, "idx!=1 && `visible_before_first_sched`=1" );
-while( $nextData=mysql_fetch_array($lDBI->queryResult) ){
+while( $nextData=$lDBI->queryResult->fetch_array() ){
   $addtionalWithoutSchedule = array();
   if (  !in_array( 'l'.$nextData['idx'], $otherVisibleLabs ) ){
     // do not add twice...

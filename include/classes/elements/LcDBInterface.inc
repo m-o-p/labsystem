@@ -82,8 +82,8 @@ class LcDBInterface {
   function getData2idx( $idx, $isInColl=false, $isInLab=false ){
     global $cfg,$url,$lng,$usr;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
+    if ( !($data = $result->fetch_array()) ){
+      trigger_error( $this->myDBC->link->error. "collection with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
@@ -96,8 +96,8 @@ class LcDBInterface {
         $backupIdx = $data['idx'];
         $backupHistory = $data['history'];
         $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
-        if ( !($data = mysql_fetch_array( $result )) ){
-          trigger_error( mysql_error(). 'Version '.$historyIdx.' of '.$myId.$idx.' not found.', E_USER_WARNING );
+        if ( !($data = $result->fetch_array()) ){
+          trigger_error( $this->myDBC->link->error. 'Version '.$historyIdx.' of '.$myId.$idx.' not found.', E_USER_WARNING );
           return false;
           exit;
         }
@@ -127,8 +127,8 @@ class LcDBInterface {
   function getMenuData2idx( $idx, $isInColl=false, $isInLab=false ){
     global $cfg;
     $result = $this->myDBC->mkSelect( "idx, title, contents, matching_menu, visible_before_first_sched, visible_during_sched, visible_after_first_sched, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      //trigger_error( mysql_error(). "collection with idx not found: ".$idx, E_USER_WARNING );
+    if ( !($data = $result->fetch_array()) ){
+      //trigger_error( $this->myDBC->link->error. "collection with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else
@@ -228,7 +228,7 @@ class LcDBInterface {
   * @return FALSE     If no more datasets are available.
   */
   function getNextData($isInColl=false, $isInLab=false){
-    if ($data = mysql_fetch_array($this->queryResult)){
+    if ($data = $this->queryResult->fetch_array()){
       return $this->createElementFromDbResult( $data, $isInColl, $isInLab );
     } else {
       return false;
