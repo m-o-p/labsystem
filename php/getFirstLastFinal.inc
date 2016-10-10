@@ -37,11 +37,11 @@ if ( !$GLOBALS['url']->available('address') ){
                                   exit;
                                 }
 
-// there might be possible SQL injections...
-if ( $GLOBALS['url']->get('address')!=Ddbc::escapeString($GLOBALS['url']->get('address')) ){
-                                                                trigger_error( $lng->get( "elementNotExist" ), E_USER_ERROR );
-                                                                exit;
-                                                              }
+// make sure the address contains only valid characters (no sql injections)
+if (!preg_match('/^[0-9a-zA-Z.]+$/', $GLOBALS['url']->get('address'))) {
+    trigger_error( $lng->get( "elementNotExist" ), E_USER_ERROR );
+    exit;
+}
 
 $firstFinal = array_shift ( explode ( ".", $url->get('address') ) );
 $lastFinal  = array_pop   ( explode ( ".", $url->get('address') ) );
