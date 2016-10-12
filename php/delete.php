@@ -42,7 +42,7 @@ else{
         header("Location: ".$url->rawLink2( "../pages/confirm.php?text=".urlencode( $lastFinal.$lng->get("confirmDelete") )."&redirectTo=".urlencode( $_SERVER["REQUEST_URI"] ) ) );
         exit;
       }
-      if ($id=='s' ){
+      if ($id=='s' || $id=='l' ){
       	// regular delete that works for all element classes
       	// we only want to delete s elements as for the others it makes no sense.
 	      require( "../php/getDBIbyID.inc" ); // -> $DBI
@@ -52,7 +52,7 @@ else{
 	        $text = $lastFinal.": ".$lng->get( "deleted" );
 	        makeLogEntry( 'edit', 'deleted', $lastFinal );
 	        $url->put('sysalert='.urlencode( $text ));
-	        $destinationAddress='s1';
+	        $destinationAddress=$id.'1';
 	      }
       }else{
       	// For non-s elements: remove them from the next enclosing collection:
