@@ -68,13 +68,8 @@ possiblity that mysqlX_affected_rows() may not actually equal the
 number of rows matched, only the number of rows that were literally
 affected by the query."
 
-
-As of PHP 4.3.0 (I assume, I only tried with 4.3.2), you can make
-mysqlX_affected_rows() return the number of rows matched, even if
-none are updated.
-
-
-You do this by setting the CLIENT_FOUND_ROWS flag
+You can change the behavior to always show the number of matched
+rows by setting the CLIENT_FOUND_ROWS flag
 */
 
   /**
@@ -87,8 +82,8 @@ You do this by setting the CLIENT_FOUND_ROWS flag
     $ret = $this->link->query( $theQuery );
     if ($ret === FALSE)
        trigger_error( /*$theQuery.*/"DB Connector --&gt; "./*$this->dataBase.': '.*/ $this->link->error, E_USER_ERROR );
-    //echo( "<p style=\"background-color: #ff0000; color: #ffffff; padding: 5px; margin-bottom: 10px\">".$theQuery."<br>affected rows: ".mysqlX_affected_rows()."</p>\n");
-    return $ret; // "$ret = mysql... ; do something return $ret" is no good becaus mqsql_affected_rows() and so on isn't set then!
+    //echo( "<p style=\"background-color: #ff0000; color: #ffffff; padding: 5px; margin-bottom: 10px\">".$theQuery."<br>affected rows: ".$this->link->affected_rows."</p>\n");
+    return $ret;
   }
 
   /* Returns the amount of datasets returned by the query.
@@ -171,7 +166,7 @@ You do this by setting the CLIENT_FOUND_ROWS flag
   * @return BOOL    The return value of the query.
   */
   function mkUpdate( $what, $into, $where ){
-                          $theQuery  = "UPDATE ".$into." SET ".$what." WHERE ".$where;
+    $theQuery  = "UPDATE ".$into." SET ".$what." WHERE ".$where;
     return $this->query(  $theQuery );
   }
 
@@ -184,30 +179,11 @@ You do this by setting the CLIENT_FOUND_ROWS flag
   */
   function mkUpdIns( $what, $into, $where ){
     $res = $this->mkUpdate( $what, $into, $where );
-
-    /* This is a workaround if the Selectors don't work.
-       The following check is necessary because an update with nothing to change returns 0 affected rows.
-       If the set flag at the db_connect above would work properly this would get unnecessary!
-    */
-    $theQuery  = "SELECT 'idx' FROM ".$into." WHERE ".$where;
-    $res = $this->query( $theQuery );
-    if ($res->num_rows == 0){
+    if ($this->link->affected_rows == 0){
       $toReplace = Array( "&&", "||" ); // to be replaced by , before insert!
       return $this->mkInsert( $what.( $where != '' ?  ', '.str_replace( $toReplace, ',', $where ) : '' ),
                               $into );
     } else return $res;
-
-    /* 2008/ 01/ 11: mysqlX_affected_rows() reported 1 on Gentoo even though it should be 0?!? so this is used now
-    ereg("Rows matched: ([0-9]*)", mysqlX_info(), $rows_matched);
-
-    if ( (mysqlX_affected_rows() > 0) && ($rows_matched > 0) )
-    // succeeded
-      return $res;
-    else{ // if that doesn't succeed: INSERT INTO $into SET $what.$where
-      $toReplace = Array( "&&", "||" ); // to be replaced by , before insert!
-      return $this->mkInsert( $what.( $where != "" ?  ", ".str_replace( $toReplace, ",", $where )), $into  : '' );
-    }
-       */
   }
 
   /**
