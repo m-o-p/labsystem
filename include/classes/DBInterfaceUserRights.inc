@@ -55,7 +55,7 @@ class DBInterfaceUserRights {
     // mysql #1054 - Unknown column
     // "rights, enabledRights, currentTeam, history"
     $result = $this->myDBC->mkSelect( '*', $this->myTable, "uid='".$uid."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
+    if ( !($data = $result->fetch_array()) ){
       /* no dataset found => create a new one with the default values */
       // each new member should get his own team number
       // therefore we insert the record and add the index to the given start index
@@ -148,10 +148,10 @@ class DBInterfaceUserRights {
   */
   function getNextData(){
   /* This call returns the next $userStruct or FALSE. */
-    if ( $resArray = mysql_fetch_array($this->queryResult) ) return Array( "uid"         => $resArray['uid'],
-                                                                           "rights"      => $resArray['rights'],
-                                                                           "currentTeam" => $resArray['currentTeam'],
-                                                                           "history"     => $resArray['history'] );
+    if ( $resArray = $this->queryResult->fetch_array() ) return Array( "uid"         => $resArray['uid'],
+                                                                       "rights"      => $resArray['rights'],
+                                                                       "currentTeam" => $resArray['currentTeam'],
+                                                                       "history"     => $resArray['history'] );
     return false;
   }
 

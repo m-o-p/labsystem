@@ -61,7 +61,7 @@ class LiDBInterfaceUidTeam {
   function getData4( $uid, $iIdx, $team ){
     global $cfg, $usr;
     $result = $this->myDBC->mkSelect( "team", $this->myTable, "uid='".$uid."' && i_idx='".$iIdx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
+    if ( !($data = $result->fetch_array()) ){
       /* no dataset found && $createNewRecord => create a new one with $usr->currentTeam */
       if ( $team!= 0 ) $this->setData4( $uid, $iIdx, $team );
       return $team;
@@ -79,7 +79,7 @@ class LiDBInterfaceUidTeam {
   function getUID4( $team, $iIdx ){
   	global $cfg, $usr;
   	$result = $this->myDBC->mkSelect( "uid", $this->myTable, "team='".$team."' && i_idx='".$iIdx."'" );
-  	if ( !($data = mysql_fetch_array( $result )) ){
+  	if ( !($data = $result->fetch_array()) ){
   		return 'all';
   	}else{
   		return $data['uid'];

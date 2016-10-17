@@ -65,7 +65,7 @@ class LmDBInterfaceAnswers {
   function getData4( $uid, $mIdx, $countOfAnswers, $createDataset ){
     global $cfg, $lng;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "uid='".$uid."' && mc_idx='".$mIdx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){ // no dataset found => create a new one
+    if ( !($data = $result->fetch_array()) ){ // no dataset found => create a new one
       // first: The permutation aray of the answers
       $permutationArray = range (0, $countOfAnswers-1);
       srand ((float)microtime()*1000000);
@@ -129,7 +129,7 @@ class LmDBInterfaceAnswers {
   * @return FALSE   If no more datasets are available.
   */
   function getNextData(){
-    if ( $data = mysql_fetch_array($this->queryResult) ) return $data['uid'];
+    if ( $data = $this->queryResult->fetch_array() ) return $data['uid'];
                                                     else return false;
   }
 }

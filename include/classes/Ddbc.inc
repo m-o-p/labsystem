@@ -34,9 +34,9 @@ class Ddbc extends DBConnection{
   /**
   * @return           A mysql connection identifier or false
   */
-  function Ddbc(){
+  function __construct(){
     global $cfg;
-    return $this->DBConnection( $cfg->get("DataDatabaseHost"),
+    return parent::__construct( $cfg->get("DataDatabaseHost"),
                                 $cfg->get("DataDatabaseUserName"),
                                 $cfg->get("DataDatabasePassWord"),
                                 $cfg->get("DataDatabaseName"));

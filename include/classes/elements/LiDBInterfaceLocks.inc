@@ -48,7 +48,7 @@ class LiDBInterfaceLocks {
   function getData4( $team ){
     global $cfg, $usr;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "team='".$team."'" );
-    if ( !($data = mysql_fetch_array( $result )) ) return false; // no dataset found
+    if ( !($data = $result->fetch_array()) ) return false; // no dataset found
                                               else return $data['lock_on_idx'];
   }
   
