@@ -122,9 +122,6 @@ class LlElement extends Element{
 
     $this->userIsViewing            = !($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ); // is a user viewing or a corrector or example solution viewer watching?
 
-    if ($this->noPrelab && !$this->preLabIsFinished && $this->userIsViewing) $this->createPrelabFinishedStatus( $usr->currentTeam );
-    if ($this->noPrelab) $this->preLabIsFinished = $this->preLabAllTeammFinished = true;
-
     // get current schedule information
     $scheduleData = LsElement::getVisibility( "l", $this->idx );
     $this->isBefore1stSched = $scheduleData["isBefore1stSched"];
@@ -132,6 +129,12 @@ class LlElement extends Element{
     $this->isAfter1stSched  = $scheduleData["isAfter1stSched"];
 
     $visiblePerSchedule             = LsElement::visiblePerSchedule( "l", $this->idx, $this->visibleBefore1stSched, $this->visibleDuringSched, $this->visibleAfter1stSched );
+
+    if ($this->noPrelab) {
+        if (!$this->preLabIsFinished && $this->userIsViewing && $visiblePerSchedule)
+            $this->createPrelabFinishedStatus( $usr->currentTeam );
+        $this->preLabIsFinished = $this->preLabAllTeammFinished = true;
+    }
 
     if ( $visiblePerSchedule || !$this->userIsViewing ){
       $this->preLab                   = $CDBI->getData2idx( $this->prelabCollectionIdx, true, true );
