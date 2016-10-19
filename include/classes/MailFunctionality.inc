@@ -27,7 +27,7 @@ class MailFunctionality{
    * @param Boolean $BCC                 Send mail via BCC?
    */
   function sendMail( $sender, $receiverUIDs, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
-    global $cfg, $usr, $uDBI, $SYSTEMMAIL_SENDER, $urDBI;
+    global $cfg, $usr, $uDBI, $urDBI;
     
     if (empty($sender)){
     	$sender = '<noreply@'.$_SERVER['SERVER_NAME'].'>';
@@ -80,8 +80,7 @@ class MailFunctionality{
 	          stripcslashes($cfg->get('mailFooter')).PHP_EOL,
 // 	          ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
 	          ($BCC ? 'BCC: '.$receiver.PHP_EOL : ''). // BCC
-	          'From: '.$cfg->get('SystemTitle').' <'.$SYSTEMMAIL_SENDER.'>'.PHP_EOL. /* The labsystem is always sending mails using the configured system mail address */
-	    	  'Reply-To: '.$sender.PHP_EOL.
+	    	  'From: '.$sender.PHP_EOL.
 	          "X-Mailer: labsystem".PHP_EOL.
 	          (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
 	          stripcslashes($additionalHeaders).
