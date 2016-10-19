@@ -34,19 +34,31 @@ require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
 require( INCLUDE_DIR."/classes/elements/LmDBInterfaceAnswers.inc" );
 
 class LmElement extends Element{
-  var $question;              // The question.
-  var $answerArray;           // Array containing the answers.
-  var $answerExplanation;     // Why is the answer correct?
-  var $correctMask;           // Bitmask: Which answers are correct?
-  var $visibleFor;            // Visibility constraints.
+  var $question;                    // The question.
+  var $answerArray;                 // Array containing the answers.
+  protected $reactionArray;         // Array that contains the hints that the system shows on wrong answers and the credit reduction.
+  var $answerExplanation;           // Why is the answer correct? Shown after all tries or correct answer.
+  var $correctMask;                 // Bitmask: Which answers are correct? (0010 = Third answer is correct).
+  protected $possibleCredits;       // The credits one can get when answering this question correctly.
+  protected $doNotShuffleAnswers;   // If not set the answers are shuffled to prevent the students from exchanging then in the "stupid" way ("3 + 4 are correct").
+                                    // The shuffling happens only once to allow memorizing the answers on future tries.
+  protected $onlyOneAnswerPossible; // Shows radio buttons instead of check boxes enabling to check only one item.
+  protected $requiresNcorrect;      // The answer is correct when at least N correct checkboxes are set.
+  protected $enableReactions;       // Shall it be possible to enter context-sensitive hints?
+  protected $showHintForClicked;    // Shall the reaction be shown for the clicked or all wrong answers?
+  protected $reshowLastHint;        // If no hint is given for the answer use the last one specified?
+  protected $enableDetailedGrading; // Shall it be possible to give detailed credits?
+  protected $horizontalLayout;      // Displays the answers horizontally instead of vertically.
+  var $visibleFor;                  // Visibility constraints.
 
-  var $answerCount;           // Number of answers.
-  var $displayPermutation;    // Array containing the permutated Order of answers.
-  var $previousAnswersArray;  // Array containing the bitmasks of previous answers.
-  var $triesUp2Now;           // Number of tries the user had.
-  var $isCorrectlyAnswered;   // Was the last answer given correct?
-  var $isAnswered;            // Is the las answer correct or the number of tries too high?
-  var $answerHistory;         // Who answered when?
+  var $answerCount;             // Number of answers.
+  var $displayPermutation;      // Array containing the permutated Order of answers.
+  var $previousAnswersArray;    // Array containing the bitmasks of previous answers.
+  var $triesUp2Now;             // Number of tries the user had.
+  var $isCorrectlyAnswered;         // Was the last answer given correct?
+  var $isAnswered;                  // Is the last answer correct or the number of tries too high?
+  var $answerHistory;               // Who answered when?
+
 
   /**
   * The constructor.
@@ -54,15 +66,43 @@ class LmElement extends Element{
   * @param $idx                       This instance's index.
   * @param $question                  The multiple choice question.
   * @param $answerArray               Array containing the answers.
+  * @param $reactionArray             Array for the interactive reactions by the system.
   * @param $answerExplanation         Explanation why the answer is correct.
-  * @param $correctMask               Bitmask telling ehich answers are correct.
+  * @param $correctMask               Bitmask telling which answers are correct.
+  * @param $possibleCredits           The amount of credits one can get.
+  * @param $doNotShuffleAnswers       Display the answers in the order they are stored.
+  * @param $onlyOneAnswerPossible     Only allow one answer (radio buttons).
+  * @param $requiresNcorrect          How many of the correct answers have to be clicked to grade this Q as correct?
+  * @param $enableReactions           Shall it be possible to enter context-sensitive hints?
+  * @param $showHintForClicked        Shall the reaction be shown for the clicked or all wrong answers?
+  * @param $reshowLastHint            If no hint is given for the answer use the last one specified?
+  * @param $enableDetailedGrading     Shall it be possible to give detailed credits?
+  * @param $horizontalLayout          Show the answers horizontally placed.
   * @param $visibleFor                The bitmask of rights a viewer has to match.
   * @param $visibleOnlyInCollection   Is the element visible only inside a collection.
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
-  function LmElement( $idx, $question, $answerArray, $answerExplanation, $correctMask, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
-    global $usr;
+  function __construct( $idx,
+                        $question,
+                        $answerArray,
+                        $reactionArray,
+                        $answerExplanation,
+                        $correctMask,
+                        $possibleCredits,
+                        $doNotShuffleAnswers,
+                        $onlyOneAnswerPossible,
+                        $requiresNcorrect,
+                        $enableReactions,
+                        $showHintForClicked,
+                        $reshowLastHint,
+                        $enableDetailedGrading,
+                        $horizontalLayout,
+                        $visibleFor,
+                        $visibleOnlyInCollection,
+                        $history,
+                        $isInColl=false ){
+    global $usr, $cfg;
     $this->elementId                = "m";
     $this->idx                      = $idx;
     $this->title                    = trim(strip_tags(preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
@@ -70,26 +110,99 @@ class LmElement extends Element{
                                           substr( $question, 0, 50 )
                                         )))
                                       );
-    $this->matchingMenu             = "";
+    $this->matchingMenu             = '';
     $this->question                 = $question;
     $this->answerArray              = $answerArray;
+    $this->reactionArray            = $reactionArray;
+
     $this->answerCount              = count( $this->answerArray );
     $this->answerExplanation        = $answerExplanation;
     $this->correctMask              = $correctMask;
+    $this->possibleCredits          = $possibleCredits;
+    $this->doNotShuffleAnswers      = $doNotShuffleAnswers;
+    $this->onlyOneAnswerPossible    = $onlyOneAnswerPossible;
+    $this->requiresNcorrect         = $requiresNcorrect;
+    $this->enableReactions          = $enableReactions;
+    $this->showHintForClicked       = $showHintForClicked;
+    $this->reshowLastHint           = $reshowLastHint;
+    $this->enableDetailedGrading    = $enableDetailedGrading;
+    $this->horizontalLayout         = $horizontalLayout;
+
     $this->visibleFor               = $visibleFor;
     $this->visibleOnlyInCollection  = $visibleOnlyInCollection;
     $this->history                  = $history;
 
-    $this->IamVisible               = ($this->visibleFor == "0") || $usr->isOfKind( $this->visibleFor )
-                                      && ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) );
-    if ( $history ){ // history is false if only menu data is wanted (following not necessary)
-      $this->mcDBI                    = new LmDBInterfaceAnswers();
-      $this->loadUserData4(""); // Fills rest of the structures with neutral values.
-    }
+    $this->IamVisible               = (($this->visibleFor == '0') || $usr->isOfKind( $this->visibleFor ))
+                                      &&
+                                      ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) );
+
+    $this->mcDBI                    = new LmDBInterfaceAnswers();
+    $this->loadUserData4(''); // Fills rest of the structures with neutral values.
 
     $this->serializationArray       = array( 'idx', 'question', 'answerArray', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
   }
 
+  // Selectors
+  function getQuestion()               { return $this->question; }
+  function getAnswerArray()            { return $this->answerArray; }
+  function getReactionArray()          { return $this->reactionArray; }
+  function getAnswerExplanation()      { return $this->answerExplanation; }
+  function getCorrectMask()            { return $this->correctMask; }
+  function getPossibleCredits()        { return $this->possibleCredits; }
+  function getDoNotShuffleAnswers()    { return $this->doNotShuffleAnswers; }
+  function getOnlyOneAnswerPossible()  { return $this->onlyOneAnswerPossible; }
+  function getRequiresNcorrect()       { return $this->requiresNcorrect; }
+  function getReactionsEnabled()       { return $this->enableReactions; }
+  function getHintForKlicked()         { return $this->showHintForClicked; }
+  function getReshowLastHint()         { return $this->reshowLastHint; }
+  function getDetailedGradingEnabled() { return $this->enableDetailedGrading; }
+  function getHorizontalLayout()       { return $this->horizontalLayout; }
+  function getVisibleFor()             { return $this->visibleFor; }
+
+
+  function isAnswered(){
+    return $this->isAnswered;
+  }
+  function isCorrectlyAnswered(){
+    return $this->isCorrectlyAnswered;
+  }
+  
+  /**
+   * Returns if the given $answer is considered correct.
+   * @param unknown $answerMask
+   * @return boolean Returns if the given $answer is considered correct.
+   */
+  function computeIfAnswerConsideredCorrect($answerMask){
+  	if ($answerMask == $this->correctMask){
+		return TRUE;  		
+  	}
+  	
+  	if (!is_null($this->requiresNcorrect)){
+  		// fewer correct answers are considered okay
+  		// The algorithm is correctlyChecked-wronglyChecked =
+  		// [all answers that should be checked and are checked] - 
+  		// [all answers that should not be checked but are checked]
+  		$answerNumber = $this->answerCount;
+  		$amountCheckedCorrectAnswers = 0;
+  		while (--$answerNumber >=0){
+  			$isAnswerCorrect = (($this->correctMask & (1<<$answerNumber)) == 1<<$answerNumber);
+  			$didUserCheckAnswer = (($answerMask & (1<<$answerNumber)) == (1<<$answerNumber));
+  			if ($didUserCheckAnswer){
+  				if ($isAnswerCorrect){
+  					$amountCheckedCorrectAnswers++; // correctly checked: -1
+  				}else{
+  					$amountCheckedCorrectAnswers--; // wrongly checked: -1
+  				}
+  			}
+  		}
+  		if ($amountCheckedCorrectAnswers>=$this->requiresNcorrect){
+  			return TRUE;
+  		}
+  	}
+      			
+  	return FALSE;
+  }
+  
   /**
   * Loads the answer data to the given $uid into this instance's field.
   *
@@ -99,7 +212,7 @@ class LmElement extends Element{
   */
   function loadUserData4( $uid ){
     global $usr, $cfg, $url;
-    if ( $uid != "" ){
+    if ( !empty($uid) ){
       $answerData = $this->mcDBI->getData4( $uid,
                                             $this->idx,
                                             $this->answerCount,
@@ -107,15 +220,17 @@ class LmElement extends Element{
           );
 
       $this->answerHistory        = $answerData["history"];
-      $this->displayPermutation   = $answerData["permutation"];
-      $this->previousAnswersArray = $answerData["answers"];
+      $this->displayPermutation   = $answerData['permutation'];
+      $this->previousAnswersArray = $answerData['answers'];
       $this->triesUp2Now          = count( $this->previousAnswersArray )-1; // Last holds the current try.
-      $this->isCorrectlyAnswered  = ( ( $this->triesUp2Now > 0 ) && ( $this->previousAnswersArray[$this->triesUp2Now-1] == $this->correctMask ) ); // no correct answer and no attempt!
+      // If the answer is considered correct depends on the "requiresNcorrect" parameter
+      $this->isCorrectlyAnswered  = ( ( $this->triesUp2Now > 0 ) && 
+      								  $this->computeIfAnswerConsideredCorrect( $this->previousAnswersArray[$this->triesUp2Now-1] ) ); 
       $this->isAnswered =  $this->isCorrectlyAnswered || ( $this->triesUp2Now >= $cfg->get("MCAnsweringAttempts") );
     } else { // the example solution
-      $this->answerHistory        = "";
+      $this->answerHistory        = '';
       $this->displayPermutation   = range( 0, $this->answerCount-1 ); // identity
-      $this->previousAnswerArray  = false;
+      $this->previousAnswersArray  = false;
       $this->triesUp2Now          = 0;
       $this->isCorrectlyAnswered  = false;
       $this->isAnswered           = true;
@@ -134,20 +249,7 @@ class LmElement extends Element{
    function getGivenCredits(){
      global $cfg;
      if ( $this->isCorrectlyAnswered ) $add = 1; else $add = 0;
-     return $cfg->get( 'MCAnsweringAttempts' )-$this->triesUp2Now+$add;
-   }
-
-  /**
-   * Returns the credits one cen get for the correct answer.
-   *
-   * Since I did not implement any credits you can get a maximum
-   * of $cfg->get( 'MCAnsweringAttempts' ) as points.
-   *
-   * @return $cfg->get( 'MCAnsweringAttempts' )
-   */
-   function getPossibleCredits(){
-     global $cfg;
-     return $cfg->get( 'MCAnsweringAttempts' );
+     return $this->getPossibleCredits()-$this->getPossibleCredits()/$cfg->get( 'MCAnsweringAttempts' )*$this->triesUp2Now;
    }
 
   /**
@@ -165,6 +267,43 @@ class LmElement extends Element{
 
 // helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - -
 
+  /**
+   * Returns the last available hint of or before $roundNr for the answer $answerNr.
+   * @param unknown $answerNr
+   * @param unknown $roundNr
+   */
+  private function getHint($answerNr, $roundNr){
+    for ($i=$roundNr; $i>=0; $i--){
+      if (isset($this->reactionArray[$answerNr][$i]) && !empty($this->reactionArray[$answerNr][$i]['hint'])){
+        return $this->reactionArray[$answerNr][$i]['hint'];
+      }
+    }
+    return '';
+  }
+
+  /**
+   * Returns all hints to the current answer matrix.
+   */
+  private function getHints(){
+    $hints = '';
+    if ($this->getReactionsEnabled() && !$this->isAnswered() && $this->triesUp2Now > 0){
+      // Diplay the reaction hints if available
+      for ($answerNumber=0; $answerNumber<count($this->answerArray); $answerNumber++){
+        $currentRound = $this->triesUp2Now-1;
+        $isAnswerCorrect = (($this->correctMask & (1<<$answerNumber)) == 1<<$answerNumber);
+        $didUserCheckAnswer = (isset($this->previousAnswersArray[$currentRound]) && (($this->previousAnswersArray[$currentRound] & (1<<$answerNumber)) == (1<<$answerNumber)));
+        if ($isAnswerCorrect == $didUserCheckAnswer){
+          // correctly checked, so no hint
+          continue;
+        }
+        // wrongly clicked, so give appropriate hints
+        if (($this->showHintForClicked && $didUserCheckAnswer) || !$this->showHintForClicked){
+          $hints .= $this->getHint($answerNumber, $currentRound).'';
+        }
+      }
+    }
+    return trim($hints);
+  }
   /**
   * This function displays the answer and contains some logic.
   *
@@ -214,67 +353,76 @@ class LmElement extends Element{
               "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n";            // needed by ../php/executeCommandOnElement.php
     }
 
-    // The answer(attempt)s will be put inside a table.
-    $ret .= "<table id=\"aTable".$this->idx."\" class=\"labsys_mop_m_answers_table\" cellspacing=\"5px\">\n".
-            "<tr><!-- fixed layout -->";
-            // all previous answering attempts
-            for ( $i=0; $i < $this->triesUp2Now; $i++ ) $ret .= "<td class=\"labsys_mop_m_answers_table_checkbox_cell\"></td>";
+    $ret.=$this->getAnswerFieldsHTML( FALSE, $isGettingAnswered );
 
-            // the solution
-            if ( !$this->isAnswered || !$this->isCorrectlyAnswered ) $ret .= "<td class=\"labsys_mop_m_answers_table_checkbox_cell\"></td>";
+    //// The answer(attempt)s will be put inside a table.
+    //$ret .= "<table id=\"aTable".$this->idx."\" class=\"labsys_mop_m_answers_table\" cellspacing=\"5px\">\n".
+    //        "<tr><!-- fixed layout -->";
+    //        // all previous answering attempts
+    //        for ( $i=0; $i < $this->triesUp2Now; $i++ ) $ret .= "<td class=\"labsys_mop_m_answers_table_checkbox_cell\"></td>";
 
-            // the answers
-            $ret .= "<td class=\"labsys_mop_m_answers_table_answer_cell\"></td></tr>\n";
+    //        // the solution
+    //        if ( !$this->isAnswered || !$this->isCorrectlyAnswered ) $ret .= "<td class=\"labsys_mop_m_answers_table_checkbox_cell\"></td>";
 
-    for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
-      $ret .=  "<tr class=\"labsys_mop_m_answers_table_row\">\n";
-      $actualAnswer = $this->displayPermutation[$i];
+    //        // the answers
+    //        $ret .= "<td class=\"labsys_mop_m_answers_table_answer_cell\"></td></tr>\n";
 
-      for ( $j=0; $j < $this->triesUp2Now; $j++ ) { // Iteration over the previous answers
-        $actualMask = $this->previousAnswersArray[$j]; // the answer given there
+    //for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
+    //  $ret .=  "<tr class=\"labsys_mop_m_answers_table_row\">\n";
+    //  $actualAnswer = $this->displayPermutation[$i];
 
-        $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell_".( $actualMask == $this->correctMask ?  "right" :  "wrong"  )."\">".
-                 "<input type=\"checkbox\" ".
-                        "tabindex=\"".$pge->nextTab++."\" ".
-                        "title='".$lng->get( 'isCorrect' )."' ".
-                         ( ($actualMask & LmElement::mask($actualAnswer)) ?
-                                    "checked=\"checked\" " : ''
-                                   ).
-                         "disabled=\"disabled\" ".
-                  " onchange='isDirty=true'></td>\n";
-       } // Iteration over the previous answers (end)
+    //  for ( $j=0; $j < $this->triesUp2Now; $j++ ) { // Iteration over the previous answers
+    //    $actualMask = $this->previousAnswersArray[$j]; // the answer given there
 
-       if ( !$this->isAnswered ) $actualMask = $this->previousAnswersArray[$this->triesUp2Now]; // the current answer
-                            else $actualMask = $this->correctMask; // the example solution
+    //    $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell_".( $actualMask == $this->correctMask ?  "right" :  "wrong"  )."\">".
+    //             "<input type=\"checkbox\" ".
+    //                    "tabindex=\"".$pge->nextTab++."\" ".
+    //                    "title='".$lng->get( 'isCorrect' )."' ".
+    //                     ( ($actualMask & LmElement::mask($actualAnswer)) ?
+    //                                "checked=\"checked\" " : ''
+    //                               ).
+    //                     "disabled=\"disabled\" ".
+    //              " onchange='isDirty=true'></td>\n";
+    //   } // Iteration over the previous answers (end)
 
-       if ( !$this->isAnswered || !$this->isCorrectlyAnswered ){
-       // show current answer or example solution
-        $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell\">".
-                 "<input type=\"checkbox\" ".
-                        "id=\"m".$this->idx."a".$actualAnswer."\" ".
-                        "name=\"ANSWER".$actualAnswer."\" ".
-                        "value=\"".LmElement::mask($actualAnswer)/*2^$actualAnswer*/."\" ".
-                        "tabindex=\"".$pge->nextTab++."\" ".
-                         ( ($actualMask & LmElement::mask($actualAnswer)) ?
-                                    "checked=\"checked\" " : ''
-                                   ).
-                         ( !$isGettingAnswered ?
-                                    "disabled=\"disabled\" " : ''
-                                   ).
-                  " onchange='isDirty=true'></td>\n";
-       }
+    //   if ( !$this->isAnswered ) $actualMask = $this->previousAnswersArray[$this->triesUp2Now]; // the current answer
+    //                        else $actualMask = $this->correctMask; // the example solution
 
-       // The answers:
-       $ret .=  "\t<td class=\"labsys_mop_m_answers_table_answer_cell\">".
-                "<label for=\"m".$this->idx."a".$actualAnswer."\">".
-                ( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))) ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
-                returnHTML( $this->answerArray[$actualAnswer] ).
-                ( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))) ?  "</span>"  : '' ).
-                "</label>".
-                "</td>\n</tr>\n";
-     } // iteration over the number of answers (end)
+    //   if ( !$this->isAnswered || !$this->isCorrectlyAnswered ){
+    //   // show current answer or example solution
+    //    $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell\">".
+    //             "<input type=\"checkbox\" ".
+    //                    "id=\"m".$this->idx."a".$actualAnswer."\" ".
+    //                    "name=\"ANSWER".$actualAnswer."\" ".
+    //                    "value=\"".LmElement::mask($actualAnswer)/*2^$actualAnswer*/."\" ".
+    //                    "tabindex=\"".$pge->nextTab++."\" ".
+    //                     ( ($actualMask & LmElement::mask($actualAnswer)) ?
+    //                                "checked=\"checked\" " : ''
+    //                               ).
+    //                     ( !$isGettingAnswered ?
+    //                                "disabled=\"disabled\" " : ''
+    //                               ).
+    //              " onchange='isDirty=true'></td>\n";
+    //   }
 
-     $ret .= "</table>\n";
+    //   // The answers:
+    //   $ret .=  "\t<td class=\"labsys_mop_m_answers_table_answer_cell\">".
+    //            "<label for=\"m".$this->idx."a".$actualAnswer."\">".
+    //            ( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))) ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
+    //            returnHTML( $this->answerArray[$actualAnswer] ).
+    //            ( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))) ?  "</span>"  : '' ).
+    //            "</label>".
+    //            "</td>\n</tr>\n";
+    //} // iteration over the number of answers (end)
+
+    //$ret .= "</table>\n";
+
+
+    $hints = $this->getHints();
+
+    if(!empty($hints)){
+      $ret .= '<div class="mcAnswerHints">'.$hints.'</div>';
+    }
 
      // If the element is not answered a FORM is needed.
      if ( $isAnswerable ){ // Form is needed -> button
@@ -292,6 +440,7 @@ class LmElement extends Element{
                  $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::mStudentOpen);
                }
      }
+
      if ( $this->isAnswered && ($this->answerExplanation != "") )
       // answer explanation
       $ret .= "<div class=\"labsys_mop_m_answer_explanation\">".returnHTML( $this->answerExplanation )."</div>\n";
@@ -311,8 +460,8 @@ class LmElement extends Element{
   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   * @return string        The html code of the element's view view.
   */
-  function show( $fullAddress, $paragraph="" ){
-    global $usr, $lng, $pge, $url;
+  function show( $fullAddress, $paragraph='' ){
+    global $usr, $lng, $pge, $url, $cfg;
     if (  !$this->isVisible() ){ /* not enough rights->no content */
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
       exit;
@@ -320,10 +469,7 @@ class LmElement extends Element{
 
     $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::mOpen);
 
-    if ($this->question == ""){ return "'()"; exit; }
-
-
-    parseHTML( $this->question ); // Process [HTML].
+    if (empty($this->question)){ return "'()"; exit; }
 
     $answers = "";
 
@@ -358,18 +504,21 @@ class LmElement extends Element{
         }
     }
 
-    return "<div class=\"labsys_mop_elements_m_around\">".
+    return '<div class="labsys_mop_elements_m_around">'.
+           ($this->isAnswered ? '<div class="'.($this->isCorrectlyAnswered ? 'correct' : ($this->triesUp2Now < $cfg->get('MCAnsweringAttempts') ? 'wrongButAnswerable' : 'wrong' ) ).'">' : '' ).
            EM::viewTopMultipleChoice( $this, $fullAddress ).
-           '<div id="'.$fullAddress.'" class="labsys_mop_contentArea">'.PHP_EOL. // anchor for retrieving after saving
+           "<div class=\"labsys_mop_contentArea\">\n".
+             "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
              "<div class=\"labsys_mop_m_question\">".
               "<label for=\"aTable".$this->idx."\">".
                ( $this->isAnswered || $this->isChangedByUser( end($this->previousAnswersArray) ) ? '' : "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get('explainUnChanged')."\"> ").
-               '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->question.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>'.
+               ( !empty($paragraph) ?  $paragraph.' '  : '' ).returnHTML( $this->question ).
               "</label>".
              "</div>\n".
                $answers.
            "</div>\n".
            EM::viewBottomMultipleChoice( $this, $fullAddress ).
+           ($this->isAnswered ? '</div>' : '' ).
            "</div>";
   }
 
@@ -388,10 +537,7 @@ class LmElement extends Element{
       exit;
     }
 
-    if ($this->question == ""){ echo "'()"; exit; }
-
-    parseHTML( $this->question ); // Process [HTML].
-    $this->question = ( $pge->replaceConstants( $this->question ) ); // Process custon fields
+    if (empty($this->question)){ echo "'()"; exit; }
 
     $epubExporter = LSE_Exporter::getInstance();
     $answerArray = array();
@@ -400,17 +546,15 @@ class LmElement extends Element{
 
     // The answers using the current permutation array
     for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
-      parseHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
-      //$pge->replaceConstants( $this->answerArray[ $this->displayPermutation[$i] ] ); // Process custon fields
-      $answerArray[] = $pge->replaceConstants( $this->answerArray[ $this->displayPermutation[$i] ] );
-      // echo( '[m-element] answer: [ ]'.htmlentities( $this->answerArray[ ).'<br>' );
+      $this->answerArray[ $this->displayPermutation[$i] ] = returnHTML( $this->answerArray[ $this->displayPermutation[$i] ] );
+      $answerArray[] = $this->answerArray[ $this->displayPermutation[$i] ] ;
     }
 
     $epubExporter->save('Lm',
         $fullAddress,
         '',
         array(
-            'question'   => ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->question,
+            'question'   => ( $paragraph != "" ?  $paragraph.". "  : '' ).returnHTML( $this->question ),
             'answerArray' => $answerArray,
         )
     );
@@ -423,41 +567,146 @@ class LmElement extends Element{
 // These function were originally coded inline into the showEdit method but php doesn't support inline
 // methods. So I put them out again.
     /**
+     * Returns the checkmarks for question # $questionNumber.
+     * @param unknown $questionNumber
+     * @param unknown $isEditable
+     */
+    private function getCheckMarksHTML( $questionNumber, $isGettingEdited=FALSE, $isGettingAnswered=FALSE ){
+      global $pge,$usr,$url,$cfg;
+      $returnValue = '';
+      for ($i=0; $i<=$this->triesUp2Now; $i++){
+      	// Shall the background be colored as feedback of the correctness of the answer?
+      	$colorMe = !$isGettingEdited && ($i < $this->triesUp2Now);
+      	// Shall each checkbox be individually colored for detailed feedback?
+      	$individualColors = $colorMe && $this->isAnswered;
+      	$colorExampleSolution = FALSE;
+      	
+      	// Show example solution?
+      	$showExampleSolution = ($i == $cfg->get('MCAnsweringAttempts')) || 		 // The last is always empty... 
+      						   $isGettingEdited || 
+      						   (($i == $this->triesUp2Now) && !$isGettingEdited && $usr->isOfKind(IS_EX_SOLUTION_VIEWER) && !$url->available('hideExampleSolutionInThisTab')) ||
+      						   (($i == $this->triesUp2Now) && $this->isCorrectlyAnswered);
+      	if ($showExampleSolution) {
+      		$colorExampleSolution = ($i == $this->triesUp2Now) && !$isGettingEdited && $usr->isOfKind(IS_EX_SOLUTION_VIEWER) && !$url->available('hideExampleSolutionInThisTab');
+      		$this->previousAnswersArray[$i] = $this->getCorrectMask(); // show solution.
+      	}
+
+        $returnValue .= '<div class="checkMark">'.
+                        // Feedback at the end:
+                        ($colorMe && $individualColors ? '<div class="'.(($this->previousAnswersArray[$i] & $this->mask($questionNumber)) == ($this->getCorrectMask() & $this->mask($questionNumber)) ? 'right' : 'wrong').'">' : '').
+                        // Feedback in between:
+                        ($colorMe && !$individualColors ? '<div class="'.(($this->previousAnswersArray[$i] & $this->getCorrectMask()) == $this->getCorrectMask() ? 'right' : 'wrong').'">' : '').
+                        // Example Solution
+                        ($colorExampleSolution ? '<div class="'.($this->mask($questionNumber) == ($this->getCorrectMask() & $this->mask($questionNumber)) ? 'exampleSolutionCorrect' : 'exampleSolutionWrong').'">' : '').
+                        '<input type="'.($this->getOnlyOneAnswerPossible() & !$isGettingEdited ? 'radio' : 'checkbox').'"'.
+                        ((isset($this->previousAnswersArray[$i]) && (($this->previousAnswersArray[$i] & (1<<$questionNumber)) == (1<<$questionNumber))) ||
+                         ($showExampleSolution && (($this->correctMask & $this->mask($questionNumber)) == $this->mask($questionNumber))
+                              ) ? ' checked="checked"' : '').
+                        ' name="mcCheckMark_q'.$this->idx.($this->getOnlyOneAnswerPossible() && !$showExampleSolution ? ($i == $this->triesUp2Now ? '':'_old'.$i).'" value="'.(1<<$questionNumber) : '_a'.$questionNumber).'"'.
+                        ' id="mcCheckMark_q'.$this->idx.'_a'.$questionNumber.'"'.
+                        ( $i<$this->triesUp2Now || !($isGettingEdited || $isGettingAnswered) ? ' disabled="disabled"' : ' onchange="isDirty=true" tabindex="'.$pge->nextTab++.'"').
+                        '></div>'.
+                        ($colorMe || $colorExampleSolution ? '</div>' : '' ).PHP_EOL;
+        if ($this->previousAnswersArray[$i] == $this->getCorrectMask()){ break; }
+      }
+      return $returnValue;
+    }
+
+    /**
+     * Returns the answer to the $questionNumber. If $isGettingEdited the hints and credit deductions are shown.
+     * @param integer $questionNumber
+     * @param boolean $isGettingEdited
+     */
+    private function getAnswerHTML( $answerNumber, $isGettingEdited=FALSE ){
+      global $cfg, $pge;
+      $returnValue = '<div class="answers">'.
+                     ( $isGettingEdited ? '<textarea tabindex="'.$pge->nextTab++.
+                                                  '" name="mcAnswer_q'.$this->idx.'_a'.$answerNumber.'"'.
+                                                  ' class="labsys_mop_textarea" rows="'.$cfg->get('DefaultMCQuestionRows').'"'.
+                                                  ' onchange="isDirty=true">' :
+                                          '<label for="mcCheckMark_q'.$this->idx.'_a'.$answerNumber.'">').
+                     (!isset($this->getAnswerArray()[$answerNumber]) ? '' :
+                         ($isGettingEdited ? returnEditable($this->getAnswerArray()[$answerNumber]) : returnHTML($this->getAnswerArray()[$answerNumber]) )).
+                     ( $isGettingEdited ? '</textarea>' :
+                                          '</label>').PHP_EOL;
+      if ($isGettingEdited && ($this->getReactionsEnabled() || $this->getDetailedGradingEnabled())){
+        // Show hints that are shown when the question is answered wrongly and the credit reduction that happens when the link is shown.
+        for ($tryNo = 0; $tryNo < $cfg->get("MCAnsweringAttempts"); $tryNo++){
+          $returnValue .= '<div class="answerReaction"'.($this->horizontalLayout ? '': ' style="width:'.(1/$cfg->get("MCAnsweringAttempts")*100-2).'%"').'>'.
+                          ($tryNo+1).
+                          (!$this->getReactionsEnabled() || ($tryNo >= $cfg->get("MCAnsweringAttempts")-1) ? '':
+                                                          '<textarea tabindex="'.$pge->nextTab++.
+                                                                  '" name="mcAnswer_reaction_q'.$this->idx.'_a'.$answerNumber.'_r'.$tryNo.
+                                                                  '" class="labsys_mop_textarea" rows="1"'.
+                                                                  ' onchange="isDirty=true">'.
+                                                                  (isset($this->reactionArray[$answerNumber][$tryNo]) ? $this->reactionArray[$answerNumber][$tryNo]['hint'] :
+                                                                                                                     '' ).
+                                                          '</textarea>'.PHP_EOL
+                              ).
+                          (!$this->getDetailedGradingEnabled() ? '':
+                                                          '<input tabindex="'.$pge->nextTab++.
+                                                               '" type="text" name="mcAnswer_reaction_credits_q'.$this->idx.'_a'.$answerNumber.'_r'.$tryNo.'" '.
+                                                               'class="labsys_mop_input" maxlength="255" value="'.(isset($this->reactionArray[$answerNumber][$tryNo]) ? $this->reactionArray[$answerNumber][$tryNo]['creditReduction'] : 0).
+                                                               '" onchange="isDirty=true">'.PHP_EOL
+                              ).
+                          '</div>';
+        }
+      }
+      return $returnValue.'</div>';
+    }
+
+    /**
     * Returns the answer fields (realized as function not as loop so that $pge->nextTab is set correctly).
-    *
-    * @param &$answerArray    Array containing the answers.
-    * @param &$correctMask    Bitmask telling ehich answers are correct.
     *
     * @return string          The html code of the answer field's inputs.
     */
-    function answerFields( &$answerArray, &$correctMask ){
-      global $cfg, $pge, $lng;
-      $answerFields = "<table class=\"labsys_mop_m_answers_table\">\n";
-      for ( $i=0; $i < (count( $answerArray ) + $cfg->get("DefaultMCAnswerPlusAmount")); $i++){
-        $answerFields .= "<tr>\n".
-                         "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell\">".
-                         "<input type=\"checkbox\" ".
-                                "name=\"CORRECTMASK".$i."\" ".
-                                "value=\"".$i."\" ".
-                                "tabindex=\"".$pge->nextTab++."\" ".
-                                "title='".$lng->get( 'isCorrect' )."'".
-                                 ( ( $correctMask & LmElement::mask($i) ) ?   " checked=\"checked\""  : '' ).
-                          " onchange='isDirty=true'></td>\n".
-                          "\t<td class=\"labsys_mop_m_answers_table_answer_cell\">".
-                          "<textarea tabindex=\"".$pge->nextTab++."\" ".
-                                    "id=\"a".$i."\" ".
-                                    "name=\"ANSWER".$i."\" ".
-                                    "class=\"labsys_mop_textarea\" ".
-                                    "rows=\"".$cfg->get("DefaultMCAnswerRows")."\" onchange='isDirty=true'>";
+    private function getAnswerFieldsHTML( $isGettingEdited=FALSE, $isGettingAnswered=FALSE ){
+      global $cfg, $pge, $lng, $usr;
+      $returnValue =  '<div class="labsys_mop_m_answers">';
+      // How many answer fields?
+      for ( $i=0; $i < (count( $this->getAnswerArray() ) + ($isGettingEdited ? $cfg->get("DefaultMCAnswerPlusAmount") : 0)); $i++){
+        $returnValue .= '<div class="answer'.($this->horizontalLayout ? 'Horizontal" style="width:'.(1/$cfg->get("MCAnsweringAttempts")*100-11).'%"': '"').'>'.PHP_EOL.
+                        $this->getCheckMarksHTML(($isGettingEdited || $this->doNotShuffleAnswers ? $i : $this->displayPermutation[$i]), $isGettingEdited, $isGettingAnswered).
+                        $this->getAnswerHTML(($isGettingEdited || $this->doNotShuffleAnswers ? $i : $this->displayPermutation[$i]), $isGettingEdited).
+                        '<div class="clearBoth"></div></div>'.PHP_EOL;
+      }
+      $returnValue .= '</div>';
 
-         // fror available answers put them into the text area
-         if ( $i < count( $answerArray ) ) $answerFields .= returnEditable( $answerArray[$i] ); // _ -> &#x005F; needed cause otherwise Replacement on $pge->show
+      return $returnValue;
 
-         $answerFields .= "</textarea>".
-                          "</td></tr>\n";
-       }
-       $answerFields .= "</table>";
-       return $answerFields;
+
+
+
+
+//       $answerFields = "<table class=\"labsys_mop_m_answers_table\">\n";
+
+
+
+//       for ( $i=0; $i < (count( $this->getAnswerArray() ) + $cfg->get("DefaultMCAnswerPlusAmount")); $i++){
+//         $answerFields .= "<tr>\n".
+//                          "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell\">".
+//                          '<input type="'.( $this->onlyOneAnswerPossible ? 'radio' : 'checkbox' ).'" '.
+//                                 "name=\"CORRECTMASK".( $this->onlyOneAnswerPossible ? $this->idx : $i )."\" ".
+//                                 "value=\"".$i."\" ".
+//                                 "tabindex=\"".$pge->nextTab++."\" ".
+//                                 "title='".$lng->get( 'isCorrect' )."'".
+//                                  ( ( $this->getCorrectMask() & LmElement::mask($i) ) ?   " checked=\"checked\""  : '' ).
+//                           " onchange='isDirty=true'></td>\n".
+//                           "\t<td class=\"labsys_mop_m_answers_table_answer_cell\">".
+//                           "<textarea tabindex=\"".$pge->nextTab++."\" ".
+//                                     "id=\"a".$i."\" ".
+//                                     "name=\"ANSWER".$i."\" ".
+//                                     "class=\"labsys_mop_textarea\" ".
+//                                     "rows=\"".$cfg->get("DefaultMCAnswerRows")."\" onchange='isDirty=true'>";
+
+//          // fror available answers put them into the text area
+//          if ( $i < count( $this->getAnswerArray() ) ) $answerFields .= returnEditable( $this->getAnswerArray()[$i] ); // _ -> &#x005F; needed cause otherwise Replacement on $pge->show
+
+//          $answerFields .= "</textarea>".
+//                           "</td></tr>\n";
+//        }
+//        $answerFields .= "</table>";
+//        return $answerFields;
      }
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -471,6 +720,11 @@ class LmElement extends Element{
   function showEdit( $fullAddress ){
     global $lng, $url, $pge, $cfg;
     $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::mEditorOpen);
+    $answerNoptions = '';
+    $selected = (is_null($this->requiresNcorrect) ? -1 : $this->requiresNcorrect);
+    for ($i=-1; $i < $this->answerCount+$cfg->get('DefaultMCAnswerPlusAmount'); $i++){
+    	$answerNoptions .= '<option value="'.$i.'"'.($i == $selected ? 'selected="selected"' : '').'>'.($i>=0 ? $i : '-').'</option>';
+    }
 
      return EM::editTopMultipleChoice( $this, $fullAddress ).
             "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=m")."\">\n".
@@ -485,9 +739,14 @@ class LmElement extends Element{
             returnEditable( $this->question ). /* _ -> &#x005F; needed cause otherwise Replacement on $pge->show */
             "</textarea>\n".
 
+            '<input tabindex="'.$pge->nextTab++.
+            '" type="text" name="mcCredits_q'.$this->idx.'" '.
+            'class="labsys_mop_input" maxlength="255" value="'.$this->getPossibleCredits().
+            '" onchange="isDirty=true">'.PHP_EOL.
+
           // answers
             "<label for=\"a0\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputAnswers")."</label>".
-            $this->answerFields( $this->answerArray, $this->correctMask ).
+            $this->getAnswerFieldsHTML(TRUE).
 
           // answer explanation
             "<label for=\"aE\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputAnswerExpl")."</label>".
@@ -496,6 +755,57 @@ class LmElement extends Element{
             "</textarea>\n".
 
             "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
+
+          // element options
+            "<fieldset><legend>".$lng->get("options")."</legend>\n".
+
+            '<div>'.
+            '<input type="hidden" name="DO_NOT_SHUFFLE_ANSWERS" value="0" /><input tabindex="'.$pge->nextTab++.'" type="checkbox" id="doNotShuffleAnswers" name="DO_NOT_SHUFFLE_ANSWERS" value="1"'.( $this->doNotShuffleAnswers ? ' checked="checked"' : '').'>'.
+            '<label for="doNotShuffleAnswers" class="labsys_mop_input_field_label">'.$lng->get('doNotShuffleAnswers').'</label>'.
+            '</div>'.PHP_EOL.
+
+            '<div>'.
+            '<input type="hidden" name="ONLY_ONE_ANSWER_POSSIBLE" value="0" /><input tabindex="'.$pge->nextTab++.'" type="checkbox" id="onlyOneAnswerPossible" name="ONLY_ONE_ANSWER_POSSIBLE" value="1"'.( $this->onlyOneAnswerPossible ? ' checked="checked"' : '').'>'.
+            '<label for="onlyOneAnswerPossible" class="labsys_mop_input_field_label">'.$lng->get('onlyOneAnswerPossible').'</label>'.
+            '</div>'.PHP_EOL.
+            
+            '<div>'.
+            '<select tabindex="'.$pge->nextTab++.'" name="CORRECT_WHEN_N_CORRECT_SELECTED" id="correctWhenNcorrectSelected" size="1">'.
+            $answerNoptions.
+			'</select>'.
+            '<label for="CORRECT_WHEN_N_CORRECT_SELECTED" class="labsys_mop_input_field_label">'.$lng->get('correctWhenNCorrectSelected').'</label>'.
+            '</div>'.PHP_EOL.
+
+            '<div>'.
+            '<input type="hidden" name="REACTIONS" value="0" /><input tabindex="'.$pge->nextTab++.'" type="checkbox" id="reactions" name="REACTIONS" value="1"'.( $this->getReactionsEnabled() ? ' checked="checked"' : '').'>'.
+            '<label for="reactions" class="labsys_mop_input_field_label">'.$lng->get('reactionsEnable').'</label>'.
+            '</div>'.PHP_EOL.
+
+            '<div class="subOptions">'.
+            '<div>'.
+            '<div><input'.( $this->getReactionsEnabled() ? '' : ' disabled="disabled"').' tabindex="'.$pge->nextTab++.'" type="radio" id="hintForClicked" name="HINT_FOR_CLICKED" value="1"'.( $this->getHintForKlicked() ? ' checked="checked"' : '').'>'.
+            '<label for="hintForClicked" class="labsys_mop_input_field_label">'.$lng->get('hintForClicked').'</label></div>'.
+            '<div><input'.( $this->getReactionsEnabled() ? '' : ' disabled="disabled"').' tabindex="'.$pge->nextTab++.'" type="radio" id="hintForWrongClicked" name="HINT_FOR_CLICKED" value="0"'.( !$this->getHintForKlicked() ? ' checked="checked"' : '').'>'.
+            '<label for="hintForWrongClicked" class="labsys_mop_input_field_label">'.$lng->get('hintForWrongClicked').'</label></div>'.
+            '</div>'.PHP_EOL.
+
+            '<div>'.
+            '<input type="hidden" name="RESHOW_LAST_HINT" value="0" /><input'.( $this->getReactionsEnabled() ? '' : ' disabled="disabled"').' tabindex="'.$pge->nextTab++.'" type="checkbox" id="reshowLastHint" name="RESHOW_LAST_HINT" value="1"'.( $this->getReshowLastHint() ? ' checked="checked"' : '').'>'.
+            '<label for="reshowLastHint" class="labsys_mop_input_field_label">'.$lng->get('reshowLastHint').'</label>'.
+            '</div>'.
+            '</div>'.PHP_EOL.
+
+            '<div>'.
+            '<input type="hidden" name="DETAILED_CREDITS" value="0" /><input tabindex="'.$pge->nextTab++.'" type="checkbox" id="detailedCredits" name="DETAILED_CREDITS" value="1"'.( $this->getDetailedGradingEnabled() ? ' checked="checked"' : '').'>'.
+            '<label for="detailedCredits" class="labsys_mop_input_field_label">'.$lng->get('detailedCreditsEnable').'</label>'.
+            '</div>'.PHP_EOL.
+
+            '<div>'.
+            '<input type="hidden" name="HORIZONTAL_LAYOUT" value="0" /><input tabindex="'.$pge->nextTab++.'" type="checkbox" id="horizontalLayout" name="HORIZONTAL_LAYOUT" value="1"'.( $this->horizontalLayout ? ' checked="checked"' : '').'>'.
+            '<label for="horizontalLayout" class="labsys_mop_input_field_label">'.$lng->get('horizontalLayout').'</label>'.
+            '</div>'.PHP_EOL.
+
+            "</fieldset>\n".
 
           // element properties
             "<fieldset><legend>".$lng->get("properties")."</legend>\n".
@@ -511,7 +821,7 @@ class LmElement extends Element{
                   "</div>\n".
                 "</fieldset>\n".
               "</td><td valign=\"top\" width=\"60%\">\n".
-                "<fieldset><legend>".$lng->get("rights")." (".$this->visibleFor.")</legend>\n".
+                "<fieldset><legend>".$lng->get("rights")."</legend>\n".
                 "<div class=\"labsys_mop_input_field_note\">".$lng->get("visibleFor")."</div>\n".
                 "<div class=\"labsys_mop_in_fieldset\">\n".
                 showRightsVertical( "UR", $this->visibleFor, false ).
@@ -535,7 +845,7 @@ class LmElement extends Element{
             EM::editBottomMultipleChoice( $this, $fullAddress ).
             $this->show($fullAddress);
   }
- 
+
   /**
   * Used to save the edited element.
   *
@@ -543,21 +853,19 @@ class LmElement extends Element{
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
   */
   /*static*/ function save(){
-    global $mDBI, $url, $lng, $usr;
+    global $mDBI, $url, $lng, $usr, $cfg;
 
     // check for all necessary values posted
     if ( !isset($_POST['IDX']) ||
          !isset($_POST['REDIRECTTO']) ||
          !isset($_POST['FULLADDRESS']) ||
          !isset($_POST['QUESTION']) ||
-         !isset($_POST['ANSWER0']) ||
+         !isset($_POST['mcAnswer_q'.$this->idx.'_a0']) ||
          !isset($_POST['ANSWER_EXPLANATION'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-
-    // Validity (session ID) is checked by the calling script yet.
 
     // only content editors are allowed to save
     if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
@@ -566,25 +874,63 @@ class LmElement extends Element{
                                                 }
 
     // create answerArray + compute correctMask
-    $answerArray = array();
+    $answerArray = Array();
     $correctMask=0;
-    $j=0;
-    for ( $i = 0; isset( $_POST['ANSWER'.$i] ); $i++ )
-      if ($_POST['ANSWER'.$i] != ""){
-        array_push($answerArray, $_POST['ANSWER'.$i]);
-        if ( isset( $_POST[ "CORRECTMASK".$i] ) ) $correctMask += (1 << $j);
-        $j++;
+    $reactionArray=Array();
+    for ( $answerNumber = 0; isset( $_POST['mcAnswer_q'.$this->idx.'_a'.$answerNumber] ); $answerNumber++ ){
+      $currentAnswer = trim($_POST['mcAnswer_q'.$this->idx.'_a'.$answerNumber]);
+      if (empty($currentAnswer)){
+        continue; // Skip empty answers...
       }
+      $answerArray[] = getTidiedHTML($currentAnswer);
+      if (isset($_POST['mcCheckMark_q'.$this->idx.'_a'.$answerNumber])){
+        $correctMask += $this->mask($answerNumber);
+      }
+      for( $tryNo=0;
+            isset($_POST['mcAnswer_reaction_q'.$this->idx.'_a'.$answerNumber.'_r'.$tryNo]) ||
+            isset($_POST['mcAnswer_reaction_credits_q'.$this->idx.'_a'.$answerNumber.'_r'.$tryNo]);
+            $tryNo++){
+        $reactionArray[$answerNumber][]=Array('hint' => (isset($_POST['mcAnswer_reaction_q'.$this->idx.'_a'.$answerNumber.'_r'.$tryNo])?
+                                            getTidiedHTML($_POST['mcAnswer_reaction_q'.$this->idx.'_a'.$answerNumber.'_r'.$tryNo]) :
+                                            (isset($this->reactionArray[$answerNumber][$tryNo]['hint']) ? $this->reactionArray[$answerNumber][$tryNo]['hint'] : '') // Preserve existing value
+                                            ),
+                    'creditReduction' => (isset($_POST['mcAnswer_reaction_credits_q'.$this->idx.'_a'.$answerNumber.'_r'.$tryNo]) &&
+                                          is_numeric($_POST['mcAnswer_reaction_credits_q'.$this->idx.'_a'.$answerNumber.'_r'.$tryNo]) ?
+                                            $_POST['mcAnswer_reaction_credits_q'.$this->idx.'_a'.$answerNumber.'_r'.$tryNo] :
+                                            (isset($this->reactionArray[$answerNumber][$tryNo]['creditReduction']) ? $this->reactionArray[$answerNumber][$tryNo]['creditReduction'] : 0) // Preserve existing value
+                                            ));
+      }
+    }
+    if (isset($_POST['mcCheckMark_q'.$this->idx])){
+      $correctMask = $_POST['mcCheckMark_q'.$this->idx];
+    }
+
+//     print_r($reactionArray);
+//     echo('<br><br>');
+//     print_r($_POST);
+//     exit;
 
     // compute user rights:
     $userRights=0;
     for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1) if ( isset( $_POST[ "UR_".$i] ) ) $userRights += $_POST["UR_".$i];
 
+    // Here it will be necessary to update THIS element in a good way!
+    // Update this element
     $newMultipleChoice = new LmElement( $_POST['IDX'],
-                                        $_POST['QUESTION'],
+                                        getTidiedHTML($_POST['QUESTION']),
                                         $answerArray,
-                                        $_POST['ANSWER_EXPLANATION'],
+                                        (empty($reactionArray) ? $this->reactionArray : $reactionArray), // preserve data
+                                        getTidiedHTML($_POST['ANSWER_EXPLANATION']),
                                         $correctMask,
+                                        (is_numeric($_POST['mcCredits_q'.$this->idx]) ? $_POST['mcCredits_q'.$this->idx] : $cfg->get('MCAnsweringAttempts')),
+                                        $_POST['DO_NOT_SHUFFLE_ANSWERS'] == 1,
+                                        $_POST['ONLY_ONE_ANSWER_POSSIBLE'] == 1,
+    									( $_POST['CORRECT_WHEN_N_CORRECT_SELECTED'] < 0 ? NULL : $_POST['CORRECT_WHEN_N_CORRECT_SELECTED']),
+                                        $_POST['REACTIONS'] == 1,
+                                        $_POST['HINT_FOR_CLICKED'] == 1,
+                                        $_POST['RESHOW_LAST_HINT'] == 1,
+                                        $_POST['DETAILED_CREDITS'] == 1,
+                                        $_POST['HORIZONTAL_LAYOUT'] == 1,
                                         $userRights,
                                         ($_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1"),
                                         $this->history
@@ -630,13 +976,22 @@ class LmElement extends Element{
     // Validity (session ID) is checked by the calling script yet.
 
     // compute bitmask (sum of posted values).
-    $sum = 0; for ($i = 0; $i < $this->answerCount; $i++) if ( isset( $_POST['ANSWER'.$i] ) ) $sum += $_POST['ANSWER'.$i];
+    $answerMask=0;
+    for ( $answerNumber = 0; $answerNumber<count($this->answerArray); $answerNumber++ ){
+      if (isset($_POST['mcCheckMark_q'.$this->idx.'_a'.$answerNumber])){
+        $answerMask += $this->mask($answerNumber);
+      }
+    }
+    if (isset($_POST['mcCheckMark_q'.$this->idx])){
+      $answerMask = $_POST['mcCheckMark_q'.$this->idx];
+    }
+
 
     // load the dataset
     $this->loadUserData4( $usr->uid );
 
     // set this at the end
-    $this->previousAnswersArray[$this->triesUp2Now] = $sum;
+    $this->previousAnswersArray[$this->triesUp2Now] = $answerMask;
 
     // store the new dataset
     $this->mcDBI->setData4( $usr->uid, $this->idx, $this->displayPermutation, $this->previousAnswersArray );

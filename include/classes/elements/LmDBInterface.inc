@@ -36,7 +36,7 @@ class LmDBInterface {
   var $myDBC;
   var $myTable;
 
-  function LmDBInterface(){
+  function __construct() {
     global $dDBI;
     $this->myDBC   = $dDBI;
     $this->myTable = "multiple_choices";
@@ -48,16 +48,28 @@ class LmDBInterface {
    * @return LcElement The new element filled with the data from the DB.
    */
   function createElementFromDbResult( &$data, $isInColl=false ){
-    return new LmElement( $data['idx'],                                         // $idx
-                          $this->myDBC->unEscapeString($data['question']),                      // $question
-                          unserialize( $this->myDBC->unEscapeString($data['answer_array']) ),   // $answerArray
-                          $this->myDBC->unEscapeString($data['answer_explanation']),            // $answerExplanation
-                          $data['correct_mask'],                                // $correctMask
-                          $data['visible_for'],                                 // $visibleFor
-                          ($data['visible_only_in_collection'] == "1"),         // $visibleOnlyInCollection
-                          $data['history'],                                     // $history
-                          $isInColl                                             // $isInColl
-                        );
+    global $cfg;
+    $newElement = new LmElement(  $data['idx'],                                         // $idx
+                                  $this->myDBC->unEscapeString($data['question']),                      // $question
+                                  unserialize( $this->myDBC->unEscapeString($data['answer_array']) ),   // $answerArray
+                                  (isset($data['reaction_array']) && !empty($data['reaction_array']) ? unserialize( $this->myDBC->unEscapeString($data['reaction_array']) ) : Array()),   // $reactionArray
+                                  $this->myDBC->unEscapeString($data['answer_explanation']),            // $answerExplanation
+                                  $data['correct_mask'],                                // $correctMask
+                                  (isset($data['possible_credits']) && ($data['possible_credits']!=-1) ? round($this->myDBC->unEscapeString( $data['possible_credits'] )/100, 2) : $cfg->get('MCAnsweringAttempts') ), // $possibleCredits
+                                  (isset($data['do_not_shuffle_answers']) ? $data['do_not_shuffle_answers'] == 1 : FALSE),
+                                  (isset($data['only_one_answer_possible']) ? $data['only_one_answer_possible'] == 1 : FALSE),
+                                  (isset($data['requires_n_correct']) ? $data['requires_n_correct'] : NULL),
+                                  (isset($data['reactions']) ? $data['reactions'] == 1 : FALSE), //-1 is the default...
+                                  (isset($data['show_hint_for_clicked']) ? $data['show_hint_for_clicked'] == 1 : FALSE), //-1 is the default...
+                                  (isset($data['reshow_last_hint']) ? $data['reshow_last_hint'] == 1 : FALSE), //-1 is the default...
+                                  (isset($data['detailed_grading']) ? $data['detailed_grading'] == 1 : FALSE),
+                                  (isset($data['horizontal_layout']) ? $data['horizontal_layout'] == 1 : FALSE),
+                                  $data['visible_for'],                                 // $visibleFor
+                                  ($data['visible_only_in_collection'] == "1"),         // $visibleOnlyInCollection
+                                  $data['history'],                                     // $history
+                                  $isInColl                                             // $isInColl
+                                );
+    return $newElement;
   }
 
   /**
@@ -104,40 +116,32 @@ class LmDBInterface {
     }
   }
 
+  function getMenuData2idx($idx, $isInColl=false ){
+    return $this->getData2idx($idx, $isInColl);
+  }
+
   /**
-  * For the menu only a little amount of data is needed so here only that stuff is loaded.
-  *
-  * Returns a LmElement to the specified $idx that is only PARTIALLY FILLED.
-  * Menu entries appear only if the element is visible. The element is filled so
-  * that it can tell whether it is visible and has all relevant properties to return
-  * its menu.
-  *
-  * @param $idx               The element's index (also idx in the database).
-  * @param $isInColl          The element might be restricted to be visible only inside a collection.
-  *                           Since this is kind of the elements constructor this argument is just
-  *                           passed to the real constructor.
-  *
-  * @return LmElement         Only partially filled with data!
-  */
-  function getMenuData2idx( $idx, $isInColl=false ){
-    global $cfg;
-    $result = $this->myDBC->mkSelect( "idx, question, visible_for, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = $result->fetch_array()) ){
-      //trigger_error( $this->myDBC->link->error. "mc with idx not found: ".$idx, E_USER_WARNING );
-      return false;
-      exit;
-    }else{
-      return new LmElement( $data['idx'],                                         // $idx
-                            $data['question'],                                                   // $question
-                            "",                                                   // $answerArray
-                            "",                                                   // $answerExplanation
-                            0,                                                    // $correctMask
-                            $data['visible_for'],                                 // $visibleFor
-                            ($data['visible_only_in_collection'] == "1"),         // $visibleOnlyInCollection
-                            false,  /* false indicates "only menu data" */        // $history
-                            $isInColl                                             // $isInColl
-                          );
-    }
+   * Creates the database set string from the element.
+   * @param unknown $element
+   * @return string
+   */
+  function createSetStringFromElement( &$eM ){
+    return    'question="'.              $this->myDBC->escapeString( $eM->getQuestion() ).'", '.
+              'answer_array="'.          $this->myDBC->escapeString( serialize($eM->getAnswerArray()) ).'", '.
+              'reaction_array="'.        $this->myDBC->escapeString( serialize($eM->getReactionArray() )).'",'.
+              'answer_explanation="'.    $this->myDBC->escapeString( $eM->getAnswerExplanation() ).'", '.
+              'correct_mask="'.          $eM->getCorrectMask().'", '.
+              'possible_credits="'.      (!is_numeric($eM->getPossibleCredits()) ? 0 : round($eM->getPossibleCredits()*100,0)).'", '.
+              'do_not_shuffle_answers='. ($eM->getDoNotShuffleAnswers() ? 1 : 0).', '.
+              'only_one_answer_possible='.($eM->getOnlyOneAnswerPossible() ? 1 : 0).', '.
+              'requires_n_correct='.     (is_null($eM->getRequiresNcorrect())? 'NULL' : $eM->getRequiresNcorrect()).', '.
+              'reactions='.              ($eM->getReactionsEnabled() ? 1 : 0).', '.
+              'show_hint_for_clicked='.  ($eM->getHintForKlicked() ? 1 : 0).', '.
+              'reshow_last_hint='.       ($eM->getReshowLastHint() ? 1 : 0).', '.
+              'detailed_grading='.       ($eM->getDetailedGradingEnabled() ? 1 : 0).', '.
+              'horizontal_layout='.      ($eM->getHorizontalLayout() ? 1 : 0).', '.
+              'visible_for="'.           $eM->getVisibleFor().'", '.
+              'visible_only_in_collection="'.( $eM->getVisibleOnlyInCollection() ?  1 :  0 ).'", ';
   }
 
   /**
@@ -152,18 +156,7 @@ class LmDBInterface {
   function setData( &$eM, $createNew = false ){
     global $usr, $cfg, $lng;
 
-    if ($cfg->get('tidyHTML') == 'TRUE'){
-      tidyHTML( $eM->question );
-      tidyHTML( $eM->answerExplanation );
-      foreach ( $eM->answerArray as &$value ){ tidyHTML($value); }
-    }
-
-    $toSet =  "question='".$this->myDBC->escapeString($eM->question)."', ".
-              "answer_array='".$this->myDBC->escapeString( serialize($eM->answerArray) )."', ".
-              "answer_explanation='".$this->myDBC->escapeString($eM->answerExplanation)."', ".
-              "correct_mask='".$eM->correctMask."', ".
-              "visible_for=".$eM->visibleFor.", ".
-              "visible_only_in_collection=".( $eM->visibleOnlyInCollection ?  1 :  0 ).', ';
+    $toSet = $this->createSetStringFromElement($eM);
 
     $element = $eM;
     $element->history = trim( $element->history[0] == ']' ?
@@ -187,52 +180,6 @@ class LmDBInterface {
           'history=\''.$this->myDBC->escapeString($element->history)."'",
                                      $this->myTable,
                                      "idx=".$element->idx );
-  }
-
-  /**
-  * Deletes the element with $idx from the database.
-  *
-  * @param $idx   The element's index (also idx in the database).
-  * @return BOOL  The return value of the query.
-  */
-  function deleteData( $idx ){
-    return $this->myDBC->mkDelete( $this->myTable, "idx='".$idx."'" );
-  }
-
-
-  var $queryResult;
-  /**
-  * Queries for all elements. P.e. used at the manage page.
-  *
-  * @param $orderBy    Can be any of the table's keys. The result will be ordered by this key.
-  * @param $asc        Should the datasets be in ascending order?
-  */
-  function getAllData( $orderBy="", $asc=true ){
-    if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
-    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "", $orderBy );
-  }
-
-  /**
-   * Returns the amount of returned datasets from the query;
-   *
-   * @return  amount of returned datasets from the query
-   */
-  function allSize(){
-    return $this->myDBC->datasetsIn( $this->queryResult );
-  }
-
-  /**
-  * Returns the next element from the getAllData() query or false (no more results).
-  *
-  * @return LmElement
-  * @return FALSE     If no more datasets are available.
-  */
-  function getNextData( $isInColl=false ){
-    if ( $data = $this->queryResult->fetch_array() ){
-      return $this->createElementFromDbResult($data, $isInColl);
-    }else{
-      return false;
-    }
   }
 
   /**

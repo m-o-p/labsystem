@@ -108,12 +108,9 @@ function cutHTMLText( $text, $where ){
 * @param &$object   The string to be parsed.
 */
 function parseHTML( &$object ){
-  // handle multiple spaces as Indention
-  $toReplace = array( '   ', '  ', "\b([^ ])" );
-  $replaceWith = array ( '&nbsp; &nbsp;', '&nbsp; ', "&nbsp;\\1" );
-
+  global $pge;
   if ( (substr( $object, 0, 4 ) == '[MD]') && file_exists( '../plugins/phpMarkDown/markdown.php' ) && include_once( '../plugins/phpMarkDown/markdown.php' ) ){ //phpMarkDown http://michelf.com/projects/php-markdown/
-    $object = Markdown( $GLOBALS['pge']->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
+    $object = Markdown( $pge->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
   }
   else if ( substr( $object, 0, 6 ) == '[HTML]' ){ // HTML
     $object = substr( $object, 6 ); // just remove [HTML]
