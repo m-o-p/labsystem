@@ -38,7 +38,6 @@ require_once( INCLUDE_DIR."/classes/MailFunctionality.inc" );
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 
 if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
-	$sender = $usr->foreName.' '.$usr->surName.' <'.$usr->mailAddress.'>';
 	$i = 0;
 	$receivers = array();
 	while( ++$i <= $_POST['POSSIBLE_RECVR'] ) if ( isset( $_POST['MAIL2_'.$i] ) ){
@@ -62,10 +61,10 @@ if ( isset( $_POST['POSSIBLE_RECVR'] ) && ($_POST['POSSIBLE_RECVR'] > 0) ){
 			array_push( $receivers, $nextID );
 		}
 	}
-	$mailFunc->sendMail($sender, implode(',', $receivers), $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
+	$mailFunc->sendMail($usr, implode(',', $receivers), $_POST['SUBJECT'], $_POST['MAILTEXT'], isset($_POST['COPY2ME']) && ($_POST['COPY2ME'] == 1));
 	makeLogEntry( 'system', 'mail sent' );
 	
-	$url->put( "sysinfo=".$lng->get("MailHasBeenSent")." ".htmlentities($sender) );
+	$url->put( "sysinfo=".$lng->get("MailHasBeenSent") . ' ' . htmlentities($usr->foreName . ' ' . $usr->surName . ' <' . $usr->mailAddress . '>') );
 }else{
 	$url->put( "sysalert=".$lng->get("NoReceiver") );
 }

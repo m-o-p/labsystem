@@ -141,7 +141,7 @@ if (isset($_POST['message'])){
 		
 		if (!$debug&&($cfg->doesExist('ticketReceiverUID')&&!empty($cfg->get('ticketReceiverUID')))){
 			// Mail handler
-			$mailFunc->sendMail($usr->mailAddress, $cfg->get('ticketReceiverUID'), '['.$ticketCategories[$data['topicId']].'] '.$data['subject'], $text);
+			$mailFunc->sendMail($usr, $cfg->get('ticketReceiverUID'), '['.$ticketCategories[$data['topicId']].'] '.$data['subject'], $text);
 			$ticket_id = 42; // why 42? well.
 		}else{
 			// Debug handler
