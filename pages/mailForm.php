@@ -114,7 +114,7 @@ if ((substr ( $url->get ( 'config' ), - 9 ) == 'useradmin') && $usr->isOfKind ( 
 	// new Interface to the userDB
 	$userDBC = new DBConnection ( $cfg->get ( 'UserDatabaseHost' ), $cfg->get ( 'UserDatabaseUserName' ), $cfg->get ( 'UserDatabasePassWord' ), $cfg->get ( 'UserDatabaseName' ) );
 	$result = $userDBC->query ( 'SHOW COLUMNS FROM ' . $cfg->get ( 'UserDatabaseTable' ) );
-	while ( $data = mysql_fetch_array ( $result ) ) {
+	while ( $data = $result->fetch_array() ) {
 		if (substr ( $data [0], 0, 1 ) == '_') {
 			$allOther ['#*' . $data [0]] = '#*' .$data [0];
 		}

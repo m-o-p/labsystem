@@ -130,7 +130,7 @@ $pge->put('<p>Hello world!</p>');
   // Sort all events to their matching bucket:
       $result = $Logger->myDBC->mkSelect("*, UNIX_TIMESTAMP(timestamp) as timestampInt", $Logger->myTable, 'resourceID LIKE "l'.$labIDX.'%" OR resourceID="system"'); // TODO: Add date and user restrictions.
       $labFragmentID = 'l'.$labIDX.'~'; // The ~occurs on check events when the context is unknown (only the lab is known).
-      while($resArray = mysql_fetch_array($result)){
+      while($resArray = $result->fetch_array()){
         if (startswith($resArray['resourceID'], $labFragmentID)){
           foreach( $allBuckets as $key=>$value){
             if(endswith($key, substr($resArray['resourceID'], strlen($labFragmentID)))){

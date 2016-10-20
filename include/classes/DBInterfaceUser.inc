@@ -98,13 +98,13 @@ class DBInterfaceUser
     // Load the salt...
     $what = $cfg->get("UserDBField_uid")."  AS uid"; // as salt
     $from = $this->myTable;
-    // mysql_real_escape_string() against SQL-Injection!
-    $where= $cfg->get("UserDBField_username")."='".Ddbc::escapeString($username)."' && ".
+    // escaping for protection against SQL-Injection!
+    $where= $cfg->get("UserDBField_username")."='".$this->myDBC->escapeString($username)."' && ".
             $cfg->get("User_courseID")."='1'";
     $result = $this->myDBC->mkSelect( $what, $from, $where );
-    if ( mysql_num_rows( $result ) != 1 )
+    if ( $result->num_rows != 1 )
       return false; // not found/ error
-    $resArray = mysql_fetch_array( $result );
+    $resArray = $result->fetch_array();
 
     // The field names are taken from the config*.ini file
     $what = $cfg->get("UserDBField_name")." AS name, ".
@@ -112,15 +112,15 @@ class DBInterfaceUser
             $cfg->get("UserDBField_email")." AS email, ".
             $cfg->get("UserDBField_uid")."  AS uid, ".
             $cfg->get("UserDBField_password")." AS crypt_passwd";
-    // mysql_real_escape_string() against SQL-Injection!
-    $where= $cfg->get("UserDBField_username")."='".$this->myDBC->escapeString( Ddbc::escapeString($username) )."' && ".
+    // escaping for protection against SQL-Injection!
+    $where= $cfg->get("UserDBField_username")."='".$this->myDBC->escapeString( $username )."' && ".
             $cfg->get("User_courseID")."='1'";
     $result = $this->myDBC->mkSelect( $what, $from, $where );
-    if ( mysql_num_rows( $result ) != 1 )
+    if ( $result->num_rows != 1 )
       return false; // not found/ error
     else{
       // entry found
-      $resArray = mysql_fetch_array( $result );
+      $resArray = $result->fetch_array();
       if ( ! password_verify($password, $resArray["crypt_passwd"]) )
         return false; // password wrong
       return Array( "name"     => $resArray["name"],
@@ -152,7 +152,7 @@ class DBInterfaceUser
     $where= $cfg->get("UserDBField_uid")."='".$uid."' && ".
             $cfg->get("User_courseID")."='1'";
     $result = $this->myDBC->mkSelect( $what, $from, $where );
-    if ( mysql_num_rows( $result ) != 1 )
+    if ( $result->num_rows != 1 )
       return false; // -> UserInterface_proto.inc!
 /*
       return Array( "name"     => $lng->get('unknown'),
@@ -162,7 +162,7 @@ class DBInterfaceUser
                     "userName" => $lng->get('unknown') );
 */
     else{
-      $resArray = mysql_fetch_array( $result );
+      $resArray = $result->fetch_array();
       return Array( "name"     => $resArray["name"],
                     "foreName" => $resArray["forename"],
                     "eMail"    => $resArray["email"],
@@ -212,11 +212,11 @@ class DBInterfaceUser
   * @return FALSE   If no more datasets are available.
   */
   function getNextData(){
-    if ($resArray = mysql_fetch_array($this->queryResult))     return Array(  "name"     => $resArray["name"],
-                                                                              "foreName" => $resArray["forename"],
-                                                                              "eMail"    => $resArray["email"],
-                                                                              "uid"      => $resArray["uid"],
-                                                                              "userName" => $resArray["username"] );
+    if ($resArray = $this->queryResult->fetch_array())     return Array(  "name"     => $resArray["name"],
+                                                                          "foreName" => $resArray["forename"],
+                                                                          "eMail"    => $resArray["email"],
+                                                                          "uid"      => $resArray["uid"],
+                                                                          "userName" => $resArray["username"] );
     return false;
   }
 

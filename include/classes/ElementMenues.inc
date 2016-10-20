@@ -299,7 +299,7 @@ class EM{ /* ElementMenues */
 //             EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
             EB::ticket ( $fullAddress ).
             EB::history( $theEl->history, $fullAddress ).
-//             EB::delete( $fullAddress ).
+	    ($theEl->elementId == 'l' ? EB::delete(        $fullAddress ) : '').
             // EB::manageElements().
             EB::link2Element(  $fullAddress, $theEl ).
             EB::view(   $fullAddress ).
@@ -447,8 +447,8 @@ class EM{ /* ElementMenues */
     return  EB::history( $theEl->history, $elShortcut.$theEl->idx ).
     		EB::link2Element(  $elShortcut.$theEl->idx, $theEl ).
             EB::view(   $elShortcut.$theEl->idx ).
-    		EB::cloneMe(   $elShortcut.$theEl->idx );
-//             EB::delete( $elShortcut.$theEl->idx ).
+	    EB::cloneMe(   $elShortcut.$theEl->idx ).
+	    ($theEl->elementId == 'l' ? EB::delete(        $theEl->elementId.$theEl->idx ) : '');
   }
 
   /**
@@ -491,8 +491,7 @@ class EM{ /* ElementMenues */
     global $lng, $url;
     return EB::history(     $theEl->history, $fullAddress ).
     	   EB::link2Element(  $fullAddress ).
-//            EB::createNew(     $elShortcut  ).
-//            EB::delete(        $fullAddress ).
+           //($theEl->elementId == 'l' ? EB::createNew(     $elShortcut  ).EB::delete(        $fullAddress ) : '').
            EB::view(          $fullAddress ).
            EB::edit(          $fullAddress ).
            EB::cloneMe(   $theEl->elementId.$theEl->idx );

@@ -26,12 +26,13 @@ class MailFunctionality{
    * @param Boolean $CCsender            Send mail via CC to sender?
    * @param Boolean $BCC                 Send mail via BCC?
    */
-  function sendMail( $sender, $receiverUIDs, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
-    global $cfg, $usr, $uDBI, $SYSTEMMAIL_SENDER, $urDBI;
+  function sendMail( $senderUid, $receiverUIDs, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
+    global $cfg, $usr, $uDBI, $urDBI;
     
-    if (empty($sender)){
+    if (empty($senderUid) || empty($senderUid->mailAddress) || empty($senderUid->uid))
     	$sender = '<noreply@'.$_SERVER['SERVER_NAME'].'>';
-    }
+    else
+    	$sender = $this->mailHeaderEncode($usr->foreName . ' ' . $usr->surName) . ' <' . $usr->mailAddress . '>';
     
     preg_match("/\<(.*)\>/", $sender, $output_array);
     $senderMail = (!empty($output_array) ? $output_array[1] : $sender);
@@ -63,7 +64,7 @@ class MailFunctionality{
 	    			'created just for mail');
 	    	// replace constants for personalized mails
 	    	$replacedSubject = $this->replaceConstants($subject, $receiverUsrObject);
-	    	$receiver = $receiverUsrObject->mailAddress;
+	    	$receiver = $this->mailHeaderEncode($receiverUsrObject->foreName . ' ' . $receiverUsrObject->surName) . ' <' . $receiverUsrObject->mailAddress . '>';
 	    	$allReceivers .= '"'.$receiverUsrObject->foreName.' '.$receiverUsrObject->surName.' ('.$receiverUsrObject->currentTeam.')" <'.$receiverUsrObject->mailAddress.'>'.PHP_EOL;
 	    	$replacedText = $this->replaceConstants($text, $receiverUsrObject);
 	    } else {
@@ -75,18 +76,17 @@ class MailFunctionality{
 	    
 	    //$this->printMail 
 	    mail( ($BCC ? $senderMail : $receiver), // TO
-	          '['.$cfg->get("SystemTitle").'] '.$replacedSubject,
+	          '['.$cfg->get("SystemTitle").'] ' . $this->mailHeaderEncode($replacedSubject),
 	          $replacedText.PHP_EOL.PHP_EOL.
 	          stripcslashes($cfg->get('mailFooter')).PHP_EOL,
 // 	          ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC
 	          ($BCC ? 'BCC: '.$receiver.PHP_EOL : ''). // BCC
-	          'From: '.$cfg->get('SystemTitle').' <'.$SYSTEMMAIL_SENDER.'>'.PHP_EOL. /* The labsystem is always sending mails using the configured system mail address */
-	    	  'Reply-To: '.$sender.PHP_EOL.
+	    	  'From: '.$sender.PHP_EOL.
 	          "X-Mailer: labsystem".PHP_EOL.
 	          (!empty($additionalHeaders)&&(strpos(strtoupper($additionalHeaders),'CONTENT-TYPE:') === false)?'Content-Type: text/plain; charset=UTF-8'.PHP_EOL:'').
 	          stripcslashes($additionalHeaders).
 	          'X-Sending-Username: '.$usr->userName.'@'.$cfg->get("SystemTitle").PHP_EOL. // this is for identifying a user (username must be correct...)
-	          $cfg->get('mailHeaderAdd')
+	          stripcslashes($cfg->get('mailHeaderAdd'))
 	    );
      }
   }
@@ -129,6 +129,13 @@ class MailFunctionality{
     }
     // Send mass mail:
     $this->sendMail('', implode(',', $receivers), $subject, $text);
+  }
+
+  static function mailHeaderEncode( $str ) {
+    if ( mb_detect_encoding ($str, "ASCII", true) )
+      return $str;
+    else
+      return '=?UTF-8?B?' . base64_encode($str) . '?=';
   }
 }
 $mailFunc = new MailFunctionality();

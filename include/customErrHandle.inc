@@ -63,7 +63,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
   
   // Immediately send a mail in case the user does not provide more details:
   if (empty($_POST['ERROR_EXPLANATION']) && $usr->uid){
-  	$mailFunc->sendMail((!empty($usr->mailAddress) ? $usr->mailAddress : ''),
+  	$mailFunc->sendMail($usr,
 				  		$ERRORMAIL_RECEIVER_UID,
 				  		'Error Report '.$errorMailUID.': ['.$errno.'] '.$errstr,
 				  		'A second mail may arrive with this report if the user enters more details.<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
@@ -82,7 +82,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
         ($_POST['ERROR_EXPLANATION']!=$lng->get('detailedFeedBack'))){
       $errorDetailsProvided=TRUE;
       
-      $mailFunc->sendMail((!empty($usr->mailAddress) && $usr->uid ? $usr->mailAddress : ''),
+      $mailFunc->sendMail($usr,
           $ERRORMAIL_RECEIVER_UID,
           'Error Report '.$errorMailUID.': '.$_POST['ERROR_REFERRER'],
           nl2br(htmlentities($_POST['ERROR_EXPLANATION'])).'<br><br>--<br>'.getErrorReport($errno, $errstr, $errfile, $errline, $errcontext),
@@ -148,14 +148,6 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
     break;
   case E_USER_NOTICE:
     displayError( '#33ff33',
-                  "<b>$errstr</b>: On line $errline of file $errfile\n"
-                 );
-    break;
-  case E_DEPRECATED:
-    // TODO: stop using deprecated mysql API, switch to mysqli or PDO
-    if ( substr( $errstr, 0, 6 ) === "mysql_" )
-        break;
-    displayError( '#6666ff',
                   "<b>$errstr</b>: On line $errline of file $errfile\n"
                  );
     break;

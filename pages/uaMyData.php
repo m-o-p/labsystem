@@ -58,7 +58,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                                    $cfg->get('UserDatabaseTable'),
                                    $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
                                   );
-     $data = mysql_fetch_assoc( $result ); // -> only associative array
+     $data = $result->fetch_assoc(); // -> only associative array
 
      $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/uaMyDataSave.php")."\">\n".
                 "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
@@ -147,7 +147,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
        $pge->put("<tr><th style=\"text-align:right\">#</th><th>".$lng->get('surName').', '.$lng->get('foreName')."</th><th>".$lng->get('team')."</th><th></th></tr>");
        $counter=0;
        $maxPlaces = ($cfg->doesExist('maxRegistrations') ? $cfg->get('maxRegistrations') : 0);
-       while($nextRegistree=mysql_fetch_assoc( $result )){
+       while($nextRegistree=$result->fetch_assoc()){
          $counter++;
          $pge->put("<tr><td style=\"text-align:right\">".
                    $counter.

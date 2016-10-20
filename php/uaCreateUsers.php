@@ -61,7 +61,7 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
   // list all columns
   $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
   $courseArray = Array();
-  while( $data = mysql_fetch_array( $result ) )
+  while( $data = $result->fetch_array() )
     if ( substr( $data[0], 0, 1 ) == '_' ) array_push( $courseArray, $data[0] );
 
   // create update string

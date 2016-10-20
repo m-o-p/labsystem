@@ -78,8 +78,8 @@ class LiDBInterface extends Ddbc{
   function getData2idx( $idx, $isInColl=false ){
     global $cfg,$url,$lng,$usr;
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      trigger_error( mysql_error(). "i with idx not found: ".$idx, E_USER_WARNING );
+    if ( !($data = $result->fetch_array()) ){
+      trigger_error( $this->myDBC->link->error. "i with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
@@ -92,8 +92,8 @@ class LiDBInterface extends Ddbc{
         $backupIdx = $data['idx'];
         $backupHistory = $data['history'];
         $result = $this->myDBC->mkSelect( "*", 'bak_'.$this->myTable, "idx='".$historyIdx."'" );
-        if ( !($data = mysql_fetch_array( $result )) ){
-          trigger_error( mysql_error(). 'Version '.$historyIdx.' of '.$myId.$idx.' not found.', E_USER_WARNING );
+        if ( !($data = $result->fetch_array()) ){
+          trigger_error( $this->myDBC->link->error. 'Version '.$historyIdx.' of '.$myId.$idx.' not found.', E_USER_WARNING );
           return false;
           exit;
         }
@@ -123,8 +123,8 @@ class LiDBInterface extends Ddbc{
   function getMenuData2idx( $idx, $isInColl=false ){
     global $cfg;
     $result = $this->myDBC->mkSelect( "idx, question, visible_for, visible_only_in_collection", $this->myTable, "idx='".$idx."'" );
-    if ( !($data = mysql_fetch_array( $result )) ){
-      //trigger_error( mysql_error(). "i with idx not found: ".$idx, E_USER_WARNING );
+    if ( !($data = $result->fetch_array()) ){
+      //trigger_error( $this->myDBC->link->error. "i with idx not found: ".$idx, E_USER_WARNING );
       return false;
       exit;
     }else{
@@ -222,7 +222,7 @@ class LiDBInterface extends Ddbc{
   * @return FALSE     If no more datasets are available.
   */
   function getNextData( $isInColl=false ){
-    if ( $data = mysql_fetch_array($this->queryResult) ){
+    if ( $data = $this->queryResult->fetch_array() ){
       return $this->createElementFromDbResult($data, $isInColl);
     }else{
       return false;
