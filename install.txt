@@ -114,7 +114,26 @@ If you open the URL before setting the databases up, you get:
    [your system url and path]/setup?config=demo
    
    Run the second setup.
-    
+
+
+..........................................................................
+ Email setup
+..........................................................................
+
+The labsystem uses the php mail function to send e-mails.  It does not
+(try to) set a specific envelope sender, so your sendmail is repsonsible
+for doing that. The default will usually be something like www-data@FQDN.
+
+For postfix, an easy way to set the envelope sender to what you want is to
+add the following line to the main.cf:
+
+    sender_canonical_maps = hash:/etc/postfix/canonical
+
+and /etc/postfix/cannonical should then contain a mapping to the desired
+e-mail address, e.g.:
+
+    www-data	envelope-sender@yourdomain.tld
+
 ..........................................................................
  Done
 ..........................................................................
