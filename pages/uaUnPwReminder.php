@@ -84,16 +84,16 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 							$h2c = new Rom( parse_ini_file( $h2cFile ) );
 							if ($h2c->doesExist($subDomain)){
 								$remainingHost = strtoupper( substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], '.')+1 ) ); // cut subdomain to replace it.
-								$memberString .= ': http://'.strtolower($subDomain.$remainingHost).'?config='.$courseID;
+								$memberString .= ': http://'.strtolower($subDomain.$remainingHost).'/?config='.$courseID;
 							}else{
-								$memberString .= ': '.$_SERVER['SERVER_NAME'].'?config='.$courseID;
+								$memberString .= ': http://'.$_SERVER['SERVER_NAME'].'/?config='.$courseID;
 							}
 							// /instance IDs
 							$groupMemberships .= $memberString . PHP_EOL;
 						}
 					}
 				}
-				$mailPage->contents .= $lng->get ( 'passWord' ) . ': ' . $newPW . PHP_EOL . PHP_EOL . $lng->get ( 'YouAreMemberOf' ) . ': ' . PHP_EOL . $groupMemberships;
+				$mailPage->contents .= $lng->get ( 'passWord' ) . ': ' . $newPW . PHP_EOL . PHP_EOL . $lng->get ( 'YouAreMemberOf' ) . ': ' . PHP_EOL . PHP_EOL . $groupMemberships;
 				$pge->put ( "<div class=\"labsys_mop_note\">\n" . $lng->get ( 'MailPWsent' ) .PHP_EOL. '</div>' );
 			} else {
 				// Store a new token and validity for 1 hour
