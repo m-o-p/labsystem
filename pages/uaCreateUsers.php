@@ -83,7 +83,6 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                  NAME="createUser"
                  METHOD="POST"
                  ACTION="#">
-                 <input type="hidden" name="SESSION_ID" value="'.session_id().'">
                  <input type="hidden" name="REDIRECTTO" value="../pages/uaManageUsers.php">
                ' );
 

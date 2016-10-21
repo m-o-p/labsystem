@@ -137,7 +137,7 @@ if ($usr->isOfKind ( IS_ALL_MAILER ))
 	foreach ( $allOther as $key => $value )
 		$allOtherInputs .= "<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"checkbox\" id=\"MAIL2_" . ++ $counter . "\" name=\"MAIL2_" . $counter . "\" value=\"" . htmlentities ( $value ) . "\"" . ($checkAll || isset ( $_POST ['MAIL2_' . $counter] ) ? " checked=\"checked\" " : '') . ($key [0] == '#' ? " onclick='document.getElementById(\"mailViaBcc\").checked=true'" : '') . " onchange='isDirty=true'>" . "<label for=\"MAIL2_" . $counter . "\" class=\"labsys_mop_input_field_label\">" . $key . "</label><br />\n";
 
-$content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST\" ACTION=\"" . $url->link2 ( "../pages/mailForm.php" ) . "\">\n" . '<input type="hidden" name="SENDMAIL" value="sendMail">' . "\n" . "<input type=\"hidden\" name=\"SESSION_ID\" value=\"" . session_id () . "\">\n" . "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/mailForm.php\">\n". /* index of saved el. will be added on save.php! */
+$content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST\" ACTION=\"" . $url->link2 ( "../pages/mailForm.php" ) . "\">\n" . '<input type="hidden" name="SENDMAIL" value="sendMail">' . "\n" . "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/mailForm.php\">\n". /* index of saved el. will be added on save.php! */
 
             "<input type=\"hidden\" name=\"POSSIBLE_RECVR\" value=\"" . $counter . "\">\n" . "<table class=\"labsys_mop_mailform_table\">\n" . "<tr><td class=\"labsys_mop_mailform_table_mail2\"></td><td class=\"labsys_mop_mailform_table_the_mail\"></td></tr>\n" . 
 

@@ -61,7 +61,6 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
      $data = $result->fetch_assoc(); // -> only associative array
 
      $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/uaMyDataSave.php")."\">\n".
-                "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
                 "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/uaMyData.php\">\n".
                 "<fieldset><legend>".$lng->get("properties")."</legend>\n".
                 "<div class=\"labsys_mop_in_fieldset\">\n" );

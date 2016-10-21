@@ -46,7 +46,7 @@ class DBConnection{
   * @param $dataBase  The database to connect to.
   * @return           A mysql connection identifier or false
   */
-  function __construct( $host, $user, $password, $dataBase ){
+  function __construct( $host, $user, $password, $dataBase=null ){
     $this->link = mysqli_init();
     if (!$this->link) {
         trigger_error('mysqli_init failed', E_USER_ERROR);
@@ -84,6 +84,16 @@ rows by setting the CLIENT_FOUND_ROWS flag
        trigger_error( /*$theQuery.*/"DB Connector --&gt; "./*$this->dataBase.': '.*/ $this->link->error, E_USER_ERROR );
     //echo( "<p style=\"background-color: #ff0000; color: #ffffff; padding: 5px; margin-bottom: 10px\">".$theQuery."<br>affected rows: ".$this->link->affected_rows."</p>\n");
     return $ret;
+  }
+
+  /**
+  * Changes the dataBase used for the connection; only required for setup.php,
+  * because there the database may need to be created (and can't be selected when
+  * the connection is established)
+  * @param  $dataBase   Name of the database to select.
+  */
+  function selectDb( $dataBase ){
+    $this->link->select_db($dataBase);
   }
 
   /* Returns the amount of datasets returned by the query.

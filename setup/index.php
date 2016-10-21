@@ -90,8 +90,8 @@ function say_done(){
 function say_skipped(){
                       echo('<span style="color: #ffff55;">skipped (already existing)</span><br>'."\r\n");
                       }
-function say_failed(){
-                      echo('<span style="color: #ff5555;">failed</span><br>'."\r\n");
+function say_failed($currentDb){
+                      echo('<span style="color: #ff5555;">failed, mysql reports: ' . $currentDb->link->error . '</span><br>'."\r\n");
                      }
 function say_title( $title ){
                       echo('<h2>'.$title.'</h2>'."\n" );
@@ -117,8 +117,8 @@ function runMySqlFromFile( $filename, &$database ){
     if ( substr( $theData, -1 ) == ';' ){
       // only one command per execution!!!
       echo( '<span style="color: #aaaaaa;">'.substr( $theData, 0, strpos( $theData, ' ' ) ).':</span> ' );
-      $database->query( $theData );
-      if ( !$database->reportErrors() ) say_done(); else say_failed();
+      $ret = $database->query( $theData );
+      if ( $ret === false ) say_failed($database); else say_done();
       $theData = '';
     }
   }
@@ -186,16 +186,16 @@ echo('running setup script...<br />'."\n");
 say_title( 'user database part' );
 $usrDB = new DBConnection($cfg->get("UserDatabaseHost"),
                           $cfg->get("UserDatabaseUserName"),
-                          $cfg->get("UserDatabasePassWord"),
-                          $cfg->get("UserDatabaseName"));
+                          $cfg->get("UserDatabasePassWord"));
 
 echo( $cfg->get("UserDatabaseName").': ' );
 if(!$usrDB->db_exists( $cfg->get("UserDatabaseName") ))
 {
        $query = 'CREATE DATABASE IF NOT EXISTS '.$cfg->get("UserDatabaseName").' CHARACTER SET utf8 COLLATE utf8_general_ci';
-       $usrDB->query($query);
-       if ( !$usrDB->reportErrors() ) say_done(); else say_failed();
+       $ret = $usrDB->query($query);
+       if ( $ret === false ) say_failed($usrDB); else say_done();
 } else say_skipped();
+$usrDB->selectDb($cfg->get("UserDatabaseName"));
 
 echo( $cfg->get("UserDatabaseName").'.'.$cfg->get("UserDatabaseTable").': ' );
 if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
@@ -222,8 +222,8 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                  UNIQUE KEY (`'.$cfg->get("UserDBField_uid").'`),
                  INDEX( '.$cfg->get("UserDBField_username").' )
                  )';
-       $usrDB->query($query);
-       if ( !$usrDB->reportErrors() ) say_done(); else say_failed();
+       $ret = $usrDB->query($query);
+       if ( $ret === false ) say_failed($usrDB); else say_done();
        /* create admin user */
        $result = $usrDB->mkSelect( $cfg->get("UserDBField_username"), $cfg->get("UserDatabaseTable"), $cfg->get("UserDBField_username").'="'.$cfg->get("RightsAdminUsername").'"' );
        /* does exist? */
@@ -247,8 +247,11 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                    \''.md5( $cfg->get("RightsAdminUsername") ).'\',
                    \'1\'
                    )';
-         $usrDB->query($query);
-         if ( !$usrDB->reportErrors() ) echo("<h4><b>admin user \"".$cfg->get("RightsAdminUsername")."\" with password \"admin\" created!</b> (you need this to log on the system. Change the password!!!!!!)</h4><br>\n");
+         $ret = $usrDB->query($query);
+         if ( $ret !== false )
+             say_failed($usrDB);
+         else
+             echo("<h4><b>admin user \"".$cfg->get("RightsAdminUsername")."\" with password \"admin\" created!</b> (you need this to log on the system. Change the password!!!!!!)</h4><br>\n");
        }
 } else say_skipped();
 
@@ -261,8 +264,8 @@ if( $usrDB->db_exists( $cfg->get("UserDatabaseName") ) &&
 {
        $query = 'ALTER TABLE '.$cfg->get("UserDatabaseTable").' ADD COLUMN
                  '.$cfg->get("User_courseID").' tinyint(1) NOT NULL default \'0\'';
-       $usrDB->query($query);
-       if ( !$usrDB->reportErrors() ) say_done(); else say_failed();
+       $ret = $usrDB->query($query);
+       if ( $ret === false ) say_failed($usrDB); else say_done();
 }
 
 //Create/ Update Admin User
@@ -289,13 +292,16 @@ $query = 'INSERT IGNORE INTO '.$cfg->get("UserDatabaseTable").'
          \''.md5( $cfg->get("RightsAdminUsername") ).'\',
          \'1\'
          )';
-$usrDB->query($query);
-if ( !$usrDB->reportErrors() ) echo("<h4><b>admin user \"".$cfg->get("RightsAdminUsername")."\" with password \"admin\" created!</b> (you need this to log on the system. Change the password!!!!!!)</h4><br>\n");
+$ret = $usrDB->query($query);
+if ( $ret === false )
+    say_failed($usrDB);
+else
+    echo("<h4><b>admin user \"".$cfg->get("RightsAdminUsername")."\" with password \"admin\" created!</b> (you need this to log on the system. Change the password!!!!!!)</h4><br>\n");
 } else say_skipped();
 if ( $adminExists ){ //yes
 echo("Mapping admin user \"".$cfg->get("RightsAdminUsername")."\" to course: ");
-$usrDB->mkUpdate( $cfg->get("User_courseID").' = 1', $cfg->get("UserDatabaseTable"), $cfg->get("UserDBField_username").'="'.$cfg->get("RightsAdminUsername").'"' );
-if ( !$usrDB->reportErrors() ) say_done(); else say_failed();
+$ret = $usrDB->mkUpdate( $cfg->get("User_courseID").' = 1', $cfg->get("UserDatabaseTable"), $cfg->get("UserDBField_username").'="'.$cfg->get("RightsAdminUsername").'"' );
+if ( $ret === false ) say_failed($usrDB); else say_done();
 };
 
 // add Demo user
@@ -314,32 +320,32 @@ say_title( 'data database part' );
 
 $dataDB = new DBConnection($cfg->get("DataDatabaseHost"),
                            $cfg->get("DataDatabaseUserName"),
-                           $cfg->get("DataDatabasePassWord"),
-                           $cfg->get("DataDatabaseName"));
+                           $cfg->get("DataDatabasePassWord"));
 
 echo( $cfg->get("DataDatabaseName").': ' );
 if(!$dataDB->db_exists( $cfg->get("DataDatabaseName") ))
 {
        $query = 'CREATE DATABASE IF NOT EXISTS '.$cfg->get("DataDatabaseName").' CHARACTER SET utf8 COLLATE utf8_general_ci';
-       $dataDB->query($query);
-       if ( !$dataDB->reportErrors() ) say_done(); else say_failed();
+       $ret = $dataDB->query($query);
+       if ( $ret === false ) say_failed($dataDB); else say_done();
 } else say_skipped();
+$dataDB->selectDb($cfg->get("DataDatabaseName"));
 
 /************************ working database: ***************************/
 say_title( 'working database part' );
 
 $wrkDB = new DBConnection($cfg->get("WorkingDatabaseHost"),
                           $cfg->get("WorkingDatabaseUserName"),
-                          $cfg->get("WorkingDatabasePassWord"),
-                          $cfg->get("WorkingDatabaseName"));
+                          $cfg->get("WorkingDatabasePassWord"));
 
 echo( $cfg->get("WorkingDatabaseName").': ' );
 if(!$wrkDB->db_exists( $cfg->get("WorkingDatabaseName") ))
 {
        $query = 'CREATE DATABASE IF NOT EXISTS '.$cfg->get("WorkingDatabaseName").' CHARACTER SET utf8 COLLATE utf8_general_ci';
-       $wrkDB->query($query);
-       if ( !$wrkDB->reportErrors() ) say_done(); else say_failed();
+       $ret = $wrkDB->query($query);
+       if ( $ret === false ) say_failed($wrkDB); else say_done();
 } else say_skipped();
+$wrkDB->selectDb($cfg->get("WorkingDatabaseName"));
 
 
 

@@ -27,7 +27,6 @@
 * @version    1.0
 *
 * @param $_POST['REDIRECTTO']   The address to redirect to after saving.
-* @param $_POST['SESSION_ID']   To verify that the user is the user that set the call and is logged in.
 */
 
 require( "../include/init.inc" );
@@ -39,9 +38,7 @@ if ( !isset( $_POST['REDIRECTTO'] )
      }
 
 if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
-     !( isset($_POST['SESSION_ID']) && 
-      ($_POST['SESSION_ID'] != "") && 
-      ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */   
+     !(defined('IS_DB_USER_ADMIN') && $usr->isOfKind(IS_DB_USER_ADMIN)) /* valid call? */
    ){
       trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
       exit;

@@ -132,7 +132,7 @@ dataOf              = "������ ������������ "
 showAllUADesc       = "���� �������������"               ;; Follows to the previous if the user views all user's data.
 
 ; sendMail.php
-MailHasBeenSent     = "������ ������� ����������. ���������� �������������: "
+MailHasBeenSent     = "������ ������� ����������."
 
 ;; sysalerts *****************************************************************************************
 ; authenticate.php

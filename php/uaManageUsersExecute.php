@@ -67,8 +67,8 @@ elseif( $url->get( 'function' ) == 'del' ){
 
   makeLogEntry( "UserAdmin", "delete user", $url->get( 'param' ) );
 
-  if ( !$userDBC->mkDelete( $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_uid')."='".$url->get( 'param' )."'" ) )
-    $text = $userDBC->reportErrors();
+  $ret = $userDBC->mkDelete( $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_uid')."='".$url->get( 'param' )."'" )
+  if ($ret === false) $text = 'Mysql Error: ' . $userDBC->link->error;
   else $text = $url->get( 'param' ).": ".$lng->get( "deleted" );
   $url->put( 'sysalert='.$text );
 }

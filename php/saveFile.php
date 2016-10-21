@@ -31,7 +31,6 @@
 * @param $_POST['FILENAME']     Name and path of the file
 * @param $_POST['FILECONTENT']  Contents of the file.
 * @param $_POST['REDIRECTTO']   The address to redirect to after saving.
-* @param $_POST['SESSION_ID']   To verify that the user is the user that set the call and is logged in.
 */
 
 require( "../include/init.inc" );
@@ -44,8 +43,15 @@ if ( !isset($_POST['FILENAME']) ||
       exit;
      }
 
-if (!($usr->isOfKind(IS_CONTENT_EDITOR) || // only those two can edit files!
-      (defined('IS_CONFIG_EDITOR') && $usr->isOfKind(IS_CONFIG_EDITOR)))){
+$configEditor = false;
+if ( defined('IS_CONFIG_EDITOR') &&
+     $usr->isOfKind(IS_CONFIG_EDITOR) &&
+     isset($_POST['SAVEAS_PREFIX']) &&
+     isset($_POST['SAVEAS_POSTFIX']) &&
+     isset($_POST['SAVEAS']) )
+      $configEditor = true;
+
+if (!($usr->isOfKind(IS_CONTENT_EDITOR) || $configEditor )) { // only those two can edit files!
       trigger_error( $lng->get("TxtNotEnoughRights"), E_USER_ERROR );
       exit;
 }
@@ -58,32 +64,22 @@ $allowedFiles = Array(  $cfg->get("SystemResourcePath").$cfg->get("SystemMenuFil
                         $cfg->get("UserStyleSheet")
                       );
 
-if ( defined('IS_CONFIG_EDITOR') &&
-     $usr->isOfKind(IS_CONFIG_EDITOR) &&
-     isset($_POST['SAVEAS_PREFIX']) &&
-     isset($_POST['SAVEAS_POSTFIX']) &&
-     isset($_POST['SAVEAS'])
-    ){
+if ( $configEditor )
   $fileName = $_POST['SAVEAS_PREFIX'].$_POST['SAVEAS'].$_POST['SAVEAS_POSTFIX'];
-} else {
+else
   $fileName = $_POST['FILENAME'];
-}
 $fileExtension = substr( $fileName, strrpos( $fileName, '.' )+1 );
 
-if ( !( isset($_POST['SESSION_ID']) &&
-        ($_POST['SESSION_ID'] != "") &&
-        ($_POST['SESSION_ID'] == session_id()) &&
-        ( in_array ($fileName, $allowedFiles) || // from above...
-          ( defined('IS_CONFIG_EDITOR') &&
-            $usr->isOfKind(IS_CONFIG_EDITOR) && ( // something in the ressource path:
-                                                !( strpos( strtoupper($fileName), strtoupper($cfg->get("SystemResourcePath")) ) === false ) ||
-                                                // something in the stylesheet path:
-                                                !( strpos( strtoupper($fileName), substr( strtoupper($cfg->get("UserStyleSheet")), 0, strrpos( $cfg->get("UserStyleSheet"), '/' )) ) === false)
-                                                ) &&
-                                                (strpos($_POST['SAVEAS'], '/') === false) // no directory walks!
-           )
-         )
-       ) /* valid call? */
+if ( !( in_array ($fileName, $allowedFiles) || // from above...
+        ( $configEditor &&
+          ( // something in the ressource path:
+            ( strpos( strtoupper($fileName), strtoupper($cfg->get("SystemResourcePath")) ) == 0 ) ||
+            // something in the stylesheet path:
+            ( strpos( strtoupper($fileName), substr( strtoupper($cfg->get("UserStyleSheet")), 0, strrpos( $cfg->get("UserStyleSheet"), '/' )) ) == 0)
+          ) &&
+          (strpos($_POST['SAVEAS'], '/') === false) // SAVEAS cannot contain /
+        )
+      )
    ){
       trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
       exit;

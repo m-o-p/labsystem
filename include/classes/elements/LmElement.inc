@@ -209,7 +209,6 @@ class LmElement extends Element{
                                      ).
               "\">\n".
               "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveUserAnswer\">\n". // this function will statically be called by ../php/executeCommandOnElement.php
-              "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."#".$fullAddress."\">\n". // return so self
               "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
               "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n";            // needed by ../php/executeCommandOnElement.php
@@ -477,7 +476,6 @@ class LmElement extends Element{
             "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=m")."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
-            "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".   // to check whether the call is valid
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n".  // index of saved el. will be added on save.php!
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
 

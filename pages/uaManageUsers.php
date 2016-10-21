@@ -205,7 +205,6 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
 
 // form
     $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/uaManageUsersSave.php")."\">\n".
-               "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
                "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"".$url->rawLink2( $_SERVER['PHP_SELF'] )."\">\n"
               );
 
