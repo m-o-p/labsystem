@@ -84,7 +84,7 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 			}
 			require_once (INCLUDE_DIR . "/classes/MailFunctionality.inc");
 			$mailFunc->sendMail ( '', $data ['uid'], $mailPage->title, $mailPage->contents );
-			$pge->put ( "<div class=\"labsys_mop_note\">\n" . $lng->get ( 'MailHasBeenSent' ) . ' ' . $cfg->get ( 'SystemTitle' ) . "\n</div>" );
+			$pge->put ( "<div class=\"labsys_mop_note\">" . $lng->get ( 'MailHasBeenSent' ) . "</div>" );
 			// no further action from the user required for now, don't show the body
 			$writeBody = false;
 		}

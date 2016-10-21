@@ -164,7 +164,7 @@ dataOf              = "Data of "                ;; In title row when a corrector
 showAllUADesc       = "all users"               ;; Follows to the previous if the user views all user's data.
 
 ; sendMail.php
-MailHasBeenSent     = "The mail has been sent. Sender was: "
+MailHasBeenSent     = "The mail has been sent."
 
 ;; sysalerts *****************************************************************************************
 ; authenticate.php
