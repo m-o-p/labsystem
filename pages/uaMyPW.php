@@ -47,7 +47,6 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
      if ( $lng->get("uaMyPwNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("uaMyPwNote")."</div>\n" );  
 
      $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myPWEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/uaMyPWSave.php")."\">\n".
-                "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
                 "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/uaMyPW.php\">\n".
                 "<fieldset><legend>".$lng->get("passWord")."</legend>\n".
                 "<div class=\"labsys_mop_in_fieldset\">\n" );

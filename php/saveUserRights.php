@@ -27,7 +27,6 @@
 * @version    1.0
 *
 * @param $_POST['REDIRECTTO']   The address to redirect to after saving.
-* @param $_POST['SESSION_ID']   To verify that the user is the user that set the call and is logged in.
 * @param $_POST[$userData["uid"]."_".$i]  The rights checkboxes
 */
 
@@ -41,11 +40,8 @@ if ( !isset($_POST['REDIRECTTO'])
       exit;
      }
 
-if ( !( isset($_POST['SESSION_ID']) &&
-      ($_POST['SESSION_ID'] != "") &&
-      ($_POST['SESSION_ID'] == session_id()) ) /* valid call? */
-   ){
-      trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
+if ( !($usr->isOfKind(IS_USER_RIGHTS_EDITOR)) ) {
+      trigger_error( $lng->get( 'TxtNotEnoughRights' ), E_USER_ERROR );
       exit;
      }
 

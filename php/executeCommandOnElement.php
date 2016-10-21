@@ -37,25 +37,33 @@ require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
 // Only predefined functions are allowed
 // Otherwise this would be a security hole since any LOGGED IN USER (sessionId) could post any function...
-$allowedFunctions = Array( "saveUserAnswer",
-                           "closeLabInputs",
-                           "setUserAnswerLock",
-                           "checkPreLab",
-                           "saveCorrectorStuff",
-                           "updateStatus",
-                           "save"
-                          );
+$allowedFunctions = Array("saveUserAnswer"     => Array('i' => IS_USER,
+                                                        'm' => IS_USER),
+                          "closeLabInputs"     => Array('l' => IS_USER),
+                          "setUserAnswerLock"  => Array('i' => IS_USER),
+                          "checkPreLab"        => Array('l' => IS_USER),
+                          "saveCorrectorStuff" => Array('i' => IS_CORRECTOR),
+                          "updateStatus"       => Array('l' => IS_CORRECTOR),
+                          "save"               => Array('c' => IS_CONTENT_EDITOR,
+                                                        'i' => IS_CONTENT_EDITOR,
+                                                        'l' => IS_CONTENT_EDITOR,
+                                                        'm' => IS_CONTENT_EDITOR,
+                                                        'p' => IS_CONTENT_EDITOR,
+                                                        's' => IS_SCHEDULER));
 
-if ( !( isset($_POST['SESSION_ID']) && 
-          ($_POST['SESSION_ID'] != "") && 
-          ($_POST['SESSION_ID'] == session_id()) &&
-          isset($_POST['FUNCTIONNAME']) &&
-          in_array ($_POST['FUNCTIONNAME'], $allowedFunctions) ) /* valid call? */   
-       ){
+if ( !(array_key_exists ($_POST['FUNCTIONNAME'], $allowedFunctions)) ) {
           trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
           exit;
-         }
-       
+}
+$perms = $allowedFunctions[$_POST['FUNCTIONNAME']];
+if ( !(
+         array_key_exists(strtolower( $id ), $perms) &&
+         $usr->isOfKind($perms[strtolower( $id )])
+   )) {
+          trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
+          exit;
+}
+
 $num = $_POST['IDX'];
 
 // element not present?

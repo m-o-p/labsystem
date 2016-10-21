@@ -569,7 +569,6 @@ class LiElement extends Element{
                                        "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"setUserAnswerLock\">\n"
                                       )
                 ).
-              "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' )."\">\n". // return so self
               "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
               "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
@@ -752,7 +751,6 @@ class LiElement extends Element{
      return EM::editTopInput( $this, $fullAddress ).
             "<FORM class=\"labsys_mop_std_form\" NAME=\"InputEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=i")."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
-            "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">\n".
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n". /* index of saved el. will be added on save.php! */
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
             "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php

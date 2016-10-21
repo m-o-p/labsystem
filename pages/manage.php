@@ -137,7 +137,6 @@ $url->rem( 'address='.$GLOBALS['url']->get('address') );
  * The advantage: You could set the property row properties for all elements at once on this page and save then.
  *
   $pge->put("<input type=\"hidden\" name=\"REDIRECTTO\" value=\"".urlencode($_SERVER['REQUEST_URI'])."\">".
-            "<input type=\"hidden\" name=\"SESSION_ID\" value=\"".session_id()."\">".
             "<input TABINDEX=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\">" );
 */
 
