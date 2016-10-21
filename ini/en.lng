@@ -322,6 +322,7 @@ copy2Me             = "Send me a report including the source of this mail."
 eMail               = "eMail"
 newPW               = "new password"
 newPWreType         = "retype new password"
+MailPWsent          = "An email with a new passwort is getting sent to your mail account now."
 
 ; uaManageUsers.php
 lastChange          = "last change"   ;; timestamp of last change of the dataset in the user.db
