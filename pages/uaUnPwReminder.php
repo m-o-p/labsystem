@@ -84,7 +84,7 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 							$h2c = new Rom( parse_ini_file( $h2cFile ) );
 							if ($h2c->doesExist($subDomain)){
 								$remainingHost = strtoupper( substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], '.')+1 ) ); // cut subdomain to replace it.
-								$memberString .= ': http://'.strtolower($subDomain.$remainingHost).'/?config='.$courseID;
+								$memberString .= ': http://'.strtolower($subDomain.'.'.$remainingHost).'/?config='.$courseID;
 							}else{
 								$memberString .= ': http://'.$_SERVER['SERVER_NAME'].'/?config='.$courseID;
 							}
