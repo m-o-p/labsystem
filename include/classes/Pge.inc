@@ -80,7 +80,7 @@ class Pge extends LpElement{
   function isVisible(){
     global $usr;
     $this->IamVisible = ( ($this->visibleFor == "0") || $usr->isOfKind( $this->visibleFor ) );
-    return parent::isVisible();
+    return $this->IamVisible;
   }
 
   /**
