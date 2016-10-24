@@ -89,7 +89,7 @@ class Usr extends ElementUser{
   	}
 
   	// The config specified user rights editor gets those rights for bootstrapping:
-  	if ($cfg->get('RightsAdminUsername') == $this->userName){
+  	if ($cfg->get('RightsAdminUsername') == $this->userName && ($this->userMaximumRights & intval(IS_USER_RIGHTS_EDITOR) != intval(IS_USER_RIGHTS_EDITOR)) /* Only give the rights if they do not exist. Otherwise this user can never take his edit right temporarily away... */){
   		$this->userRights =  $this->userRights | intval(IS_USER_RIGHTS_EDITOR);
   	}
   	
