@@ -515,7 +515,7 @@ class LlElement extends Element{
                   // member's name
                      "<td class=\"labsys_mop_l_status_table_cell_name\">".
                      ( $usr->isOfKind( IS_CORRECTOR ) ? "<a href=\"".str_replace( '&seeMe='.$url->get('seeMe'), '', $_SERVER['REQUEST_URI'] ).'&seeMe='.urlencode( $labStatus['uid'] )."\">" : '').
-                     ( ($previousMembersname != $userData["name"].", ".$userData["foreName"]) ? $userData["name"].", ".$userData["foreName"]." " : '').
+                     ( ($previousMembersname != $userData["name"].", ".$userData["foreName"] && ($usr->isOfKind( IS_CORRECTOR ) || $labStatus['uid'] == $usr->uid )) ? $userData["name"].", ".$userData["foreName"].' ' : '').
                      ( $usr->isOfKind( IS_CORRECTOR ) ?  "</a>"  : '' ).
                      EB::history( $userData["name"].", ".$userData["foreName"]." (".$lng->get("team")." ".$labStatus['currentTeam'].")".":<br>\n".$labStatus['history'], "l".$this->idx, true ).
                      $labName."\n";
