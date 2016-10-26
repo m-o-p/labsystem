@@ -51,6 +51,12 @@ $allowedFunctions = Array("saveUserAnswer"     => Array('i' => IS_USER,
                                                         'p' => IS_CONTENT_EDITOR,
                                                         's' => IS_SCHEDULER));
 
+if ( !(array_key_exists('FUNCTIONNAME', $_POST))) {
+          $pge->put("<div class=\"labsys_mop_note\">\nRequest data is missing, you probably realoaded this page manually!\n</div>");
+          require( $cfg->get("SystemPageLayoutFile") );
+          exit;
+}
+
 if ( !(array_key_exists ($_POST['FUNCTIONNAME'], $allowedFunctions)) ) {
           trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
           exit;
