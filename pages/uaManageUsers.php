@@ -108,18 +108,28 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
      // get array of sorter keys from DBInterface
       $sortArray = array_merge( $sortArray, $sortArrayAdd );
      // fill $sorter with the sorters html code and set $orderBy and $asc
+      $showSearchField = true;
       require( "../pages/sorter.inc" );
     // the sorter
 // /Sorter
       $pge->put( $sorter );
 
 // DB Query
+    $where = array();
+    if (isset($_POST['restrictTo']) && !empty($_POST['restrictTo']))
+        $where[] = '\'' . $userDBC->escapeString($_POST['restrictTo']) . '\'=1';
+    else if (($GLOBALS['url']->available('restrictTo')) && !empty($GLOBALS['url']->get('restrictTo')))
+        $where[] = '\'' . $userDBC->escapeString($GLOBALS['url']->get('restrictTo')) . '\'=1';
+    if (!empty($searchFor)) {
+        foreach (explode(' ', $searchFor) as $searchTerm) {
+            if (empty($searchTerm)) continue;
+            $searchTermMysql = $userDBC->escapeString('%' . $searchTerm . '%');
+            $where[] = '(' . $cfg->get('UserDBField_name') . ' LIKE \'' . $searchTermMysql . '\' OR ' . $cfg->get('UserDBField_forename') . ' LIKE \'' . $searchTermMysql . '\')';
+        }
+    }
     $result = $userDBC->mkSelect( '*',
                                   $cfg->get('UserDatabaseTable'),
-                                  ( (isset($_POST['restrictTo'])) ? // POST overrides GET!
-                                      ( $_POST['restrictTo']!='' ? $_POST['restrictTo'].'=1' : '' ) : // empty? ignore!
-                                    ( ($GLOBALS['url']->available('restrictTo')) && $GLOBALS['url']->get('restrictTo')!='' ? $GLOBALS['url']->get('restrictTo').'=1' : '' )
-                                   ),
+                                  implode(' AND ', $where),
                                    ( $restrictToKey == '_unassigned' ? 'registerFor, ' : '' ). // if unassigned order as well by courses registered to
                                    $orderBy.( $asc ?  ' ASC' :  ' DESC'  )
                                  );
@@ -189,20 +199,6 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
 
       $pge->put( $manageNavigation );
 
-// legend
-      $pge->put( "<div class=\"labsys_mop_u_row\">\n".
-                 "<div class=\"labsys_mop_h3\">".$lng->get("legend")."</div>\n" );
-
-      for ( $i=0; $i<count( $courseArray ); $i++){
-          for ($j=1; $j<=$i; $j++) // empty boxes
-            $pge->put( '<input type="checkbox" disabled>'.infoArrow( '', true )/* ."\n" saves space! */ );
-          $pge->put( '<input type="checkbox" id="course_'.$i.'" name="LEGEND'.$courseArray[ $i ].'" value="0" tabindex="'.$pge->nextTab++.'" checked="checked">'.
-                     '<label for="course_'.$i.'" class="labsys_mop_input_field_label">'.infoArrow( $courseArray[ $i ], false ).'</label>'/*."\n" removed to save space... */.
-                     $courseArray[ $i ]."<br />\n" );
-        }
-      $pge->put( "</div>\n" );
-// /legend
-
 // form
     $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/uaManageUsersSave.php")."\">\n".
                "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"".$url->rawLink2( $_SERVER['PHP_SELF'] )."\">\n"
@@ -215,14 +211,29 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
       $currElNr++; if ( $currElNr < $startFrom ) continue; if ( $currElNr >= $stopAt ) break;
       $pge->put( '<div class="labsys_mop_u_row">'."\n" );
 
-      // Identifier if uid is present (only selection is shown)
-      $pge->put( '<input type="hidden" name="'.$data[ $cfg->get('UserDBField_uid') ].'" value="1">' );
+      $pge->put('<select style="float:left;margin-right:2em" multiple="multiple" tabindex="'.$pge->nextTab++.'" name="uid_'.$data[ $cfg->get('UserDBField_uid') ].'[]">');
+      $courseList = '';
+      $unselectedCoursesHTML='';
+      foreach ( $data as $key => $value ){
+        if( $key[0] == '_' ){
+          $optionHTML = '<option value="'.$key.'"'.( ($value == 1) ?  ' selected="selected"'  : '' ).' onchange="isDirty=true">'.
+                        $key.
+                        "</option>\n";
+          if ($value == 1){
+            $pge->put( $optionHTML );
+          } else {
+            $unselectedCoursesHTML .= $optionHTML;
+          }
 
-      foreach ( $data as $key => $value )
-        if( $key[0] == '_' )
-          $pge->put( '<input type="checkbox" id="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" name="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" value="'.$value.'" tabindex="'.$pge->nextTab++.'" '.( ($value == 1) ?  'checked="checked" '  : '' ).' onchange="isDirty=true">'.
-                     '<label for="'.$data[ $cfg->get('UserDBField_uid') ].$key.'" class="labsys_mop_input_field_label">'.infoArrow( $key, false ).'</label>' );
+          if ($value == 1){
+            $courseList.=$key.'; ';
+          }
+        }
+      }
+      // Put the not selected ones at the end:
+      $pge->put( $unselectedCoursesHTML );
 
+      $pge->put('</select>');
       $pge->put( ' '.( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '<a href="'.$url->link2( '../pages/uaMyData.php?seeMe='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ) ).'">' : '').
                      $data[ $cfg->get('UserDBField_name') ].', '.
                      $data[ $cfg->get('UserDBField_forename') ].' ('.
@@ -249,12 +260,13 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
                                              substr( $data[ 'labsys_mop_last_change' ], 8, 2),  // DD
                                              substr( $data[ 'labsys_mop_last_change' ], 0, 4)   // YYYY
                                             )
-                              ), 'p1', true ).
+                              )."\n".$data['history'], 'p1', true ).
+          '<div class="courseList">'.$courseList.'</div>'.
 // /history
                  ( isset( $data[ '_unassigned' ] ) && ($data[ '_unassigned' ] == 1) ? '<br><b>'.$data[ 'registerFor' ]."</b> ".
                                                                                       ( $data[ 'desiredTeamPartner' ] != '' ? "| <img src=\"../syspix/prelabFin_yes_15x12.gif\" border=\"0\" title=\"".$lng->get("desiredTeamPartner")."\">".$data[ 'desiredTeamPartner' ] : '').
                                                                                       ' | '.$data[ 'reasonToParticipate' ]  : '').
-                 "</div>\n" );
+                 "</div><div style='clear:left;'></div>\n" );
     }
 
 // Multipageresult-Filtering

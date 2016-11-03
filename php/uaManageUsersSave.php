@@ -56,34 +56,25 @@ $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
   $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
   $courseArray = Array();
   while( $data = $result->fetch_array() )
-    if ( substr( $data[0], 0, 1 ) == '_' ) array_push( $courseArray, $data[0] );
-      
-// query for all datasets for iterating over the uids
-$result = $userDBC->mkSelect( '*', 
-                              $cfg->get('UserDatabaseTable'), 
-                              ''
-                             );
+    if ( substr( $data[0], 0, 1 ) == '_' ) $courseArray[$data[0]] = $data[0] . '=0';
 
-$noCourses = count( $courseArray );
-while ( $data = $result->fetch_assoc() ){
-  // only take present users! (selection)
-  if ( !isset( $_POST[ $data[ $cfg->get('UserDBField_uid') ] ] ) ) continue;
+// get affected UIDs
+$uids = Array();
+foreach ($_POST as $key => $value) {
+  if (substr($key, 0, 4) == 'uid_')
+    $uids[] = $userDBC->escapeString(substr($key, 4, strlen($key)));
+}
 
-  $changes = false; // update of the record necessary?
-  $updateString = "";
-  for( $i=0; $i<$noCourses; $i++ ){
-    $key = $courseArray[ $i ];
-    $postedValue = ( isset( $_POST[ $data[ $cfg->get('UserDBField_uid') ].$key ] ) ? 1: 0 );
-    $updateString .= ', '.$key."='".$postedValue."'";
-    $changes |= ( $postedValue != $data[ $key ] );
-  }
-
-  if ( $changes ) 
-    // update the values
-    $userDBC->mkUpdate( substr( $updateString, 2 ),
-                        $cfg->get('UserDatabaseTable'), 
-                        $cfg->get('UserDBField_uid')."='".$data[ $cfg->get('UserDBField_uid') ]."'"
-                       );
+foreach ($uids as $uid) {
+  $courses = $courseArray;
+  foreach ($_POST['uid_' . $uid] as $course )
+    $courses[$course] = $course . '=1';
+  //print_r($courses);
+  //print(implode(', ', $courses));
+  $userDBC->mkUpdate( implode(', ', $courses),
+                      $cfg->get('UserDatabaseTable'), 
+                      $cfg->get('UserDBField_uid')."='" . $uid . "'"
+                     );
 }
 
 // note

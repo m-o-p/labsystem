@@ -63,6 +63,17 @@ $GLOBALS['url']->put( 'restrictTo='.$restrictToKey );
 // sorting select
 $sorter = "<FORM class=\"labsys_mop_sort_form\" NAME=\"sort_options\" METHOD=\"POST\" ACTION=\"".$GLOBALS['url']->rawLink2( $_SERVER['PHP_SELF'].( $GLOBALS['url']->available('address') ? '?address='.$GLOBALS['url']->get('address') : '?address=none' ).( isset($startFrom) ? '&amp;startFrom='.$startFrom.'&amp;frameSize='.$frameSize : '' ) )."\">\n";
 
+$searchFor = '';
+if (isset($showSearchField)){
+  if (!empty($_POST['searchField']))
+    $searchFor = $_POST['searchField'];
+  else if (!empty($_GET['searchFor']))
+    $searchFor = $_GET['searchFor'];
+  $sorter .= $lng->get('searchFor').
+  '<input type="text" name="searchField" onChange="document.sort_options.submit();" tabindex="'.$pge->nextTab++.'"'.( !empty($searchFor) ? ' value="'.$searchFor.'"' : '').'>';
+  $url->put('searchFor='.$searchFor);
+}
+
 if (isset($restrictToArray)){
   $sorter .=$lng->get('restrictTo').
             '<select name="restrictTo" size="1" onChange="document.sort_options.submit();" tabindex="'.$pge->nextTab++.'">';
