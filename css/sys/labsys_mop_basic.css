@@ -956,10 +956,9 @@ fieldset{
                     margin-left: 1em;
   }
   .labsys_mop_elements_m_around .correct {
-  	background-color:#dfe
   }
   .labsys_mop_elements_m_around .wrong {
-  	background-color: #fcd
+  	border: solid 2px #f00;
   }
   .labsys_mop_elements_m_around .wrongButAnswerable {
     display: inline;
@@ -997,13 +996,16 @@ fieldset{
     float:left
   }
   .labsys_mop_m_answers .checkMark .wrong{
-    background-color:#f88
+    background-color: #ffeeee;
+    border: 1px solid #FA8072; /* salomon */
   }
   .labsys_mop_m_answers .checkMark .right{
-    background-color:#5c5
+    background-color: #eeffee;
+    border: 1px solid #32CD32; /* limegreen */
   }
   .labsys_mop_m_answers .checkMark .exampleSolutionCorrect{
-    background-color:#050
+    background-color: #ff8;
+    border: 1px solid #32CD32; /* limegreen */
   }
   .labsys_mop_m_answers .checkMark .exampleSolutionWrong{
   }
