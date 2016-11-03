@@ -125,11 +125,16 @@ function parseHTML( &$object ){
 
 function tidyHTML( &$string ){
   if ( ($GLOBALS['cfg']->get('tidyHTML') == 'TRUE' ) && // tidying is configured on via config file option
-       ( substr( $string, 0, 6 ) == '[HTML]' ) &&  // this is and HTML element
-       class_exists( 'tidy' ) ){ // tidy exists on this system
+       ( substr( $string, 0, 6 ) == '[HTML]' ) ) { // this is and HTML element
     if (!isset( $GLOBALS['tidy'] )) $GLOBALS['tidy'] = new tidy();
     $string = "[HTML]\n".$GLOBALS['tidy']->repairString( substr( $string, 6 ), array('indent' => TRUE, 'show-body-only' => TRUE, 'vertical-space' => TRUE, 'wrap' => 100), 'utf8' );
   }
+}
+
+// Return without modifiying HTML
+function getTidiedHTML( $string ){
+  tidyHTML( $string );
+  return $string;
 }
 
 /**
