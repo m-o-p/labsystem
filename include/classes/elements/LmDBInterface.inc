@@ -141,7 +141,7 @@ class LmDBInterface {
               'detailed_grading='.       ($eM->getDetailedGradingEnabled() ? 1 : 0).', '.
               'horizontal_layout='.      ($eM->getHorizontalLayout() ? 1 : 0).', '.
               'visible_for="'.           $eM->getVisibleFor().'", '.
-              'visible_only_in_collection="'.( $eM->getVisibleOnlyInCollection() ?  1 :  0 ).'", ';
+              'visible_only_in_collection="'.( $eM->visibleOnlyInCollection ?  1 :  0 ).'", ';
   }
 
   /**
