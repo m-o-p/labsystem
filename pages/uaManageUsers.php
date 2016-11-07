@@ -95,7 +95,7 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
     $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
     $courseArray = Array();
     while( $data = $result->fetch_array() )
-      if ( substr( $data[0], 0, 1 ) == '_' ) array_push( $courseArray, $data[0] );
+      if ( substr( $data[0], 0, 1 ) == '_' ) $courseArray[] = $data[0];
 
     // now the array is [n] => $key but for sorting it has to be $keyExpl => $key
     $sortArrayAdd = array_flip( $courseArray );
@@ -214,21 +214,14 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
       $pge->put('<select style="float:left;margin-right:2em" multiple="multiple" tabindex="'.$pge->nextTab++.'" name="uid_'.$data[ $cfg->get('UserDBField_uid') ].'[]">');
       $courseList = '';
       $unselectedCoursesHTML='';
-      foreach ( $data as $key => $value ){
-        if( $key[0] == '_' ){
-          $optionHTML = '<option value="'.$key.'"'.( ($value == 1) ?  ' selected="selected"'  : '' ).' onchange="isDirty=true">'.
-                        $key.
-                        "</option>\n";
-          if ($value == 1){
-            $pge->put( $optionHTML );
-          } else {
-            $unselectedCoursesHTML .= $optionHTML;
-          }
-
-          if ($value == 1){
-            $courseList.=$key.'; ';
-          }
-        }
+      foreach ( $courseArray as $key ) {
+        $value = $data[$key];
+        $optionHTML = '<option value="'.$key.'"'.( ($value == 1) ?  ' selected="selected"'  : '' ).' onchange="isDirty=true">'.
+                      $key.
+                      "</option>\n";
+        $pge->put( $optionHTML );
+        if ($value == 1)
+          $courseList.=$key.'; ';
       }
       // Put the not selected ones at the end:
       $pge->put( $unselectedCoursesHTML );
