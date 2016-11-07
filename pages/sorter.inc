@@ -71,7 +71,7 @@ if (isset($showSearchField)){
     $searchFor = $_GET['searchFor'];
   $sorter .= $lng->get('searchFor').
   '<input type="text" name="searchField" onChange="document.sort_options.submit();" tabindex="'.$pge->nextTab++.'"'.( !empty($searchFor) ? ' value="'.$searchFor.'"' : '').'>';
-  $url->put('searchFor='.$searchFor);
+  if (!empty($searchFor)) $url->put('searchFor='.$searchFor);
 }
 
 if (isset($restrictToArray)){

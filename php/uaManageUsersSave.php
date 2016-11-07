@@ -59,21 +59,19 @@ $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
     if ( substr( $data[0], 0, 1 ) == '_' ) $courseArray[$data[0]] = $data[0] . '=0';
 
 // get affected UIDs
-$uids = Array();
-foreach ($_POST as $key => $value) {
-  if (substr($key, 0, 4) == 'uid_')
-    $uids[] = $userDBC->escapeString(substr($key, 4, strlen($key)));
-}
+if (array_key_exists('uids', $_POST))
+  $uids = $_POST['uids'];
+else
+  $uids = Array();
 
-foreach ($uids as $uid) {
+foreach ($uids as $uid => $courseData) {
   $courses = $courseArray;
-  foreach ($_POST['uid_' . $uid] as $course )
-    $courses[$course] = $course . '=1';
-  //print_r($courses);
-  //print(implode(', ', $courses));
+  foreach (array_keys($courseData) as $course)
+    if (array_key_exists($course, $courses))
+      $courses[$course] = $course . '=1';
   $userDBC->mkUpdate( implode(', ', $courses),
                       $cfg->get('UserDatabaseTable'), 
-                      $cfg->get('UserDBField_uid')."='" . $uid . "'"
+                      $cfg->get('UserDBField_uid')."='" . $userDBC->escapeString($uid) . "'"
                      );
 }
 

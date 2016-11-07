@@ -1414,4 +1414,26 @@ fieldset{
   }
   .labsys_mop_content .createUserimportPreview tr:nth-child(even) {background: #CCC}
   .labsys_mop_content .createUserimportPreview tr:nth-child(odd) {background: #FFF}
-  }
+
+.labsys_mop_checkboxes {
+  border: 1px #dadada solid;
+  width: 100%;
+  text-align: left;
+}
+.labsys_mop_checkboxes.hidden {
+  display: none;
+}
+label.labsys_mop_multiselectoption {
+  white-space: nowrap;
+  display: inline-block;
+  width: 240px;
+}
+label.labsys_mop_multiselectoption:hover {
+  background-color: #1e90ff;
+}
+.labsys_mop_multiselectoption input[type=checkbox]:checked + span {
+  background-color: #ff0;
+}
+.courseList a {
+  cursor: pointer;
+}

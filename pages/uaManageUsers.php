@@ -88,6 +88,12 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
           ) $frameSize = $GLOBALS['url']->get('frameSize'); else $frameSize = $cfg->get( 'DefElmntsPerManagePage' );
 // /Multipageresult-Filtering Init $_GET as it is used by the sorter...
 
+$pge->put('<script language="javascript" type="text/javascript">' . "\n" .
+          'function showCheckboxes(uid) {' . "\n" .
+          '    var checkboxes = document.getElementById("checkboxes_" + uid);' . "\n" .
+          '    checkboxes.classList.toggle(\'hidden\');' . "\n" .
+          '}' . "\n" .
+          '</script>');
 //Sorter
   // which courses exist?
     // ask for the couseID fields starting with _
@@ -117,9 +123,9 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
 // DB Query
     $where = array();
     if (isset($_POST['restrictTo']) && !empty($_POST['restrictTo']))
-        $where[] = '\'' . $userDBC->escapeString($_POST['restrictTo']) . '\'=1';
+        $where[] = '`' . $userDBC->escapeString($_POST['restrictTo']) . '`=1';
     else if (($GLOBALS['url']->available('restrictTo')) && !empty($GLOBALS['url']->get('restrictTo')))
-        $where[] = '\'' . $userDBC->escapeString($GLOBALS['url']->get('restrictTo')) . '\'=1';
+        $where[] = '`' . $userDBC->escapeString($GLOBALS['url']->get('restrictTo')) . '`=1';
     if (!empty($searchFor)) {
         foreach (explode(' ', $searchFor) as $searchTerm) {
             if (empty($searchTerm)) continue;
@@ -209,32 +215,25 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
     while( $data = $result->fetch_assoc() ){
       // skip not wanted
       $currElNr++; if ( $currElNr < $startFrom ) continue; if ( $currElNr >= $stopAt ) break;
-      $pge->put( '<div class="labsys_mop_u_row">'."\n" );
-
-      $pge->put('<select style="float:left;margin-right:2em" multiple="multiple" tabindex="'.$pge->nextTab++.'" name="uid_'.$data[ $cfg->get('UserDBField_uid') ].'[]">');
-      $courseList = '';
-      $unselectedCoursesHTML='';
+      $uid = $data[ $cfg->get('UserDBField_uid') ];
+      $pge->put('<div class="labsys_mop_u_row">'."\n" );
+      $courseList = Array();
+      $optionsHTML = Array();
       foreach ( $courseArray as $key ) {
         $value = $data[$key];
-        $optionHTML = '<option value="'.$key.'"'.( ($value == 1) ?  ' selected="selected"'  : '' ).' onchange="isDirty=true">'.
-                      $key.
-                      "</option>\n";
-        $pge->put( $optionHTML );
-        if ($value == 1)
-          $courseList.=$key.'; ';
+        $optionsHTML[] = '<label class="labsys_mop_multiselectoption">'.
+                         '<input type="checkbox" name="uids[' . $uid . ']['.$key.']"'.( ($value == 1) ?  ' checked'  : '' ).' onchange="isDirty=true">'.
+                         '<span>' . $key. '</span></label>' . "\n";
+        if ($value == 1) $courseList[] = $key;
       }
-      // Put the not selected ones at the end:
-      $pge->put( $unselectedCoursesHTML );
-
-      $pge->put('</select>');
-      $pge->put( ' '.( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '<a href="'.$url->link2( '../pages/uaMyData.php?seeMe='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ) ).'">' : '').
+      $pge->put( ' '.( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '<a href="'.$url->link2( '../pages/uaMyData.php?seeMe='.urlencode( $uid ) ).'">' : '').
                      $data[ $cfg->get('UserDBField_name') ].', '.
                      $data[ $cfg->get('UserDBField_forename') ].' ('.
                      $data[ $cfg->get('UserDBField_username') ].')'.
                      ( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '</a>' : '' )."\n".
 // delete button
                  ' <a tabindex="'.$pge->nextTab++.'" '.
-                    'href="'.$url->rawLink2( '../php/uaManageUsersExecute.php?function=del&param='.urlencode( $data[ $cfg->get('UserDBField_uid') ] ).'&redirectTo='.urlencode( $_SERVER['PHP_SELF'].'?'.$url->get('newQueryStringRaw') ) )."\" ".
+                    'href="'.$url->rawLink2( '../php/uaManageUsersExecute.php?function=del&param='.urlencode( $uid ).'&redirectTo='.urlencode( $_SERVER['PHP_SELF'].'?'.$url->get('newQueryStringRaw') ) )."\" ".
                     "onClick='return confirmLink(this, \"".$data[ $cfg->get('UserDBField_forename') ].' '.$data[ $cfg->get('UserDBField_name') ].': '.$lng->get('confirmDelete').'");'."'".
                  '>'.
                  "<img src=\"../syspix/button_delete_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"delete\" title=\"".$lng->get("explainDeleteElemnt")."\">".
@@ -254,12 +253,16 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
                                              substr( $data[ 'labsys_mop_last_change' ], 0, 4)   // YYYY
                                             )
                               )."\n".$data['history'], 'p1', true ).
-          '<div class="courseList">'.$courseList.'</div>'.
+          '<div class="courseList">Current instances: '.implode(', ', $courseList).
 // /history
                  ( isset( $data[ '_unassigned' ] ) && ($data[ '_unassigned' ] == 1) ? '<br><b>'.$data[ 'registerFor' ]."</b> ".
                                                                                       ( $data[ 'desiredTeamPartner' ] != '' ? "| <img src=\"../syspix/prelabFin_yes_15x12.gif\" border=\"0\" title=\"".$lng->get("desiredTeamPartner")."\">".$data[ 'desiredTeamPartner' ] : '').
-                                                                                      ' | '.$data[ 'reasonToParticipate' ]  : '').
-                 "</div><div style='clear:left;'></div>\n" );
+                                                                                      ' | '.$data[ 'reasonToParticipate' ]  : ''));
+      $pge->put('; <a onclick="showCheckboxes(\'' . $uid . '\')">add/remove</a></div>'."\n" );
+      $pge->put('<div class="labsys_mop_checkboxes hidden" id="checkboxes_' . $uid . '">'."\n" );
+      $pge->put(implode($optionsHTML));
+      $pge->put("</div>\n");
+      $pge->put("</div><div style='clear:left;'></div>\n");
     }
 
 // Multipageresult-Filtering
@@ -279,6 +282,10 @@ if (isset($_POST['restrictTo'])) $startFrom = 1;
 $url->rem( 'orderBy='.$orderByKey );
 $url->rem( 'asc='.( $asc ?  'asc' :  'desc'  ) );
 $url->rem( 'restrictTo='.$restrictToKey );
+$url->rem( 'startFrom='.$startFrom );
+$url->rem( 'frameSize='.$frameSize );
+if (!empty($searchFor))
+  $url->rem( 'searchFor='. urlencode($searchFor) );
 
 // show!
   require( $cfg->get("SystemPageLayoutFile") );
