@@ -46,7 +46,7 @@ else{
       	// regular delete that works for all element classes
       	// we only want to delete s elements as for the others it makes no sense.
 	      require( "../php/getDBIbyID.inc" ); // -> $DBI
-	      $ret = $DBI->deleteData( $num )
+	      $ret = $DBI->deleteData( $num );
 	      if ($ret === false) {
 	      	$text = 'Mysql Error: ' . $userDBC->link->error;
 	      }else{
