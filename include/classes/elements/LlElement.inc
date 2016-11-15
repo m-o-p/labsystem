@@ -1935,7 +1935,10 @@ class LlElement extends Element{
         if (!array_key_exists($index, $alreadyInSum)) {
             $alreadyInSum[$index] = true;
             foreach ($teams as $team => &$teamData) {
-                $element->loadUserData4($team);
+            	// Is this element visible for regular users without special rights? No->do not consider.
+            	if (!(isset($element->visibleFor) && $element->visibleFor<=IS_USER)) continue;
+            		
+            	$element->loadUserData4($team);
                 if (!$element->isClosed && $is2bClosed) $element->closeInput($team); // if necessary close labinput
                 $teamData['areAllClosed']    &= $element->isClosed;
                 $teamData['areAllCorrected'] &= $element->isCorrected;
