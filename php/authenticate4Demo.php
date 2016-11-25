@@ -50,7 +50,7 @@ if ( !$GLOBALS['url']->available('userrole') ){
 require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 
 // preserve the current url since we will probably link back (p.e. to give an error) or add something to the url.
-$url->clearQueryString(); $url->put( $url->get("oldQueryString") );
+$url->setToGetParameters();
 
 /* demo login issues */
                       $authUserData["uid"]      = "demoUser";
@@ -81,19 +81,19 @@ $url->clearQueryString(); $url->put( $url->get("oldQueryString") );
   $_SESSION["currentTeam"] = 1234;
 if ( $GLOBALS['url']->get('userrole') == 'all' ){
   $_SESSION["userRights"]  = (MAX_USER_ROLE<<1)-1; // all
-  $link2 = $cfg->get("AfterLogInPage");
+  $link2 = $url->rawLink2($cfg->get("AfterLogInPage"));
 }
 elseif ( $GLOBALS['url']->get('userrole') == 'corrector' ){
   $_SESSION["userRights"]  = IS_USER+IS_MAIL_SUPPORTER+IS_ALL_MAILER+IS_SCHEDULER+IS_CORRECTOR+IS_EX_SOLUTION_VIEWER; // corrector
   $_SESSION['seeingUID']   = 'participant'; // correct this guy
   $_SESSION['seeingDESCR'] = 'Patrice Participant (patrice)';
-  $link2 = '../pages/view.php?address=l2.allLabQ';
+  $link2 = $url->rawLink2('../pages/view.php', Array('address' => 'l2.allLabQ'));
 }
 else{
   $_SESSION["userRights"]  = IS_USER; // user
-  $link2 = '../pages/view.php?address=l2.C6.c2';
+  $link2 = $url->rawLink2('../pages/view.php', Array('address' => 'l2.C6.c2'));
 }
 
 // Link to the after login page from the config file or to
-  header( "Location: ".$url->rawLink2( $link2/* .'&tinyMCE' */ ) );
+  header( "Location: ". $link2 );
 ?>

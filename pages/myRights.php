@@ -67,7 +67,7 @@ $pge->put( '<FORM class="labsys_mop_std_form" NAME="myRightsEdit" METHOD="POST" 
   		$url->rem('myRights');
   	}else{
   		//only in this tab...
-  		$url->put('myRights='.$newUsrRights);
+  		$url->put('myRights', $newUsrRights);
   		$usr->userRights=$newUsrRights; // validity checked above already!
   	}
   }

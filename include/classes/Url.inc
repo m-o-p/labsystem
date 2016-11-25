@@ -32,70 +32,37 @@
 */
 class Url
 {
-  var $queryString;
+  var $getParams;
 
   function Url(){
-    $this->queryString = "";
+    $this->getParams = Array();
   }
 
   /**
-  * Adds the $string to the new queryString. link2() uses this. THE way to add things to the url.
-  * @param $string  The content to be added.
+  * Adds the given key value pair to the internal list of Url parameters;
+  * these parameters are added by default when using link2 (unless overwritten
+  * with a different set of $base_parameters)
+  * @param $key    The key to be added.
+  * @param $value  The corresponding value
   */
-  function put( $string ){
-    if ( !empty($string) ){
-      $string = urldecode( html_entity_decode( $string ) ); // remove any escapes as they are added again here
-      if ( strpos( $string, '&' ) === false) $string.='&';
-      $strings = explode( '&', $string);
-      foreach ($strings as $string){
-        if (empty($string)) continue; // jump over empty strings...
-        $posEq = strpos( $string, '=' );
-        if ($posEq !== false){
-          $varName = substr( $string, 0, $posEq );
-          $varContent = urldecode(substr( $string, $posEq+1 ));
-        } else {
-          $varName = $string;
-          $varContent = 'true';
-        }
+  function put( $key, $value='' ) {
+    $this->getParams[$key] = $value;
+  }
 
-        if ( isset($_SESSION['uid']) && // Session running?
-             ( ($varName == 'sysinfo') || ($varName == 'sysalert') )
-             ) $_SESSION[$varName]=$varContent; // If session is running use the cookie for transport
-        else{
-        	if (strpos($this->queryString, $varName) === false){
-        		// new: add it
-        		$this->queryString .= "&".$varName.'='.urlencode( $varContent );
-        	}else{
-        		// existing: replace it
-        		$this->queryString = str_replace($varName.'='.$this->get($varName), $varName.'='.urlencode( $varContent ), $this->queryString);
-        	}
-        	
-        }
-      }
-    }
-  }
-  
   /**
-  * Empties the current querystring.
+  * Use the given GET parameters as the internal list of parameters (discarding
+  * any previous changes)
   */
-  function clearQueryString(){
-    $this->queryString = "";
+  function setToGetParameters( ){
+      $this->getParams = $_GET;
   }
-  
+
   /**
-  * Returns a value from the current queryString, the current QS (oldQueryString) or the new one (newQueryString).
+  * Returns a value from the given GET parameters or the special sysinfo / sysalert parameters from the cookie
   * @param $key   The identifier of the element whos value should be returned.
   */
   function get( $key ){
-    if ( $key == 'newQueryString' ){
-      // transform & -> &amp; for valid HTML
-      $newQS = str_replace( '&amp;', '&', ( $this->queryString != '' ? substr( $this->queryString, 1 ) : '' ) ); // if there are any transformed don't recode them!
-      $newQS = str_replace( '&', '&amp;', $newQS );
-      return $newQS;
-    }
-    if ( $key == 'newQueryStringRaw' ) return ( $this->queryString != '' ? substr( $this->queryString, 1 ) : '' );
-    if ( $key == 'oldQueryString' )return urldecode($_SERVER[ 'QUERY_STRING' ]);
-    if ( isset( $_GET[$key]) ) return urldecode($_GET[$key]);
+    if ( isset( $_GET[$key]) ) return $_GET[$key];
     else if (  isset($_SESSION["uid"]) && // Session running?
                ( ($key == 'sysinfo') || ($key == 'sysalert') ) &&
                isset($_SESSION[$key])
@@ -106,10 +73,18 @@ class Url
               }
     else return '';
   }
-  
+
+
+  /**
+  * Return the maintained Url parameters as urlencoded list, properly encoded for use in HTML
+  */
+  function htmlUrlParams( ) {
+    return htmlspecialchars(http_build_query($this->getParams));
+  }
+
   /**
   * Is $key present in current queryString?
-  * @param $key   The identifier of the element whos value should be returned.
+  * @param $key   The identifier of the element whos existance should be checked
   */
   function available( $key ){
     return isset( $_GET[$key] ) || ( isset($_SESSION["uid"]) && // Session running?
@@ -118,74 +93,85 @@ class Url
                                      (!empty($_SESSION[$key]))
                                     ); // If session is running the cookie can be used for transport;
   }
-  
+
   /**
-  * Removes the given string (p.e. foo=bar) from the new QueryString ($querySting).
-  * @param $string  The text to be removed.
+  * Removes the given key from the internal list of Url parameters.
+  * @param $key  The key to be removed.
   */
-  function rem( $string ){ 
-  	if ($this->available($string) && !empty($this->get($string))){
-  		$string = $string.'='.$this->get($string);
-  	}
-  	// take one ampersand with you if available...
-  	if (strpos($this->queryString, $string.'&') !== false){
-  		$string = $string.'&';
-  	}elseif (strpos($this->queryString, '&'.$string) !== false){
-  		$string = '&'.$string;
-  	}
-    $this->queryString = str_replace( $string, '', $this->queryString );
+  function rem( $key ){
+    unset($this->getParams[$key]); // non-existing keys are silently ignored by unset
   }
-  
+
   /**
-  * Copys the given $key with its value to the new queryString. If not present the $key is added without value ( = void ).
+  * Copys the given $key with its value from the GET parameters to the internal list of Url
+  * paramters. If key is present as GET parameter the request is silently ignored.
   * @param $key     The key to be preserved.
   */
   function preserve( $key ){
-    if ( isset( $_GET[$key] ) ) {
-      if ( $_GET[$key] == '' )
-        $this->put( $key ); 
-      else 
-        $this->put( $key."=".$_GET[$key] );
+    if ( isset( $_GET[$key] ) )
+      $this->getParams[$key] = $_GET[$key];
+  }
+
+  /**
+  * Get the parameters to generate a link; by default this merges the internal list of Url
+  * parameters with given $additional_parameters (which can overwrite keys)
+  * @param $additionalParams  Add params to the internal list
+  * @param $baseParams        Use this array for the base parameters instead of the default Url parameters
+  */
+  function getMergedParams( $additionalParams, $baseParams=NULL ) {
+    if (!isset($baseParams))
+      $baseParams = $this->getParams;
+    if (isset($additionalParams))
+      return $additionalParams + $baseParams;  // values in the left-hand array take precedance
+    else
+      return $baseParams;
+  }
+
+  /**
+  * Adds parameters to a given destination url and returns the complete URL properly encoded;
+  * if the link is to be embedded in HTML, use link2 instead, which properly encodes characters
+  * with a special meaning in HTML.
+  * @param $destUrl           The destionation to link to (defaults to PHP_SELF)
+  * @param $additionalParams  Parameters to use in addition to the base parameters (none by default)
+  * @param $baseParams        Parameters to use as base (defaults to the maintained list of URL params)
+  * @return                   The full link.
+  */
+  function rawLink2( $destUrl=NULL, $additionalParams=NULL, $baseParams=NULL ){
+    if (!isset($destUrl)) {
+      $destUrl = $_SERVER['PHP_SELF'];
+      //$destUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     }
+    $getParams = $this->getMergedParams($additionalParams, $baseParams);
+    if ( empty($getParams) )
+      return $destUrl; /* no query string */
+    else
+      return $destUrl . '?' . http_build_query($getParams);
   }
-  
+
   /**
-  * Rewrites the url by adding the necessary surroundings ( p.e. inside, config= ) set by preserve etc. .
-  * This is used for header redirects.
-  * "Normal" links on the page need encoded ampersands! -> link2
-  * @param $destUrl   The url to link to.
-  * @return The full link.
+  * Same as rawLink2, but suitable to be used in HTML (properly encoded HTML special characters).
   */
-  function rawLink2( $destUrl ){
-  	$linkMe = $destUrl;
-    if ( $this->get('newQueryStringRaw') == '' )
-      return $linkMe; /* no query string */
-    else if ( strpos( $linkMe, '?' ) !== false ){
-    	// this is the interesting part. Only add new query strings!
-    	$urlParameters = explode('&', $this->get('newQueryStringRaw'));
-    	foreach( $urlParameters as $nextURLparameter){
-    		if(strpos($linkMe, $nextURLparameter)===false){
-    			$linkMe = str_replace('?', '?'.$nextURLparameter.'&', $linkMe);
-    		}
-    	}
-    	return $linkMe;
-    }else{
-          return $destUrl.'?'.$this->get('newQueryStringRaw'); // not found
+  function link2( $destUrl=NULL, $additionalParams=NULL, $baseParams=NULL ){
+    return htmlspecialchars($this->rawLink2( $destUrl, $additionalParams, $baseParams));
   }
-  }
-  
+
   /**
-   * Also replaces ampersands for correct HTML-Representation.
-   *
-   * @param $destUrl   The url to link to.
-   * @return The full link with replaced ampersands.
+  * Take a complete URL (only url encoded, not HTML encoded) possibly including GET parameters already
+  * and add the maintaned Url parameters to it (and possibly additional paramters); the result is again
+  * only URLencoded, htmlencoding still needs to be done if required
+  * NOTE: fragment is currently not supported
+  * @param $url               an URL possibly containing get parameters (separated by a ?)
+  * @param $additionalParams  Parameters to use in addition to the base parameters (none by default)
+  * @param $baseParams        Parameters to use as base (defaults to the maintained list of URL params)
+  * @return                   a complete new URL, properly URLencoded (but not HTML encoded)
   */
-  function link2( $destUrl ){
-    $newD = $this->rawLink2( $destUrl );
-    // transform all (even given) & -> &amp;
-    $newD = str_replace( '&amp;', '&', $newD ); // if there are any transformed don't recode them!
-    $newD = str_replace( '&', '&amp;', $newD );
-    return $newD;
+  function rewriteExistingUrl( $url, $additionalParams=NULL, $baseParams=NULL ) {
+    $parts = explode('?', $url, 2);
+    $location = $parts[0]; //TODO: needs to be urldecoded?
+    $params = Array();
+    if (isset($parts[1]))
+      parse_str($parts[1], $params);
+    return  $this->rawLink2($location, $this->getMergedParams($additionalParams, $params), $baseParams);
   }
 }
 $url = new Url();

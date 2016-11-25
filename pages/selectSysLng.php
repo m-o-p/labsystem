@@ -42,21 +42,21 @@ $pge->title        = $lng->get('TitleSysLngSelect');
 
   //select
       // remove current language line from url:
-      if ($url->available( 'lng' )) $url->rem( 'lng='.$runningSystemLanguage );
+      if ($url->available( 'lng' )) $url->rem( 'lng' );
       $pge->put('<p>'.$lng->get('AvailableLng').': ');
       $subDirs = scandir( $cfg->get("SystemResourcePath") );
       foreach( $subDirs as $entry ){
         if ( $entry == '.' || $entry == '..' ) continue; // skip those
         $parts = preg_split( '/[\s.]/', $entry );
         if( isset($parts[1]) && ($parts[1] == 'lng')) {
-          $url->put('lng='.$parts[0]);
+          $url->put('lng', $parts[0]);
           $pge->put('<a href="'.$url->link2('../pages/selectSysLng.php').'">'.( $parts[0] == $runningSystemLanguage ? '[<b>'.$parts[0].'</b>]' : $parts[0]).'</a> ');
-          $url->rem('lng='.$parts[0]);
+          $url->rem('lng');
         };
       }
       $pge->put("</p>\n");
       // add running language to url
-      $url->put('lng='.$runningSystemLanguage);
+      $url->put('lng', $runningSystemLanguage);
       
   // note: create own
      if ( $lng->get("NoteCreateOwnLng") != "" ) $pge->put(  "<div class=\"labsys_mop_note\">\n".$lng->get("NoteCreateOwnLng").

@@ -61,6 +61,17 @@ if ( $url->available('sysinfo') ) if ( isset($SYSINFO) ) $SYSINFO .= htmlentitie
 if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlentities( html_entity_decode( $url->get('sysalert') ) );
                                                    else $SYSALERT  = htmlentities( html_entity_decode( $url->get('sysalert') ) );
 
+/**
+* return a copy of an array with a certain key removed
+* @param $array  the array from which the key should be removed
+* @param $key    the key to remove (non-existant keys are silently ignored)
+* @return        a new array without the removed key
+*/
+function removeFromArray($array, $key) {
+  unset($array[$key]);
+  return $array;
+}
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
@@ -170,11 +181,11 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
         }else{
           $isNoMenu = $url->available('nomenu');
           if ($isNoMenu){
-            $url->rem('nomenu=true');
+            $url->rem('nomenu');
           }
           echo('[<a class="labsys_mop_login" href="'.$url->link2($labsystem_LogInLink).'">'.$lng->get( "MnuEntryLogIn" ).'</a>] ');
           if ($isNoMenu){
-            $url->put('nomenu=true');
+            $url->put('nomenu', 'true');
           }
         }
 
@@ -183,34 +194,35 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
           // seeing someone
           if ( $usr->isSeeingSomeonesData() ){
             echo( '<span class="labsys_mop_seeingSomeone">'.
-                  '<a href="'.str_replace( '&seeMe='.$url->get('seeMe'), '', $_SERVER['REQUEST_URI'] ).'">'.
+                  '<a href="'.$url->link2(NULL, NULL, removeFromArray($_GET, 'seeMe')).'">'.
                   '['.$lng->get("dataOf").' '.$usr->theSeeingDescr().' '.
                   '<img src="../syspix/button_stop_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
                   '</a>'.
-                  '<a href="'.$_SERVER['REQUEST_URI'].'&hideAnswers=true">'.
+                  '<a href="'.$url->link2(NULL, Array('hideAnswers' => 'true'), $_GET).'">'.
                   '<img src="../syspix/button_paused_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
                   '</a>'.
                   ' ]'.
                   '</span> ' );
           }
-          if ( $url->available('hideAnswers') )
+          if ( $url->available('hideAnswers') ) {
             echo( '<span class="labsys_mop_seeingSomeone">'.
                   '['.$lng->get("dataOf").' '.
-                  '<a href="'.str_replace( '&hideAnswers=true', '', $_SERVER['REQUEST_URI'] ).'">'.
+                  '<a href="'.$url->link2(NULL, NULL, removeFromArray($_GET, 'hideAnswers')).'">'.
                   '<img src="../syspix/button_play_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
                   '</a>'.
                   ' ]'.
                   '</span> ' );
+          }
           // obfuscate user names
           if ( $usr->isOfKind( IS_CORRECTOR ) ){
             echo( '<span class="labsys_mop_seeingSomeone">'.
                 '['.$lng->get('pseudoNames').' ' );
             if ( $url->available('pseudoNames') ){
-              echo('<a href="'.str_replace( '&pseudoNames=true', '', $_SERVER['REQUEST_URI'] ).'">'.
+              echo('<a href="'.$url->link2(NULL, NULL, removeFromArray($_GET, 'pseudoNames')).'">'.
                   '<img src="../syspix/button_paused_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'pseudoNames' ).'">'.
                   '</a>');
             }else
-              echo('<a href="'.$_SERVER['REQUEST_URI'].'&pseudoNames=true">'.
+              echo('<a href="'.$url->link2(NULL, Array('pseudoNames' => 'true'), $_GET).'">'.
                   '<img src="../syspix/button_play_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
                   '</a>'
               );
@@ -222,11 +234,11 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
             echo( '<span class="labsys_mop_seeingSomeone">'.
                   '['.$lng->get('hideExampleSolutionInThisTab').' ' );
             if ( $url->available('hideExampleSolutionInThisTab') ){
-              echo('<a href="'.str_replace( '&hideExampleSolutionInThisTab=true', '', $_SERVER['REQUEST_URI'] ).'">'.
+              echo('<a href="'.$url->link2(NULL, NULL, removeFromArray($_GET, 'hideExampleSolutionInThisTab')).'">'.
                    '<img src="../syspix/button_paused_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'stopSeeingData' ).'">'.
                    '</a>');
             }else
-              echo('<a href="'.$_SERVER['REQUEST_URI'].'&hideExampleSolutionInThisTab=true">'.
+              echo('<a href="'.$url->link2(NULL, Array('hideExampleSolutionInThisTab' => 'true'), $_GET).'">'.
                    '<img src="../syspix/button_play_9x9.gif" width="9" height="9" style="border: none;" alt="'.$lng->get( 'hideExampleSolutionInThisTab' ).'">'.
                    '</a>'
                    );
@@ -241,9 +253,9 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
           if ($usr->isOfKind( IS_CONTENT_EDITOR ) && $cfg->doesExist('tinyMCE') && ($cfg->get('tinyMCE') == 'TRUE')){
             echo(' | ');
             if ($url->available('tinyMCE')){
-              echo('<a href="'.str_replace( '&tinyMCE=true', '', $_SERVER['REQUEST_URI'] ).'" style="color:#0f0"><img src="../syspix/button_wysiwyg_off_20x10.gif" width="20px" height="10px" style="border:0" alt="wysiwig on" title="+wysiwyg"></a>');
+              echo('<a href="'.$url->link2(NULL, NULL, removeFromArray($_GET, 'tinyMCE')).'" style="color:#0f0"><img src="../syspix/button_wysiwyg_off_20x10.gif" width="20px" height="10px" style="border:0" alt="wysiwig on" title="+wysiwyg"></a>');
             } else {
-              echo('<a href="'.$_SERVER['REQUEST_URI'].'&tinyMCE=true" style="color:#f00"><img src="../syspix/button_wysiwyg_on_20x10.gif" width="20px" height="10px" style="border:0" alt="wysiwig off" title="-wysiwyg"></a>');
+              echo('<a href="'.$url->link2(NULL, Array('tinyMCE' => 'true'), $_GET).'" style="color:#f00"><img src="../syspix/button_wysiwyg_on_20x10.gif" width="20px" height="10px" style="border:0" alt="wysiwig off" title="-wysiwyg"></a>');
             }
           }
 
@@ -257,8 +269,8 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
 <!-- ************************* start of menu ************************* -->
       <tr><?php /* hide/ show menu table row */
           $menuVisible = !$GLOBALS['url']->available('nomenu');
-          $url2 = new Url(); $url2->put( $url->get("oldQueryString") );
-          if ( $menuVisible ) $url2->put( "nomenu=true" ); else $url2->rem( "nomenu=true" );
+          $url2 = new Url(); $url2->setToGetParameters();
+          if ( $menuVisible ) $url2->put( 'nomenu', 'true' ); else $url2->rem( "nomenu" );
 
           $link = $url2->link2( $_SERVER['PHP_SELF'] ); /* the fragment (p.e. "#top7") of the uri will be lost since it is not available to php */
           echo("<td class=\"labsys_mop_ableMenu\" ".

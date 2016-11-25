@@ -91,7 +91,7 @@ $pge->title = $file2edit; // override as it may have changed...
 $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n".
           ( $editAllAvailableFiles && ($selectOptions != '') ?
             "<div class=\"labsys_mop_note\">\n".
-            '<FORM class="labsys_mop_std_form" NAME="sort_options" METHOD="POST" ACTION="'.$GLOBALS['url']->rawLink2( $_SERVER['PHP_SELF'] ).'">'."\n".
+            '<FORM class="labsys_mop_std_form" NAME="sort_options" METHOD="POST" ACTION="'.$GLOBALS['url']->link2( $_SERVER['PHP_SELF'] ).'">'."\n".
             "   <select tabindex=".$pge->nextTab++." name='file2edit' size='1' onChange='document.sort_options.submit();'>\r\n".$selectOptions."</select>\n".
             '   <input TABINDEX="'.$pge->nextTab++.'" type="submit" class="labsys_mop_input" value="'.$lng->get("load").'" accesskey="l" onclick="isDirty=false">'."\n".
             "</FORM>\n".
@@ -102,7 +102,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n".
           ).
           ' <FORM class="labsys_mop_std_form" NAME="fileEdit" METHOD="POST" ACTION="'.$url->link2("../php/saveFile.php").'">'."\n".
           '   <input type="hidden" name="FILENAME" value="'.$file2edit.'">'."\n".
-          '   <input type="hidden" name="REDIRECTTO" value="'.urlencode($url->link2( $_SERVER['PHP_SELF'] ) ).'">'."\n".
+          '   <input type="hidden" name="REDIRECTTO" value="'.$url->link2( $_SERVER['PHP_SELF'] ).'">'."\n".
           '   <textarea TABINDEX="'.$pge->nextTab++.'" id="fc" name="FILECONTENT" class="labsys_mop_textarea" rows="'.$cfg->get("DefaultTextareaRows").'" onchange="isDirty=true">'."\n");
 
 $pge->put( htmlentities( file_get_contents($file2edit), ENT_QUOTES | ENT_IGNORE  ) );

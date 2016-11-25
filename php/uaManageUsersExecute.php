@@ -35,9 +35,9 @@
 
 require( "../include/init.inc" );
 
-if ( !$GLOBALS['url']->available('function') ||
-     !$GLOBALS['url']->available('param') ||
-     !$GLOBALS['url']->available('redirectTo')
+if ( !$url->available('function') ||
+     !$url->available('param') ||
+     !$url->available('redirectTo')
    ){
       trigger_error( $lng->get( 'NotAllNecValPosted' ), E_USER_ERROR );
       exit;
@@ -55,8 +55,8 @@ if ( $url->get( 'function' ) == 'see' )
   $usr->seesDataOf( stripslashes( $url->get( 'param' ) ) );
 
 elseif( $url->get( 'function' ) == 'del' ){
-  if ( !$GLOBALS['url']->available("isConfirmed") ){ // not confirmed via script -> do it via page
-    header("Location: ".$url->rawLink2( "../pages/confirm.php?text=".urlencode( $lng->get("confirmDelete") )."&redirectTo=".urlencode( $_SERVER["REQUEST_URI"] ) ) );
+  if ( !$url->available("isConfirmed") ){ // not confirmed via script -> do it via page
+    header("Location: ".$url->rawLink2( '../pages/confirm.php', Array('text' => $lng->get("confirmDelete"), 'redirectTo' => $_SERVER["REQUEST_URI"]) ) );
     exit;
   }
 // new Interface to the userDB
@@ -70,10 +70,10 @@ elseif( $url->get( 'function' ) == 'del' ){
   $ret = $userDBC->mkDelete( $cfg->get('UserDatabaseTable'), $cfg->get('UserDBField_uid')."='".$url->get( 'param' )."'" );
   if ($ret === false) $text = 'Mysql Error: ' . $userDBC->link->error;
   else $text = $url->get( 'param' ).": ".$lng->get( "deleted" );
-  $url->put( 'sysalert='.$text );
+  $url->put( 'sysalert', $text );
 }
-else /* alert */ $url->put( 'sysalert='.$lng->get('NotAllowedToMkCall') );
+else /* alert */ $url->put( 'sysalert', $lng->get('NotAllowedToMkCall') );
 
 // redirect
-  header( "Location: ".$url->rawLink2( urldecode( $url->get( 'redirectTo' ) ) ) );
+  header( "Location: ".$url->rewriteExistingUrl( $url->get( 'redirectTo' ) ) );
 ?>

@@ -70,7 +70,7 @@ if ( !($usr->isOfKind(IS_USER_RIGHTS_EDITOR)) ) {
   }
 
 // note
-  $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
+  $url->put( "sysinfo", $lng->get("DataHasBeenSaved") );
 
   makeLogEntry( 'system', 'user rights saved' );
 

@@ -355,8 +355,8 @@ class LiElement extends Element{
       // We want a thumbnail for this...
       $thumbFilePath = $filePath.'.thumb.jpg';
       $this->checkThumb( $filePath, $thumbFilePath );
-      return ' <a href="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName)).'">' .
-        '<img src="'.$url->link2('../php/getUploadedFile.php?team='.$team.'&iIdx='.$iIdx.'&filename='.urlencode($fileName.'.thumb.jpg')).'" onclick="zoomPreviewImage(this); return false">'.
+      return ' <a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $team, 'iIdx' => $iIdx, 'filename' => $fileName) ).'">' .
+        '<img src="'.$url->link2('../php/getUploadedFile.php', Array('team' => $team, 'iIdx' => $iIdx, 'filename' => $fileName.'.thumb.jpg') ).'" onclick="zoomPreviewImage(this); return false">'.
         '</a>';
     }
   }
@@ -389,10 +389,10 @@ class LiElement extends Element{
         $filesize = round($file['size'] / 1024).' KB';
         $fileTime = date('H:i j.n.Y', $file['timestamp']);
         $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />';
-        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename']).'&download=true').'">' .
+        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'], 'download' => 'true')).'">' .
                 $pathInfo['basename'].
                 '</a> '.
-                '<a href="'.$url->link2('../php/getUploadedFile.php?team='.$this->getDataOfTeam.'&iIdx='.$this->idx.'&filename='.urlencode($pathInfo['basename'])).'">' .
+                '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'])).'">' .
                 '<img src="../syspix/button_view_13x12.gif">'.
                 '</a> '.
                 '<div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.
@@ -552,9 +552,9 @@ class LiElement extends Element{
 //                		         && $this->isClosed 
                		         && !$isInCorrection) ?
                                       // link for the corrector to unlock... (-> see description above method)
-                                      $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' )) :
+                                      $url->link2('../pages/view.php', Array('address', $url->get('address')))."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' ) :
                                       // normal handling -> pass method to executeCommandOnElement.php
-                                      $url->link2("../php/executeCommandOnElement.php?address=i")
+                                      $url->link2('../php/executeCommandOnElement.php?address=i')
                                      ).
                 "\">\n".
 
@@ -673,7 +673,7 @@ class LiElement extends Element{
                                 $this->uaDBI->getAllTeams( $this->idx/*, "team"*/ ); // as is unsorted/ order of answering
                                 while ( ($nextTeam = $this->uaDBI->getNextData()) ){
                                   $this->loadUserData4( $nextTeam );
-                                  $link2ThisCorrection=str_replace('seeMe=all', 'seeMe='.$this->utDBI->getUID4( $nextTeam, $this->idx ), $url->link2('../pages/view.php?address='.$url->get('address'))).'#'.$fullAddress.'.'.$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' );
+                                $link2ThisCorrection = $url->link2('../pages/view.php', Array('address' => $url->get('address'), 'seeMe' => $this->utDBI->getUID4( $nextTeam, $this->idx ))) . '#'.$fullAddress.'.'.$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' );
                                   $answers .= '<div class="labsys_mop_i_teamnr"><a href="javascript:showExampleSolutionHere('.$this->idx.','.$nextTeam.')" title="'.$lng->get('exmpleSolutionHere').'">s |</a> <a href="'.$link2ThisCorrection.'">'.$lng->get("team")." ".($url->available('pseudoNames')?'':$nextTeam)."</a></div>\n".
                                     		  '<div class="labsys_mop_i_example_solution_hidden" id="i'.$this->idx.'_exampleSolution_'.$nextTeam.'"></div>'.PHP_EOL.
                                               $this->showAnswerData( $fullAddress );
@@ -688,7 +688,7 @@ class LiElement extends Element{
            EM::viewTopInput( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
              '<div class="labsys_mop_i_question" id="'.$fullAddress.'">'.
-             '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->question.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>'.
+             '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->question.'<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$fullAddress.'" class="link-anchor">¶</a></div>'.
              "</div>\n".
 
            // example solution
@@ -749,7 +749,7 @@ class LiElement extends Element{
     $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iEditorOpen);
 
      return EM::editTopInput( $this, $fullAddress ).
-            "<FORM class=\"labsys_mop_std_form\" NAME=\"InputEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=i")."\">\n".
+            "<FORM class=\"labsys_mop_std_form\" NAME=\"InputEdit\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php', Array('address' => 'i'))."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n". /* index of saved el. will be added on save.php! */
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
@@ -866,19 +866,19 @@ class LiElement extends Element{
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newInput->idx = $iDBI->setData( $newInput, true );
-                                      $url->put( "address=i".$newInput->idx );        // the address of the new element
+                                      $url->put( 'address', 'i'.$newInput->idx );        // the address of the new element
                                      }
     else{
                                       $iDBI->setData( $newInput );
-                                      $url->put( "address=".$_POST['FULLADDRESS'] );  // the address remains
+                                      $url->put( 'address', $_POST['FULLADDRESS'] );  // the address remains
     }
 
     // some user information
-    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("iNumber")." ".$newInput->idx );
+    $url->put( 'sysinfo', $lng->get("DataHasBeenSaved")." ".$lng->get("iNumber")." ".$newInput->idx );
     $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iEditorSave);
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
 
@@ -931,7 +931,7 @@ class LiElement extends Element{
         $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentCancel);
       }
       // One could also display the page here but that way it is left to the normal mechanism...
-      header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+      header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
       exit;
     }
 
@@ -953,7 +953,7 @@ class LiElement extends Element{
     } else{ // You are only allowed to answer one question at the same time.
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
-            $url->put( "sysalert=".$lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
+            $url->put( 'sysalert', $lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
 
            // As this case should never happen, we save the data below the existing answer with a hint, not to lose data:
             $existingData = $this->uaDBI->getData4( $_POST['TEAM'], $this->idx, false );
@@ -966,7 +966,7 @@ class LiElement extends Element{
 
     $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentSave);
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
   /**
@@ -987,7 +987,7 @@ class LiElement extends Element{
           $this->history .= $fileName.' deleted';
         }
       }
-    } else $url->put( "sysalert=".$lng->get("ElementHasNoFileUpload"));
+    } else $url->put( 'sysalert', $lng->get("ElementHasNoFileUpload"));
   }
 
   /**
@@ -1051,7 +1051,7 @@ class LiElement extends Element{
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorCancel, $_POST['TEAM']);
     }
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
   /**
@@ -1076,13 +1076,13 @@ class LiElement extends Element{
     $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
 
     if ($this->isClosed){
-      $url->put( "sysalert=".$lng->get("InputAlreadyClosed") );
+      $url->put( 'sysalert', $lng->get("InputAlreadyClosed") );
     }elseif ( $this->lockIsSetTo && ($this->lockIsSetTo != $this->idx) ){ // we do not have the lock
       if ($this->forceReLock){
         // lock is set to something else and we want to acquire it (click onlock)
-        $url->put( "sysalert=".$lng->get("LockTakenFrom")." ".$this->lockIsSetTo );
+        $url->put( 'sysalert', $lng->get("LockTakenFrom")." ".$this->lockIsSetTo );
       }else{
-        $url->put( "sysalert=".$lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
+        $url->put( 'sysalert', $lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
       }
     }
     if (!$this->lockIsSetTo || $this->forceReLock){
@@ -1091,7 +1091,7 @@ class LiElement extends Element{
     }
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
   /**

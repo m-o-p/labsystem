@@ -47,11 +47,11 @@ require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
 require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
 // preserve the current url since we will probably link back (p.e. to give an error) or add something to the url.
-$url->clearQueryString(); $url->put( $url->get("oldQueryString") );
+$url->setToGetParameters();
 
 if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD']) ) ){
  // not authenticated
-  $url->put( "sysalert=".$lng->get("AlertWrongUsrPw") );
+  $url->put( "sysalert", $lng->get("AlertWrongUsrPw") );
   header( "Location: ".$url->rawLink2("../pages/login.php") );
   exit;
   }
@@ -60,7 +60,7 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
   if ( isset($_POST['stayLoggedIn']) ){
     // Set cookie lifetime to 1 year
     session_set_cookie_params ( 365 * 24 * 60 * 60 );
-    $url->put( "sysinfo=".$lng->get('StayLoggedIn') );
+    $url->put( "sysinfo", $lng->get('StayLoggedIn') );
   }
   $NEWSESSION = $authUserData["uid"];
   require( INCLUDE_DIR."/session.inc" );

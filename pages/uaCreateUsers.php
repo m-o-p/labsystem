@@ -204,7 +204,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
         }
 
         // note
-        $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
+        $url->put( "sysinfo", $lng->get("DataHasBeenSaved") );
 
         // redirect
         header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );

@@ -88,7 +88,7 @@ class LpElement extends Element{
 
     // replace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
-	$this->contents = $pge->replaceElementTitle( $this->contents, '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>' );
+	$this->contents = $pge->replaceElementTitle( $this->contents, '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$fullAddress.'" class="link-anchor">¶</a></div>' );
     
     return EM::viewTopPage( $this, $fullAddress ).
            '<div id="'.$fullAddress.'" class="labsys_mop_contentArea">'.// anchor for retrieving after saving
@@ -151,7 +151,7 @@ class LpElement extends Element{
     global $lng, $url, $pge, $cfg;
      $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::pEditorOpen);
      return EM::editTopPage( $this, $fullAddress ).
-            "<FORM class=\"labsys_mop_std_form\" NAME=\"pageEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=p")."\">\n".
+            "<FORM class=\"labsys_mop_std_form\" NAME=\"pageEdit\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php', Array('address' => 'p') )."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n".  // index of saved el. will be added on save.php!
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
@@ -259,20 +259,20 @@ class LpElement extends Element{
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newPage->idx = $pDBI->setData( $newPage, true );
-                                      $url->put( "address=p".$newPage->idx );         // the address of the new element
+                                      $url->put( 'address', 'p'.$newPage->idx );         // the address of the new element
                                       $GLOBALS['Logger']->logToDatabase('p'.$newPage->idx, logActions::pEditorSave);
                                      }
     else{
                                       $pDBI->setData( $newPage );
-                                      $url->put( "address=".$_POST['FULLADDRESS'] );  // the address remains
+                                      $url->put( 'address', $_POST['FULLADDRESS'] );  // the address remains
                                       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::pEditorSave);
     }
 
     // some user information
-    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("pNumber")." ".$newPage->idx );
+    $url->put( 'sysinfo', $lng->get("DataHasBeenSaved")." ".$lng->get("pNumber")." ".$newPage->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
 

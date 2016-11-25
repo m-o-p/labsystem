@@ -44,7 +44,7 @@ function makeLogEntry( $group, $operation, $resource='' ){
       $logFile = fopen( $theLogFile, 'a+' )     // w ^= write and create (if not exist)
   ) )
     // alert file open error
-    $url->put( 'sysalert='.$GLOBALS['lng']->get('errorOpeningFile').' ('.$theLogFile.')' );
+    $url->put( 'sysalert', $GLOBALS['lng']->get('errorOpeningFile').' ('.$theLogFile.')' );
 
   $logEntry = date("Y-m-d\tH:i:s")."\t".
       $configPrefix.$GLOBALS['url']->get('config')."\t".
@@ -74,7 +74,7 @@ function makeLogEntry( $group, $operation, $resource='' ){
       fwrite( $logFile, $logEntry )
   ) )
     // alert that it didn't work
-    $url->put( 'sysalert='.$lng->get('errorWritingFile').' ('.$theLogFile.')' );
+    $url->put( 'sysalert', $lng->get('errorWritingFile').' ('.$theLogFile.')' );
 
   fclose($logFile);
 }

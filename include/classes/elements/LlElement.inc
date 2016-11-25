@@ -165,7 +165,7 @@ class LlElement extends Element{
                                            'l'.$this->idx.': '.$this->title.PHP_EOL.
                                            $lng->get('labScheduleOverExpl').PHP_EOL.
                                            $lng->get('team').' '.$usr->currentTeam.': '.$lng->get('labClosedExplain').PHP_EOL.
-                                           $url->rawLink2('http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php?address=l'.$this->idx.'.labStatus') );
+                                           $url->rawLink2('http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php', Array('address' => 'l'.$this->idx.'.labStatus')) );
         }
       }
 
@@ -239,8 +239,8 @@ class LlElement extends Element{
     $allowEpub         = $cfg->doesExist('allowEpubDownload') && ($cfg->get('allowEpubDownload') == "1");
     if ($allowEpub && $usr->isOfKind( IS_USER )){
       $myRet .= "<div class=\"labsys_mop_l_ePubLinkBox\">\n".
-          '<a href="'.$url->link2( '../pages/view.php?address=l'.$this->idx.'.epub' ).'">'.
-          '<img src="'.$url->link2( '../pages/getEPubCover.php?address=l'.$this->idx ).'" width="75px" style="float: left; padding-right: 1em;" />
+          '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$this->idx.'.epub') ).'">'.
+          '<img src="'.$url->link2( '../pages/getEPubCover.php', Array('address' => 'l'.$this->idx) ).'" width="75px" style="float: left; padding-right: 1em;" />
                 '.( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'
                 <div style="clear: left;"></div>
                 </div>';
@@ -260,7 +260,7 @@ class LlElement extends Element{
     global $lng, $pge, $url, $cfg, $usr;
 
     if ( !$this->preLabIsFinished && $this->userIsViewing ){ // the "check prelab" button
-      $preLabCheckUpButton =  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l".$this->idx)."\">\n".
+      $preLabCheckUpButton =  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php', Array('address' => 'l'.$this->idx) )."\">\n".
                               "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
                               "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
                               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
@@ -298,7 +298,7 @@ class LlElement extends Element{
 
     if ( !$this->labIsClosed && $this->userIsViewing )
        $myRetVal .= "<FORM class=\"labsys_mop_std_form\" NAME=\"closeLab\" METHOD=\"POST\" ACTION=\"".
-                    $url->link2("../php/executeCommandOnElement.php?address=l".$this->idx).
+                    $url->link2('../php/executeCommandOnElement.php', Array('address' => 'l'.$this->idx) ).
                     "\">\n".
                     "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"closeLabInputs\">\n". // this function will statically be called by ../php/executeCommandOnElement.php
                     "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
@@ -495,7 +495,7 @@ class LlElement extends Element{
 
         $myRetVal .= "<tr class=\"labsys_mop_l_status_table_row_".( ++$i%2 == 0 ?  "light" :  "dark"  )."\">".
                      "<td class=\"labsys_mop_l_status_table_cell_number\">".
-                        '<a href="'.$url->link2( '../pages/view.php?address=l'.$labStatus['lIdx'] ).'">'.$i.'</a>'.
+                        '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$labStatus['lIdx']) ).'">'.$i.'</a>'.
                      "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_team\">".
                         (($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind(IS_USER_RIGHTS_EDITOR) || $labStatus['uid'] == $usr->uid ) ? $labStatus['currentTeam'] : '');
@@ -506,7 +506,7 @@ class LlElement extends Element{
             ){
           global $urDBI;
           $ur = $urDBI->getData4( $labStatus['uid'] );
-          $myRetVal .= " <a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reMapUidTeam&param0=".urlencode($labStatus['uid'])."&param1=".urlencode($ur['currentTeam'])."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">".
+          $myRetVal .= " <a href=\"".$url->link2( '../php/executeOnLab.php', Array('address' => 'l'.$this->idx, 'function' => 'reMapUidTeam', 'param0' => $labStatus['uid'], 'param1' => $ur['currentTeam'], 'redirectTo' => '../pages/view.php?address='.$url->get('address')) )."\">".
                        "<img src=\"../syspix/reMapUsr_26x12.gif\" width=\"26\" height=\"12\" border=\"0\" title=\"".$lng->get("reMapUsrTo")." ".$ur['currentTeam']."\">".
                        "</a>";
         }
@@ -529,17 +529,22 @@ class LlElement extends Element{
         $base = $lDBI->getData2idx( $labStatus['lIdx'] );
         $currentPage = 'l'.$base->idx.'.C'.$base->labCollectionIdx;
         $iElementLinks = array();
+        $iElementFragments = array();
         $iElementTitles = array();
         $alreadyInSum = array();
         foreach ($base->lab->deepIterate('i', $currentPage, '#' . $currentPage) as list($value, $element, $addr, $fragment)) {
           if (!array_key_exists($value, $alreadyInSum)) {
               $alreadyInSum[$value] = true;
-              array_push($iElementLinks, $addr . $fragment);
+              array_push($iElementLinks, $addr);
+              array_push($iElementFragments, $fragment);
               array_push($iElementTitles, $element->title);
           }
         }
       }
-        // </ Collect the references to all i-elements for click to jump to the question>
+       $extra_get_params = Array();
+       if ($usr->isOfKind( IS_CORRECTOR ))
+         $extra_get_params['seeMe'] = $labStatus['uid'];
+       // </ Collect the references to all i-elements for click to jump to the question>
        // Use the backlinks to the questions from the cache...
         if ( $labStatus['labClosed'] && !$labStatus['labCorrected'] && ($labStatus['whichCorrected'] != "") &&
              ( ($labStatus['uid'] == $usr->uid) || $usr->isOfKind( IS_CORRECTOR ) )
@@ -547,7 +552,8 @@ class LlElement extends Element{
           $myRetVal .= "<div class=\"labsys_mop_l_status_whichCorrected\">\n";
           $correctedString = $labStatus['whichCorrected'];
           for( $qn=0; $qn < strlen( $correctedString ); $qn++){
-            $myRetVal .= '<a href="'.$url->link2('../pages/view.php?'.($usr->isOfKind( IS_CORRECTOR ) ? 'seeMe='.urlencode( $labStatus['uid'] ).'&' : '').'address='.$iElementLinks[$qn]).'">'.
+            $extra_get_params['address'] = $iElementLinks[$qn];
+            $myRetVal .= '<a href="'.$url->link2('../pages/view.php', $extra_get_params).$iElementFragments[$qn].'">'.
                          "<img src=\"../syspix/labCorrected_".
                          ( $correctedString[$qn] == "t" ?  "yes" :  "no"  ).
                          "_12x12.gif\" border=\"0\" title=\"".$iElementTitles[$qn]."\"></a>";
@@ -560,7 +566,8 @@ class LlElement extends Element{
           $detailedCreditsArray = explode(';', $labStatus['detailedCredits']);
           foreach ($detailedCreditsArray as $key=>$value){
             $creditsArray = explode('/', $value);
-            $myRetVal .= '<a href="'.$url->link2('../pages/view.php?'.($usr->isOfKind( IS_CORRECTOR ) ? 'seeMe='.urlencode( $labStatus['uid'] ).'&' : '').'address='.$iElementLinks[$key]).'">'.$this->percentStick($creditsArray[0], $creditsArray[1], $iElementTitles[$key]).'</a>';
+            $extra_get_params['address'] = $iElementLinks[$key];
+            $myRetVal .= '<a href="'.$url->link2('../pages/view.php', $extra_get_params).$iElementFragments[$key].'">'.$this->percentStick($creditsArray[0], $creditsArray[1], $iElementTitles[$key]).'</a>';
           }
           $myRetVal .= '</div>';
         }
@@ -593,7 +600,7 @@ class LlElement extends Element{
                                          $labStatus['labClosed'] &&
                                          $this->isInSched
                                         ) ?
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=reOpenAllLabInputs&param0=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
+                                "<a href=\"".$url->link2( '../php/executeOnLab.php', Array('address' => 'l'.$this->idx, 'function' => 'reOpenAllLabInputs', 'param0' => $labStatus['currentTeam'], 'redirectTo' => "../pages/view.php?address=".$url->get('address')) ) ."\">"
                                         : '' ).
                   // close lab
                      ( !$open && ($open = ($usr->isOfKind( IS_CORRECTOR ) &&
@@ -601,7 +608,7 @@ class LlElement extends Element{
                                                     !$labStatus['labClosed'] /* &&
                                                     !$this->isInSched always allow closing */)
                                                    ) ?
-                                "<a href=\"".$url->link2( "../php/executeOnLab.php?address=l".$this->idx."&function=closeAllLabInputs&param0=".$labStatus['currentTeam']."&redirectTo=".urlencode( "../pages/view.php?address=".$url->get('address') )  )."\">"
+                                "<a href=\"".$url->link2( '../php/executeOnLab.php', Array('address' => 'l'.$this->idx, 'function' => 'closeAllLabInputs', 'param0', $labStatus['currentTeam'], 'redirectTo' => '../pages/view.php?address='.$url->get('address')) ) ."\">"
                                                    : '' ).
                      " <img src=\"../syspix/button_lock_".
                      ( $labStatus['labClosed'] ?  "closed" :  "open"  ).
@@ -838,7 +845,7 @@ class LlElement extends Element{
 
     // link to all lab's status
     $myRetVal .= "<div class=\"labsys_mop_note\">".
-                 "<a href=\"".$url->link2( "../pages/view.php?address=l".$this->idx.".ALLlabStatus" )."\">".$lng->get("statusOfAllLabs")."</a>".
+                 "<a href=\"".$url->link2( '../pages/view.php', Array('address' => 'l'.$this->idx.'.ALLlabStatus') )."\">".$lng->get("statusOfAllLabs")."</a>".
                  "</div>";
 
 
@@ -853,7 +860,7 @@ class LlElement extends Element{
    // update/ reCalculate button
     if ( $usr->isOfKind( IS_CORRECTOR ) )
       $myRetVal .= "<FORM class=\"labsys_mop_std_form\" NAME=\"reFresh\" METHOD=\"POST\" ACTION=\"".
-                      $url->link2("../php/executeCommandOnElement.php?address=l".$this->idx).
+                      $url->link2('../php/executeCommandOnElement.php', Array('address' => 'l'.$this->idx)).
                       "\">\n".
                       "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
                       "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
@@ -886,9 +893,9 @@ class LlElement extends Element{
 
    // link to switch mode to compact (no detailed points of each labs).
     $myRetVal .= "<div class=\"labsys_mop_note\">\n".
-                 '<a href="'.$url->link2( '../pages/view.php?address=l'.$this->idx.'.ALLlabStatus'.( !$compact ?  'Compact' : '' ) ).'">'.
+                 '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$this->idx.'.ALLlabStatus'.( !$compact ?  'Compact' : '' )) ).'">'.
                  $lng->get('SwitchTo').' '.( $compact ?  $lng->get('StandardView') :  $lng->get('CompactView' ) ).
-                 '</a>'.( $compact && $usr->isSeeingSomeonesData() && ($usr->theSeeingUid() == 'all') ? ' | <a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address').'&exportCSV=true' ).'">exportCSV.txt</a>' : '' ).
+                 '</a>'.( $compact && $usr->isSeeingSomeonesData() && ($usr->theSeeingUid() == 'all') ? ' | <a href="'.$url->link2( $_SERVER['PHP_SELF'], Array('address' => $url->get('address'), 'exportCSV' => 'true') ).'">exportCSV.txt</a>' : '' ).
                  "</div>\n";
 
     $observedUID = $usr->uid;
@@ -1040,7 +1047,7 @@ class LlElement extends Element{
 
     return EM::viewTopLab( $this, $parentAddr.$me ).
     	   '<div id="'.$parentAddr.$me.'" class="labsys_mop_contentAreaL">'.PHP_EOL. // anchor for retrieving after saving
-           '<div class="labsys_mop_h2"><div class="withLinkAnchor">'.( !empty($extParagraph) ?  $extParagraph.'. '  : '' ).$this->title.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$parentAddr.$me).'" class="link-anchor">¶</a></div></div>'.
+           '<div class="labsys_mop_h2"><div class="withLinkAnchor">'.( !empty($extParagraph) ?  $extParagraph.'. '  : '' ).$this->title.'<a href="'.$url->link2($_SERVER['REQUEST_URI']).'#'.$parentAddr.$me.'" class="link-anchor">¶</a></div></div>'.
            ( ($this->authors != '') ? '<div class="labsys_mop_l_authors">'.returnHTML($this->authors).'</div>' : '' ).
            $myRetVal.
            '</div>'.
@@ -1178,7 +1185,7 @@ class LlElement extends Element{
         "*"=>'&lt;a href=&quot;%1$s%2$s&quot;&gt;%2$s&lt;/a&gt;'
         );
      return EM::editTopLab( $this, $fullAddress ).
-            "<FORM  enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"labEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=l")."\">\n".
+            "<FORM  enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"labEdit\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php', Array('address' => 'l'))."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
             "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php^
@@ -1500,20 +1507,20 @@ class LlElement extends Element{
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newLab->idx = $lDBI->setData( $newLab, true );
-                                      $url->put( "address=l".$newLab->idx );
+                                      $url->put( 'address', 'l'.$newLab->idx );
                                       $GLOBALS['Logger']->logToDatabase('l'.$newLab->idx, logActions::lOpen);
                                      }
     else{
                                       $lDBI->setData( $newLab );
-                                      $url->put( "address=".$_POST['FULLADDRESS'] );
+                                      $url->put( 'address', $_POST['FULLADDRESS'] );
                                       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::lOpen);
     }
 
     // some user information
-    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("lNumber")." ".$newLab->idx );
+    $url->put( 'sysinfo', $lng->get("DataHasBeenSaved")." ".$lng->get("lNumber")." ".$newLab->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ).( $this->lastUploadedFile ? '#'.urlencode($this->lastUploadedFile) : '' ) );
+    header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO']) . ($this->lastUploadedFile ? '#' . urlencode($this->lastUploadedFile) : '' ) );
   }
 
 // The next functions are used for the element's manage page. ***********************************************
@@ -1695,7 +1702,7 @@ class LlElement extends Element{
     }
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
   /**
@@ -1775,7 +1782,7 @@ class LlElement extends Element{
     $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabClose, $team);
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
+    header('Location: ' . $url->rewriteExistingUrl( $url->get('redirectTo') ) );
   }
 
   /**
@@ -1798,7 +1805,7 @@ class LlElement extends Element{
 
     $this->closeAllLabInputs( $usr->currentTeam );
 
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
   /**
@@ -1819,7 +1826,7 @@ class LlElement extends Element{
     $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lLabOpen, $team);
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
+    header('Location: ' . $url->rewriteExistingUrl( $url->get('redirectTo') ) );
   }
 
   /**
@@ -1877,7 +1884,7 @@ class LlElement extends Element{
     $_POST['IDX'] = $this->idx;
     $this->updateStatus(); // links automatically
     // One could also display the page here but that way it is left to the normal mechanism...
-    //header( "Location: ".$url->rawLink2( stripslashes( $url->get('redirectTo') ) ) );
+    //header('Location: ' . $url->rewriteExistingUrl( $url->get('redirectTo') ) );
   }
 
   /**
@@ -1989,12 +1996,12 @@ class LlElement extends Element{
                                   $this->title.' ('.$lng->get('team').' '.$labStatus['currentTeam'].'): '.$lng->get('labCorrExplain'),
                                   $this->title.' ('.$lng->get('team').' '.$labStatus['currentTeam'].'): '.
                                   $lng->get('labCorrExplain').PHP_EOL.
-                                  $url->rawLink2('http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php?address=l'.$this->idx.'.labStatus') );
+                                  $url->rawLink2('http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php', Array('address' => 'l'.$this->idx.'.labStatus')) );
 
           }
         }
     }
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
   function updateStatus2(){
@@ -2063,7 +2070,7 @@ class LlElement extends Element{
                                       $lng->get("statusUpdated") ); // create my dataset
     }
 
-    //header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    //header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 }
 ?>

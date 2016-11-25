@@ -119,7 +119,7 @@ class Pge extends LpElement{
    */
   function replaceConstantsNonHTML( $text ){
   	global $url, $usr, $lng, $cfg;
-  	$replaceValue = Array( $url->get('newQueryString'), // This might change during the generation and should be replaced last...
+  	$replaceValue = Array( $url->htmlUrlParams(), // This might change during the generation and should be replaced last...
   			$this->title,
   			$cfg->get("SystemTitle"),
   			$usr->foreName,
@@ -155,7 +155,7 @@ class Pge extends LpElement{
   */
   function replaceConstants( $text ){
     global $url, $usr, $lng, $cfg;
-    	$replaceValue = Array( $url->get('newQueryString'), // This might change during the generation and should be replaced last...,
+    	$replaceValue = Array( $url->htmlUrlParams(), // This might change during the generation and should be replaced last...,
     	                             htmlentities( $this->title ),
     	                             htmlentities( $cfg->get("SystemTitle") ),
     	                             htmlentities( $usr->foreName ),

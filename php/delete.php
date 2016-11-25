@@ -39,7 +39,7 @@ if ( ( !$usr->isOfKind( IS_CONTENT_EDITOR ) &&       // only content editors
 
 else{
       if ( !$GLOBALS['url']->available("isConfirmed") ){ // not confirmed via script -> do it via page
-        header("Location: ".$url->rawLink2( "../pages/confirm.php?text=".urlencode( $lastFinal.$lng->get("confirmDelete") )."&redirectTo=".urlencode( $_SERVER["REQUEST_URI"] ) ) );
+        header("Location: ".$url->rawLink2( '../pages/confirm.php', Array('text' => $lastFinal.$lng->get("confirmDelete"), 'redirectTo' => $_SERVER["REQUEST_URI"]) ) );
         exit;
       }
       if ($id=='s' || $id=='l' ){
@@ -52,7 +52,7 @@ else{
 	      }else{
 	        $text = $lastFinal.": ".$lng->get( "deleted" );
 	        makeLogEntry( 'edit', 'deleted', $lastFinal );
-	        $url->put('sysalert='.urlencode( $text ));
+	        $url->put('sysalert', $text);
 	        $destinationAddress=$id.'1';
 	      }
       }else{
@@ -67,7 +67,7 @@ else{
       	}
       	if ($posLastC){
       		$destinationAddress = substr($remainingAddr,0,strpos($remainingAddr, '.', $posLastC));
-  			$url->put('deleteChild='.$id.$num);
+  			$url->put('deleteChild', $id.$num);
       	}else{
       		$destinationAddress = $fulladdress; // do nothing.
       	}
@@ -75,5 +75,5 @@ else{
 }
 
 
-header("Location: ".$url->rawLink2( "../pages/view.php?address=".$destinationAddress.'#'.$destinationAddress ) );
+header("Location: ".$url->rawLink2( '../pages/view.php', Array('address' => $destinationAddress) ).'#'.$destinationAddress );
 ?>

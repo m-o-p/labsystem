@@ -415,7 +415,7 @@ class LcElement extends Element{
 
     if (!empty($GLOBALS['linkForMCcheckUp'])){
       // Show check up button
-      $myRetVal .=  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=".$GLOBALS['firstFinal'])."\">\n".
+      $myRetVal .=  "<FORM class=\"labsys_mop_std_form\" NAME=\"checkPrelab\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php', Array('address' => $GLOBALS['firstFinal']) )."\">\n".
           "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"checkPreLab\">\n".  // this function will statically be called by ../php/executeCommandOnElement.php
           "<input type=\"hidden\" name=\"IDX\" value=\"".substr($GLOBALS['firstFinal'],1)."\">\n".            // needed by ../php/executeCommandOnElement.php
           "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."#".$GLOBALS['linkForMCcheckUp']."\">\n".
@@ -428,7 +428,7 @@ class LcElement extends Element{
 
     return  EM::viewTopCollection( $this, $parentAddr.$me ).
             "<div class=\"labsys_mop_contentArea\">\n".
-            '<div class="labsys_mop_h2" id="'.$parentAddr.$me.'"><div class="withLinkAnchor">'.( !empty($extParagraph) ?  $extParagraph.'. '  : '' ).$this->title.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$parentAddr.$me).'" class="link-anchor">¶</a></div></div>'.
+            '<div class="labsys_mop_h2" id="'.$parentAddr.$me.'"><div class="withLinkAnchor">'.( !empty($extParagraph) ?  $extParagraph.'. '  : '' ).$this->title.'<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$parentAddr.$me.'" class="link-anchor">¶</a></div></div>'.
             "</div>\n".
             $myRetVal.
             EM::viewBottomCollection( $this, $parentAddr.$me );
@@ -451,7 +451,7 @@ class LcElement extends Element{
 
     if ( $url->available('insert') ){ $url->rem('insert'); $this->insertNew( $GLOBALS['url']->get('insert') ); } // inserts an element of the given type at the end of the collection
 
-    $myRetVal =  "<FORM class=\"labsys_mop_std_form\" NAME=\"collectionEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=c")."\">\n".
+    $myRetVal =  "<FORM class=\"labsys_mop_std_form\" NAME=\"collectionEdit\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php', Array('address' => 'c') )."\">\n".
                  "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
                  "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
                  "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n".  // index of saved el. will be added by save() below
@@ -483,11 +483,11 @@ class LcElement extends Element{
              // save
               "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save").'" onclick=\'isDirty = false;\'>&nbsp;  '.
               ' '.EB::cloneMe($this->elementId.$this->idx).PHP_EOL.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=p">&nbsp; *p &nbsp;</a>&nbsp; '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=m">&nbsp; *m &nbsp;</a>&nbsp;  '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=i">&nbsp; *i &nbsp;</a>&nbsp;  '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=c">&nbsp; *c &nbsp;</a>'.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress).'&insert=C">&nbsp; *C &nbsp;</a>'.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'p') ).'">&nbsp; *p &nbsp;</a>&nbsp; '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'm') ).'">&nbsp; *m &nbsp;</a>&nbsp;  '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'i') ).'">&nbsp; *i &nbsp;</a>&nbsp;  '.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'c') ).'">&nbsp; *c &nbsp;</a>'.
+              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'C') ).'">&nbsp; *C &nbsp;</a>'.
               "\n".
               $this->showStructure($fullAddress).
              // properties
@@ -617,20 +617,20 @@ class LcElement extends Element{
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newCollection->idx = $cDBI->setData( $newCollection, true );
-                                      $url->put( "address=c".$newCollection->idx );   // the address of the new element
+                                      $url->put( 'address', 'c'.$newCollection->idx );   // the address of the new element
                                       $GLOBALS['Logger']->logToDatabase('c'.$newCollection->idx, logActions::cEditorSave);
                                      }
     else{
                                       $cDBI->setData( $newCollection );
-                                      $url->put( "address=".$_POST['FULLADDRESS'] );  // the address remains
+                                      $url->put( 'address', $_POST['FULLADDRESS'] );  // the address remains
                                       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::cEditorSave);
     }
 
     // some user information
-    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("cNumber")." ".$newCollection->idx );
+    $url->put( 'sysinfo', $lng->get("DataHasBeenSaved")." ".$lng->get("cNumber")." ".$newCollection->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
 // The next functions are used for the element's manage page. ***********************************************

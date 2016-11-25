@@ -343,8 +343,8 @@ class LmElement extends Element{
     if ( $isAnswerable ){
       $ret .= "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit".$this->idx."\" METHOD=\"POST\" ".
                "ACTION=\"".( $isGettingAnswered ?
-                                      $url->link2("../php/executeCommandOnElement.php?address=m".$this->idx) :         // save button functionality
-                                      $url->link2("../pages/view.php?address=".$url->get('address')."#".$fullAddress) // give answer button functionality
+                                      $url->link2('../php/executeCommandOnElement.php', Array('address' => 'm'.$this->idx) ) :         // save button functionality
+                                      $url->link2('../pages/view.php', Array('address' => $url->get('address')) )."#".$fullAddress // give answer button functionality
                                      ).
               "\">\n".
               "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveUserAnswer\">\n". // this function will statically be called by ../php/executeCommandOnElement.php
@@ -512,7 +512,7 @@ class LmElement extends Element{
              "<div class=\"labsys_mop_m_question\">".
               "<label for=\"aTable".$this->idx."\">".
                ( $this->isAnswered || $this->isChangedByUser( end($this->previousAnswersArray) ) ? '' : "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get('explainUnChanged')."\"> ").
-               '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).returnHTML($this->question).'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div>'.
+               '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).returnHTML($this->question).'<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$fullAddress.'" class="link-anchor">¶</a></div>'.
               "</label>".
              "</div>\n".
                $answers.
@@ -727,7 +727,7 @@ class LmElement extends Element{
     }
 
      return EM::editTopMultipleChoice( $this, $fullAddress ).
-            "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=m")."\">\n".
+            "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php?address=m')."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n".  // index of saved el. will be added on save.php!
@@ -939,20 +939,20 @@ class LmElement extends Element{
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newMultipleChoice->idx = $mDBI->setData( $newMultipleChoice, true );
-                                      $url->put( "address=m".$newMultipleChoice->idx ); // the address of the new element
+                                      $url->put( 'address', 'm'.$newMultipleChoice->idx ); // the address of the new element
                                       $GLOBALS['Logger']->logToDatabase('m'.$newMultipleChoice->idx, logActions::mEditorSave);
                                      }
     else{
                                       $mDBI->setData( $newMultipleChoice );
-                                      $url->put( "address=".$_POST['FULLADDRESS'] );    // the address remains
+                                      $url->put( 'address', $_POST['FULLADDRESS'] );    // the address remains
                                       $GLOBALS['Logger']->logToDatabase('m'.$this->idx, logActions::mEditorSave);
     }
 
     // some user information
-    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("mNumber")." ".$newMultipleChoice->idx );
+    $url->put( 'sysinfo', $lng->get("DataHasBeenSaved")." ".$lng->get("mNumber")." ".$newMultipleChoice->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
   /**
@@ -999,7 +999,7 @@ class LmElement extends Element{
     $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::mStudentSave);
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
   /**

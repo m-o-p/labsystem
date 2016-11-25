@@ -28,7 +28,7 @@
 */
 require( "../include/init.inc" );
 
-$url->rem( "inside=true" ); // This page is for checking in so you are supposed not to be in!
+$url->rem( "inside" ); // This page is for checking in so you are supposed not to be in!
 
 $pge->title       = $lng->get("TitleLogInPage");
 $pge->matchingMenu= $lng->get( "MnuEntryLogIn" );

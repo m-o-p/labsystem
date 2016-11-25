@@ -45,7 +45,7 @@ if ($returnEpub){
 // head (create new)
 if ( !$returnEpub && $usr->isOfKind( IS_USER )) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".
 ($usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::link2Url( '../pages/accessibleLabs.php' ) : '').
-($allowEpub ? EB::mkLink(  $url->link2( '../pages/accessibleLabs.php?ePub=ePub' ),
+($allowEpub ? EB::mkLink(  $url->link2( '../pages/accessibleLabs.php', Array('ePub' => 'ePub') ),
                                         "<img src=\"../syspix/button_epub_12x12.gif\" width=\"12\" height=\"12\" border=\"0\" alt=\"link to\" title=\"".$lng->get("explainLink2epub")."\">" )
               : '' )."</div>\n" );
 if ($returnEpub){
@@ -153,7 +153,7 @@ if (!$returnEpub && $allowEpub && $usr->isOfKind( IS_USER )){
       <td width="75" class="labIndexNumber">
       </td>
       <td class="labIndexText">
-        <a href="'.$url->link2( '../pages/accessibleLabs.php?ePub=ePub' ).'">
+        <a href="'.$url->link2( '../pages/accessibleLabs.php', Array('ePub' => 'ePub') ).'">
 
         <img src="'.$url->link2( '../pages/getEPubCover.php' ).'" width="75px" style="float: left; padding-right: 1em;" />
         '.( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'

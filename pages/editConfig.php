@@ -35,14 +35,14 @@ $filePrefix       = ($url->available('includeDirectory') ? '' : "config_".$confi
 if ( $usr->isOfKind( $pge->visibleFor ) ){
   if (!$url->available('includeDirectory')){
     $pge->put( "<div class=\"labsys_mop_note\">\n".
-        ' <a href="'.$GLOBALS['url']->rawLink2( $_SERVER['PHP_SELF'].'?includeDirectory=true' ).'">[ini/configBase &gt;&gt;]</a>'.
+        ' <a href="'.$GLOBALS['url']->link2( $_SERVER['PHP_SELF'], Array('includeDirectory' => 'true' )).'">[ini/configBase &gt;&gt;]</a>'.
         "</div>\n" );
   }else{
-    $url->rem('includeDirectory=true');
+    $url->rem('includeDirectory');
     $pge->put( "<div class=\"labsys_mop_note\">\n".
-        ' <a href="'.$GLOBALS['url']->rawLink2( $_SERVER['PHP_SELF'] ).'">[&lt;&lt; ini]</a>'.
+        ' <a href="'.$GLOBALS['url']->link2( $_SERVER['PHP_SELF'] ).'">[&lt;&lt; ini]</a>'.
         "</div>\n" );
-    $url->put('includeDirectory=true');
+    $url->put('includeDirectory', 'true');
   }
 // The pge is inheriting from Element which is always
 // visible for IS_CONTENT_EDITOR.

@@ -60,7 +60,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
 // stop seeing
       if( $usr->isSeeingSomeonesData() )
         $pge->put( '<div class="labsys_mop_button_fullwidth">'."\n".
-                   '<a href="'.$url->link2( '../php/uaManageUsersExecute.php?function=see&param='.urlencode( '' ).'&redirectTo='.urlencode( $_SERVER['REQUEST_URI'] ) ).'">'.
+                   '<a href="'.$url->link2( '../php/uaManageUsersExecute.php', Array('function' => 'see', 'param' => '', 'redirectTo' => $_SERVER['REQUEST_URI']) ).'">'.
                    $lng->get("stopSeeingData").
                    '</a>'.
                    '</div>'."\n"
@@ -174,15 +174,15 @@ $pge->put('<script language="javascript" type="text/javascript">' . "\n" .
       $manageNavigation .= '<div class="labsys_mop_element_navigation">'."\n";
 
         // back Arrows
-        if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php?'.
-                                                                                     'startFrom='.($startFrom-$frameSize).
-                                                                                     '&frameSize='.$frameSize ).'">&lt;&lt;</a> '."\n";
+        if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php',
+                                                                                     Array('startFrom' => $startFrom-$frameSize,
+                                                                                           'frameSize' => $frameSize) ).'">&lt;&lt;</a> '."\n";
 
           $j = 1;
           for ( $i=1; $i<$existingElemnts; $i+=$frameSize ){
-            $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php?'.
-                                                          'startFrom='.$i.
-                                                          '&frameSize='.$frameSize ).
+            $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php',
+                                                          Array('startFrom' => $i,
+                                                                'frameSize' => $frameSize) ).
                                  '">'.
                                  ( ($startFrom == $i) ?  '<b>'  : '' ).
                                  $j++.
@@ -191,9 +191,9 @@ $pge->put('<script language="javascript" type="text/javascript">' . "\n" .
           }
 
         // forward Arrows
-        if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php?'.
-                                                                                        'startFrom='.($startFrom+$frameSize).
-                                                                                        '&frameSize='.$frameSize ).'">&gt;&gt;</a>'."\n";
+        if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/uaManageUsers.php',
+                                                                                        Array('startFrom' => $startFrom+$frameSize,
+                                                                                              'frameSize' => $frameSize) ).'">&gt;&gt;</a>'."\n";
 
       $manageNavigation .= '</div>'."\n";
       $manageNavigation .= '<!-- /navigation -->'."\n";
@@ -207,7 +207,7 @@ $pge->put('<script language="javascript" type="text/javascript">' . "\n" .
 
 // form
     $pge->put( "<FORM class=\"labsys_mop_std_form\" NAME=\"myDataEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/uaManageUsersSave.php")."\">\n".
-               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"".$url->rawLink2( $_SERVER['PHP_SELF'] )."\">\n"
+               "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"".$url->link2( $_SERVER['PHP_SELF'] )."\">\n"
               );
 
     $currElNr = 0;
@@ -226,14 +226,14 @@ $pge->put('<script language="javascript" type="text/javascript">' . "\n" .
                          '<span>' . $key. '</span></label>' . "\n";
         if ($value == 1) $courseList[] = $key;
       }
-      $pge->put( ' '.( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '<a href="'.$url->link2( '../pages/uaMyData.php?seeMe='.urlencode( $uid ) ).'">' : '').
+      $pge->put( ' '.( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '<a href="'.$url->link2( '../pages/uaMyData.php', Array('seeMe' => $uid) ).'">' : '').
                      $data[ $cfg->get('UserDBField_name') ].', '.
                      $data[ $cfg->get('UserDBField_forename') ].' ('.
                      $data[ $cfg->get('UserDBField_username') ].')'.
                      ( $usr->isOfKind( IS_DB_USER_ADMIN ) ? '</a>' : '' )."\n".
 // delete button
                  ' <a tabindex="'.$pge->nextTab++.'" '.
-                    'href="'.$url->rawLink2( '../php/uaManageUsersExecute.php?function=del&param='.urlencode( $uid ).'&redirectTo='.urlencode( $_SERVER['PHP_SELF'].'?'.$url->get('newQueryStringRaw') ) )."\" ".
+                    'href="'.$url->link2( '../php/uaManageUsersExecute.php', Array('function' => 'del', 'param' => $uid, 'redirectTo' => $url->rawLink2()) ).'" '.
                     "onClick='return confirmLink(this, \"".$data[ $cfg->get('UserDBField_forename') ].' '.$data[ $cfg->get('UserDBField_name') ].': '.$lng->get('confirmDelete').'");'."'".
                  '>'.
                  "<img src=\"../syspix/button_delete_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"delete\" title=\"".$lng->get("explainDeleteElemnt")."\">".
@@ -272,20 +272,19 @@ $pge->put('<script language="javascript" type="text/javascript">' . "\n" .
 
 // /form
     $pge->put( "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>\n".
-               '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?exportCSV=true' ).'">export.csv</a>'.
+               '<a href="'.$url->link2( $_SERVER['PHP_SELF'], Array('exportCSV' => 'true') ).'">export.csv</a>'.
                "</FORM>"
              );
   } // /showing
 
 // Clean up url variables
 // otherwhise it ends up in the menu etc...
-$url->rem( 'orderBy='.$orderByKey );
-$url->rem( 'asc='.( $asc ?  'asc' :  'desc'  ) );
-$url->rem( 'restrictTo='.$restrictToKey );
-$url->rem( 'startFrom='.$startFrom );
-$url->rem( 'frameSize='.$frameSize );
-if (!empty($searchFor))
-  $url->rem( 'searchFor='. urlencode($searchFor) );
+$url->rem( 'orderBy' );
+$url->rem( 'asc' );
+$url->rem( 'restrictTo' );
+$url->rem( 'startFrom' );
+$url->rem( 'frameSize' );
+$url->rem( 'searchFor' );
 
 // show!
   require( $cfg->get("SystemPageLayoutFile") );

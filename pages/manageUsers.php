@@ -109,19 +109,19 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
   $manageNavigation .= '<div class="labsys_mop_element_navigation">'."\n";
 
     // back Arrows
-    if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manageUsers.php?'.
-                                                                                 'startFrom='.($startFrom-$frameSize).
-                                                                                 '&frameSize='.$frameSize.
-                                                                                 '&orderBy='.$orderByKey.
-                                                                                 '&asc='.( $asc ?  'asc' :  'desc'  ) ).'">&lt;&lt;</a> '."\n";
+    if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manageUsers.php',
+                                                                                 Array('startFrom' => $startFrom-$frameSize,
+                                                                                       'frameSize' => $frameSize,
+                                                                                       'orderBy' => $orderByKey,
+                                                                                       'asc' => ( $asc ? 'asc' : 'desc' )) ).'">&lt;&lt;</a> '."\n";
 
       $j = 1;
       for ( $i=1; $i<=$existingElemnts; $i+=$frameSize ){
-        $manageNavigation .= '<a href="'.$url->link2( '../pages/manageUsers.php?'.
-                                                      'startFrom='.$i.
-                                                      '&frameSize='.$frameSize.
-                                                      '&orderBy='.$orderByKey.
-                                                      '&asc='.( $asc ?  'asc' :  'desc'  ) ).
+        $manageNavigation .= '<a href="'.$url->link2( '../pages/manageUsers.php',
+                                                      Array('startFrom' => $i,
+                                                            'frameSize' => $frameSize,
+                                                            'orderBy' => $orderByKey,
+                                                            'asc' => ( $asc ?  'asc' :  'desc'  )) ).
                              '">'.
                              ( ($startFrom == $i) ?  '<b>'  : '' ).
                              $j++.
@@ -130,11 +130,11 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
       }
 
     // forward Arrows
-    if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manageUsers.php?'.
-                                                                                    'startFrom='.($startFrom+$frameSize).
-                                                                                    '&frameSize='.$frameSize.
-                                                                                    '&orderBy='.$orderByKey.
-                                                                                    '&asc='.( $asc ?  'asc' :  'desc'  ) ).'">&gt;&gt;</a>'."\n";
+    if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manageUsers.php',
+                                                                                    Array('startFrom' => ($startFrom+$frameSize),
+                                                                                          'frameSize' => $frameSize,
+                                                                                          'orderBy' => $orderByKey,
+                                                                                          'asc' => ( $asc ?  'asc' :  'desc'  )) ).'">&gt;&gt;</a>'."\n";
 
   $manageNavigation .= '</div>'."\n";
   $manageNavigation .= '<!-- /navigation -->'."\n";
@@ -165,7 +165,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
 
 //saving
   $pge->put('
-              <input type="hidden" name="REDIRECTTO" value="'.$url->rawLink2( $_SERVER['PHP_SELF'].( isset($startFrom) ? '?startFrom='.$startFrom.'&frameSize='.$frameSize : '' ) ).'">
+              <input type="hidden" name="REDIRECTTO" value="'.$url->link2( $_SERVER['PHP_SELF'], isset($startFrom) ? Array('startFrom' => $startFrom, 'frameSize' => $frameSize) : NULL ).'">
               <input TABINDEX="'.$pge->nextTab++.'" type="submit" class="labsys_mop_input" value="'.$lng->get("save").'"  accesskey="s" onclick="isDirty=false">
 
               </div></FORM>

@@ -76,7 +76,7 @@ foreach ($uids as $uid => $courseData) {
 }
 
 // note
-  $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
+  $url->put( "sysinfo", $lng->get("DataHasBeenSaved") );
 
 // redirect
   header( "Location: ".urldecode($_POST['REDIRECTTO']) );

@@ -135,9 +135,10 @@ class Menu{
                      ) $isOn = true;
 
     // If not absolute link add url stuff.
+    // TODO: improve the interface so we don't have to magically rewrite stuff
     if ( !(strtoupper( substr( $link, 0, 4 ) ) == 'HTTP' &&
            (strpos( $link, '/pages/login.php' ) === false) // pages within the system should be linked with additional tags...
-           ) ) $link = $GLOBALS['url']->link2( $link );
+           ) ) $link = htmlspecialchars($GLOBALS['url']->rewriteExistingUrl( $link ));
 
     if ( $isOn ){ // All states should be on.
       $cssCellClassOn    = $this->cssCellClassOn;

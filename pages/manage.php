@@ -82,15 +82,15 @@ $url->preserve( 'address' );
   $manageNavigation .= '<div class="labsys_mop_element_navigation">'."\n";
 
     // back Arrows
-    if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php?'.
-                                                                                 'startFrom='.($startFrom-$frameSize).
-                                                                                 '&frameSize='.$frameSize ).'">&lt;&lt;</a> '."\n";
+    if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php',
+                                                                                 Array('startFrom' => $startFrom-$frameSize,
+                                                                                       'frameSize' => $frameSize) ).'">&lt;&lt;</a> '."\n";
   
       $j = 1;
       for ( $i=1; $i<=$existingElemnts; $i+=$frameSize ){
-        $manageNavigation .= '<a href="'.$url->rawLink2( '../pages/manage.php?'.
-                                                      'startFrom='.$i.
-                                                      '&frameSize='.$frameSize ).
+        $manageNavigation .= '<a href="'.$url->link2('../pages/manage.php',
+                                                     Array('startFrom' => $i,
+                                                           'frameSize' => $frameSize)).
                              '">'.
                              ( ($startFrom == $i) ?  '<b>'  : '' ).
                              $j++.
@@ -99,15 +99,15 @@ $url->preserve( 'address' );
       }
   
     // forward Arrows
-    if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php?'.
-                                                                                    'startFrom='.($startFrom+$frameSize).
-                                                                                    '&frameSize='.$frameSize ).'">&gt;&gt;</a>'."\n";
+    if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php',
+                                                                                    Array('startFrom' => $startFrom+$frameSize,
+                                                                                          'frameSize' => $frameSize) ).'">&gt;&gt;</a>'."\n";
 
   $manageNavigation .= '</div>'."\n";
   $manageNavigation .= '<!-- /navigation -->'."\n";
   
 // otherwhise it ends up in the menu etc...
-$url->rem( 'address='.$GLOBALS['url']->get('address') );
+$url->rem( 'address' );
 
   $pge->put( $manageNavigation );
   
@@ -148,9 +148,9 @@ $url->rem( 'address='.$GLOBALS['url']->get('address') );
 
   // Clean up url variables
 // otherwhise it ends up in the menu etc...
-$url->rem( 'orderBy='.$orderByKey );
-$url->rem( 'asc='.( $asc ?  'asc' :  'desc'  ) );
-$url->rem( 'restrictTo='.$restrictToKey );
+$url->rem( 'orderBy' );
+$url->rem( 'asc' );
+$url->rem( 'restrictTo' );
 
 // show!
   require( $cfg->get("SystemPageLayoutFile") );

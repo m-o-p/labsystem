@@ -30,14 +30,14 @@
 
 require( "../include/init.inc" );
 
-$url->clearQueryString(); $url->put( $url->get("oldQueryString") ); /* we will link back and preserve everything */
-$url->rem( "inside=true" );
+$url->setToGetParameters(); /* we will link back and preserve everything */
+$url->rem( "inside" );
 
 makeLogEntry( 'system', 'logout' );
 $GLOBALS['Logger']->logToDatabase('system', logActions::logout);
 
 if ( strip_tags(SID) != "" )
-  $url->rem( strip_tags(SID) ); // remove SID from url
+  $url->rem( session_name() ); // remove SID from url
 
 setcookie(session_name(), NULL, 1, '/');
 session_unset();

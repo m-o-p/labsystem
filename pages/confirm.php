@@ -32,16 +32,15 @@
 */
 require( "../include/init.inc" );
 
-if ( !$GLOBALS['url']->available('text') || !$GLOBALS['url']->available('redirectTo') ){
+if ( !$url->available('text') || !$url->available('redirectTo') ){
                                                               trigger_error( "Not all necessary values posted!", E_USER_ERROR );
                                                               exit;
                                                             }
 
-$pge->title   = $GLOBALS['url']->get('text');
+$pge->title   = $url->get('text');
 $pge->put( stripslashes( $url->get('text') )."<br /><br />" );
-$url->put( "isConfirmed=1" );
-$url->rem( "inside=true" ); // otherwhise double (but no problem)
-$pge->put(" <a href=\"".$url->link2( stripslashes( $url->get('redirectTo') ) )."\">".$lng->get("yesIconfirm")."</a>" );
+$url->rem( 'inside' ); // otherwhise double (but no problem)
+$pge->put(" <a href=\"".htmlentities($url->redirectToLocationUrl( $url->get( 'redirectTo' ), Array('isConfirmed' => 1) ) )."\">".$lng->get("yesIconfirm")."</a>" );
 
 require( $cfg->get("SystemPageLayoutFile") );
 ?>

@@ -144,7 +144,7 @@ $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST
 // the mail2 row
 "<tr><td class=\"labsys_mop_mailform_table_mail2\">\n" . 
 
-($usr->isOfKind ( IS_ALL_MAILER ) ? "<fieldset><legend>" . $lng->get ( "roundmail" ) . "</legend>\n" . "<a href=\"" . $url->link2 ( "../pages/mailForm.php?checkAll" ) . "\" onclick=\"setCheckboxes(true); return false;\">" . $lng->get ( "checkAll" ) . "</a>/ \n" . "<a href=\"" . $url->link2 ( "../pages/mailForm.php" ) . "\" onclick=\"setCheckboxes(false); return false;\">" . $lng->get ( "unCheckAll" ) . "</a><br />\n" . "</fieldset>\n" : '') . 
+($usr->isOfKind ( IS_ALL_MAILER ) ? "<fieldset><legend>" . $lng->get ( "roundmail" ) . "</legend>\n" . "<a href=\"" . $url->link2 ( '../pages/mailForm.php', Array('checkAll' => true) ) . "\" onclick=\"setCheckboxes(true); return false;\">" . $lng->get ( "checkAll" ) . "</a>/ \n" . "<a href=\"" . $url->link2 ( "../pages/mailForm.php" ) . "\" onclick=\"setCheckboxes(false); return false;\">" . $lng->get ( "unCheckAll" ) . "</a><br />\n" . "</fieldset>\n" : '') . 
 
 "<fieldset><legend>" . $lng->get ( "labSupporter" ) . "</legend>\n" . $allSupporterInputs . "</fieldset>\n" . 
 

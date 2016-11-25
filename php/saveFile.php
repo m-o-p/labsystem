@@ -95,7 +95,7 @@ if ((strtoupper($fileExtension) == 'CSS') && include_once( '../plugins/CSSTidy/c
   foreach ( $css->log as $logEntry ){
     $logText .= '  '.$logEntry[0]['t'].': '.$logEntry[0]['m']."\n";
   }
-  if ( $logText != 'CSSTidy: ' ) $url->put( "sysalert=".$logText );
+  if ( $logText != 'CSSTidy: ' ) $url->put( "sysalert", $logText );
   $_POST['FILECONTENT'] = $css->print->plain();
 }
 
@@ -105,20 +105,20 @@ if ((strtoupper($fileExtension) == 'CSS') && include_once( '../plugins/CSSTidy/c
           $theFile = fopen( $fileName, "w" )     // w ^= write and create (if not exist)
                                                       ) )
    // alert file open error
-    $url->put( "sysalert=".$lng->get("errorOpeningFile")." (".$fileName.")" );
+    $url->put( "sysalert", $lng->get("errorOpeningFile")." (".$fileName.")" );
 	elseif (
           fwrite( $theFile, html_entity_decode ($_POST['FILECONTENT']) )
                                                       )
        // note that it worked
-        $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." (".$fileName.")" );
+        $url->put( "sysinfo", $lng->get("DataHasBeenSaved")." (".$fileName.")" );
       else
        // alert that it didn't work
-        $url->put( "sysalert=".$lng->get("errorWritingFile")." (".$fileName.")" );
+        $url->put( "sysalert", $lng->get("errorWritingFile")." (".$fileName.")" );
 
 	fclose( $theFile );
 
   makeLogEntry( 'system', 'saved file '.$fileName );
 
 // redirect
-  header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']).(isset( $_POST['SAVEAS'] ) ? '&file2edit='.urlencode($_POST['SAVEAS']) : '') ) );
+  header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'], isset($_POST['SAVEAS']) ? Array('file2edit' => $_POST['SAVEAS']) : NULL) );
 ?>

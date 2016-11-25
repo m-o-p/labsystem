@@ -69,7 +69,7 @@ class BCElement extends LcElement{
         $element = $GLOBALS[ $id."DBI" ]->getMenuData2idx( $num, true, $this->isInLab );
 
         if ( $element ){ $myRetVal .= "<div class=\"labsys_mop_C_TOC_entry\">".
-                                      "<a href=\"".$url->link2( "../pages/view.php?address=".$fullAddress.".".$value )."\">".
+                                      "<a href=\"".$url->link2( '../pages/view.php', Array('address' => $fullAddress.".".$value) )."\">".
                                       returnHTML( ( $paragraph != "" ?  $paragraph.". "  : '' ).$element->title ).
                                       "</a></div>\n";
                         // call the C elements getTOC to get the submenu
@@ -150,7 +150,7 @@ class BCElement extends LcElement{
         if ( $last == "" ){
                            $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::cOpen);
                            $myRetVal .= "<div class=\"labsys_mop_contentArea\">".
-                                        '<div class="labsys_mop_h2" id="'.$parentAddr.$me.'"><div class="withLinkAnchor">'.( !empty($extParagraph) ?  $extParagraph.'. '  : '' ).$this->title.'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$parentAddr.$me).'" class="link-anchor">¶</a></div></div>'.
+                                        '<div class="labsys_mop_h2" id="'.$parentAddr.$me.'"><div class="withLinkAnchor">'.( !empty($extParagraph) ?  $extParagraph.'. '  : '' ).$this->title.'<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$parentAddr.$me.'" class="link-anchor">¶</a></div></div>'.
                                         $this->getTOC( $fullAddress, $extParagraph ).
                                         "</div>";
    // ePub

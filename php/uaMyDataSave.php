@@ -56,15 +56,15 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
 // length of username
 if ( strlen( $_POST['USERNAME'] ) <= $cfg->get('uaMinUsrNameLength') )
     // alert
-    $url->put( 'sysalert='.$lng->get('uaUsrNameTooShort').' ( !<='.$cfg->get('uaMinUsrNameLength').' )' );
+    $url->put( 'sysalert', $lng->get('uaUsrNameTooShort').' ( !<='.$cfg->get('uaMinUsrNameLength').' )' );
 // eMail must contain @ and have a dot behind
 elseif ( (strpos( $_POST['EMAIL'], '@' ) === FALSE) ||
          (strrpos( $_POST['EMAIL'], '@' ) > strrpos( $_POST['EMAIL'], '.' ) ) )
     // alert
-    $url->put( 'sysalert='.$lng->get('uaMailInvalid') );
+    $url->put( 'sysalert', $lng->get('uaMailInvalid') );
 elseif( ( $_POST['NAME'] == '' ) || ( $_POST['FORENAME'] == '' ) )
     // alert
-    $url->put( 'sysalert='.$lng->get('uaSurNameEmpty') );
+    $url->put( 'sysalert', $lng->get('uaSurNameEmpty') );
 else{
     // new Interface to the userDB
     $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
@@ -83,7 +83,7 @@ else{
     $data = $result->fetch_assoc();
     if ( $result->num_rows != 0){
       // alert
-      $url->put( 'sysalert='.$_POST['USERNAME'].' '.$lng->get('uaAsUsrNmeIsUsedBy').' '.$data[ $cfg->get('UserDBField_forename') ].' '.$data[  $cfg->get('UserDBField_name') ] );
+      $url->put( 'sysalert', $_POST['USERNAME'].' '.$lng->get('uaAsUsrNmeIsUsedBy').' '.$data[ $cfg->get('UserDBField_forename') ].' '.$data[  $cfg->get('UserDBField_name') ] );
     }
     else{ // save data
 
@@ -115,7 +115,7 @@ else{
                           $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ?  $usr->theSeeingUid()  : $usr->uid  )."'"
                          );
       // note
-      $url->put( "sysinfo=".$lng->get("DataHasBeenSaved") );
+      $url->put( "sysinfo", $lng->get("DataHasBeenSaved") );
       makeLogEntry( 'useradmin', 'saved userdata of '.$userDBC->escapeString( $_POST['USERNAME'] ) );
     }
 }

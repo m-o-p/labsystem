@@ -212,7 +212,7 @@ $pge->put( '<input '.($debug?'':'type="hidden" ').'class="labsys_mop_ticketInput
 if ($debug) {
 	$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="link2Element">link2Element</label>' );
 }
-$pge->put( '<input '.($debug?'':'type="hidden" ').'class="labsys_mop_ticketInput" name="link2Element" id="link2Element" readonly="readonly" value="'.$url->rawLink2('http'.(!empty($_SERVER['HTTPS']) ? 's':'').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php?address='.$url->get('address').'&seeMe='.($url->available('seeMe')?$url->get('seeMe'):$usr->uid)).'#'.$url->get('address').'" /></div>' );
+$pge->put( '<input '.($debug?'':'type="hidden" ').'class="labsys_mop_ticketInput" name="link2Element" id="link2Element" readonly="readonly" value="'.$url->link2('http'.(!empty($_SERVER['HTTPS']) ? 's':'').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php', Array('address' => $url->get('address'), 'seeMe' => ($url->available('seeMe')?$url->get('seeMe'):$usr->uid))).'#'.$url->get('address').'" /></div>' );
 
 if ($debug) {
 	$pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="config">config</label>' );

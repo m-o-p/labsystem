@@ -62,7 +62,7 @@ if ($GLOBALS['url']->available('config')) {
             // new or resumed session, load data
             $usr = new Usr($_SESSION['uid']);
             // write the session id into the URL if cookie didn't work
-            if (strip_tags(SID) != "") $url->put(strip_tags(SID));
+            if (strip_tags(SID) != "") $url->put(session_name(), session_id());
         } else {
             // not a new session and no valid existing session found, destroy
             // session and cookie

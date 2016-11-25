@@ -281,7 +281,7 @@ class LsElement extends Element{
         }
 
         $legend = array_merge( $legend,
-                               Array( "s".$element->idx =>  "<a href=\"".$url->link2( "../pages/view.php?address=".$element->id.$element->num )."\">".$element2->title."</a>".
+                               Array( "s".$element->idx =>  "<a href=\"".$url->link2( '../pages/view.php', Array('address' => $element->id.$element->num) )."\">".$element2->title."</a>".
                                                             " (".date( $lng->get("DateFormat"),  $element->start ).
                                                             " - ".date( $lng->get("DateFormat"), $element->stop ).")".
                                                             ( $usr->isOfKind( IS_SCHEDULER ) ? " ".EB::edit( "s".$element->idx ).EB::delete( "s".$element->idx ) : '' ).
@@ -294,7 +294,7 @@ class LsElement extends Element{
       // Add it to the schedule table
       $this->addSchedule( $element->start,
                           $element->stop,
-                          "<a href=\"".$url->link2( "../pages/view.php?address=".$element->id.$element->num )."\" ".
+                          "<a href=\"".$url->link2( '../pages/view.php', Array('address' => $element->id.$element->num) )."\" ".
                               "title=\""."s".$element->idx.': '.$element2->title.( $element->comment != "" ?  "\n".$element->comment  : '' )."\">".
                           $element2->title."</a>",
                           $schedules,
@@ -317,7 +317,7 @@ class LsElement extends Element{
     // return the whole element
     return EM::viewTopSchedule( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
-           '<div class="labsys_mop_h2" id="'.$fullAddress.'"><div class="withLinkAnchor">'.$lng->get("titleSchedules")." - ".$cfg->get("SystemTitle").'<a href="'.$url->link2($_SERVER['REQUEST_URI'].'#'.$fullAddress).'" class="link-anchor">¶</a></div></div>'.
+           '<div class="labsys_mop_h2" id="'.$fullAddress.'"><div class="withLinkAnchor">'.$lng->get("titleSchedules")." - ".$cfg->get("SystemTitle").'<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$fullAddress.'" class="link-anchor">¶</a></div></div>'.
            ( $lng->get("showScheduleNote") != '' ? "<div class=\"labsys_mop_note\">\n".$lng->get("showScheduleNote")."</div>\n" : '' ). // note
            "<table class=\"labsys_mop_s_table\">\n".
            $this->emptyRow().
@@ -396,7 +396,7 @@ class LsElement extends Element{
     }
 
     return EM::editTopSchedule( $this, $fullAddress ).
-          "<FORM class=\"labsys_mop_std_form\" NAME=\"ScheduleEdit\" METHOD=\"POST\" ACTION=\"".$url->link2("../php/executeCommandOnElement.php?address=s")."\">\n".
+          "<FORM class=\"labsys_mop_std_form\" NAME=\"ScheduleEdit\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php', Array('address' => 's') )."\">\n".
           "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
           "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n".  // index of saved el. will be added on save.php!
           "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
@@ -572,18 +572,18 @@ class LsElement extends Element{
     // if $_POST["SAVEASNEW"] is set the element is saved as new element
     if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
                                       $newSchedule->idx = $sDBI->setData( $newSchedule, true );
-                                      $url->put( "address=s".$newSchedule->idx );     // the address of the new element
+                                      $url->put( 'address', 's'.$newSchedule->idx );     // the address of the new element
                                      }
     else{ // just save the element
                                       $sDBI->setData( $newSchedule );
-                                      $url->put( "address=".$_POST['FULLADDRESS'] );  // the address remains
+                                      $url->put( 'address', $_POST['FULLADDRESS'] );  // the address remains
     }
 
     // some user information
-    $url->put( "sysinfo=".$lng->get("DataHasBeenSaved")." ".$lng->get("sNumber")." ".$newSchedule->idx );
+    $url->put( 'sysinfo', $lng->get("DataHasBeenSaved")." ".$lng->get("sNumber")." ".$newSchedule->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rawLink2( $_POST['REDIRECTTO'] ) );
+    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 
 

@@ -56,12 +56,17 @@ else{
             $restrictToKey = key( $restrictToArray );                                              // 3rd default (the first el of $restrictToArray)
 }
 // keep it in links
-$GLOBALS['url']->put( 'orderBy='.$orderByKey );
-$GLOBALS['url']->put( 'asc='.( $asc ?  'asc' :  'desc'  ) );
-$GLOBALS['url']->put( 'restrictTo='.$restrictToKey );
+$GLOBALS['url']->put( 'orderBy', $orderByKey );
+$GLOBALS['url']->put( 'asc', $asc ?  'asc' :  'desc' );
+$GLOBALS['url']->put( 'restrictTo', $restrictToKey );
 
 // sorting select
-$sorter = "<FORM class=\"labsys_mop_sort_form\" NAME=\"sort_options\" METHOD=\"POST\" ACTION=\"".$GLOBALS['url']->rawLink2( $_SERVER['PHP_SELF'].( $GLOBALS['url']->available('address') ? '?address='.$GLOBALS['url']->get('address') : '?address=none' ).( isset($startFrom) ? '&amp;startFrom='.$startFrom.'&amp;frameSize='.$frameSize : '' ) )."\">\n";
+$extra_params = Array('address' => $GLOBALS['url']->available('address') ? $GLOBALS['url']->get('address') : 'none');
+if (isset($startFrom)) {
+  $extra_params['startFrom'] = $startFrom;
+  $extra_params['frameSize'] = $frameSize;
+}
+$sorter = "<FORM class=\"labsys_mop_sort_form\" NAME=\"sort_options\" METHOD=\"POST\" ACTION=\"".$GLOBALS['url']->link2( $_SERVER['PHP_SELF'], $extra_params ) ."\">\n";
 
 $searchFor = '';
 if (isset($showSearchField)){
@@ -71,7 +76,7 @@ if (isset($showSearchField)){
     $searchFor = $_GET['searchFor'];
   $sorter .= $lng->get('searchFor').
   '<input type="text" name="searchField" onChange="document.sort_options.submit();" tabindex="'.$pge->nextTab++.'"'.( !empty($searchFor) ? ' value="'.$searchFor.'"' : '').'>';
-  if (!empty($searchFor)) $url->put('searchFor='.$searchFor);
+  if (!empty($searchFor)) $GLOBALS['url']->put('searchFor', $searchFor);
 }
 
 if (isset($restrictToArray)){

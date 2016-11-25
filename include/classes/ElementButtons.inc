@@ -167,7 +167,7 @@ class EB{ /* ElementButtons */
   */
   static function view( $address ){
     global $lng, $url;
-    $link = $url->link2( "../pages/view.php?address=".$address.'#'.$address ); // #$address will jump directly to the element
+    $link = $url->link2( '../pages/view.php', Array('address' => $address) ).'#'.$address; // #$address will jump directly to the element
     return EB::mkLink( $link, "<img src=\"../syspix/button_view_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view\" title=\"".$lng->get("explainView")."\">" );
   }
 
@@ -180,7 +180,7 @@ class EB{ /* ElementButtons */
   */
   static function edit( $address ){
     global $lng, $url;
-    $link = $url->link2( "../pages/edit.php?address=".$address );
+    $link = $url->link2( '../pages/edit.php', Array('address' => $address) );
     return EB::mkLink( $link, "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get("explainEdit")."\">" );
   }
   
@@ -193,7 +193,7 @@ class EB{ /* ElementButtons */
    */
   static function cloneMe( $address ){
   	global $lng, $url;
-  	$link = $url->link2( '../php/clone.php?address='.$address );
+  	$link = $url->link2( '../php/clone.php', Array('address' => $address) );
   	return EB::mkLink( $link, '<img src="../syspix/button_clone_32x12.gif" width="32" height="12" alt="clone" title="'.$lng->get('cloneThisElement').'">' );
   }
 
@@ -206,7 +206,7 @@ class EB{ /* ElementButtons */
   */
   static function printView( $address ){
     global $lng, $url;
-    $link = $url->link2( "../pages/view.php?address=".$address );
+    $link = $url->link2( '../pages/view.php', Array('address' => $address) );
     return EB::mkLink( $link, "<img src=\"../syspix/button_folder_open_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view\" title=\"".$lng->get("explainPrintView")."\">" );
   }
 
@@ -219,7 +219,7 @@ class EB{ /* ElementButtons */
   */
   static function createNew( $elementID ){
     global $lng, $url;
-    $link = $url->link2( "../pages/edit.php?address=".$elementID."1&amp;saveAsNew=true" );
+    $link = $url->link2( '../pages/edit.php', Array('address' => $elementID.'1', 'saveAsNew' => 'true') );
     return EB::mkLink( $link, "<img src=\"../syspix/button_new_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"new\" title=\"".$lng->get("explainCreateNew")."\">" );
   }
 
@@ -230,7 +230,7 @@ class EB{ /* ElementButtons */
   */
   static function manageElements( ){
     global $lng, $url;
-    return EB::mkLink( $url->link2("../pages/view.php?address=p2"), "<img src=\"../syspix/button_manage_elements_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"new\" title=\"".$lng->get("explainManageElmnts")."\">" );
+    return EB::mkLink( $url->link2('../pages/view.php', Array('address' => 'p2') ), "<img src=\"../syspix/button_manage_elements_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"new\" title=\"".$lng->get("explainManageElmnts")."\">" );
   }
 
   /**
@@ -242,7 +242,7 @@ class EB{ /* ElementButtons */
   */
   static function delete( $address ){
     global $lng, $pge, $url;
-    $link = $url->link2( "../php/delete.php?address=".$address );
+    $link = $url->link2( '../php/delete.php', Array('address' => $address) );
     return "<a tabindex=\"".$pge->nextTab++."\" href=\"".$link."\" onClick=\"return confirmLink(this, '".$address.": ".$lng->get("confirmDelete")."');\">".
            "<img src=\"../syspix/button_delete_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"delete\" title=\"".$lng->get("explainDeleteElemnt")."\">".
            "</a>";
@@ -257,7 +257,7 @@ class EB{ /* ElementButtons */
   */
   static function viewStructure( $address ){
     global $lng, $url;
-    $link = $url->link2( "../pages/view.php?address=".$address.".structure" );
+    $link = $url->link2( '../pages/view.php', Array('address' => $address.'.structure') );
     return EB::mkLink( $link, "<img src=\"../syspix/button_view_structure_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"view_structure\" title=\"".$lng->get("explainViewStructure")."\">" );
   }
 
@@ -282,9 +282,9 @@ class EB{ /* ElementButtons */
     if ($url->available( 'hideHistory' )) return ''; // temporarily handy for HTML diffs...
 
     $history = preg_replace('/^@@([\d]*) (.*)/m',
-        '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address').'&historicVersion='.$address.'-$1#'.$address.'">$2</a>'), $history);
+        '<a href="'.$url->link2( $_SERVER['PHP_SELF'], Array('address' => $url->get('address'), 'historicVersion' => $address.'-$1') ).'#'.$address.'">$2</a>', $history);
     $history = preg_replace('/^\*\*([\d]*) (.*)/m',
-        '<a href="'.$url->link2( $_SERVER['PHP_SELF'].'?address='.$url->get('address').'&answerVersion='.$address.'-$1#'.$address.'">$2</a>'), $history);
+        '<a href="'.$url->link2( $_SERVER['PHP_SELF'], Array('address' => $url->get('address'), 'answerVersion' => $address.'-$1') ).'#'.$address.'">$2</a>', $history);
     // Shortening for Link (no stylesheet+JavaScript enabled)
     $shrtHistURL = "";
     if ( $sendAsAddHist ){
@@ -310,10 +310,12 @@ class EB{ /* ElementButtons */
       $historyText .= $historyLines[$i].'<br>'."\n";
 
     if ( $isLimited )
-      $historyText .= '<a href="'.$_SERVER['REQUEST_URI'].'&amp;fullHistory='.$address.'#history_'.$address.'">[...]</a>'."\n";
+      $historyText .= '<a href="'.$url->link2(NULL, Array('fullHistory' => $address), $_GET).'#history_'.$address.'">[...]</a>'."\n";
 
+    $historyParams = Array('address' => $address);
+    if ($sendAsAddHist) $historyParams['history'] = $shrtHistURL;
     return " <a tabindex=\"".$pge->nextTab++."\" name=\"history_".$address."\" href=\"".
-                $url->link2("../pages/history.php?address=".$address.( $sendAsAddHist ?  "&amp;history=".$shrtHistURL : '' ) ).
+                $url->link2('../pages/history.php', $historyParams).
                 "\"".
                 " onMouseUp=\"if (document.getElementById('history_".$pge->nextTab."').style.display != 'block') document.getElementById('history_".$pge->nextTab."').style.display = 'block'; else document.getElementById('history_".$pge->nextTab."').style.display = 'none';\" onClick=\"return false;\"".
                 ">".
@@ -342,8 +344,8 @@ class EB{ /* ElementButtons */
   */
   static function prev( $address ){
     global $lng, $url, $linkToPreviousPage; // Links are defined in /include/helper.inc
-    $link = $url->link2( "../pages/view.php?address=".$address );
-    $linkToPreviousPage = $url->rawLink2( "../pages/view.php?address=".$address );
+    $link = $url->link2( '../pages/view.php', Array('address' => $address) );
+    $linkToPreviousPage = $url->rawLink2( '../pages/view.php', Array('address', $address));
     return EB::mkLink( $link, "<img src=\"../syspix/button_previous_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"previous\" title=\"".$lng->get("explainPrev")."\">" );
   }
 
@@ -357,8 +359,8 @@ class EB{ /* ElementButtons */
   */
   static function next( $address ){
     global $lng, $url, $linkToNextPage; // Links are defined in /include/helper.inc
-    $link = $url->link2( "../pages/view.php?address=".$address );
-    $linkToNextPage = $url->rawLink2( "../pages/view.php?address=".$address );
+    $link = $url->link2( '../pages/view.php', Array('address' => $address) );
+    $linkToNextPage = $url->rawLink2( '../pages/view.php', Array('address', $address));
     return EB::mkLink( $link, "<img src=\"../syspix/button_next_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"next\" title=\"".$lng->get("explainNext")."\">" );
   }
 
@@ -372,8 +374,8 @@ class EB{ /* ElementButtons */
   */
   static function toc( $address ){
     global $lng, $url, $linkToTOCPage; // Links are defined in /include/helper.inc
-    $link = $url->link2( "../pages/view.php?address=".$address );
-    $linkToTOCPage = $url->rawLink2( "../pages/view.php?address=".$address );
+    $link = $url->link2( '../pages/view.php', Array('address' => $address) );
+    $linkToTOCPage = $url->rawLink2( '../pages/view.php', Array('address', $address));
     return EB::mkLink( $link, "<img src=\"../syspix/button_toc_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"TOC\" title=\"".$lng->get("explainTOC")."\">" );
   }
   
@@ -389,7 +391,7 @@ class EB{ /* ElementButtons */
   	if ( !$usr->isOfKind( IS_USER ) || !$cfg->doesExist('enableTicketLinks') || $cfg->get('enableTicketLinks')!=1 ){
   		return;
   	}
-  	$link = $url->link2( "../pages/ticket.php?address=".$address.'#subject' );
+  	$link = $url->link2( '../pages/ticket.php', Array('address' => $address) ).'#subject';
   	return EB::mkLink( $link, "<img src=\"../syspix/button_bug_10x12.gif\" width=\"10\" height=\"12\" border=\"0\" alt=\"ticket\" title=\"".$lng->get("explainTicket")."\">" );
   }
 
@@ -409,7 +411,7 @@ class EB{ /* ElementButtons */
     if ( !$usr->isOfKind( IS_USER ) ){
       return;
     }
-    $link = $url->link2( '../pages/mailForm.php?subject='.urlencode( '[><] '.$subject ).'&text='.urlencode( "\r\n\r\n".'-> http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$address.( $usr->isOfKind(IS_CORRECTOR) && $usr->isSeeingSomeonesData() && (strrpos($_SERVER['REQUEST_URI'], 'seeMe')===false)?'&seeMe='.urlencode($usr->theSeeingUid()):'') ) );
+    $link = $url->link2( '../pages/mailForm.php', Array('subject' => '[><] '.$subject, 'text' => "\r\n\r\n".'-> http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$address.( $usr->isOfKind(IS_CORRECTOR) && $usr->isSeeingSomeonesData() && (strrpos($_SERVER['REQUEST_URI'], 'seeMe')===false)?'&seeMe='.urlencode($usr->theSeeingUid()):'')) );
     return EB::mkLink( $link, "<img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"mail\" title=\"".$lng->get("explainMailLink2")."\">" );
   }
 }

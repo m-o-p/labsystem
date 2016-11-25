@@ -141,7 +141,7 @@ class EM{ /* ElementMenues */
             $eL->elementId.$eL->idx.
             "</span>".PHP_EOL.
             ( $eL->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
-            '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
+            //'<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
             //"<span class=\"labsys_mop_element_description_in_header\">".
             //$fullAddress.
             //"</span></a>\n".
@@ -180,7 +180,7 @@ class EM{ /* ElementMenues */
   * @return               The html code of the menu.
   */
   static function viewTopCollection( &$eC, $fullAddress, $prevAddress=false, $nextAddress=false, $topAddress=false, $add2Style="" ){
-    global $usr, $lng;
+    global $usr, $lng, $url;
      $navigation = (   $prevAddress ?                    EB::prev( $prevAddress )  : '' ).
              (   ($prevAddress || $nextAddress) ?  EB::toc( $topAddress )  : '' ).
              (   $nextAddress ?                    EB::next( $nextAddress )  : '' );
@@ -190,7 +190,7 @@ class EM{ /* ElementMenues */
 			      //             $fullAddress.
 			      $eC->elementId.$eC->idx.
 			      "</span>".PHP_EOL.
-      		   '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$eC->title.'</a> | </div>'.
+      		   '<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$fullAddress.'">'.$eC->title.'</a> | </div>'.
       		   ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
 //                '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
 //                "<span class=\"labsys_mop_element_description_in_header\">".
@@ -235,11 +235,11 @@ class EM{ /* ElementMenues */
                 ( $url->available('insert') && $url->available('insertAt') && // we are inserting -> place anchor
                   $url->get('insertAt') == $eC->idx ? '<a name="atInsert"></a>' : '' ).
                 '<div class="labsys_mop_elements_menu_c_edit_addElements">'.
-                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress.'&insertAt='.$eC->idx.'&insert=p').'#atInsert">&nbsp; *p &nbsp;</a>&nbsp; '.
-                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress.'&insertAt='.$eC->idx.'&insert=m').'#atInsert">&nbsp; *m &nbsp;</a>&nbsp;  '.
-                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress.'&insertAt='.$eC->idx.'&insert=i').'#atInsert">&nbsp; *i &nbsp;</a>&nbsp;  '.
-                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$fullAddress.'&insertAt='.$eC->idx.'&insert=c').'#atInsert">&nbsp; *c &nbsp;</a>&nbsp;  '.
-                ( $eC->elementId != 'C' ? '' : '<a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'].'?address='.$url->get('address').'&insertAt='.$eC->idx).'&insert=C#atInsert">&nbsp; *C &nbsp;</a>&nbsp;  ' ).
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insertAt' => $eC->idx, 'insert' => 'p')).'#atInsert">&nbsp; *p &nbsp;</a>&nbsp; '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insertAt' => $eC->idx, 'insert' => 'm')).'#atInsert">&nbsp; *m &nbsp;</a>&nbsp;  '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insertAt' => $eC->idx, 'insert' => 'i')).'#atInsert">&nbsp; *i &nbsp;</a>&nbsp;  '.
+                ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insertAt' => $eC->idx, 'insert' => 'c')).'#atInsert">&nbsp; *c &nbsp;</a>&nbsp;  '.
+                ( $eC->elementId != 'C' ? '' : '<a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insertAt' => $eC->idx, 'insert' => 'C')).'#atInsert">&nbsp; *C &nbsp;</a>&nbsp;  ' ).
                 "\n".
                 '</div>';
     }else if ($prevAddress || $nextAddress){
