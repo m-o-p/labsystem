@@ -83,10 +83,10 @@ if (isset($restrictToArray)){
   $sorter .=$lng->get('restrictTo').
             '<select name="restrictTo" size="1" onChange="document.sort_options.submit();" tabindex="'.$pge->nextTab++.'">';
   foreach ( $restrictToArray as $key => $value ) $sorter .= '<option '.( ( $restrictToKey == $key ) ?  " selected"  : '' ).'>'.$key.'</option>';
+  $sorter .='</select>';
 }
 
-$sorter .='</select> '.
-          $lng->get("orderBy").
+$sorter .=$lng->get("orderBy").
           '<select name="orderBy" size="1" onChange="document.sort_options.submit();" tabindex="'.$pge->nextTab++.'">';
 foreach ( $sortArray as $key => $value ) $sorter .= '<option '.( ( $orderByKey == $key ) ?  " selected"  : '' ).'>'.$key.'</option>';
 $sorter .='</select> '.
