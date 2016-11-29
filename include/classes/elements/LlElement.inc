@@ -243,7 +243,7 @@ class LlElement extends Element{
           '<img src="'.$url->link2( '../pages/getEPubCover.php', Array('address' => 'l'.$this->idx) ).'" width="75px" style="float: left; padding-right: 1em;" />
                 '.( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'
                 <div style="clear: left;"></div>
-                </div>';
+                </a></div>';
     }
 
     return $myRet;
