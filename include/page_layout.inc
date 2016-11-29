@@ -307,7 +307,6 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
         ?>
       </td></tr>
     </table>
-  </BODY>
   <?php
     if ( isset($SYSALERT) ) {
       echo("<script language=\"JavaScript\">\n<!-- \nalert( '".addslashes( htmlspecialchars_decode( $SYSALERT ) )."' ); \n//-->\n</script>");
@@ -334,4 +333,5 @@ document.onkeydown = function(evt) {
 };
 -->
 </script>
+</BODY>
 </HTML>
