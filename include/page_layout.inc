@@ -61,17 +61,6 @@ if ( $url->available('sysinfo') ) if ( isset($SYSINFO) ) $SYSINFO .= htmlentitie
 if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlentities( html_entity_decode( $url->get('sysalert') ) );
                                                    else $SYSALERT  = htmlentities( html_entity_decode( $url->get('sysalert') ) );
 
-/**
-* return a copy of an array with a certain key removed
-* @param $array  the array from which the key should be removed
-* @param $key    the key to remove (non-existant keys are silently ignored)
-* @return        a new array without the removed key
-*/
-function removeFromArray($array, $key) {
-  unset($array[$key]);
-  return $array;
-}
-
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>

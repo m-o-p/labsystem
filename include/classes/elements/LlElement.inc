@@ -514,7 +514,7 @@ class LlElement extends Element{
         $myRetVal .= "</td>".
                   // member's name
                      "<td class=\"labsys_mop_l_status_table_cell_name\">".
-                     ( $usr->isOfKind( IS_CORRECTOR ) ? "<a href=\"".str_replace( '&seeMe='.$url->get('seeMe'), '', $_SERVER['REQUEST_URI'] ).'&seeMe='.urlencode( $labStatus['uid'] )."\">" : '').
+                     ( $usr->isOfKind( IS_CORRECTOR ) ? "<a href=\"".$url->link2(NULL, Array('seeMe' => $labStatus['uid']), $_GET) ."\">" : '').
                      ( ($previousMembersname != $userData["name"].", ".$userData["foreName"] && ($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind(IS_USER_RIGHTS_EDITOR) || $labStatus['uid'] == $usr->uid )) ? $userData["name"].", ".$userData["foreName"].' ' : '').
                      ( !$usr->isOfKind( IS_CORRECTOR ) ?  '' : '</a> '.
                      EB::history( $userData["name"].", ".$userData["foreName"]." (".$lng->get("team")." ".$labStatus['currentTeam'].")".":<br>\n".$labStatus['history'], "l".$this->idx, true ) ).
@@ -652,7 +652,7 @@ class LlElement extends Element{
     // add entry to correct all users
     if( $usr->isOfKind( IS_CORRECTOR ) &&
         ( !$usr->isSeeingSomeonesData() || ( $usr->theSeeingUid() != "all" ) ) ){
-      $myRetVal .=      "<a href=\"".str_replace( '&seeMe='.$url->get('seeMe'), '', $_SERVER['REQUEST_URI'] ).'&seeMe=all'."\">". //urlencode("../pages/view.php?address=l".$this->idx.".labStatus")
+      $myRetVal .=      "<a href=\"".$url->link2(NULL, Array('seeMe' => 'all'), $_GET)."\">".
                         $lng->get("showAllUsersAnswers").
                         "</a>";
     }
@@ -852,7 +852,7 @@ class LlElement extends Element{
    // if seeing someone "stop seeing" button
     if( $usr->isSeeingSomeonesData() )
       $myRetVal .=  "<div class=\"labsys_mop_button_fullwidth\">\n".
-                    "<a href=\"".str_replace( '&seeMe='.$url->get('seeMe'), '', $_SERVER['REQUEST_URI']) .'&seeMe=none'."\">".
+                    "<a href=\"".$url->link2(NULL, NULL, removeFromArray($_GET, 'seeMe'))."\">".
                     $lng->get("stopSeeingData").
                     "</a>".
                     "</div>\n";

@@ -257,6 +257,17 @@ function randomName(){
   }
   return ucfirst($result);
 }
+
+/**
+* return a copy of an array with a certain key removed
+* @param $array  the array from which the key should be removed
+* @param $key    the key to remove (non-existant keys are silently ignored)
+* @return        a new array without the removed key
+*/
+function removeFromArray($array, $key) {
+  unset($array[$key]);
+  return $array;
+}
 /**
  * These links are used for the arrow navigation in /include/page_layout.inc at the bottom.
  * They are set by EB::prev, EB::next, and EB::TOC.
