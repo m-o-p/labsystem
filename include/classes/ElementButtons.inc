@@ -282,9 +282,9 @@ class EB{ /* ElementButtons */
     if ($url->available( 'hideHistory' )) return ''; // temporarily handy for HTML diffs...
 
     $history = preg_replace('/^@@([\d]*) (.*)/m',
-        '<a href="'.$url->link2( $_SERVER['PHP_SELF'], Array('address' => $url->get('address'), 'historicVersion' => $address.'-$1') ).'#'.$address.'">$2</a>', $history);
+        '<a href="'.$url->link2( $_SERVER['PHP_SELF'], Array('address' => $url->get('address')) ).'&amp;historicVersion='.$address.'-$1#'.$address.'">$2</a>', $history);
     $history = preg_replace('/^\*\*([\d]*) (.*)/m',
-        '<a href="'.$url->link2( $_SERVER['PHP_SELF'], Array('address' => $url->get('address'), 'answerVersion' => $address.'-$1') ).'#'.$address.'">$2</a>', $history);
+        '<a href="'.$url->link2( $_SERVER['PHP_SELF'], Array('address' => $url->get('address')) ).'&amp;answerVersion='.$address.'-$1#'.$address.'">$2</a>', $history);
     // Shortening for Link (no stylesheet+JavaScript enabled)
     $shrtHistURL = "";
     if ( $sendAsAddHist ){
