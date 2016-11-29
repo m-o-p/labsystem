@@ -377,7 +377,7 @@ class LlElement extends Element{
     $color = LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed );
 
     return "<div class=\"".$style."\">".
-           "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; width: ".round($percentage*100)."%\"></img>".
+           "<img src=\"../syspix/empty.gif\" alt='".round( $percentage*100, 2 )."%' style=\"color: #".$color."; background-color: #".$color."; width: ".round($percentage*100)."%\">".
            "</div>\n";
   }
 
@@ -402,7 +402,7 @@ class LlElement extends Element{
     $color = ($givenCredits<0 ? 'f00;position:relative;top:-'.$barHeight.'%;' : LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed ));
 
     return "<div class=\"".$style."\" style=\"height:".($possibleCredits*4).'px" title="'.$givenCredits.'/'.$possibleCredits.' '.$description.'">'.
-        "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$possibleCredits."' title='".$givenCredits.'/'.$possibleCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".$barHeight."%\"></img>".
+        "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$possibleCredits."' title='".$givenCredits.'/'.$possibleCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".$barHeight."%\">".
         "</div>\n";
   }
 
