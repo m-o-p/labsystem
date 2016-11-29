@@ -88,7 +88,7 @@ class LpElement extends Element{
 
     // replace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
-	$this->contents = $pge->replaceElementTitle( $this->contents, '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$fullAddress.'" class="link-anchor">¶</a></div>' );
+	$this->contents = $pge->replaceElementTitle( $this->contents, '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="#'.$fullAddress.'" class="link-anchor">¶</a></div>' );
     
     return EM::viewTopPage( $this, $fullAddress ).
            '<div id="'.$fullAddress.'" class="labsys_mop_contentArea">'.// anchor for retrieving after saving

@@ -688,7 +688,7 @@ class LiElement extends Element{
            EM::viewTopInput( $this, $fullAddress ).
            "<div class=\"labsys_mop_contentArea\">\n".
              '<div class="labsys_mop_i_question" id="'.$fullAddress.'">'.
-             '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->question.'<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$fullAddress.'" class="link-anchor">¶</a></div>'.
+             '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->question.'<a href="#'.$fullAddress.'" class="link-anchor">¶</a></div>'.
              "</div>\n".
 
            // example solution

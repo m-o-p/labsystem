@@ -190,7 +190,7 @@ class EM{ /* ElementMenues */
 			      //             $fullAddress.
 			      $eC->elementId.$eC->idx.
 			      "</span>".PHP_EOL.
-      		   '<a href="'.$url->link2(NULL, NULL, $_GET).'#'.$fullAddress.'">'.$eC->title.'</a> | </div>'.
+      		   '<a href="#'.$fullAddress.'">'.$eC->title.'</a> | </div>'.
       		   ( $eC->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
 //                '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
 //                "<span class=\"labsys_mop_element_description_in_header\">".
