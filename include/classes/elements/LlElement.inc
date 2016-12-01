@@ -1429,10 +1429,14 @@ class LlElement extends Element{
       }
     } else if (!empty($_POST['deleteFileNames'.$pathID])) {
       foreach ($_POST['deleteFileNames'.$pathID] as $fileName) {
-        //echo( 'deleting '.$myPath.'/'.$fileName."<br>\n" );
-        (unlink($myPath.'/'.$fileName) && unlink($myPath.'/'.$fileName.'.thumb.jpg'))
-        or trigger_error("Error deleting ".$myPath.'/'.$fileName, E_USER_ERROR);
-        $history .= $myPath.$fileName.' deleted; ';
+        $fileName = $myPath . '/' . $fileName;
+        if (file_exists($fileName))
+          unlink($fileName);
+        else
+          trigger_error('Error deleting '.$fileName, E_USER_ERROR);
+        if (file_exists($fileName . '.thumb.jpg'))
+          unlink($fileName . '.thumb.jpg');
+        $history .= $fileName.' deleted; ';
       }
     }
     return $history;
