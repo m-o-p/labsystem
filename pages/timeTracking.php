@@ -155,7 +155,7 @@ $pge->put('<p>Hello world!</p>');
       // Traversing could be:
       //
       //     foreach( $allBuckets as $key=>$value){
-      //       $pge->put('<li><a href="'.$url->link2('/pages/view.php', Array('address', $key) ).'">'.$key.'</a>: '.getTitle($key).'<ul>');
+      //       $pge->put('<li><a href="'.$url->link2('/pages/view.php', Array('address' => $key) ).'">'.$key.'</a>: '.getTitle($key).'<ul>');
       //       foreach ($value as $logEntry){
       //         $pge->put('<li>'.date('r', $logEntry['timestampInt']).': '.$logEntry['action']."\t -&gt; ".$logEntry['idx'].': '.$logEntry['resourceID'].': '.$logEntry['referrerID'].': '.$logEntry['teamNr']);
       //       }

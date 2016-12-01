@@ -70,7 +70,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
         $newLabId = $labElementArray['l2'];
 
-        $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.$newLabId.' <a href="'.$url->link2('../pages/edit.php', Array('address', $newLabId) ).'">edit...</a>)</h3>'."\r\n" );
+        $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.$newLabId.' <a href="'.$url->link2('../pages/edit.php', Array('address' => $newLabId) ).'">edit...</a>)</h3>'."\r\n" );
 
       // import elements
         $importCounter = 0; // used for setting the schedules accordingly when importing
