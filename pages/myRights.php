@@ -46,7 +46,8 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
 // note
   if ( $lng->get("myRightsNote") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("myRightsNote")."</div>\n" );
 
-$newUsrRights = 0;
+$notRemovableRights = intval(IS_USER);
+$newUsrRights = $notRemovableRights;
 
 $pge->put( '<FORM class="labsys_mop_std_form" NAME="myRightsEdit" METHOD="POST" ACTION="#">'.PHP_EOL.
            "<fieldset><legend>".$lng->get("rights").' ('.$usr->userRights.'/'.$usr->userMaximumRights.')</legend>'.PHP_EOL.
@@ -55,9 +56,9 @@ $pge->put( '<FORM class="labsys_mop_std_form" NAME="myRightsEdit" METHOD="POST" 
   for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1){
     if ( $usr->isOfKind( $i, $usr->userMaximumRights ) ){ // does the user have this right?
     	if (isset($_POST['UR_'.$i]) && $_POST['UR_'.$i]==$i ){
-    		$newUsrRights += $i;
+    		$newUsrRights |= $i;
     	}
-      $pge->put( rightsBox( "UR_".$i, $i, (!empty($_POST) ? $newUsrRights : $usr->userRights), ($i==1) )."<label for=\"UR_".$i."\" class=\"labsys_mop_input_field_label\">".$lng->get("Explain_UR_".$i)." ($i)</label><br>\n" );
+      $pge->put( rightsBox( "UR_".$i, $i, (!empty($_POST) ? $newUsrRights : $usr->userRights), ($i & $notRemovableRights == $i) )."<label for=\"UR_".$i."\" class=\"labsys_mop_input_field_label\">".$lng->get("Explain_UR_".$i)." ($i)</label><br>\n" );
     }
   }
   if (!empty($_POST) && ($newUsrRights != $usr->userRights)){
