@@ -81,7 +81,7 @@ $url->setToGetParameters();
   $_SESSION["currentTeam"] = 1234;
 if ( $GLOBALS['url']->get('userrole') == 'all' ){
   $_SESSION["userRights"]  = (MAX_USER_ROLE<<1)-1; // all
-  $link2 = $url->rawLink2($cfg->get("AfterLogInPage"));
+  $link2 = $url->rewriteExistingUrl($cfg->get("AfterLogInPage"));
 }
 elseif ( $GLOBALS['url']->get('userrole') == 'corrector' ){
   $_SESSION["userRights"]  = IS_USER+IS_MAIL_SUPPORTER+IS_ALL_MAILER+IS_SCHEDULER+IS_CORRECTOR+IS_EX_SOLUTION_VIEWER; // corrector

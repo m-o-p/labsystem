@@ -43,5 +43,5 @@ setcookie(session_name(), NULL, 1, '/');
 session_unset();
 session_destroy();
 
-header( "Location: ".$url->rawLink2( $cfg->get("AfterLogOutPage") ) );
+header( "Location: ".$url->rewriteExistingUrl( $cfg->get("AfterLogOutPage") ) );
 ?>

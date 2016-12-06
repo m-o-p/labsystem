@@ -74,6 +74,6 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
   makeLogEntry( 'system', 'loginLog');
   $GLOBALS['Logger']->logToDatabase('system', logActions::login);
 // Link to the after login page from the config file or to
-  if ( isset( $_POST['REDIRECTTO'] ) ) header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );
-                                  else header( "Location: ".$url->rawLink2( $cfg->get("AfterLogInPage") ) );
+  if ( isset( $_POST['REDIRECTTO'] ) ) header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
+                                  else header( "Location: ".$url->rewriteExistingUrl( $cfg->get("AfterLogInPage") ) );
 ?>
