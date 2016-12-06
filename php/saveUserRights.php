@@ -75,5 +75,5 @@ if ( !($usr->isOfKind(IS_USER_RIGHTS_EDITOR)) ) {
   makeLogEntry( 'system', 'user rights saved' );
 
 // redirect
-  header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );
+  header( "Location: ".$url->rewriteExistingUrl($_POST['REDIRECTTO']) );
 ?>

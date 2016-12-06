@@ -108,5 +108,5 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
   makeLogEntry( 'useradmin', 'new users created' );
 
 // redirect
-  header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );
+  header( "Location: ".$url->rewriteExistingUrl($_POST['REDIRECTTO']) );
 ?>

@@ -71,5 +71,5 @@ else{ // save new PW
 }
 
 // redirect
-  header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );
+  header( "Location: ".$url->rewriteExistingUrl($_POST['REDIRECTTO']) );
 ?>

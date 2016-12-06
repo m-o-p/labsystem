@@ -207,7 +207,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
         $url->put( "sysinfo", $lng->get("DataHasBeenSaved") );
 
         // redirect
-        header( "Location: ".$url->rawLink2( urldecode($_POST['REDIRECTTO']) ) );
+        header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
       }
     }
 // /form
