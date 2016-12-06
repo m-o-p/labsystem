@@ -1524,7 +1524,7 @@ class LlElement extends Element{
     $url->put( 'sysinfo', $lng->get("DataHasBeenSaved")." ".$lng->get("lNumber")." ".$newLab->idx );
 
     // One could also display the page here but that way it is left to the normal mechanism...
-    header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO']) . ($this->lastUploadedFile ? '#' . urlencode($this->lastUploadedFile) : '' ) );
+    header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO']));
   }
 
 // The next functions are used for the element's manage page. ***********************************************
