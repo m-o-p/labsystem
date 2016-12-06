@@ -36,9 +36,6 @@ $url->rem( "inside" );
 makeLogEntry( 'system', 'logout' );
 $GLOBALS['Logger']->logToDatabase('system', logActions::logout);
 
-if ( strip_tags(SID) != "" )
-  $url->rem( session_name() ); // remove SID from url
-
 setcookie(session_name(), NULL, 1, '/');
 session_unset();
 session_destroy();
