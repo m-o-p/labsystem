@@ -159,19 +159,25 @@ class Url
   * Take a complete URL (only url encoded, not HTML encoded) possibly including GET parameters already
   * and add the maintaned Url parameters to it (and possibly additional paramters); the result is again
   * only URLencoded, htmlencoding still needs to be done if required
-  * NOTE: fragment is currently not supported
   * @param $url               an URL possibly containing get parameters (separated by a ?)
   * @param $additionalParams  Parameters to use in addition to the base parameters (none by default)
   * @param $baseParams        Parameters to use as base (defaults to the maintained list of URL params)
   * @return                   a complete new URL, properly URLencoded (but not HTML encoded)
   */
   function rewriteExistingUrl( $url, $additionalParams=NULL, $baseParams=NULL ) {
-    $parts = explode('?', $url, 2);
-    $location = $parts[0]; //TODO: needs to be urldecoded?
+    $fragment = '';
+    $fragStart = strpos($url, '#');
+    if ($fragStart !== FALSE) {
+      $fragment = substr($url, $fragStart); // includes the # character
+      $url = substr($url, 0, $fragStart);
+    }
     $params = Array();
-    if (isset($parts[1]))
-      parse_str($parts[1], $params);
-    return  $this->rawLink2($location, $this->getMergedParams($additionalParams, $params), $baseParams);
+    $getStart = strpos($url, '?');
+    if ($getStart !== FALSE) {
+      parse_str(substr($url, $getStart + 1), $params);
+      $url = substr($url, 0, $getStart);
+    }
+    return $this->rawLink2($url, $this->getMergedParams($additionalParams, $params), $baseParams) . $fragment;
   }
 }
 $url = new Url();
