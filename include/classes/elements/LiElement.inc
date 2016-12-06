@@ -554,7 +554,7 @@ class LiElement extends Element{
                                       // link for the corrector to unlock... (-> see description above method)
                                       $url->link2('../pages/view.php', Array('address' => $url->get('address')))."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' ) :
                                       // normal handling -> pass method to executeCommandOnElement.php
-                                      $url->link2('../php/executeCommandOnElement.php?address=i')
+                                      $url->link2('../php/executeCommandOnElement.php', Array('address' => 'i'))
                                      ).
                 "\">\n".
 

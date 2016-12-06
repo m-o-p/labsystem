@@ -727,7 +727,7 @@ class LmElement extends Element{
     }
 
      return EM::editTopMultipleChoice( $this, $fullAddress ).
-            "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php?address=m')."\">\n".
+            "<FORM class=\"labsys_mop_std_form\" NAME=\"multipleChoiceEdit\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php', Array('address' => 'm'))."\">\n".
             "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
             "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n".  // index of saved el. will be added on save.php!
