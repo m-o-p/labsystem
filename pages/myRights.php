@@ -75,7 +75,7 @@ $pge->put( '<FORM class="labsys_mop_std_form" NAME="myRightsEdit" METHOD="POST" 
     
 $pge->put( "</div>\n".
            "</fieldset>\n".
-           "<input tabindex=\"".++$pge->nextTab."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>".PHP_EOL.
+           "<input tabindex=\"".++$pge->nextTab."\" type=\"submit\" class=\"labsys_mop_button\" name=\"change_rights\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>".PHP_EOL.
 		   '<input type="checkbox" id="thisTabOnly" name="thisTabOnly" value="1" tabindex="'.$pge->nextTab++.'"'.( isset($_POST['thisTabOnly'])?' checked="checked"':'').' onchange="isDirty=true"/>'.PHP_EOL.
 		   '<label for="thisTabOnly" class="labsys_mop_input_field_label">'.infoArrow( $lng->get('changeRightsInThisTabOnly'), false ).' '.$lng->get('changeRightsInThisTabOnly').'</label>'.PHP_EOL.
 		   "</FORM>"
