@@ -453,7 +453,7 @@ labCorrExplain      = "Das Lab/ die Frage ist korrigiert."
 
 ;; The standard error *********************************************************************************
 ;; you get if you want to access an element you do not have enough rights for:
-TxtNotEnoughRights  = "Sie haben <b>nicht gen&uuml;gend Rechte</b>, um diese Seite zu betrachten!<br>&nbsp;Vielleicht m&uuml;ssen Sie sich zuerst <a href='../pages/login.php?redirectTo=__CURRENT_URL__&__LINKQUERY__'><b><u>einloggen</u></b></a>."
+TxtNotEnoughRights  = "Sie haben <b>nicht gen&uuml;gend Rechte</b>, um diese Seite zu betrachten!<br>&nbsp;Vielleicht m&uuml;ssen Sie sich zuerst <a href='../pages/login.php?redirectTo=__CURRENT_URL__&amp;__LINKQUERY__'><b><u>einloggen</u></b></a>."
 elNotFoundVisible   = "Das angeforderte Element existiert nicht oder ist f&uuml;r Sie nicht sichtbar!"
 doesNotExist        = "existiert nicht!"
 
