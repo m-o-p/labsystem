@@ -595,7 +595,7 @@ class LmElement extends Element{
                         // Feedback at the end:
                         ($colorMe && $individualColors ? '<div class="'.(($this->previousAnswersArray[$i] & $this->mask($questionNumber)) == ($this->getCorrectMask() & $this->mask($questionNumber)) ? 'right' : 'wrong').'">' : '').
                         // Feedback in between:
-                        ($colorMe && !$individualColors ? '<div class="'.(($this->previousAnswersArray[$i] & $this->getCorrectMask()) == $this->getCorrectMask() ? 'right' : 'wrong').'">' : '').
+                        ($colorMe && !$individualColors ? '<div class="'.($this->previousAnswersArray[$i] == $this->getCorrectMask() ? 'right' : 'wrong').'">' : '').
                         // Example Solution
                         ($colorExampleSolution ? '<div class="'.($this->mask($questionNumber) == ($this->getCorrectMask() & $this->mask($questionNumber)) ? 'exampleSolutionCorrect' : 'exampleSolutionWrong').'">' : '').
                         '<input type="'.($this->getOnlyOneAnswerPossible() & !$isGettingEdited ? 'radio' : 'checkbox').'"'.
