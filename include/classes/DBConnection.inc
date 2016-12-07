@@ -52,6 +52,10 @@ class DBConnection{
         trigger_error('mysqli_init failed', E_USER_ERROR);
         exit;
     }
+    if (defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE') && !$this->link->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, TRUE)) {
+        trigger_error('Failed to enable native int and flow types', E_USER_ERROR);
+        exit;
+    }
     if (!$this->link->real_connect( $host, $user, $password, $dataBase, null, null, MYSQLI_CLIENT_FOUND_ROWS)) {
         trigger_error( $host.' unreachable with given credentials!' , E_USER_ERROR );
         exit;
