@@ -173,7 +173,7 @@ class LmElement extends Element{
    * @return boolean Returns if the given $answer is considered correct.
    */
   function computeIfAnswerConsideredCorrect($answerMask){
-  	if ($answerMask === $this->correctMask){
+  	if ($answerMask == $this->correctMask){
 		return TRUE;  		
   	}
   	
