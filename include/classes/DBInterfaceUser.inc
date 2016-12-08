@@ -179,7 +179,7 @@ class DBInterfaceUser
   * @param $orderBy    Can be any of the table's keys. The result will be ordered by this key.
   * @param $asc        Should the datasets be in ascending order?
   */
-  function getAllData( $orderBy="", $asc=true ){
+  function getAllData( $orderBy="", $asc=true, $restrictBy="" ){
     global $cfg;
     $what = $cfg->get("UserDBField_name")." AS name, ".
             $cfg->get("UserDBField_forename")." AS forename, ".
@@ -188,6 +188,8 @@ class DBInterfaceUser
             $cfg->get("UserDBField_username")." AS username";
     $from = $this->myTable;
     $where= $cfg->get("User_courseID")."='1'";
+    if (!empty($restrictBy))
+      $where .= ' AND ' . $restrictBy;
     if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
 
     $this->queryResult = $this->myDBC->mkSelect( $what, $from, $where, $orderBy );

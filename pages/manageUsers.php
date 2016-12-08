@@ -58,6 +58,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
  // get array of sorter keys from DBInterfaces
   $sortArray = array_merge ( DBInterfaceUser::sortableByArray(), DBInterfaceUserRights::sortableByArray() );
  // fill $sorter with the sorters html code and set $orderBy and $asc
+  $showSearchField = true;
   require( "../pages/sorter.inc" );
 // the sorter
   $pge->put( $sorter );
@@ -88,7 +89,15 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
           $slave  = $uDBI;
   }
 
-  $master->getAllData( $orderBy, $asc );
+  $where = array();
+  if (!empty($searchFor)) {
+      foreach (explode(' ', $searchFor) as $searchTerm) {
+          if (empty($searchTerm)) continue;
+          $searchTermMysql = $master->myDBC->escapeString('%' . $searchTerm . '%');
+          $where[] = '(' . $cfg->get('UserDBField_name') . ' LIKE \'' . $searchTermMysql . '\' OR ' . $cfg->get('UserDBField_forename') . ' LIKE \'' . $searchTermMysql . '\')';
+      }
+  }
+  $master->getAllData( $orderBy, $asc, implode(' AND ', $where) );
 
   $existingElemnts = $master->allSize();
 // With more than 360 elements more than 8M are used and it gets slow!
