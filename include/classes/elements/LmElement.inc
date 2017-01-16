@@ -673,40 +673,6 @@ class LmElement extends Element{
       $returnValue .= '</div>';
 
       return $returnValue;
-
-
-
-
-
-//       $answerFields = "<table class=\"labsys_mop_m_answers_table\">\n";
-
-
-
-//       for ( $i=0; $i < (count( $this->getAnswerArray() ) + $cfg->get("DefaultMCAnswerPlusAmount")); $i++){
-//         $answerFields .= "<tr>\n".
-//                          "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell\">".
-//                          '<input type="'.( $this->onlyOneAnswerPossible ? 'radio' : 'checkbox' ).'" '.
-//                                 "name=\"CORRECTMASK".( $this->onlyOneAnswerPossible ? $this->idx : $i )."\" ".
-//                                 "value=\"".$i."\" ".
-//                                 "tabindex=\"".$pge->nextTab++."\" ".
-//                                 "title='".$lng->get( 'isCorrect' )."'".
-//                                  ( ( $this->getCorrectMask() & LmElement::mask($i) ) ?   " checked=\"checked\""  : '' ).
-//                           " onchange='isDirty=true'></td>\n".
-//                           "\t<td class=\"labsys_mop_m_answers_table_answer_cell\">".
-//                           "<textarea tabindex=\"".$pge->nextTab++."\" ".
-//                                     "id=\"a".$i."\" ".
-//                                     "name=\"ANSWER".$i."\" ".
-//                                     "class=\"labsys_mop_textarea\" ".
-//                                     "rows=\"".$cfg->get("DefaultMCAnswerRows")."\" onchange='isDirty=true'>";
-
-//          // fror available answers put them into the text area
-//          if ( $i < count( $this->getAnswerArray() ) ) $answerFields .= returnEditable( $this->getAnswerArray()[$i] ); // _ -> &#x005F; needed cause otherwise Replacement on $pge->show
-
-//          $answerFields .= "</textarea>".
-//                           "</td></tr>\n";
-//        }
-//        $answerFields .= "</table>";
-//        return $answerFields;
      }
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

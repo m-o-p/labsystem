@@ -931,7 +931,7 @@ class LcElement extends Element{
     global $cDBI;
     $newIdx = createNew( $elementID );
     $this->contents = trim($this->contents.' '.$elementID.$newIdx);
-    $cDBI->setData( $this );
+    $cDBI->setData( $this, $this->idx == 1 );
     return $newIdx;
   }
 
