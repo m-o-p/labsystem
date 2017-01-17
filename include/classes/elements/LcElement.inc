@@ -553,7 +553,9 @@ class LcElement extends Element{
   	global $cDBI;
   	// Here starts the fun since all child elements must be cloned...
   	$newContent = Array();
-  	$structureArray = explode( ' ', $this->getStructure() );
+  	$structureArray = Array();
+  	if (!empty($this->contents))
+  		$structureArray = explode( ' ', $this->getStructure() );
   	foreach( $structureArray as $value ){
   		$id = $value{0};
   		$num = substr( $value, 1 );
