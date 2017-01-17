@@ -171,6 +171,7 @@ function createNew( $elementID ){
   $newElement->history .= ': '.$elementID.' auto created';
 
   $newIdx = $newElement->cloneAndReturnNewIdx();
+  $GLOBALS['SYSINFO'] .= $elementID.$newIdx.' auto created; ';
   return $newIdx;
 }
 

@@ -483,11 +483,13 @@ class LcElement extends Element{
              // save
               "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save").'" onclick=\'isDirty = false;\'>&nbsp;  '.
               ' '.EB::cloneMe($this->elementId.$this->idx).PHP_EOL.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'p') ).'">&nbsp; *p &nbsp;</a>&nbsp; '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'm') ).'">&nbsp; *m &nbsp;</a>&nbsp;  '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'i') ).'">&nbsp; *i &nbsp;</a>&nbsp;  '.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'c') ).'">&nbsp; *c &nbsp;</a>'.
-              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'C') ).'">&nbsp; *C &nbsp;</a>'.
+	              ( $eC->idx == 1 ? '' : // do not show the quick edit buttons for the prototype!
+		              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'p') ).'">&nbsp; *p &nbsp;</a>&nbsp; '.
+		              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'm') ).'">&nbsp; *m &nbsp;</a>&nbsp;  '.
+		              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'i') ).'">&nbsp; *i &nbsp;</a>&nbsp;  '.
+		              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'c') ).'">&nbsp; *c &nbsp;</a>'.
+		              ' <a class="labsys_mop_button" href="'.$url->link2($_SERVER['PHP_SELF'], Array('address' => $fullAddress, 'insert' => 'C') ).'">&nbsp; *C &nbsp;</a>'
+	              ).
               "\n".
               $this->showStructure($fullAddress).
              // properties
@@ -933,7 +935,7 @@ class LcElement extends Element{
     global $cDBI;
     $newIdx = createNew( $elementID );
     $this->contents = trim($this->contents.' '.$elementID.$newIdx);
-    $cDBI->setData( $this, $this->idx == 1 );
+    $cDBI->setData( $this );
     return $newIdx;
   }
 
