@@ -170,7 +170,7 @@ function createNew( $elementID ){
   $newElement = $GLOBALS[ $elementIDsmall.'DBI' ]->getData2idx( 1 ); // load default prototype
   $newElement->history .= ': '.$elementID.' auto created';
 
-  $newIdx = $newElement.cloneAndReturnNewIdx();
+  $newIdx = $newElement->cloneAndReturnNewIdx();
   return $newIdx;
 }
 
