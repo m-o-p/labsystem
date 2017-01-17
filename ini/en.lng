@@ -334,7 +334,7 @@ mailaddressesNewUsr = "Paste your <b>CSV</b> and <b>insert the given table field
 inputTitle          = "<b>Title</b> (e.g. the title of your element is used for the browser's caption.)"
 inputMatchingMnu    = "<b>Matching menu</b> (Menu row with this text will be highlighted when page is shown [can be empty].<br />If you use menu shortcuts (e.g. !p1, !C2) this will become the menu entry.)"
 inputContents       = "<b>Contents</b>"
-inputContentsHtml   = "(if you want the <b>html elements</b> to be interpreted the first line must be <b>[html]</b>, for <b>MarkDown [MD]</b>)"
+inputContentsHtml   = "(if you want the <b>html elements</b> to be interpreted the first line must be <b>[HTML]</b>, for <b>MarkDown [MD]</b>)"
 inputReplaceKeys    = "The following constants will be replaced by their current values when displaying the page:"
 
 ;m
