@@ -475,9 +475,9 @@ explainViewStructure= "Struktur des Elements..."
 explainHistory      = "Die Vergangenheit des Elements..."
 explainMailLink2    = "Einen Link zu diesem Element per Mail verschicken..."
 explainSaveElement  = "Das aktuelle Element speichern..."
-explainNext         = "n&auml;chste Seite&gt;&gt;  [ctrl+alt+-&gt;]"
-explainPrev         = "&lt;&lt;vorherige Seite  [ctrl+alt+&lt;-]"
-explainTOC          = "Inhalt... [ctrl+alt+hoch]"
+explainNext         = "n&auml;chste Seite  [strg + alt + &rarr;]"
+explainPrev         = "vorherige Seite  [strg + alt + &larr;]"
+explainTOC          = "Inhalt... [strg + alt + &uarr;]"
 explainTicket       = "Ein neues Suport Ticket f&uuml;r dieses Element erstellen..."
 
 ;l
