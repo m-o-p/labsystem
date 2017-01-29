@@ -249,7 +249,7 @@ class LmElement extends Element{
    function getGivenCredits(){
      global $cfg;
      if ( $this->isCorrectlyAnswered ) $add = 1; else $add = 0;
-     return $this->getPossibleCredits()-$this->getPossibleCredits()/$cfg->get( 'MCAnsweringAttempts' )*$this->triesUp2Now;
+     return $this->getPossibleCredits()-($this->getPossibleCredits()/$cfg->get( 'MCAnsweringAttempts' )*($this->triesUp2Now-$add));
    }
 
   /**
