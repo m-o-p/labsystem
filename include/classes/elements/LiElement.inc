@@ -1124,9 +1124,7 @@ class LiElement extends Element{
   function reOpenInput( $teamNumber ){
     global $usr, $lng;
     $this->loadUserData4( $teamNumber );
-    if ($this->isClosed) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, false, false, $lng->get("reOpensInput")."\n".$this->answerHistory  );
-    $this->isClosed = false;
-    $this->isCorrected = false;
+    if ($this->isClosed && !$this->isCorrected) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isCorrected, $this->isCorrected, $lng->get("reOpensInput")."\n".$this->answerHistory  );
   }
 
   /**
