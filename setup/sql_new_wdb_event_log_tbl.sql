@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS `event_log` (
 `action` INT NOT NULL ,
 `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
 PRIMARY KEY (  `idx` )
-) ENGINE = MYISAM COMMENT =  'Saves the event log for the actions within the labsystem.';
+) COMMENT =  'Saves the event log for the actions within the labsystem.';

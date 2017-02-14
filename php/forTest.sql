@@ -28,7 +28,7 @@ CREATE TABLE `input_answers` (
   `corrected` tinyint(1) default '0',
   `history` text NOT NULL,
   PRIMARY KEY  (`idx`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) AUTO_INCREMENT=3 ;
 
 -- 
 -- Daten für Tabelle `input_answers`
@@ -51,7 +51,7 @@ CREATE TABLE `input_answers_locks` (
   `lock_on_idx` bigint(20) default NULL,
   `history` text NOT NULL,
   PRIMARY KEY  (`idx`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) AUTO_INCREMENT=3 ;
 
 -- 
 -- Daten für Tabelle `input_answers_locks`
@@ -72,7 +72,7 @@ CREATE TABLE `input_answers_uid_team` (
   `team` int(9) default NULL,
   `history` text NOT NULL,
   PRIMARY KEY  (`idx`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) AUTO_INCREMENT=3 ;
 
 -- 
 -- Daten für Tabelle `input_answers_uid_team`
@@ -105,7 +105,7 @@ CREATE TABLE `lab_uid_status` (
   `lab_possible_credits` int(11) default '0',
   `history` text NOT NULL,
   PRIMARY KEY  (`idx`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) AUTO_INCREMENT=2 ;
 
 -- 
 -- Daten für Tabelle `lab_uid_status`
@@ -128,7 +128,7 @@ CREATE TABLE `multiple_choice_answers` (
   `answer_array` text,
   `history` text NOT NULL,
   PRIMARY KEY  (`idx`)
-) TYPE=MyISAM AUTO_INCREMENT=2 ;
+) AUTO_INCREMENT=2 ;
 
 -- 
 -- Daten für Tabelle `multiple_choice_answers`
@@ -153,7 +153,7 @@ CREATE TABLE `schedules` (
   `comment` text NOT NULL,
   `history` text NOT NULL,
   PRIMARY KEY  (`idx`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) AUTO_INCREMENT=3 ;
 
 -- 
 -- Daten für Tabelle `schedules`
@@ -178,7 +178,7 @@ CREATE TABLE `user_rights` (
   `history` text NOT NULL,
   PRIMARY KEY  (`idx`),
   KEY `uid` (`uid`)
-) TYPE=MyISAM AUTO_INCREMENT=3 ;
+) AUTO_INCREMENT=3 ;
 
 -- 
 -- Daten für Tabelle `user_rights`
