@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS `user_rights` (
   `history` text NOT NULL,
   PRIMARY KEY (`idx`),
   KEY `uid` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

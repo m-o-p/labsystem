@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `visible_only_in_collection` tinyint(1) DEFAULT '0',
   `history` text NOT NULL,
   PRIMARY KEY (`idx`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 ;
+) AUTO_INCREMENT=18 ;
 
 INSERT INTO `pages` (`idx`, `title`, `contents`, `matching_menu`, `visible_for`, `visible_only_in_collection`, `history`) VALUES
 (1, 'prototype page element', '[HTML]\r\n<!-- click on the icon with the eye (second one) on the upper right to see how this page looks like! -->\r\n\r\n<h3>__ELEMENTTITLE__</h3>\r\n\r\n<p>\r\n<b>Hello __FORENAME__ __NAME__</b> (__USERNAME__), at the moment you watch the prototype of a page element!\r\n</p>\r\n\r\n<p>\r\nWhen you create new pages, this template will be used by default.\r\n</p>\r\n<p>\r\nYou can change it as you like, you can even have multiple templates...<br />\r\nThey can be managed <a href="../pages/view.php?address=p2&__LINKQUERY__">here <img src="../syspix/button_manage_elements_13x12.gif" width="13" height="12" border="0"></a>...\r\n</p>\r\n\r\n<p>\r\nTo get back to the edit mode just click <a href="../pages/edit.php?address=p1&__LINKQUERY__"><img src="../syspix/button_edit_13x12.gif" width="13" height="12" border="0"></a> here or on the top right...\r\n</p>', '', 1, 1, '2006-03-11 19:10:58: Marc-Oliver Pahl'),
