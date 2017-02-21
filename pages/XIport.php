@@ -58,6 +58,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       //$pge->put( $key.' --- '.$value.'<br>' );
 
       if ( $value == 'IMPORT' ){ // doImport
+        $DBI->myDBC->query('START TRANSACTION');
         $subDir = base64_decode( $key ); // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(
         $GLOBALS['exportUID'] = $subDir;
 
@@ -154,6 +155,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $newSchedule->stop = $endTime;
         $pge->put( persistElement( $newSchedule, '', true ) );
         $pge->put( '<a href="'.$url->link2('../pages/edit.php', Array('address' => 's'.$newIdx) ).'">Please edit the schedule...</a>' );
+        $DBI->myDBC->query('COMMIT');
 // doImport
       }else{
 // doExport
