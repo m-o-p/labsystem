@@ -95,14 +95,14 @@ class LSE_Util_CoverImageGenerator
 
         $desWidth  = $srcImgSize[0];
         $desHeight = $srcImgSize[1];
-        if ( $desWidth > $imageBBwidth ){
+        if ( ($imageBBwidth > 0) && ($desWidth > $imageBBwidth) ){
           // image too wide -> resize height accordingly
           $desHeight = $imageBBwidth/$desWidth*$desHeight;
           // set width to maximum
           $desWidth  = $imageBBwidth;
         }
 
-        if ( $desHeight > $imageBBheight ){
+        if ( ($imageBBheight > 0) && ($desHeight > $imageBBheight) ){
           // image too high -> resize width accordingly
           $desWidth  = $imageBBheight/$desHeight*$desWidth;
           // set height to maximum
@@ -110,6 +110,7 @@ class LSE_Util_CoverImageGenerator
         }
 
         // Place the title page image centered inside the BB under the text
+        //echo( "imagecopyresized($im, $srcImg, $imageBBleft+($imageBBwidth-$desWidth)/2, $imageBBtop+($imageBBheight-$desHeight)/2, 0, 0, $desWidth, $desHeight, $srcImgSize[0], $srcImgSize[1]);");
         imagecopyresized($im, $srcImg, $imageBBleft+($imageBBwidth-$desWidth)/2, $imageBBtop+($imageBBheight-$desHeight)/2, 0, 0, $desWidth, $desHeight, $srcImgSize[0], $srcImgSize[1]);
         imagedestroy( $srcImg );
 
