@@ -106,18 +106,74 @@ class Element{
   */
   function getSerialized(){
     $output = '';
+    $toBeSerialized = array();
     foreach ( $this->serializationArray as $value ){
-      $output .= '<'.$value.'>';
-      if( is_array($this->$value) ){
-        $output .=  "<arrayElement>".implode("</arrayElement>\n<arrayElement>", $this->$value)."</arrayElement>"; // transform the array elements to XML
-      }else{
-        $output .= $this->$value;
-      }
-      $output .= '</'.$value.'>'."\r\n";
+    	$toBeSerialized[$value] = $this->$value;
+// This is the old hand-written "XML" export code. You should not need it anaymore.
+//       $output .= '<'.$value.'>';
+//       if( is_array($this->$value) ){
+//         $output .=  "<arrayElement>".implode("</arrayElement>\n<arrayElement>", $this->$value)."</arrayElement>"; // transform the array elements to XML
+//       }else{
+//         $output .= $this->$value;
+//       }
+//       $output .= '</'.$value.'>'."\r\n";
     }
+    
+    $output = json_encode( $toBeSerialized );
+    
     return $output;
   }
 
+  /**
+   * Imports using the XML format.
+   */
+  private function doXMLimport( &$serializedData ){
+  	//   	print_r($importDataArray);
+    $inputLines = explode( "\r\n", $serializedData );
+  	foreach ( $this->serializationArray as $value ){
+  		      $openTag = '<'.$value.'>';
+  		      $closeTag = '</'.$value.'>';
+  		      $this->$value = ''; // start with empty as we restore!
+  		      if ( // start searching for $openTag
+  		           (strlen( current( $inputLines ) ) >= strlen($openTag)) && // compare needs at least this length... otherwise error
+  		           (substr_compare( current( $inputLines ), $openTag, 0, strlen($openTag) ) == 0) &&
+  		           // remove start tag
+  		           ($inputLines[ key( $inputLines ) ] = substr( current( $inputLines ), strlen($openTag) )) ){
+  			           while( // not yet end tag there?
+  			                  ((strlen( current( $inputLines ) ) < strlen($closeTag)) || // if smaller substr_compare returns true?!?
+  			                   (substr_compare( current( $inputLines ), $closeTag, -1*strlen($closeTag), strlen($closeTag) ) != 0)
+  			                   ) &&
+  			                  // then add it
+  			                  ( $this->$value .= current( $inputLines )."\n" ) &&
+  			                  // get next line if one is there
+  			                  (next( $inputLines ) !== FALSE)
+  			                 ) ;
+  		            // end tag present
+  		            $this->$value .= substr( current( $inputLines ), 0, strlen(current( $inputLines ))-strlen($closeTag) ); // unserialize only occurs on one line values
+  		            if ( (strlen( $this->$value ) >= 14) &&
+  		                 (substr($this->$value, 0,14) == '<arrayElement>') ){
+  		                 $this->$value = substr($this->$value, 14); //cut front
+  		                 $this->$value = substr($this->$value, 0, strlen($this->$value)-15); //cut rear
+  		                 $this->$value = explode( "</arrayElement>\n<arrayElement>", $this->$value ); // post process arrays
+  		            }
+  		            // get next line and continue if one is there
+  		            if (!next( $inputLines )) break;
+  		      }
+  		    // catch error
+  	    if ( !current( $inputLines ) ) trigger_error( htmlentities($closeTag, ENT_QUOTES | ENT_IGNORE ).' missing when unserializing: '.htmlentities($serializedData, ENT_QUOTES | ENT_IGNORE ), E_USER_ERROR );
+  	    }
+  }
+
+  /**
+   * Import using the JSON format.
+   */
+  private function doJSONimport( &$serializedData ){
+  	$importDataArray = json_decode($serializedData, TRUE);
+  	foreach ( $this->serializationArray as $value ){
+  		$this->$value = $importDataArray[$value];  
+  	}
+  }
+  	
   /**
   * UnSerializes the element.
   *
@@ -126,39 +182,12 @@ class Element{
   * @return - Sets the element's parameters.
   */
   function initFromSerialized( &$serializedData ){
-    $inputLines = explode( "\r\n", $serializedData );
-    foreach ( $this->serializationArray as $value ){
-      $openTag = '<'.$value.'>';
-      $closeTag = '</'.$value.'>';
-      $this->$value = ''; // start with empty as we restore!
-      if ( // start searching for $openTag
-           (strlen( current( $inputLines ) ) >= strlen($openTag)) && // compare needs at least this length... otherwise error
-           (substr_compare( current( $inputLines ), $openTag, 0, strlen($openTag) ) == 0) &&
-           // remove start tag
-           ($inputLines[ key( $inputLines ) ] = substr( current( $inputLines ), strlen($openTag) )) ){
-	           while( // not yet end tag there?
-	                  ((strlen( current( $inputLines ) ) < strlen($closeTag)) || // if smaller substr_compare returns true?!?
-	                   (substr_compare( current( $inputLines ), $closeTag, -1*strlen($closeTag), strlen($closeTag) ) != 0)
-	                   ) &&
-	                  // then add it
-	                  ( $this->$value .= current( $inputLines )."\n" ) &&
-	                  // get next line if one is there
-	                  (next( $inputLines ) !== FALSE)
-	                 ) ;
-            // end tag present
-            $this->$value .= substr( current( $inputLines ), 0, strlen(current( $inputLines ))-strlen($closeTag) ); // unserialize only occurs on one line values
-            if ( (strlen( $this->$value ) >= 14) &&
-                 (substr($this->$value, 0,14) == '<arrayElement>') ){
-                 $this->$value = substr($this->$value, 14); //cut front
-                 $this->$value = substr($this->$value, 0, strlen($this->$value)-15); //cut rear
-                 $this->$value = explode( "</arrayElement>\n<arrayElement>", $this->$value ); // post process arrays
-            }
-            // get next line and continue if one is there
-            if (!next( $inputLines )) break;
-      }
-    // catch error
-    if ( !current( $inputLines ) ) trigger_error( htmlentities($closeTag, ENT_QUOTES | ENT_IGNORE ).' missing when unserializing: '.htmlentities($serializedData, ENT_QUOTES | ENT_IGNORE ), E_USER_ERROR );
-    }
+  	// to remain compatible with the old XML format (see above), we do this legacy split here:
+  	if ($serializedData[0] == '<'){
+  		$this->doXMLimport( $serializedData );
+  	}else{
+  		$this->doJSONimport( $serializedData );
+  	}
   }
 
   /**
