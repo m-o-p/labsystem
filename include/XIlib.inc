@@ -357,6 +357,12 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
                                                                ),
                                                  $localFileWithPath );
 
+    // Now there could be a fragment in case of linked html files...
+    $fragment = '';
+    if (strrpos($localFileWithPath, '#') !== false && strrpos(strtolower($localFileWithPath), '.htm') !== false){
+    	$fragment = substr( $localFileWithPath, strrpos($localFileWithPath, '#'));
+    	$localFileWithPath = substr($localFileWithPath, 0, strrpos($localFileWithPath, '#'));
+    }
     // Files linked "/" should be "../"
     if ( $localFileWithPath[0] == '/' ) $localFileWithPath = '..'.$localFileWithPath;
 
@@ -378,10 +384,12 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
       $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                   $localFileWithPath.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
-                 "</div>\r\n" );
+                 "</div>\r\n".
+      		( $itWorked ? '' : "<div class='copyError'>Can't copy file [".htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']</div>' )
+      		 );
     }
-    return (!isset( $itWorked ) // $doCopy === false...
-            || $itWorked) ? $destDir.$fileName : $localFileWithPath;
+    return ((!isset( $itWorked ) // $doCopy === false...
+            || $itWorked) ? $destDir.$fileName : $localFileWithPath).$fragment;
   }
 
   /** For Import

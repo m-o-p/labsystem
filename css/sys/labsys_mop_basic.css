@@ -1437,3 +1437,9 @@ label.labsys_mop_multiselectoption:hover {
 .courseList a {
   cursor: pointer;
 }
+
+.copyError {
+	background-color:red;
+	padding:1em;
+	color:#fff;
+}
