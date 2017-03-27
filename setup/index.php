@@ -249,9 +249,9 @@ if(!$usrDB->table_exists( $cfg->get("UserDatabaseTable") ))
                    )';
          $ret = $usrDB->query($query);
          if ( $ret !== false )
-             say_failed($usrDB);
-         else
              echo("<h4><b>admin user \"".$cfg->get("RightsAdminUsername")."\" with password \"admin\" created!</b> (you need this to log on the system. Change the password!!!!!!)</h4><br>\n");
+         else
+             say_failed($usrDB);
        }
 } else say_skipped();
 
