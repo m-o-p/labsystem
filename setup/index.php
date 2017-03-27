@@ -305,11 +305,39 @@ if ( $ret === false ) say_failed($usrDB); else say_done();
 };
 
 // add Demo user
+echo("Adding demo user to course ".$cfg->get("User_courseID").": ");
 if ( $_GET['config'] == 'demo' ){
   $result = $usrDB->mkSelect( $cfg->get("UserDBField_username"), $cfg->get("UserDatabaseTable"), $cfg->get("UserDBField_uid").'="participant" & '.$cfg->get("User_courseID").' = 1' );
-  /* does exist? */
-  if ( !($usrDB->datasetsIn( $result ) > 0) )
-    runMySqlFromFile( 'sql_new_udb_demo_userl.sql', $usrDB );
+   
+	/* does exist? */
+	$demoUserExists = ( $usrDB->datasetsIn( $result ) > 0 );
+	if (!$demoUserExists ){
+	/* create admin user */
+	$query = 'INSERT IGNORE INTO '.$cfg->get("UserDatabaseTable").'
+	         ('.$cfg->get("UserDBField_username").',
+	         '.$cfg->get("UserDBField_password").',
+	         '.$cfg->get("UserDBField_name").',
+	         '.$cfg->get("UserDBField_forename").',
+	         '.$cfg->get("UserDBField_email").',
+	         '.$cfg->get("UserDBField_uid").',
+	         '.$cfg->get("User_courseID").',
+             labsys_mop_last_change
+	         ) VALUES (
+			"patrice", 
+  			"29833a5b1a7f877f998488e057ef0a4e364e4cd4", 
+  			"Participant", 
+  			"Patrice", 
+  			"participant@labsystem.m-o-p.de", 
+  			"participant", 
+  			1, 
+  			"2009-04-16 13:24:24"
+	         )';
+	$ret = $usrDB->query($query);
+	if ( $ret === false )
+	    say_failed($usrDB);
+	else
+	    echo("<h4><b>demo user \"patrice\" created!</b></h4><br>\n");
+	} else say_skipped();
 }
 
 /* A THE DATABASES */
