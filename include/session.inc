@@ -43,8 +43,8 @@ if ($GLOBALS['url']->available('config')) {
             $cookieInfo['lifetime'],
             $cookieInfo['path'],
             $cookieInfo['domain'],
-            TRUE,
-            TRUE
+            TRUE, // secure: If TRUE cookie will only be sent over secure connections.
+            TRUE // httponly: If set to TRUE then PHP will attempt to send the httponly flag when setting the session cookie.
         );
         unset($cookieInfo);
         session_start();
