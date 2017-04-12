@@ -185,7 +185,6 @@ class DBInterfaceUser
 				$returnArray[$nextKey] = $resArray[$nextKey];
 			}
 		}
-		print_r($returnArray);
     }
   }
 
