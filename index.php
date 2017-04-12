@@ -29,6 +29,7 @@
   	require_once( 'include/config.inc' );      // contains DEFAULT_INSTANCE required below
   } else {
   	$SYSINFO .= 'Falling back to "include/config-sample.inc". Use it to create your own "include/config.inc" to get rid of this notice.';
+  	trigger_error( '"include/config.inc" missing! Falling back to "include/config-sample.inc". Use it to create your own "include/config.inc" to get rid of this warning.' , E_USER_WARNING );
   	require_once( 'include/config-sample.inc' );      // contains DEFAULT_INSTANCE required below
   }
 

@@ -64,7 +64,7 @@ require_once( INCLUDE_DIR."/config.inc" );
     // normal call via URL
       $h2cFile = "../ini/host2config.ini";
       if ( !file_exists( $h2cFile ) ) {
-         trigger_warning( $h2cFile.' missing! Use "../ini/host2config-sample.ini" to create yours and get rid of the warning.' , E_USER_ERROR );
+         trigger_error( $h2cFile.' missing! Falling back to sample. Use "../ini/host2config-sample.ini" to create yours and get rid of the warning.' , E_USER_WARNING );
          $h2cFile = "../ini/host2config-sample.ini";
       } // no configuration there
       $h2c = new Rom( parse_ini_file( $h2cFile ) );
