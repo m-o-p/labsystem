@@ -875,6 +875,31 @@ class LlElement extends Element{
 
     return $myRetVal;
   }
+  
+  /**
+   * Shows the statistics of the prelab.
+   * 
+   * @param $typePrefix    Element's type (p.e. p, m, i).
+   * @param $address       The element's full address (p.e. C23.c42.p13)
+   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+   * @param $counted       Return the result as array with count data instead of as string
+   * (other parameters are for internal use of the function)
+   *
+   * @return string        The html code of the element's view view.
+   */
+   function showPrelabStatistics ( $typePrefix, $address, $extParagraph='' ){
+	global $lng;
+//  // We could collect here but then we would loose those not having a status record yet.
+//  // Instead we will collect from the MC directly $element->mcDBI->getAllUIDs( $this->idx ); 
+// 	// collect all UIDs for this lab:
+// 	$uidArray = array();
+// 	$this->usDBI->getAllData();
+// 	while( $labStatus = $this->usDBI->getNextData() ){
+// 		$uidArray[] = $labStatus['uid'];
+// 	}
+
+	return $this->preLab->showWorstAnsweredMCs( $typePrefix, $address.'.C'.$this->preLab->idx, $lng->get("lPrefixPreLab").(empty($extParagraph) ? '' : '.'.$extParagraph) );
+  }
 
   /**
   * Shows the members lab status.
@@ -996,10 +1021,10 @@ class LlElement extends Element{
     elseif ( $last == "allPrelabQ" &&
              $scndLast == $me &&
              $this->preLabIsVisible2Me )      $myRetVal .= $this->showAllPrelabMultipleChoices( "l".$this->idx );
-   // preLab status
-    elseif ( $last == "preLabStatus" &&
-             $scndLast == $me &&
-             $this->preLabIsVisible2Me )      $myRetVal .= $this->showPrelabStatus( $extParagraph );
+    // preLab statistics
+    elseif ( $last == "preLabStatistics" &&
+    		$scndLast == $me &&
+    		$this->preLabIsVisible2Me )      $myRetVal .= $this->showPrelabStatistics( 'm', 'l'.$this->idx, $extParagraph );
    // all lab questions
     elseif ( $last == "allLabQ" &&
              $scndLast == $me &&

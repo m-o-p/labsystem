@@ -318,6 +318,71 @@ class LcElement extends Element{
     else
         return array("retVal" => $retVal, "count" => $count, "sumPossibleCredits" => $sumPossibleCredits);
   }
+  
+  /**
+   * Shows the negative highscore of the prelab MCs.
+   *
+   * @param $typePrefix    Element's type (p.e. p, m, i).
+   * @param $address       The element's full address (p.e. C23.c42.p13)
+   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+   * @param $counted       Return the result as array with count data instead of as string
+   * (other parameters are for internal use of the function)
+   *
+   * @return string        The html code of the element's view view.
+   */
+  function showWorstAnsweredMCs( $typePrefix, $address, $paragraph="", $counted=false, &$count = 0, &$sumPossibleCredits = 0, &$inSum = array() ){
+  	global $lng;
+  	 
+  	$retVal = '';
+  	// Iterate through all m elements of the prelab:
+  	foreach ($this->simpleIterate(array('c', 'm')) as list($value, $element)) {
+  		$elementAddr = ($address != '' ? $address . "." : "") . $value;
+  		$elParagraph = ($paragraph != '' ? $paragraph . "." : "") . $this->getParagraph($value);
+  		if ($element->elementId == $typePrefix) {
+  			// Here starts the evaluation
+  			$element->mcDBI->getAllUIDs( $element->idx );
+  			while ($uid = $element->mcDBI->getNextData()) {
+  				$element->loadUserData4( $uid );
+  				$retVal .= '<div>Tries (m element '.$element->idx.' @ '."<a href=\"" . str_replace( array('&#x005F;','&amp;'), array('_', '&'), EB::getLink2ElementURL( $elementAddr ) ). "\">".
+  				$elementAddr.'</a>): '.$element->triesUp2Now.'</div>';
+  				$retVal .= '<div>Permutation: '.htmlentities(json_encode($element->displayPermutation)).'</div>';
+  				$retVal .= '<div>answer array: '.htmlentities(json_encode($element->previousAnswersArray)).'</div>';
+  				$statistics1 = array();
+  				foreach($element->previousAnswersArray as $answer){
+  					$currentAnswerNo = 0;
+  					while($currentAnswerNo < $element->answerCount){
+  						$statistics1[$currentAnswerNo] += ($answer & $element->mask($currentAnswerNo) ? 1 : 0);
+  						$currentAnswerNo++;
+  					}
+  				}
+  				$retVal .= '<div>statistics: '.htmlentities(json_encode($statistics1)).'</div>';
+  				// work with the data here.
+  				$retVal .= $element->show($elementAddr, $elParagraph);
+  			}
+  			$element->loadUserData4( '' );
+  			$retVal .= $element->show($elementAddr, $elParagraph);
+  			if (!array_key_exists($value, $inSum) && $element->elementId == "i") {
+  				$inSum[$value] = true;
+  				$count += 1;
+  				$sumPossibleCredits += $element->possibleCredits;
+  			}
+  			// Here ends the evaluation
+  		}
+  		elseif (strtolower($element->elementId) == "c") {
+  			// recursion
+  			$subRetVal = $element->showWorstAnsweredMCs($typePrefix, $elementAddr, $elParagraph, false, $count, $sumPossibleCredits, $inSum);
+  			if ($subRetVal != '') {
+  				// print heading?
+  				$retVal .= "<div class=\"labsys_mop_contentArea\">\n" .
+  						// header inclusive link to the enclosing element (this)
+  				"<div class=\"labsys_mop_h2\"><a href=\"" . str_replace( array('&#x005F;','&amp;'), array('_', '&'), EB::getLink2ElementURL( $elementAddr ) ). "\">" .
+  				$elParagraph. ". " . $element->title . "</a>" . EB::link2Element( $elementAddr ) . "</div>\n" .
+  				"</div>\n" . $subRetVal;
+  			}
+  		}
+  	}
+  	return $retVal;
+  }
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   /**
@@ -885,7 +950,7 @@ class LcElement extends Element{
   * Generator functions that returns all the elements of a collection (as an
   * array that contains the identifier, e.g. p12, and a reference to the
   * element)
-  * @param $withId        Array containing the element tyeps you are interested in (optional)
+  * @param $withId        Array containing the element types you are interested in (optional)
    */
   function simpleIterate($withId=false){
     $myVisEl = $this->getMyVisibleElements();
