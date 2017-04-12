@@ -143,11 +143,7 @@ class DBInterfaceUser
   */
   function getData4( $uid ){
     global $cfg, $lng;
-    $what = $cfg->get("UserDBField_name")." AS name, ".
-            $cfg->get("UserDBField_forename")." AS forename, ".
-            $cfg->get("UserDBField_email")." AS email, ".
-            $cfg->get("UserDBField_uid")."  AS uid, ".
-            $cfg->get("UserDBField_username")." AS username, matrikelnummer";
+    $what = '*'; // load all fields...
     $from = $this->myTable;
     $where= $cfg->get("UserDBField_uid")."='".$uid."' && ".
             $cfg->get("User_courseID")."='1'";
@@ -163,12 +159,33 @@ class DBInterfaceUser
 */
     else{
       $resArray = $result->fetch_array();
-      return Array( "name"     => $resArray["name"],
-                    "foreName" => $resArray["forename"],
-                    "eMail"    => $resArray["email"],
-                    "uid"      => $resArray["uid"],
-                    "userName" => $resArray["username"],
-                    "matrikelnummer" => $resArray["matrikelnummer"] );
+      
+      $alreadyIn = array();
+      $returnArray = array();
+      $alreadyIn[] 				= $cfg->get('UserDBField_name');
+      $returnArray['name'] 		= $resArray[$cfg->get('UserDBField_name')];
+      $alreadyIn[] 				= $cfg->get('UserDBField_forename');
+      $returnArray['foreName'] 	= $resArray[$cfg->get('UserDBField_forename')];
+      $alreadyIn[] 				= $cfg->get('UserDBField_email');
+      $returnArray['eMail'] 	= $resArray[$cfg->get('UserDBField_email')];
+      $alreadyIn[] 				= $cfg->get('UserDBField_uid');
+      $returnArray['uid'] 		= $resArray[$cfg->get('UserDBField_uid')];      
+      $alreadyIn[] 				= $cfg->get('UserDBField_username');
+      $returnArray['userName'] 	= $resArray[$cfg->get('UserDBField_username')];
+		// import all other fields that are not course ids starting with "_" and the following ones to ignore:
+      $alreadyIn[] 				= $cfg->get('UserDBField_password');
+      $alreadyIn[] 				= 'pwReminderToken';
+      $alreadyIn[] 				= 'pwReminderValidUntil';
+      $alreadyIn[] 				= 'registerFor';
+      $alreadyIn[] 				= 'last_registered';
+      $alreadyIn[] 				= 'labsys_mop_last_change';
+      $alreadyIn[] 				= 'history';
+		foreach (array_keys($resArray) as $nextKey){
+			if (!is_numeric($nextKey) && (substr($nextKey, 0, 1) != '_') && !in_array($nextKey, $alreadyIn)){
+				$returnArray[$nextKey] = $resArray[$nextKey];
+			}
+		}
+		print_r($returnArray);
     }
   }
 
