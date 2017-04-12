@@ -25,7 +25,12 @@
  */
   require( "include/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
                                              // needed to get parameters from the url ($url->get, ->available)
-  require_once( "include/config.inc" );      // contains DEFAULT_INSTANCE required below
+  if (file_exists( 'include/config.inc' )){
+  	require_once( 'include/config.inc' );      // contains DEFAULT_INSTANCE required below
+  } else {
+  	$SYSINFO .= 'Falling back to "include/config-sample.inc". Use it to create your own "include/config.inc" to get rid of this notice.';
+  	require_once( 'include/config-sample.inc' );      // contains DEFAULT_INSTANCE required below
+  }
 
   if ( $GLOBALS['url']->available('config') ) $config = $GLOBALS['url']->get('config'); // config provided
    else $config = $DEFAULT_INSTANCE;
