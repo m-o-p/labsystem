@@ -501,7 +501,8 @@ class LlElement extends Element{
                         '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$labStatus['lIdx']) ).'">'.$i.'</a>'.
                      "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_team\">".
-                        (($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind(IS_USER_RIGHTS_EDITOR) || $labStatus['uid'] == $usr->uid ) ? $labStatus['currentTeam'] : '');
+                        (($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind(IS_USER_RIGHTS_EDITOR) || $labStatus['uid'] == $usr->uid ) ? 
+                        		( $usr->isOfKind( IS_CORRECTOR ) ? "<a href=\"".$url->link2(NULL, Array('seeMe' => $labStatus['currentTeam']), $_GET) ."\">".$labStatus['currentTeam'].'</a>' : $labStatus['currentTeam'] ) : '');
 
        // user->team mapping possible
         if ( $usr->isOfKind(IS_USER_RIGHTS_EDITOR) &&
