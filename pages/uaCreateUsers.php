@@ -116,6 +116,9 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
       $headerFields = Array();
       $data = Array();
       foreach ( $lines AS $line ) {
+      	if (empty(trim($line))){
+      		continue; // jump over empty lines...
+      	}
         if (empty($headerFields)){
           $counter=0;
           foreach (str_getcsv($line) AS $token){
