@@ -496,6 +496,7 @@ LockSetButForce     = "By clicking on the lock you can obtain the lock from inpu
 preLabAllTeamFin    = "- all teammates finished prelab -"
 preLabUserFinished  = "- user finished prelab -"
 labClosed           = "- lab closed -"
+labClosedMailSent   = "- lab closed MAIL sent -"
 labReOpened         = "- lab reopened -"
 statusUpdated       = "- status updated -"
 

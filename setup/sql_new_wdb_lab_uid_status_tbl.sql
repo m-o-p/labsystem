@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `lab_uid_status` (
   `prelab_possible_credits` int(11) default '0',
   `prelab_all_teammembers_finished` tinyint(1) default '0',
   `lab_closed` tinyint(1) default '0',
+  `lab_closed_mail_sent` tinyint(1) default '0',
   `lab_corrected` tinyint(1) default '0',
   `which_corrected` varchar(255) NOT NULL default '',
   `lab_given_credits` int(11) default '0',

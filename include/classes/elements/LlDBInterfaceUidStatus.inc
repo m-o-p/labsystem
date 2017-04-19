@@ -55,6 +55,7 @@ class LlDBInterfaceUidStatus {
   *                 "preLabPossibleCredits" => float,
   *                 "preLabAllTeammFinished" => bool,
   *                 "labClosed" => bool,
+  *                 "labClosedMailSent" => bool,
   *                 "labCorrected" => bool,
   *                 "whichCorrected" => string, // contains "ttfttt" 1,2 corrected; 3 not etc.; only present if labCorrected=false;
   *                 "labGivenCredits" => float,
@@ -73,6 +74,7 @@ class LlDBInterfaceUidStatus {
                     "preLabPossibleCredits" => 0,
                     "preLabAllTeammFinished" => false,
                     "labClosed" => false,
+      				"labClosedMailSent" => false,
                     "labCorrected" => false,
                     "whichCorrected" => "",
                     "labGivenCredits" => 0,
@@ -86,6 +88,7 @@ class LlDBInterfaceUidStatus {
                     "preLabPossibleCredits" => ($data['prelab_possible_credits'] / 100),
                     "preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1),
                     "labClosed" => ($data['lab_closed'] == 1),
+      				"labClosedMailSent" => (isset($data['lab_closed_mail_sent']) && ($data['lab_closed_mail_sent'] == 1)),
                     "labCorrected" => ($data['lab_corrected'] == 1),
                     "whichCorrected" => $data['which_corrected'],
                     "labGivenCredits" => ($data['lab_given_credits'] / 100),
@@ -105,6 +108,7 @@ class LlDBInterfaceUidStatus {
   * @param $prelabPossibleCredits         FLOAT of possible credits.
   * @param $prelabAllTeammembersFinished  Did all teammembers finish the prelab?
   * @param $labClosed                     Is the lab closed?
+  * @param $labClosedMailSent             Was the mail that the lab is closed sent to the IS_CORRECTORs already?
   * @param $labCorrected                  Is the lab corrected?
   * @param $givenCredits                  FLOAT of given credits (p.e. 0.75).
   * @param $possibleCredits               FLOAT of possible credits.
@@ -118,6 +122,7 @@ class LlDBInterfaceUidStatus {
                      $prelabPossibleCredits=0,
                      $prelabAllTeammembersFinished=false,
                      $labClosed=false,
+  					 $labClosedMailSent=false,
                      $labCorrected=false,
                      $whichCorrected="",
                      $givenCredits=0,
@@ -131,6 +136,7 @@ class LlDBInterfaceUidStatus {
              "prelab_possible_credits='".($prelabPossibleCredits * 100)."', ".
              "prelab_all_teammembers_finished='".( $prelabAllTeammembersFinished ?  "1" :  "0" )."', ".
              "lab_closed='".( $labClosed ?  "1" :  "0" )."', ".
+             "lab_closed_mail_sent=".( $labClosedMailSent ?  "1" :  "0" )."', ".
              "lab_corrected='".( $labCorrected ?  "1" :  "0" )."', ".
              "which_corrected='".$whichCorrected."', ".
              "lab_given_credits='".($givenCredits * 100)."', ".
@@ -149,6 +155,17 @@ class LlDBInterfaceUidStatus {
     $toSet = "prelab_all_teammembers_finished='1', ".
              "history=CONCAT( NOW(), ': ".$lng->get("preLabAllTeamFin")."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && current_team='".$team."'" );
+  }
+  
+  /**
+   * Sets the lab_closed_mail_sent bit on the position specified by $labIdx & $team.
+   * @param $team       The team to set the value for.
+   */
+  function setLabClosedMailSent(){
+  	global $usr, $lng;
+  	$toSet = "lab_closed_mail_sent='1', ".
+  			"history=CONCAT( NOW(), ': ".$lng->get("labClosedMailSent")."\\n', ".$this->myTable.".history )";
+  	$this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."'" );
   }
 
   /**
@@ -173,6 +190,7 @@ class LlDBInterfaceUidStatus {
                      $history = "" ){
     global $usr;
     $toSet = "lab_closed='0', ".
+      		 "lab_closed_mail_sent='0', ".
              "lab_corrected='0', ".
              "which_corrected='', ".
              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
@@ -225,6 +243,7 @@ class LlDBInterfaceUidStatus {
   *                 "preLabPossibleCredits" => float,
   *                 "preLabAllTeammFinished" => bool,
   *                 "labClosed" => bool,
+  *                 "labClosedMailSent" => bool,
   *                 "labCorrected" => bool,
   *                 "whichCorrected" => string,
   *                 "labGivenCredits" => float,
@@ -243,6 +262,7 @@ class LlDBInterfaceUidStatus {
                     "preLabPossibleCredits" => ($data['prelab_possible_credits'] / 100),
                     "preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1),
                     "labClosed" => ($data['lab_closed'] == 1),
+      				"labClosedMailSent" => (isset($data['lab_closed_mail_sent']) && ($data['lab_closed_mail_sent'] == 1)),
                     "labCorrected" => ($data['lab_corrected'] == 1),
                     "whichCorrected" => $data['which_corrected'],
                     "labGivenCredits" => ($data['lab_given_credits'] / 100),

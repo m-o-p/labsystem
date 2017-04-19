@@ -52,6 +52,7 @@ class LlElement extends Element{
   var $preLabIsFinished;      // usDBI.Has the user finished the prelab?
   var $preLabAllTeamFinished; // usDBI.Have all Teammembers finished the prelab?
   var $labIsClosed;           // usDBI.Is the lab closed?
+  var $labClosedMailSent;     // usDBI.Is the lab closed mail sent?
   var $labIsCorrected;        // usDBI.Is the lab corrected
 
   var $isBefore1stSched;      // Is currently before 1st schedule.
@@ -118,6 +119,7 @@ class LlElement extends Element{
     $this->preLabIsFinished         = $permissions['preLabFinished'];
     $this->preLabAllTeammFinished   = $permissions['preLabAllTeammFinished'];
     $this->labIsClosed              = $permissions['labClosed'];
+    $this->labClosedMailSent		= $permissions['labClosedMailSent'];
     $this->labIsCorrected           = $permissions['labCorrected'];
 
     $this->userIsViewing            = !($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ); // is a user viewing or a corrector or example solution viewer watching?
@@ -159,13 +161,14 @@ class LlElement extends Element{
           ){
         $this->reallyCloseAllLabInputs( $permissions['currentTeam'] ); // use the teamnumber from the state that time as the team might have changed in between...
         // send an email if this just got closed
-        if ($this->isAfter1stSched && !$this->isInSched && $this->idx!=1){
+        if ($this->isAfter1stSched && !$this->isInSched && $this->idx!=1 && !$this->labClosedMailSent){
           $mailFunc->mail2groupWithRights( IS_CORRECTOR,
                                            $this->title.' '.$lng->get('labScheduleOverExpl').' ('.$lng->get('team').' '.$usr->currentTeam.')',
                                            'l'.$this->idx.': '.$this->title.PHP_EOL.
                                            $lng->get('labScheduleOverExpl').PHP_EOL.
                                            $lng->get('team').' '.$usr->currentTeam.': '.$lng->get('labClosedExplain').PHP_EOL.
                                            $url->rawLink2('http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].'/pages/view.php', Array('address' => 'l'.$this->idx.'.labStatus')) );
+          $this->usDBI->setLabClosedMailSent(); // store it for all teams
         }
       }
 
@@ -1701,6 +1704,7 @@ class LlElement extends Element{
                                   $possibleCredits,                 // $prelabPossibleCredits
                                   ($numberOfPrelabMC == 0),         // $prelabAllTeammembersFinished
                                   false,                            // $labClosed
+                                  false,							// $labClosedMailSent
                                   false,                            // $labCorrected
                                   "",                               // $whichCorrected
                                   0,                                // $givenCredits
@@ -1770,7 +1774,7 @@ class LlElement extends Element{
           while ( ($dataArray = $urDBI->getNextData()) ){
             $uid          = $dataArray['uid'];
            // create dataset
-            $this->usDBI->setData4( $uid, $teamNumber, true, 0, 0, true, false, false, '', 0, 0, '', $lng->get("userReMapped")." (".$teamNumber.")" );
+            $this->usDBI->setData4( $uid, $teamNumber, true, 0, 0, true, false, false, false, '', 0, 0, '', $lng->get("userReMapped")." (".$teamNumber.")" );
           }
   }
 
@@ -1898,6 +1902,7 @@ class LlElement extends Element{
                               $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
                               $labStatus['preLabAllTeammFinished'], // $prelabAllTeammembersFinished
                               $labStatus['labClosed'],              // $labClosed
+      					      $labStatus['labClosedMailSent'],      // $labClosedMailSent
                               $labStatus['labCorrected'],           // $labCorrected
                               $labStatus['whichCorrected'],         // $whichCorrected
                               $labStatus['labGivenCredits'],        // $givenCredits
@@ -2007,6 +2012,7 @@ class LlElement extends Element{
                                       $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
                                       $labStatus['preLabAllTeammFinished'],
                                       $teams[$labStatus['currentTeam']]['areAllClosed'],
+              						  $labStatus['labClosedMailSent'], // labClosedMailSent?
                                       $teams[$labStatus['currentTeam']]['areAllCorrected'],
                                       $teams[$labStatus['currentTeam']]['correctedString'],
                                       $teams[$labStatus['currentTeam']]['sumGivenCredits'],
@@ -2091,6 +2097,7 @@ class LlElement extends Element{
                                       $possibleCredits, // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
                                       $prelabFinishedByTeam, // $labStatus['preLabAllTeammFinished'],
                                       $labStatus['labClosed'],
+                                      $labStatus['labClosedMailSent'],
                                       $labStatus['labCorrected'],
                                       $labStatus['whichCorrected'],
                                       $labStatus['labGivenCredits'],

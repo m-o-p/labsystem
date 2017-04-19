@@ -497,6 +497,7 @@ LockSetButForce     = "Durch klicken auf das Schloss wird das Lock auf diesen In
 preLabAllTeamFin    = "- alle Teammitglieder haben das PreLab abgeschlossen -"
 preLabUserFinished  = "- Prelab beendet -"
 labClosed           = "- Lab geschlossen -"
+labClosedMailSent   = "- lab geschlossen MAIL gesendet -"
 labReOpened         = "- Lab wieder ge&ouml;ffnet -"
 statusUpdated       = "- Status upgedated -"
 
