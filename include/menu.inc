@@ -90,7 +90,10 @@ foreach ( $mainMenuIni as $key => &$value ){
     require('../include/allVisibleLabIDX.inc');
     // Now $allVisibleLabIDX contains the indices as specified above.
     foreach( $allVisibleLabIDX as $nextIDX ){
-      $value[] = '!'.$nextIDX; // !=check visibility
+      $labEntry = '!'.$nextIDX; // !=check visibility
+      if (!in_array($labEntry, $value)){
+      	$value[] = $labEntry;
+      }
     }
 
     // Menu from overview page -STOP-

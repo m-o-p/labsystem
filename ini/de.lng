@@ -371,7 +371,7 @@ exportFollowingLabs = "Folgende labs EXportieren..."
 importFollowingLabs = "Folgende labs IMportieren..."
 
 ;s
-scheduleFor         = "Der Schedule gilt f&uuml;r"   ;; legend on top of the selector
+scheduleFor         = "Dieser Schedule regelt aktuell die Sichtbarkeit des folgenden Elements"   ;; legend on top of the selector
 year                = "Jahr"
 month               = "Monat"
 day                 = "Tag"

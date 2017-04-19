@@ -370,7 +370,7 @@ exportFollowingLabs = "Export the following labs..."
 importFollowingLabs = "Import the following labs..."
 
 ;s
-scheduleFor         = "schedule is for"   ;; legend on top of the selector
+scheduleFor         = "this schedule is currently controlling the visibility of the following learning element"   ;; legend on top of the selector
 year                = "year"
 month               = "month"
 day                 = "day"
