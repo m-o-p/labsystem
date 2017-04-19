@@ -146,8 +146,8 @@ class Usr extends ElementUser{
           )
         ) return false; // only correctors can do that
     $this->iSeeUID = $uid;
+    $userDetailedData = false;
     if ( $this->iSeeUID != 'all' ){ // seeing one member's answers
-                            $userData = $this->getGlobalUserData( $this->iSeeUID );
                             $currentTeam = 'unk';
                             if (!($url->available('address') && $url->get('address')[0]=='l')){
                             	// We are not viewing a lab => load current team number from the user rights data
@@ -158,9 +158,19 @@ class Usr extends ElementUser{
                             	require_once( INCLUDE_DIR."/classes/elements/LlDBInterfaceUidStatus.inc" );
                             	require( "../php/getFirstLastFinal.inc" ); $labIdx = substr( $firstFinal, 1);
                             	$uLabDBI = new LlDBInterfaceUidStatus( $labIdx );
-                            	$userDetailedData = $uLabDBI->getData4( $this->iSeeUID );
+                            	if (is_numeric($uid)){
+                            		// Assume we have a team number here...
+                            	    $uLabDBI->getAllTeamData( $uid );
+                            	    // Just take the first team member...
+                            	    $userDetailedData = $uLabDBI->getNextData();
+                            	}
+                            	if (!$userDetailedData){
+                            		$userDetailedData = $uLabDBI->getData4( $this->iSeeUID );
+                            	}
                             }
+                            $this->iSeeUID = $userDetailedData['uid'];
                             $currentTeam = $userDetailedData['currentTeam'];
+                            $userData = $this->getGlobalUserData( $this->iSeeUID );
                             $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$currentTeam.")";
     }else{ // seeing ALL member's answers
                             $this->iSeeDesc = $lng->get("showAllUADesc");

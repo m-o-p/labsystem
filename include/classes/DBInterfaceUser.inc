@@ -158,36 +158,39 @@ class DBInterfaceUser
                     "userName" => $lng->get('unknown') );
 */
     else{
-      $resArray = $result->fetch_array();
-      
-      $alreadyIn = array();
-      $returnArray = array();
-      $alreadyIn[] 				= $cfg->get('UserDBField_name');
-      $returnArray['name'] 		= $resArray[$cfg->get('UserDBField_name')];
-      $alreadyIn[] 				= $cfg->get('UserDBField_forename');
-      $returnArray['foreName'] 	= $resArray[$cfg->get('UserDBField_forename')];
-      $alreadyIn[] 				= $cfg->get('UserDBField_email');
-      $returnArray['eMail'] 	= $resArray[$cfg->get('UserDBField_email')];
-      $alreadyIn[] 				= $cfg->get('UserDBField_uid');
-      $returnArray['uid'] 		= $resArray[$cfg->get('UserDBField_uid')];      
-      $alreadyIn[] 				= $cfg->get('UserDBField_username');
-      $returnArray['userName'] 	= $resArray[$cfg->get('UserDBField_username')];
-		// import all other fields that are not course ids starting with "_" and the following ones to ignore:
-      $alreadyIn[] 				= $cfg->get('UserDBField_password');
-      $alreadyIn[] 				= 'pwReminderToken';
-      $alreadyIn[] 				= 'pwReminderValidUntil';
-      $alreadyIn[] 				= 'registerFor';
-      $alreadyIn[] 				= 'last_registered';
-      $alreadyIn[] 				= 'labsys_mop_last_change';
-      $alreadyIn[] 				= 'history';
-		foreach (array_keys($resArray) as $nextKey){
-			if (!is_numeric($nextKey) && (substr($nextKey, 0, 1) != '_') && !in_array($nextKey, $alreadyIn)){
-				$returnArray[$nextKey] = $resArray[$nextKey];
-			}
-		}
+      return $this->constructReturnArray( $result->fetch_array() );
     }
   }
 
+  private function constructReturnArray( $resArray ){
+  	global $cfg;
+  	$alreadyIn = array();
+  	$returnArray = array();
+  	$alreadyIn[] 				= $cfg->get('UserDBField_name');
+  	$returnArray['name'] 		= $resArray[$cfg->get('UserDBField_name')];
+  	$alreadyIn[] 				= $cfg->get('UserDBField_forename');
+  	$returnArray['foreName'] 	= $resArray[$cfg->get('UserDBField_forename')];
+  	$alreadyIn[] 				= $cfg->get('UserDBField_email');
+  	$returnArray['eMail'] 	= $resArray[$cfg->get('UserDBField_email')];
+  	$alreadyIn[] 				= $cfg->get('UserDBField_uid');
+  	$returnArray['uid'] 		= $resArray[$cfg->get('UserDBField_uid')];
+  	$alreadyIn[] 				= $cfg->get('UserDBField_username');
+  	$returnArray['userName'] 	= $resArray[$cfg->get('UserDBField_username')];
+  	// import all other fields that are not course ids starting with "_" and the following ones to ignore:
+  	$alreadyIn[] 				= $cfg->get('UserDBField_password');
+  	$alreadyIn[] 				= 'pwReminderToken';
+  	$alreadyIn[] 				= 'pwReminderValidUntil';
+  	$alreadyIn[] 				= 'registerFor';
+  	$alreadyIn[] 				= 'last_registered';
+  	$alreadyIn[] 				= 'labsys_mop_last_change';
+  	$alreadyIn[] 				= 'history';
+  	foreach (array_keys($resArray) as $nextKey){
+  		if (!is_numeric($nextKey) && (substr($nextKey, 0, 1) != '_') && !in_array($nextKey, $alreadyIn)){
+  			$returnArray[$nextKey] = $resArray[$nextKey];
+  		}
+  	}
+  	return $returnArray;
+  }
 
   var $queryResult;
   /**
@@ -230,11 +233,7 @@ class DBInterfaceUser
   * @return FALSE   If no more datasets are available.
   */
   function getNextData(){
-    if ($resArray = $this->queryResult->fetch_array())     return Array(  "name"     => $resArray["name"],
-                                                                          "foreName" => $resArray["forename"],
-                                                                          "eMail"    => $resArray["email"],
-                                                                          "uid"      => $resArray["uid"],
-                                                                          "userName" => $resArray["username"] );
+    if ($resArray = $this->queryResult->fetch_array())     return $this->constructReturnArray($resArray);
     return false;
   }
 
