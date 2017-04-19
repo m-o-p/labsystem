@@ -141,7 +141,7 @@ foreach ( $accessibleLabs as $value ){
 '.( $value->visibleBefore1stSched ? chr ($charCounter++) : $counter++ ).'
   </td>
   <td class="labIndexText">
-    <b><a href="../pages/view.php?address=l'.$value->idx.'&amp;__LINKQUERY__" target="_top">'.$value->title.'</a></b> - '.$value->comment.'
+    <b><a href="../pages/view.php?address=l'.$value->idx.'&amp;__LINKQUERY__" target="_top">'.returnHTML($value->title).'</a></b> - '.$value->comment.'
     </td>
   </tr>
 ');
