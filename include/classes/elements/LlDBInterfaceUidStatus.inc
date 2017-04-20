@@ -136,7 +136,7 @@ class LlDBInterfaceUidStatus {
              "prelab_possible_credits='".($prelabPossibleCredits * 100)."', ".
              "prelab_all_teammembers_finished='".( $prelabAllTeammembersFinished ?  "1" :  "0" )."', ".
              "lab_closed='".( $labClosed ?  "1" :  "0" )."', ".
-             "lab_closed_mail_sent=".( $labClosedMailSent ?  "1" :  "0" )."', ".
+             "lab_closed_mail_sent='".( $labClosedMailSent ?  "1" :  "0" )."', ".
              "lab_corrected='".( $labCorrected ?  "1" :  "0" )."', ".
              "which_corrected='".$whichCorrected."', ".
              "lab_given_credits='".($givenCredits * 100)."', ".
