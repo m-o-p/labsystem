@@ -61,7 +61,7 @@ else{ // save new PW
                                 $cfg->get('UserDatabasePassWord'), 
                                 $cfg->get('UserDatabaseName'));
     $accordingUID = ( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  );                
-    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".$usrDB->escapeString( password_hash( $_POST['NEWPW'], PASSWORD_DEFAULT ) )."'",
+    $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".$userDBC->escapeString( password_hash( $_POST['NEWPW'], PASSWORD_DEFAULT ) )."'",
                         $cfg->get('UserDatabaseTable'), 
                         $cfg->get('UserDBField_uid')."='".$accordingUID."'"
                        );
