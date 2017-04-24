@@ -1017,7 +1017,7 @@ class LmElement extends Element{
    */
   private function isChangedByUser( $input ){
   	// magic number alarm! If you have more than 60 answers => trouble...
-    return !($input & mask(60));
+    return !($input & $this->mask(60));
   }
 
 // The next functions are used for the element's manage page. ***********************************************
