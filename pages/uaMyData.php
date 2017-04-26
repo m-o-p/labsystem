@@ -84,6 +84,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
      // Any additional database fields will be listed.
      // So if a field like "Matrikelnummer" is wanted just add it in the order you want to the table.
      // The following fields and those starting with "_" (course id)  will not be listed:
+     // WARNING: this has to be kept in sync with a variable of the same name in php/uaMyDataSave.php
      $doNotListFromUser = Array( $cfg->get('UserDBField_username'),
                                  $cfg->get('UserDBField_name'),
                                  $cfg->get('UserDBField_forename'),
@@ -92,10 +93,13 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
                                  $cfg->get('UserDBField_password'),
                                  'last_registered',
                                  'labsys_mop_last_change',
+                                 'pwReminderToken',
+                                 'pwReminderValidUntil',
                                  'registerFor',
-                                 'history',
-                                 'matrikelnummer'
+                                 'history'
                                 );
+     if ( $cfg->doesExist('UserDBField_extraid') )
+         $doNotListFromUser[] = $cfg->get('UserDBField_extraid');
      foreach ( $data as $key => $value ){
         if ( in_array( $key, $doNotListFromUser ) || ( $key[0] == '_' ) ){ /* do nothing */;
         }else{

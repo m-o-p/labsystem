@@ -90,14 +90,22 @@ else{
       // process the custom fields:
       $customFields = '';
       // The following fields and those starting with "_" (course id)  will not be processed:
+      // WARNING: this has to be kept in sync with a variable of the same name in pages/uaMyData.php
       $doNotListFromUser = Array( $cfg->get('UserDBField_username'),
                                   $cfg->get('UserDBField_name'),
                                   $cfg->get('UserDBField_forename'),
                                   $cfg->get('UserDBField_email'),
                                   $cfg->get('UserDBField_uid'),
                                   $cfg->get('UserDBField_password'),
-                                  'labsys_mop_last_change'
+                                  'last_registered',
+                                  'labsys_mop_last_change',
+                                  'pwReminderToken',
+                                  'pwReminderValidUntil',
+                                  'registerFor',
+                                  'history'
                                  );
+      if ( $cfg->doesExist('UserDBField_extraid') )
+          $doNotListFromUser[] = $cfg->get('UserDBField_extraid');
       foreach ( $_POST as $key => $value )
         if( substr( $key, 0, 11 ) == 'LABSYS_MOP_' ){ // all start with that prefix
           $key = substr( $key, 11 );
