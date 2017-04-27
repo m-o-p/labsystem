@@ -113,7 +113,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           $importStylesHashed = array();
           $importStyleMapping = array();
           // hash the existing styles
-          getTagHashes( $tagNames, $existingStylesHashed, $importStyleMapping /*dummy*/ ); // hash existing
+          getTagHashes( $tagNames, $existingStylesHashed, array() /*dummy*/ ); // hash existing
           // hash the possibly new styles to be imported
           getTagHashes( $importTagNames, $importStylesHashed, $importStyleMapping ); // hash the ones to be imported
 
@@ -123,6 +123,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           $newStyles = array();
           foreach( $notAlreadyThereTagsHashes as $values ){
             $newStyles[] = $importStyleDefinitions[ $importStyleMapping[$values] ];
+            $pge->put(  '<pre>['.htmlentities($importStyleMapping[$values], ENT_QUOTES | ENT_IGNORE )."]</pre>\n" );
           }
           // add the data to the file
           if ( count($newStyles) > 0 ){

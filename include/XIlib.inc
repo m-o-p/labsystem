@@ -804,7 +804,7 @@ function getTagHashes( $sourceArray, &$hashArray, &$mappingArray ){
   $hashArray = array();
   $mappingArray = array();
   foreach ( $sourceArray as $key=>$value ){
-    $hashedValue = sha1( str_replace( ' ', '', trim($value) ) ); // try to hash something unchangeable...
+    $hashedValue = preg_replace('/\s+/', '', $value ); // try to hash something unchangeable...
     $hashArray[] = $hashedValue;
     $mappingArray[ $hashedValue ] = $key;
   }
