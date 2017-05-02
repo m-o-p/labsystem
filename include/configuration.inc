@@ -41,7 +41,12 @@
 if ( isset($cfg) ) return;
 
 require_once( INCLUDE_DIR."/classes/Rom.inc" );
-require_once( INCLUDE_DIR."/config.inc" );
+if (file_exists(INCLUDE_DIR."/config.inc")){
+	require_once( INCLUDE_DIR."/config.inc" );
+}else{
+	require_once( INCLUDE_DIR."/config-sample.inc" );
+	trigger_error( INCLUDE_DIR."/config.inc".' missing! Falling back to sample. Use "'.INCLUDE_DIR."/config-sample.inc".'" to create yours and get rid of the warning.' , E_USER_WARNING );
+}
 
 // use the hostname prefix as base for the config?
   $configPrefix='';
