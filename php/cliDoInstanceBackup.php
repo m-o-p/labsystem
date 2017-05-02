@@ -38,7 +38,7 @@ if ($argc < 3){
 }
 
 $instanceConfigID = $argv[1];
-$destinationDirectory = $argv[2].'/'.date('Y-m');
+$destinationDirectory = $argv[2].DIRECTORY_SEPARATOR.date('Y-m');
 
 define( "INCLUDE_DIR", "../include" );
 require( "../include/configuration.inc" );
@@ -51,7 +51,7 @@ if (!is_dir($destinationDirectory)){
 $dataBasesToBackup = array("Working", "Data", "User");
 
 foreach ($dataBasesToBackup as $value){
-  $destination = $destinationDirectory.'/'.$cfg->get($value.'DatabaseName').'__'.date('Y-m-d_H-i').'.sql.gz';
+  $destination = $destinationDirectory.DIRECTORY_SEPARATOR.$cfg->get($value.'DatabaseName').'__'.date('Y-m-d_H-i').'.sql.gz';
   echo($value.'DataBase: '.$cfg->get('WorkingDatabaseName').' -> '.$destination.PHP_EOL);
   passthru( 'mysqldump -u"'.$cfg->get($value.'DatabaseUserName').
             '" -p"'.$cfg->get($value.'DatabasePassWord').

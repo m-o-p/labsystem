@@ -130,7 +130,7 @@ class LSE_Util
             $ps = explode(":", ini_get('include_path'));
             foreach ($ps as $path)
             {
-                if (file_exists($path.'/'.$filename)) return true;
+                if (file_exists($path.DIRECTORY_SEPARATOR.$filename)) return true;
             }
             if (file_exists($filename)) return true;
             return false;

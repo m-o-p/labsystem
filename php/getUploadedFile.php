@@ -46,7 +46,7 @@ if (!array_key_exists(urldecode($GLOBALS['url']->get('filename')), $fileWhiteLis
           exit;
 }
 
-$filePath = LiDBInterfaceAnswers::getUploadDirectory($GLOBALS['url']->get('iIdx'), $GLOBALS['url']->get('team')).'/'.$GLOBALS['url']->get('filename');
+$filePath = LiDBInterfaceAnswers::getUploadDirectory($GLOBALS['url']->get('iIdx'), $GLOBALS['url']->get('team')).DIRECTORY_SEPARATOR.$GLOBALS['url']->get('filename');
 
 if (!file_exists($filePath)) {
 	        trigger_error('File doesn\'t exist: '.$filePath, E_USER_ERROR);

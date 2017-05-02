@@ -37,7 +37,7 @@ function makeLogEntry( $group, $operation, $resource='' ){
 
   if ( !file_exists($cfg->get('logDir')))
     mkdir($cfg->get('logDir'), 0755, true) or trigger_error("Error creating folder ".$cfg->get('logDir'), E_USER_ERROR);
-  $theLogFile = $cfg->get('logDir').( substr( $cfg->get('logDir'), -1 ) != '/' ? '/' : '' ).
+  $theLogFile = $cfg->get('logDir').( substr( $cfg->get('logDir'), -1 ) != DIRECTORY_SEPARATOR ? DIRECTORY_SEPARATOR : '' ).
                 ($operation != 'loginLog' ? $configPrefix.$GLOBALS['url']->get('config').'_'.date("Y-m-d") : 'allLogins').'.log';
 
   if ( !(

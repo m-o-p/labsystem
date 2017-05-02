@@ -78,9 +78,9 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         foreach ($labElementArray as $value=>$newID){
           $nextElement = $GLOBALS[ $newID[0]."DBI" ]->getData2idx( substr($newID, 1) ); // load existing empty DB object
 
-          $importBaseDir = $cfg->get('exportImportDir').$subDir.'/';
+          $importBaseDir = $cfg->get('exportImportDir').$subDir.DIRECTORY_SEPARATOR;
           $importDataDirectory = 'data';
-          $importFileName = '/'.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt';
+          $importFileName = DIRECTORY_SEPARATOR.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt';
           switch( $value[0] ){
               // i and m can be stored with and without solutions.
             case 'i':

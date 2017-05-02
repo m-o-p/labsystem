@@ -341,7 +341,7 @@ class LiElement extends Element{
    */
   private function thumbnailHTML($iIdx, $team, $fileName){
     global $url;
-    $filePath = LiDBInterfaceAnswers::getUploadDirectory($iIdx, $team).'/'.$fileName;
+    $filePath = LiDBInterfaceAnswers::getUploadDirectory($iIdx, $team).DIRECTORY_SEPARATOR.$fileName;
     $mime = mime_content_type($filePath);
     
     // For those we create thumbs:

@@ -1328,7 +1328,7 @@ class LlElement extends Element{
    */
   private function thumbnailHTML($myPath, $fileName){
   	global $url;
-  	$filePath=$myPath.'/'.$fileName;
+  	$filePath=$myPath.DIRECTORY_SEPARATOR.$fileName;
   	$mime = mime_content_type($filePath);
   
   	// For those we create thumbs:
@@ -1365,8 +1365,8 @@ class LlElement extends Element{
     $files = array();
     $dir = dir($myPath);
     while (false !== ($entry = $dir->read())) {
-      if ($entry != '.' && $entry != '..' && !is_dir($myPath.'/'.$entry) ) {
-        $filePath = $myPath.'/'.$entry;
+      if ($entry != '.' && $entry != '..' && !is_dir($myPath.DIRECTORY_SEPARATOR.$entry) ) {
+        $filePath = $myPath.DIRECTORY_SEPARATOR.$entry;
         $fileChangedTime = filectime($filePath);
         $filesize = filesize($filePath);
         $files[$entry] = array(
@@ -1403,12 +1403,12 @@ class LlElement extends Element{
         }
         $retHTML .= '<li>'.
                     '<input type="checkbox" name="deleteFileNames'.$pathID.'[]" value="'.$pathInfo['basename'].'" />'.
-                    '<a name="'.urlencode($file['fileName']).'" href="'.$myPath.'/'.$file['fileName'].'">'.
+                    '<a name="'.urlencode($file['fileName']).'" href="'.$myPath.DIRECTORY_SEPARATOR.$file['fileName'].'">'.
                     $pathInfo['basename'].
                     '</a> '.EB::link2Content( sprintf( ( substr_count( $strFormat, '%s' ) != 2 ? $strFormat : '%s%s' ),
-                                              $myPath.'/',
+                                              $myPath.DIRECTORY_SEPARATOR,
                                               $file['fileName'],
-                                              (($imageSize = getimagesize($myPath.'/'.$file['fileName'])) != 0 ? htmlentities( $imageSize[3] ).' ' : '') ) ).
+                                              (($imageSize = getimagesize($myPath.DIRECTORY_SEPARATOR.$file['fileName'])) != 0 ? htmlentities( $imageSize[3] ).' ' : '') ) ).
                     ' <div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.
                     $this->thumbnailHTML($myPath, $file['fileName']).
         			'</li>'."\n";
@@ -1448,9 +1448,9 @@ class LlElement extends Element{
     if (!empty($_FILES['file'.$pathID]['size'][0])) {
       for($moreFiles = count($_FILES['file'.$pathID]['size'])-1; $moreFiles>=0; $moreFiles--){
         $_FILES['file'.$pathID]['name'][$moreFiles] = sanitizeFileName( $_FILES['file'.$pathID]['name'][$moreFiles] );
-        //echo ('moving '.$_FILES['file'.$pathID]['tmp_name'].' to '.$myPath.'/'.$_FILES['file'.$pathID]['name']."<br>\n" );
-        move_uploaded_file($_FILES['file'.$pathID]['tmp_name'][$moreFiles], $myPath.'/'.$_FILES['file'.$pathID]['name'][$moreFiles])
-        or trigger_error("Error moving uploaded file ".$myPath.'/'.$_FILES['file'.$pathID]['name'][$moreFiles], E_USER_ERROR);
+        //echo ('moving '.$_FILES['file'.$pathID]['tmp_name'].' to '.$myPath.DIRECTORY_SEPARATOR.$_FILES['file'.$pathID]['name']."<br>\n" );
+        move_uploaded_file($_FILES['file'.$pathID]['tmp_name'][$moreFiles], $myPath.DIRECTORY_SEPARATOR.$_FILES['file'.$pathID]['name'][$moreFiles])
+        or trigger_error("Error moving uploaded file ".$myPath.DIRECTORY_SEPARATOR.$_FILES['file'.$pathID]['name'][$moreFiles], E_USER_ERROR);
         $history .= $_FILES['file'.$pathID]['name'][$moreFiles].' uploaded; ';
         if (!$this->lastUploadedFile){
           $this->lastUploadedFile=$_FILES['file'.$pathID]['name'][$moreFiles];
@@ -1458,7 +1458,7 @@ class LlElement extends Element{
       }
     } else if (!empty($_POST['deleteFileNames'.$pathID])) {
       foreach ($_POST['deleteFileNames'.$pathID] as $fileName) {
-        $fileName = $myPath . '/' . $fileName;
+        $fileName = $myPath . DIRECTORY_SEPARATOR . $fileName;
         if (file_exists($fileName))
           unlink($fileName);
         else

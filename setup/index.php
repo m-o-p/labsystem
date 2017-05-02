@@ -554,7 +554,7 @@ say_toptitle( 'Checking directories...' ); /***********************************/
 $toDoChown = ""; // Collects the Linux commands that could be issued as root to set the permissions.
 function checkDirectoryWritable( $configFieldName ){
   global $cfg, $toDoChown;
-  $directory = ( substr( $cfg->get($configFieldName), -1, 1 ) == '/' ?
+  $directory = ( substr( $cfg->get($configFieldName), -1, 1 ) == DIRECTORY_SEPARATOR ?
                     $cfg->get($configFieldName) : // is already a directory...
                     dirname($cfg->get($configFieldName)) ); // is not...
   echo( '<br><br><span style="color: #ffff99">['.$configFieldName.': '.$directory.']</span> ' );

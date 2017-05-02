@@ -75,9 +75,9 @@ if ( !( in_array ($fileName, $allowedFiles) || // from above...
           ( // something in the ressource path:
             ( strpos( strtoupper($fileName), strtoupper($cfg->get("SystemResourcePath")) ) == 0 ) ||
             // something in the stylesheet path:
-            ( strpos( strtoupper($fileName), substr( strtoupper($cfg->get("UserStyleSheet")), 0, strrpos( $cfg->get("UserStyleSheet"), '/' )) ) == 0)
+            ( strpos( strtoupper($fileName), substr( strtoupper($cfg->get("UserStyleSheet")), 0, strrpos( $cfg->get("UserStyleSheet"), DIRECTORY_SEPARATOR )) ) == 0)
           ) &&
-          (strpos($_POST['SAVEAS'], '/') === false) // SAVEAS cannot contain /
+          (strpos($_POST['SAVEAS'], DIRECTORY_SEPARATOR) === false) // SAVEAS cannot contain /
         )
       )
    ){

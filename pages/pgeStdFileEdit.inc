@@ -50,7 +50,7 @@ $editAllAvailableFiles = ( substr( $url->get('config'), -9 ) == 'useradmin' ) &&
 if ($editAllAvailableFiles) {
   $selectOptions = '';
   // $filePrefix = 'config_'; // only files with this prefix are shown
-  $posLastSlash = strrpos( $file2edit, '/' );
+  $posLastSlash = strrpos( $file2edit, DIRECTORY_SEPARATOR );
   $dir = dir( substr( $file2edit, 0, $posLastSlash ) );
   // post? override..
   $fileName = substr( $file2edit, $posLastSlash+1 );
@@ -62,7 +62,7 @@ if ($editAllAvailableFiles) {
   if ( $url->available('file2edit') ) $reqFile2Edit = $url->get('file2edit'); // post comes from the save...
 
   if ( $reqFile2Edit && ( strpos( $reqFile2Edit, '.' ) === false ) /*protect against directory walks */ ){
-    $file2edit = substr( $file2edit, 0, $posLastSlash ).'/'.$filePrefix.$reqFile2Edit.$fileExtension;
+    $file2edit = substr( $file2edit, 0, $posLastSlash ).DIRECTORY_SEPARATOR.$filePrefix.$reqFile2Edit.$fileExtension;
     $fileName = substr( $file2edit, $posLastSlash+1 );
   }
 
@@ -110,7 +110,7 @@ $pge->put( htmlentities( file_get_contents($file2edit), ENT_QUOTES | ENT_IGNORE 
 if ( $editAllAvailableFiles ){
   $fileNameProposal = substr( $fileName, strlen($filePrefix), strlen( $fileName ) - strlen($fileExtension) - strlen($filePrefix) );
 
-  $confirmScript = 'if (document.getElementById(\'saveAs\').value != \''.$fileNameProposal.'\'){ return confirmLink(this, \''.$lng->get("confirmSaveAs").' '.substr( $file2edit, 0, $posLastSlash ).'/'.$filePrefix.'\'+document.getElementById(\'saveAs\').value+\''.$fileExtension.'?\'); }';
+  $confirmScript = 'if (document.getElementById(\'saveAs\').value != \''.$fileNameProposal.'\'){ return confirmLink(this, \''.$lng->get("confirmSaveAs").' '.substr( $file2edit, 0, $posLastSlash ).DIRECTORY_SEPARATOR.$filePrefix.'\'+document.getElementById(\'saveAs\').value+\''.$fileExtension.'?\'); }';
 } else {
   $confirmScript = '';
 }
@@ -118,7 +118,7 @@ if ( $editAllAvailableFiles ){
 $pge->put('</textarea>'."\n".
           ( $editAllAvailableFiles ?
             "   <input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"saveAs\" name=\"SAVEAS\" class=\"labsys_mop_input\" maxlength=\"255\" value=\"".$fileNameProposal."\" onchange='isDirty=true'>\n".
-            '   <input type="hidden" name="SAVEAS_PREFIX" value="'.substr( $file2edit, 0, $posLastSlash ).'/'.$filePrefix.'">'."\n".
+            '   <input type="hidden" name="SAVEAS_PREFIX" value="'.substr( $file2edit, 0, $posLastSlash ).DIRECTORY_SEPARATOR.$filePrefix.'">'."\n".
             '   <input type="hidden" name="SAVEAS_POSTFIX" value="'.$fileExtension.'">'."\n"
             : '' ).
           '   <input TABINDEX="'.$pge->nextTab++.'" type="submit" class="labsys_mop_input" value="'.$lng->get("save").'" accesskey="s" onclick="isDirty=false; '.$confirmScript.'" >'."\n".

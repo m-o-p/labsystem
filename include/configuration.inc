@@ -99,7 +99,7 @@ while ( $configData['include'] != '' ){
     if ( !file_exists( $configFile ) ){ // File there?
         header( "Location: ".'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'] );
         exit;
-//      { trigger_error( end(explode('/', $configFile)).' missing! (config-file)' , E_USER_ERROR ); exit; }
+//      { trigger_error( end(explode(DIRECTORY_SEPARATOR, $configFile)).' missing! (config-file)' , E_USER_ERROR ); exit; }
     }
     $newConfigData = parse_ini_file( $configFile );
     $configData = array_merge( $newConfigData, $configData ); // existing data overwrites included data (overwrites non-numerical key/ value pairs)

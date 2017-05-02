@@ -91,12 +91,12 @@ function persistElement( &$element, $labUID, $isImport=false ){
     switch( $element->elementId ){
       case 'i':
       case 'm':
-        $fileName = EXPORT_DATA_DIR_PRIVATE.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
+        $fileName = EXPORT_DATA_DIR_PRIVATE.DIRECTORY_SEPARATOR.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
         fileWrite( $fileName, $element->getSerialized(), $labUID ); // save full version
         // clear sensitive data
         if ($element->elementId == 'i') $element->exampleSolution = 'Here will be the example solution in the full data set.';
         if ($element->elementId == 'm') $element->answerExplanation = 'Here will be the answer explanation in the full data set.';
-        $fileName = EXPORT_DATA_DIR_PUBLIC.'/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // save "public" version.
+        $fileName = EXPORT_DATA_DIR_PUBLIC.DIRECTORY_SEPARATOR.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // save "public" version.
       default:
         fileWrite( $fileName, $element->getSerialized(), $labUID );
     }
@@ -129,7 +129,7 @@ function persistElement( &$element, $labUID, $isImport=false ){
  */
 function fileWrite( $fileName, $content, $labUID ) {
 	global $cfg;
-	$fileNameWithPath = $cfg->get('exportImportDir').$labUID.'/'.$fileName;
+	$fileNameWithPath = $cfg->get('exportImportDir').$labUID.DIRECTORY_SEPARATOR.$fileName;
 	if ( !file_exists(dirname($fileNameWithPath)))
     mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
 	$fh = fopen($fileNameWithPath, 'w') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
@@ -308,7 +308,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
   function isLocal( $fileWithPath ){
     if (($fileWithPath == '') || ($fileWithPath[0] == '#') || (strpos($fileWithPath, '?') !== false)) return false; // anchor, file with ?
     $ignorePaths = array( 'extern', 'pages', 'ini', 'include', 'css', 'php', 'sessiondata', 'syspix');
-    $parts = explode( '/', $fileWithPath );
+    $parts = explode( DIRECTORY_SEPARATOR, $fileWithPath );
     return ((substr( $fileWithPath, 0, 4 ) != 'http') && (substr( $fileWithPath, 0, 6 ) != 'mailto') && !(is_array( $parts ) && isset($parts[1]) && in_array( $parts[1], $ignorePaths )) );
   }
 
@@ -364,7 +364,7 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
     	$localFileWithPath = substr($localFileWithPath, 0, strrpos($localFileWithPath, '#'));
     }
     // Files linked "/" should be "../"
-    if ( $localFileWithPath[0] == '/' ) $localFileWithPath = '..'.$localFileWithPath;
+    if ( $localFileWithPath[0] == DIRECTORY_SEPARATOR ) $localFileWithPath = '..'.$localFileWithPath;
 
     // not local: do nothing
     if ( !isLocal( $localFileWithPath ) ){
@@ -375,17 +375,17 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
       return $localFileWithPath;
     }
     //break else:
-    $fileName = end(explode('/', $localFileWithPath));
+    $fileName = end(explode(DIRECTORY_SEPARATOR, $localFileWithPath));
     $fileName = validFilename( $fileName );
     if ($doCopy){
       // Here the move to server should happen...
-      $itWorked = (file_exists(str_replace( ' ', '%20', $localFileWithPath)) && copy( str_replace( ' ', '%20', $localFileWithPath), str_replace( ' ', '%20', $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName )))
-      or trigger_error("Can't copy file [".htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']', E_USER_WARNING);
+      $itWorked = (file_exists(str_replace( ' ', '%20', $localFileWithPath)) && copy( str_replace( ' ', '%20', $localFileWithPath), str_replace( ' ', '%20', $cfg->get('exportImportDir').$GLOBALS['exportUID'].DIRECTORY_SEPARATOR.$destDir.$fileName )))
+      or trigger_error("Can't copy file [".htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].DIRECTORY_SEPARATOR.$destDir.$fileName.']', E_USER_WARNING);
       $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
                   $localFileWithPath.
                   ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
                  "</div>\r\n".
-      		( $itWorked ? '' : "<div class='copyError'>Can't copy file [".htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$destDir.$fileName.']</div>' )
+      		( $itWorked ? '' : "<div class='copyError'>Can't copy file [".htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].DIRECTORY_SEPARATOR.$destDir.$fileName.']</div>' )
       		 );
     }
     return ((!isset( $itWorked ) // $doCopy === false...
@@ -406,9 +406,9 @@ function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
   function importFile( $file2importWithPath, $destDir ){
     global $cfg, $pge;
 
-    $destDir .= $GLOBALS['exportUID'].'/'; // add subdirectory
-    $file2importWithPath = $cfg->get('exportImportDir').$GLOBALS['exportUID'].'/'.$file2importWithPath; // complete full path
-    $fileName = end(explode('/', $file2importWithPath));
+    $destDir .= $GLOBALS['exportUID'].DIRECTORY_SEPARATOR; // add subdirectory
+    $file2importWithPath = $cfg->get('exportImportDir').$GLOBALS['exportUID'].DIRECTORY_SEPARATOR.$file2importWithPath; // complete full path
+    $fileName = end(explode(DIRECTORY_SEPARATOR, $file2importWithPath));
     if ( !file_exists($destDir)){ mkdir($destDir, 0755, true) or trigger_error("Can't create directory ".$destDir, E_USER_ERROR); }
 
     (file_exists($file2importWithPath) && copy( $file2importWithPath, $destDir.$fileName ) )

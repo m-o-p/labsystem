@@ -165,9 +165,9 @@ class LiDBInterfaceAnswers {
     $filePaths = array();
     self::createUploadFolderIfNotExisting($iIdx, $team);
     $dir = dir(self::getUploadDirectory($iIdx, $team));
-    while (false !== ($entry = $dir->read())) {
+    while (($dir !=false) && (false !== ($entry = $dir->read()))) {
       if ($entry != '.' && $entry != '..') {
-        $filePath = self::getUploadDirectory($iIdx, $team).'/'.$entry;
+        $filePath = self::getUploadDirectory($iIdx, $team).DIRECTORY_SEPARATOR.$entry;
         $fileChangedTime = filectime($filePath);
         $filesize = filesize($filePath);
         $filePaths[$entry] = array(
@@ -195,7 +195,7 @@ class LiDBInterfaceAnswers {
   */
   public static function getUploadDirectory($questionIdx, $team) {
     global $cfg;
-    return $cfg->get('UploadDirectory').$cfg->get('User_courseID').'/'.$cfg->get('InputDirectory').'/i'.$questionIdx.'/team'.$team;
+    return $cfg->get('UploadDirectory').$cfg->get('User_courseID').DIRECTORY_SEPARATOR.$cfg->get('InputDirectory').DIRECTORY_SEPARATOR.'i'.$questionIdx.DIRECTORY_SEPARATOR.'team'.$team;
   }
 
   function uploadFile( $team, $iIdx, $tmpFilePath, $originalName) {
@@ -203,11 +203,11 @@ class LiDBInterfaceAnswers {
 
     $this->createUploadFolderIfNotExisting($iIdx, $team);
     $uploadDirectory = $this->getUploadDirectory($iIdx, $team);
-    move_uploaded_file($tmpFilePath, $uploadDirectory.'/'.sanitizeFileName($originalName));
+    move_uploaded_file($tmpFilePath, $uploadDirectory.DIRECTORY_SEPARATOR.sanitizeFileName($originalName));
   }
 
   function deleteFile($team, $iIdx, $fileName) {
-  	$filename = $this->getUploadDirectory($iIdx, $team).'/'.$fileName;
+  	$filename = $this->getUploadDirectory($iIdx, $team).DIRECTORY_SEPARATOR.$fileName;
     if (file_exists($filename)){
     	unlink($filename);
     }
