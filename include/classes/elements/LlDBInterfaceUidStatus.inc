@@ -49,7 +49,9 @@ class LlDBInterfaceUidStatus {
   * Returns the team to the given uid and iIdx.
   *
   * @param $uid             The user's unique identifier.
-  * @return Array(  "currentTeam" => int,
+  * @return Array(  "lIdx" => int,
+  *                 "uid" => string,
+  *                 "currentTeam" => int,
   *                 "preLabFinished" => bool,
   *                 "preLabGivenCredits" => float,
   *                 "preLabPossibleCredits" => float,
@@ -68,7 +70,9 @@ class LlDBInterfaceUidStatus {
     $result = $this->myDBC->mkSelect( "*", $this->myTable, "l_idx='".$this->labIdx."' && uid='".$uid."'" );
     if ( !($data = $result->fetch_array()) ){
       /* no dataset found */
-      return Array( "currentTeam" => false,
+      return Array( "lIdx" => 1,
+    	 			"uid" => false,
+      		 		"currentTeam" => false,
                     "preLabFinished" => false,
                     "preLabGivenCredits" => 0,
                     "preLabPossibleCredits" => 0,
@@ -82,19 +86,21 @@ class LlDBInterfaceUidStatus {
                     "detailedCredits" => '',
                     "history" => "" );
     }else{
-      return Array( "currentTeam" => $data['current_team'],
-                    "preLabFinished" => ($data['prelab_finished'] == 1),
-                    "preLabGivenCredits" => ($data['prelab_given_credits'] / 100),
-                    "preLabPossibleCredits" => ($data['prelab_possible_credits'] / 100),
-                    "preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1),
-                    "labClosed" => ($data['lab_closed'] == 1),
-      				"labClosedMailSent" => (isset($data['lab_closed_mail_sent']) && ($data['lab_closed_mail_sent'] == 1)),
-                    "labCorrected" => ($data['lab_corrected'] == 1),
-                    "whichCorrected" => $data['which_corrected'],
-                    "labGivenCredits" => ($data['lab_given_credits'] / 100),
-                    "labPossibleCredits" => ($data['lab_possible_credits'] / 100),
-                    "detailedCredits" => (array_key_exists('detailed_credits', $data) ? $data['detailed_credits'] : ''),
-                    "history" => $data['history'] );
+    	return Array( 	"lIdx" => $data['l_idx'],
+    	 				"uid" => $data['uid'],
+    			 		"currentTeam" => $data['current_team'],
+    					"preLabFinished" => ($data['prelab_finished'] == 1),
+    					"preLabGivenCredits" => ($data['prelab_given_credits'] / 100),
+    					"preLabPossibleCredits" => ($data['prelab_possible_credits'] / 100),
+    					"preLabAllTeammFinished" => ($data['prelab_all_teammembers_finished'] == 1),
+    					"labClosed" => ($data['lab_closed'] == 1),
+    					"labClosedMailSent" => (isset($data['lab_closed_mail_sent']) && ($data['lab_closed_mail_sent'] == 1)),
+    					"labCorrected" => ($data['lab_corrected'] == 1),
+    					"whichCorrected" => $data['which_corrected'],
+    					"labGivenCredits" => ($data['lab_given_credits'] / 100),
+    					"labPossibleCredits" => ($data['lab_possible_credits'] / 100),
+    					"detailedCredits" => (array_key_exists('detailed_credits', $data) ? $data['detailed_credits'] : ''),
+    					"history" => $data['history'] );
     }
   }
 
