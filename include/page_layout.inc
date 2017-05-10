@@ -309,7 +309,7 @@ if ( $url->available('sysalert') ) if ( isset($SYSALERT) ) $SYSALERT .= htmlenti
     </table>
   <?php
     if ( isset($SYSALERT) ) {
-      echo("<script language=\"JavaScript\">\n<!-- \nalert( '".addslashes( htmlspecialchars_decode( $SYSALERT ) )."' ); \n//-->\n</script>");
+      echo("<script language=\"JavaScript\">\n<!-- \nalert( '".addslashes( strip_tags ( ( $SYSALERT ) ) )."' ); \n//-->\n</script>");
     }
   ?>
   <script language="JavaScript">
