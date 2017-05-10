@@ -242,7 +242,7 @@ youCanClickOn       = "You can click on"
 toReOpenTheLab      = "to reOpen this lab..."
 toCloseTheLab       = "to close this lab... To become able to reOpen a lab you have to make a schedule first!"
 
-labCloseNote        = "If you click this button all your <b>answers will be closed</b>. You can not answer anymore but we can start to correct."
+labCloseNote        = "If you click this button all your answers will be closed. You can not answer anymore but we can start to correct."
 prelabCheckNote     = "Click this button to get all <b>given answers above corrected</b>. Unanswered questions are <b>marked by the <img src='../syspix/button_edit_13x12.gif' />-icon</b> and <b>will not be checked</b>.<br />Remember: only if all prelab questions are answered correctly (row turns green) by all teammates (or you had too much attempts) the lab will get accessible.<br />The total amount of answering attempts is: "
 prelabStatusNote    = "Below you find a list of all members that finished the prelab. The list is <b>ordered by</b> the <b>time</b> the user <b>finished</b> the prelab."
 
