@@ -79,7 +79,9 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
 //   we have to distinguish!
   if ( ( $orderBy == $cfg->get("UserDBField_name") ) ||
        ( $orderBy == $cfg->get("UserDBField_forename") ) ||
-       ( $orderBy == $cfg->get("UserDBField_username") ) ){
+       ( $orderBy == $cfg->get("UserDBField_username") ) ||
+  		!empty($searchFor) // The search only works when the user database is selected as primary search. So when searching for something, this will become the case independent of selected other orderings.
+  		){
           /* $uDBI is the source */
           $master = $uDBI;
           $slave  = $urDBI;
@@ -94,7 +96,7 @@ $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/s
       foreach (explode(' ', $searchFor) as $searchTerm) {
           if (empty($searchTerm)) continue;
           $searchTermMysql = $master->myDBC->escapeString('%' . $searchTerm . '%');
-          $where[] = '(' . $cfg->get('UserDBField_name') . ' LIKE \'' . $searchTermMysql . '\' OR ' . $cfg->get('UserDBField_forename') . ' LIKE \'' . $searchTermMysql . '\')';
+          $where[] = '(' . $cfg->get('UserDBField_name') . ' LIKE \'' . $searchTermMysql . '\' OR ' . $cfg->get('UserDBField_forename') . ' LIKE \'' . $searchTermMysql . '\' OR ' . $cfg->get('UserDBField_username') . ' LIKE \'' . $searchTermMysql . '\')';
       }
   }
   $master->getAllData( $orderBy, $asc, implode(' AND ', $where) );
