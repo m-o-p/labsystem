@@ -75,12 +75,16 @@ while( $nextUserDataSet = $urDBI->getNextData() ){
 
 $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/saveUserRights.php").'"><div>'."\n");
 
+// The search only works when the user database is selected as primary search. So when searching for something, this will become the case independent of selected other orderings.
+if ( !empty($searchFor) ){
+	$orderBy = $cfg->get("UserDBField_name");
+}
+
 // Since the data have two sources, the external users and the internal user rights db
 //   we have to distinguish!
   if ( ( $orderBy == $cfg->get("UserDBField_name") ) ||
        ( $orderBy == $cfg->get("UserDBField_forename") ) ||
-       ( $orderBy == $cfg->get("UserDBField_username") ) ||
-  		!empty($searchFor) // The search only works when the user database is selected as primary search. So when searching for something, this will become the case independent of selected other orderings.
+       ( $orderBy == $cfg->get("UserDBField_username") )
   		){
           /* $uDBI is the source */
           $master = $uDBI;
