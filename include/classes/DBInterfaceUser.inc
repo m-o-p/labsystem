@@ -200,11 +200,11 @@ class DBInterfaceUser
   */
   function getAllData( $orderBy="", $asc=true, $restrictBy="" ){
     global $cfg;
-    $what = $cfg->get("UserDBField_name")." AS name, ".
-            $cfg->get("UserDBField_forename")." AS forename, ".
-            $cfg->get("UserDBField_email")." AS email, ".
-            $cfg->get("UserDBField_uid")."  AS uid, ".
-            $cfg->get("UserDBField_username")." AS username";
+    $what = $cfg->get("UserDBField_name").', '.
+            $cfg->get("UserDBField_forename").', '.
+            $cfg->get("UserDBField_email").', '.
+            $cfg->get("UserDBField_uid").', '.
+            $cfg->get("UserDBField_username");
     $from = $this->myTable;
     $where= $cfg->get("User_courseID")."='1'";
     if (!empty($restrictBy))
