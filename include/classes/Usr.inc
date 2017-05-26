@@ -202,7 +202,7 @@ class Usr extends ElementUser{
         $userData['foreName'] = $lng->get("unknown");
         $userData['userName'] = $lng->get("unknown");
         $userData['eMail'] = 'me@unknown.tld';
-      } else if ($url->available('pseudoNames')) {
+      } else if ($url->available('pseudoNames') && !($uid==$_SESSION['uid']) /* Do not scramble for me. Implications on history and mail, etc. */) {
         $userData['name'] = randomName();
         $userData['foreName'] = randomName();
         $userData['userName'] = randomName();
