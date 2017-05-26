@@ -205,6 +205,9 @@ deleteFile          = "Markierte Dateien l&ouml;schen"
 upload              = "Dateien hochladen"
 hasFileUpload       = "M&ouml;glichkeit zum Dateianhang aktivieren"
 options             = "Optionen"
+answered            = "antwortet"
+corrected           = "korrigiert"
+edited              = "editiert"
 
 ; Alerts provided saving scripts
 NotAllNecValPosted  = "Nicht alle notwendigen Werte wurden an das Script geschickt!" ; This should only happen when someone tries to hack a script.

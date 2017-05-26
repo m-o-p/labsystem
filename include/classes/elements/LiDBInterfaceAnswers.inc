@@ -78,7 +78,7 @@ class LiDBInterfaceAnswers {
         }else{
           // Found a history -> replace the content
           $data = $data2;
-          $data['history'] = preg_replace('/^(\*\*'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>',$backupHistory);
+          $data['history'] = preg_replace('/^(\*\*'.$historyIdx.' )(.*)/m','$1<span class="selectedVersion">$2</span>', $backupHistory );
         }
       }
       return Array( "answer" => $this->myDBC->unEscapeString( $data['answer'] ),
@@ -87,7 +87,7 @@ class LiDBInterfaceAnswers {
                     "givenCredits" => ($data['given_credits']/100),
                     "isClosed" => ($data['closed'] == 1),
                     "isCorrected" => ($data['corrected'] == 1),
-                    "history" => $this->myDBC->unEscapeString( $data['history'] ) );
+                    "history" => replaceUidClearName( $this->myDBC->unEscapeString( $data['history'] ) ) );
     }
   }
 
@@ -113,7 +113,7 @@ class LiDBInterfaceAnswers {
         "corrected=".( $corrected ?   "1" :  "0"  ).", ";
 
     $history = trim(
-        date("Y-m-d H:i:s", time()).' '.$usr->foreName.' '.$usr->surName."\n".$history
+        date("Y-m-d H:i:s", time()).' '.$usr->uid.': '.$history
     );
     // versioning
     if ($cfg->doesExist('versioning') && $cfg->get('versioning')=='1'){

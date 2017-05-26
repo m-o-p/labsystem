@@ -39,7 +39,7 @@ This serves two purposes:
 
 How does the lock work now?
 Suppose we have computer A and B.
-Both load the same question sheet so both see the "give answer�" buttons.
+Both load the same question sheet so both see the "give answers" buttons.
 
 Suppose A opens a question.
 The lock is set to that question now.
@@ -949,7 +949,7 @@ class LiElement extends Element{
         // makeLogEntry( 'i', 'saved', $this->idx );
         $this->removeLock();
       }
-      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $this->answerHistory );
+      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get( 'answered' )."\n".$this->answerHistory );
     } else{ // You are only allowed to answer one question at the same time.
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
@@ -961,7 +961,7 @@ class LiElement extends Element{
             $_POST['ANSWER'] = $lng->get( 'noiLockNote' )."\r\n\r\n- - - - -\r\n\r\n".
                                $_POST['ANSWER']."\r\n\r\n- - - - -\r\n\r\n".
                                $existingData["answer"];
-            $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $this->answerHistory );
+            $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get( 'answered' ).' '.$lng->get( 'noiLockNote' )."\n".$this->answerHistory );
     }
 
     $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentSave);
@@ -978,13 +978,13 @@ class LiElement extends Element{
       if (!empty($_FILES['file']['size'][0])) {
         for($moreFiles = count($_FILES['file'.$pathID]['size'])-1; $moreFiles>=0; $moreFiles--){
           $this->uaDBI->uploadFile($_POST['TEAM'], $this->idx, $_FILES['file']['tmp_name'][$moreFiles], $_FILES['file']['name'][$moreFiles]);
-          $this->history = $_FILES['file']['name'][$moreFiles].' uploaded';
+          $this->answerHistory = $_FILES['file']['name'][$moreFiles].' uploaded'."\n".$this->answerHistory;
         }
       } else if (!empty($_POST['deleteFileNames'])) {
  	      foreach ($_POST['deleteFileNames'] as $fileName) {
           $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName);
           $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName.'.thumb.jpg'); // Also delete a preview image if available...
-          $this->history .= $fileName.' deleted';
+          $this->answerHistory = $fileName.' deleted'."\n".$this->answerHistory;
         }
       }
     } else $url->put( 'sysalert', $lng->get("ElementHasNoFileUpload"));
@@ -1045,7 +1045,7 @@ class LiElement extends Element{
                               ( isset($_POST['CORRECTORS_NOTE']) ?  $_POST['CORRECTORS_NOTE'] :  $this->correctorsNote ),
                               $this->isClosed || $isCorrected,
                               $isCorrected,
-                              $this->answerHistory );
+                              $lng->get( 'correctionSaved')."\n".$this->answerHistory );
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorSave, $_POST['TEAM']);
     }else{
       $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorCancel, $_POST['TEAM']);

@@ -276,4 +276,24 @@ function removeFromArray($array, $key) {
 $linkToPreviousPage = "#";
 $linkToNextPage = "#";
 $linkToTOCPage = "#";
+
+/**
+ * For preserving the user privacy, the history only stores the UID.
+ * This method does the backwards resolution.
+ * 
+ * String $text	The text to replace.
+ */
+function replaceUidClearName( $text ){
+	require_once( INCLUDE_DIR."/classes/DBInterfaceUser.inc" );
+	global $url, $uDBI;
+	if (!isset($GLOBALS['uidClearNameLookup'])){
+		$GLOBALS['uidClearNameLookup'] = array(); // Array uid => clear name
+		$uDBI->getAllData();
+		while ($nextUser = $uDBI->getNextData()){
+			$pseudonym = $url->available('pseudoNames') && !($nextUser['uid']==$_SESSION['uid']);
+			$GLOBALS['uidClearNameLookup'][$nextUser['uid']] = htmlentities( ($pseudonym ? randomName() : $nextUser['foreName']).' '.($pseudonym ? randomName() : $nextUser['name'] ) ); 
+		}
+	}
+	return str_replace ( array_keys( $GLOBALS['uidClearNameLookup'] ) , array_values( $GLOBALS['uidClearNameLookup'] ) , $text );
+}
 ?>

@@ -254,5 +254,5 @@ class DBInterfaceUser
                  );
   }
 }
-$uDBI = new DBInterfaceUser()
+$GLOBALS['uDBI'] = new DBInterfaceUser()
 ?>

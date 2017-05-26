@@ -204,6 +204,9 @@ deleteFile          = "Delete selected files"
 upload              = "Upload files"
 hasFileUpload       = "Activate attach files option (file upload)"
 options             = "Options"
+answered            = "answered"
+corrected           = "corrected"
+edited              = "edited"
 
 ; Alerts provided saving scripts
 NotAllNecValPosted  = "Not all necessary values were posted to the script!" ; This should only happen when someone tries to hack a script.

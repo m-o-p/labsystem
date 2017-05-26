@@ -34,7 +34,6 @@
 * @copyright  Marc-Oliver Pahl 2005
 * @version    1.0
 */
-
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 
 class LmDBInterfaceAnswers {
@@ -87,7 +86,7 @@ class LmDBInterfaceAnswers {
       }
       return Array( "permutation" => $permutationArray,
                     "answers" => $answerArray,
-                    "history" => $data['history'] );
+                    "history" => replaceUidClearName( $data['history'] ) );
     }
   }
 
@@ -103,7 +102,7 @@ class LmDBInterfaceAnswers {
     global $usr;
     array_unshift( $answerArray, $permutationArray ); // add at front;
     $toSet = "answer_array='".$this->myDBC->escapeString( serialize($answerArray) )."', ".
-             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ? ": ".$this->myDBC->escapeString( $history ) : '')."\\n', ".$this->myTable.".history )";
+             "history=CONCAT( NOW(), ': ".$usr->uid.( ( $history != "" ) ? ": ".$this->myDBC->escapeString( $history ) : '')."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "mc_idx='".$mIdx."' && uid='".$uid."'" );
   }
 
