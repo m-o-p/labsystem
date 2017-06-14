@@ -208,6 +208,7 @@ options             = "Optionen"
 answered            = "antwortet"
 corrected           = "korrigiert"
 edited              = "editiert"
+correctionSaved     = "gespeichert"
 
 ; Alerts provided saving scripts
 NotAllNecValPosted  = "Nicht alle notwendigen Werte wurden an das Script geschickt!" ; This should only happen when someone tries to hack a script.
