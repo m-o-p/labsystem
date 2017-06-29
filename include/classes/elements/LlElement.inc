@@ -423,7 +423,7 @@ class LlElement extends Element{
 
     // display extra credits using additional bar
     if ( $extraCredits > 0 ) {
-	$color = '6B8E23';
+	$color = '1E90FF';
     	$result =  $result . "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$extraCredits."' title='".$givenCredits.'/'.$extraCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".($extraCredits * 4)."px\">";
     }
 
