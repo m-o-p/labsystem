@@ -904,7 +904,7 @@ fieldset{
   .labsys_mop_l_status_percentStickDivNegative{ /* shown in the lab status table below the percent value */
                     display:inline;
                     float:left;
-                    background-color: #555;
+                    background-color: #000000;
                     border: solid 1px #aaaaaa;
                     width: 4px;
                     margin-right:1px

@@ -203,7 +203,8 @@ class LlElement extends Element{
     $p2 = ( $percentage - $percentageFailed )/
     ( 1 - $percentageFailed );
     if ( $p2 < 0 ) $p2 = 0;
-    elseif ( $p2 > 1 ) $p2 = 1;
+    elseif ( $p2 > 1 )
+	$p2 = 1;
     $move = $p2 * 511;
     if ( $move < 255 ){ // move to yellow
       $moveRed   = 0;
@@ -397,16 +398,38 @@ class LlElement extends Element{
    */
   static function percentStick( $givenCredits, $possibleCredits, $description ){
     global $cfg;
-    $percentage = ($possibleCredits>0?abs($givenCredits/$possibleCredits) : 0);
     $percentageFailed = $cfg->get("percentageFailedPreLab");
+
+    $divHeight = $possibleCredits;
+    
+    // extra credits 
+    $extraCredits = 0;
+    if ($givenCredits > $possibleCredits) {
+	    $extraCredits = $givenCredits - $possibleCredits;
+	    $divHeight = $givenCredits;
+    }
+
+    // the div has size possibleCredits + extraCredits
+    // percentage is the size of the '0 to 100%' bar of granted credits (so without extra credits)
+    $percentage = ($possibleCredits>0?abs(($givenCredits - $extraCredits)/($possibleCredits + $extraCredits)) : 0);
 
     $style=($givenCredits>=0?'labsys_mop_l_status_percentStickDiv':'labsys_mop_l_status_percentStickDivNegative');
     $barHeight=round($percentage*100);
-    $color = ($givenCredits<0 ? 'f00;position:relative;top:-'.$barHeight.'%;' : LlElement::getSuccessIndicatorColor( $percentage, $percentageFailed ));
+    // in case we have extra credits, percentage for color selection is simply 100% = 1
+    $color = ($givenCredits<0 ? 'f00;position:relative;top:-'.$barHeight.'%;' : LlElement::getSuccessIndicatorColor( ($extraCredits>0? 1 : $percentage), $percentageFailed ));
 
-    return "<div class=\"".$style."\" style=\"height:".($possibleCredits*4).'px" title="'.$givenCredits.'/'.$possibleCredits.' '.$description.'">'.
-        "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$possibleCredits."' title='".$givenCredits.'/'.$possibleCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".$barHeight."%\">".
-        "</div>\n";
+    $result =  "<div class=\"".$style."\" style=\"height:".($divHeight*4).'px" title="'.$givenCredits.'/'.$possibleCredits.' '.$description.'">'.
+        "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$possibleCredits."' title='".$givenCredits.'/'.$possibleCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".$barHeight."%\">";
+
+    // display extra credits using additional bar
+    if ( $extraCredits > 0 ) {
+	$color = '1E90FF';
+    	$result =  $result . "<img src=\"../syspix/empty.gif\" alt='".$givenCredits.'/'.$extraCredits."' title='".$givenCredits.'/'.$extraCredits.' '.$description."' style=\"color: #".$color."; background-color: #".$color.";height:".($extraCredits * 4)."px\">";
+    }
+
+    $result = $result . "</div>\n";
+
+    return $result;
   }
 
   /**
