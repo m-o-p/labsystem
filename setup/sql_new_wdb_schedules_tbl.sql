@@ -2,8 +2,8 @@ CREATE TABLE IF NOT EXISTS `schedules` (
   `idx` bigint(20) NOT NULL auto_increment,
   `id` char(1) NOT NULL default '',
   `num` bigint(20) NOT NULL default '0',
-  `start` datetime NOT NULL default '0000-00-00 00:00:00',
-  `stop` datetime NOT NULL default '0000-00-00 00:00:00',
+  `start` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `stop` datetime NOT NULL default CURRENT_TIMESTAMP,
   `comment` text NOT NULL,
   `history` text NOT NULL,
   PRIMARY KEY  (`idx`)
@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS `bak_schedules` (
   `idx` bigint(20) NOT NULL auto_increment,
   `id` char(1) NOT NULL default '',
   `num` bigint(20) NOT NULL default '0',
-  `start` datetime NOT NULL default '0000-00-00 00:00:00',
-  `stop` datetime NOT NULL default '0000-00-00 00:00:00',
+  `start` datetime NOT NULL default CURRENT_TIMESTAMP,
+  `stop` datetime NOT NULL default CURRENT_TIMESTAMP,
   `comment` text NOT NULL,
   `history` text NOT NULL,
   PRIMARY KEY  (`idx`)
