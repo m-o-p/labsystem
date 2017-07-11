@@ -178,7 +178,8 @@ class Pge extends LpElement{
   * This function is called to display the contents. It gets called in ../include/page_layout.inc.
   * This function overrides the one from LpElement.
   */
-  function show(){
+  //function show(){
+  function show( $fullAddress='', $paragraph="", $hideNavigation=false ){
     global $lng;
     if ( !$this->isVisible() ) // not enough rights->no content
       $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";

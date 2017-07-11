@@ -254,7 +254,8 @@ class LsElement extends Element{
   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   * @return string        The html code of the element's view view.
   */
-  function show( $fullAddress, $paragraph="" ){
+  //function show( $fullAddress, $paragraph="" ){
+  function show( $fullAddress, $paragraph="", $hideNavigation=false ){
     global $usr, $lng, $pge, $sDBI, $url, $cfg;
     if (  !$this->isVisible() ){ // not enough rights->no content
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";

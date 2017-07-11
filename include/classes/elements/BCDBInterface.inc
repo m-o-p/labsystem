@@ -134,7 +134,8 @@ class BCDBInterface extends LcDBInterface {
   * @return BCElement
   * @return FALSE     If no more datasets are available.
   */
-  function getNextData(){
+  //function getNextData(){
+  function getNextData($isInColl=false, $isInLab=false){
     // Something like ""return (BCElement) parent::getNextData();""
     if ($data = $this->queryResult->fetch_array())
       return new BCElement( $data['idx'],                                 // $idx

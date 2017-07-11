@@ -318,7 +318,8 @@ class LmElement extends Element{
   *
   * @return               The html-code of the answer.
   */
-  function showAnswer( $fullAddress ){
+  //function showAnswer( $fullAddress ){
+  function show( $fullAddress, $paragraph="", $hideNavigation=false ){
     global $usr, $lng, $pge, $url, $cfg;
 
     $isGettingAnswered = ( isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) );

@@ -1019,7 +1019,8 @@ class LlElement extends Element{
   *
   * @return string          The html code of the element's view view.
   */
-  function show( $fullAddress, $extParagraph="" ){
+  //function show( $fullAddress, $extParagraph="" ){
+  function show( $fullAddress, $paragraph="", $hideNavigation=false ){
     global $usr, $lng, $pge, $url, $cfg;
     if (  !$this->isVisible() &&
           !(substr($fullAddress, strrpos($fullAddress, '.')+1, strrpos($fullAddress, '.')+10) == 'ALLlabStatus') // the Labstatus should always be visible
