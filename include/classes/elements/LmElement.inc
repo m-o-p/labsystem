@@ -318,8 +318,7 @@ class LmElement extends Element{
   *
   * @return               The html-code of the answer.
   */
-  //function showAnswer( $fullAddress ){
-  function show( $fullAddress, $paragraph="", $hideNavigation=false ){
+  function showAnswer( $fullAddress ){
     global $usr, $lng, $pge, $url, $cfg;
 
     $isGettingAnswered = ( isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) );
@@ -461,7 +460,8 @@ class LmElement extends Element{
   * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
   * @return string        The html code of the element's view view.
   */
-  function show( $fullAddress, $paragraph='' ){
+  //function show( $fullAddress, $paragraph='' ){
+  function show( $fullAddress, $paragraph="", $hideNavigation=false ){
     global $usr, $lng, $pge, $url, $cfg;
     if (  !$this->isVisible() ){ /* not enough rights->no content */
       return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
