@@ -439,7 +439,7 @@ class LcElement extends Element{
   * @return string          The html code of the element's view view.
   */
   //function show( $fullAddress, $extParagraph="" ){
-  function show( $fullAddress, $paragraph="", $hideNavigation=false ){
+  function show( $fullAddress, $extParagraph="", $hideNavigation=false ){
     global $lng, $usr,$url,$pge;
 
     if ( !$this->isVisible() ){ return $this->notFoundVisibleNote( $fullAddress ); exit; }
