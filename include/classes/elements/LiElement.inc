@@ -915,16 +915,15 @@ class LiElement extends Element{
     if ( !isset($_POST['IDX']) ||
          !isset($_POST['REDIRECTTO']) ||
          !isset($_POST['ANSWER']) ||
-         !isset($_POST['FULLADDRESS']) ||
-         !isset($_POST['TEAM'])
+         !isset($_POST['FULLADDRESS'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
 
-    // Validity (session ID) is checked by the calling script yet.
+    $currentTeam = $this->utDBI->getData4( $usr->uid, $_POST['IDX'], 0 );
 
-    $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
+    $this->loadUserData4( $currentTeam ); // loads the dynamic data from the working table.
 
     if (isset($_POST['cancel'])){ // cancel action
       if ( $this->lockIsSetTo == $this->idx ){
@@ -944,25 +943,25 @@ class LiElement extends Element{
       $this->history='';
       if ( isset($_POST['fileUpload']) || isset($_POST['fileDelete'])){
         // file handling
-        $this->handleUploadedFiles(); // modifies $this->history!
+        $this->handleUploadedFiles( $currentTeam ); // modifies $this->history!
       } else {
         // non file handling operation
         // makeLogEntry( 'i', 'saved', $this->idx );
         $this->removeLock();
       }
-      $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get( 'answered' )."\n".$this->answerHistory );
+      $this->uaDBI->setData4( $currentTeam, $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get( 'answered' )."\n".$this->answerHistory );
     } else{ // You are only allowed to answer one question at the same time.
            // Since you can move the lock this ensures the desired behavior.
            // In case the lock is not at this question anymore, the data is discarded and the error is shown...
             $url->put( 'sysalert', $lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
 
            // As this case should never happen, we save the data below the existing answer with a hint, not to lose data:
-            $existingData = $this->uaDBI->getData4( $_POST['TEAM'], $this->idx, false );
+            $existingData = $this->uaDBI->getData4( $currentTeam, $this->idx, false );
            // To abondon parallel answering we replace all spaces by NO_LOCK so the user has to remove this later again.
             $_POST['ANSWER'] = $lng->get( 'noiLockNote' )."\r\n\r\n- - - - -\r\n\r\n".
                                $_POST['ANSWER']."\r\n\r\n- - - - -\r\n\r\n".
                                $existingData["answer"];
-            $this->uaDBI->setData4( $_POST['TEAM'], $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get( 'answered' ).' '.$lng->get( 'noiLockNote' )."\n".$this->answerHistory );
+            $this->uaDBI->setData4( $currentTeam, $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get( 'answered' ).' '.$lng->get( 'noiLockNote' )."\n".$this->answerHistory );
     }
 
     $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentSave);
@@ -973,18 +972,18 @@ class LiElement extends Element{
   /**
   * uploads a file, if a file has been sent, and deletes files, if they have been marked for deletion.
   */
-  private function handleUploadedFiles(){
+  private function handleUploadedFiles( $currentTeam ){
     global $url, $lng, $usr;
     if ($this->hasFileUpload){
       if (!empty($_FILES['file']['size'][0])) {
         for($moreFiles = count($_FILES['file'.$pathID]['size'])-1; $moreFiles>=0; $moreFiles--){
-          $this->uaDBI->uploadFile($_POST['TEAM'], $this->idx, $_FILES['file']['tmp_name'][$moreFiles], $_FILES['file']['name'][$moreFiles]);
+          $this->uaDBI->uploadFile($currentTeam, $this->idx, $_FILES['file']['tmp_name'][$moreFiles], $_FILES['file']['name'][$moreFiles]);
           $this->answerHistory = $_FILES['file']['name'][$moreFiles].' uploaded'."\n".$this->answerHistory;
         }
       } else if (!empty($_POST['deleteFileNames'])) {
  	      foreach ($_POST['deleteFileNames'] as $fileName) {
-          $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName);
-          $this->uaDBI->deleteFile($_POST['TEAM'], $this->idx, $fileName.'.thumb.jpg'); // Also delete a preview image if available...
+          $this->uaDBI->deleteFile($currentTeam, $this->idx, $fileName);
+          $this->uaDBI->deleteFile($currentTeam, $this->idx, $fileName.'.thumb.jpg'); // Also delete a preview image if available...
           $this->answerHistory = $fileName.' deleted'."\n".$this->answerHistory;
         }
       }
@@ -1065,16 +1064,15 @@ class LiElement extends Element{
     global $url, $lng;
     if ( !isset($_POST['IDX']) ||
          !isset($_POST['REDIRECTTO']) ||
-         !isset($_POST['FULLADDRESS']) ||
-         !isset($_POST['TEAM'])
+         !isset($_POST['FULLADDRESS'])
        ){
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
 
-    // Validity (session ID) is checked by the calling script yet.
+    $currentTeam = $this->utDBI->getData4( $usr->uid, $_POST['IDX'], 0 );
 
-    $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
+    $this->loadUserData4( $currentTeam ); // loads the dynamic data from the working table.
 
     if ($this->isClosed){
       $url->put( 'sysalert', $lng->get("InputAlreadyClosed") );

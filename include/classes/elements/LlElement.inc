@@ -54,6 +54,7 @@ class LlElement extends Element{
   var $labIsClosed;           // usDBI.Is the lab closed?
   var $labClosedMailSent;     // usDBI.Is the lab closed mail sent?
   var $labIsCorrected;        // usDBI.Is the lab corrected
+  var $labTeam;               // usDBI.The team of the participant for this lab
 
   var $isBefore1stSched;      // Is currently before 1st schedule.
   var $isInSched;             // Is currently inside a schedule.
@@ -121,6 +122,8 @@ class LlElement extends Element{
     $this->labIsClosed              = $permissions['labClosed'];
     $this->labClosedMailSent		= $permissions['labClosedMailSent'];
     $this->labIsCorrected           = $permissions['labCorrected'];
+    // available but not used
+    // $this->labTeam                  = $permissions['current_team'];
 
     $this->userIsViewing            = !($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ); // is a user viewing or a corrector or example solution viewer watching?
 
