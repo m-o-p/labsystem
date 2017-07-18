@@ -73,7 +73,9 @@ $pge->visibleFor   = IS_USER;
 
 $ticket_id = 0;
 
-if (isset($_POST['message'])){
+if (isset($_POST['topicId']) && $_POST['topicId'] == 'notSelected'){
+	$GLOBALS['SYSALERT'] .= $lng->get('didNotSelectCategory');
+} else if (isset($_POST['message'])){
 // 	foreach($_POST as $key=>$value){
 // 		$pge->put('<div>'.$key.':='.$value.'</div>'.PHP_EOL);
 // 	}
@@ -164,12 +166,13 @@ $pge->put( '<form class="labsys_mop_ticketForm" name="ticket" method="post" acti
 $pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="subject">subject</label><input class="labsys_mop_ticketInput" name="subject" id="subject" value="'.(isset($_POST['subject']) ? $_POST['subject'] : $lastElement->title.' <- '.$element->title).'"'.($ticket_id!=0?' disabled="disabled"':'').' /></div>' );
 // Defined in $ticketCategories array.
 $pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="topicId">category:</label> ');
-$pge->put( '<select name="topicId"'.(isset($_POST['topicId']) ? ' disabled="disabled"':'').'>');
+$pge->put( '<select name="topicId"'.(isset($_POST['topicId']) && $_POST['topicId'] != 'notSelected' ? ' disabled="disabled"':'').'>');
+$pge->put( '<option value="notSelected"'.(!isset($_POST['topicId']) || $_POST['topicId']=='notSelected' || !is_numeric($_POST['topicId']) ? ' selected="selected"':'').'>'.$lng->get('pleaseSelect').'</option>'.PHP_EOL );
 		$counter = 0;
 		foreach ($ticketCategories as $ticketCategory){
-			$pge->put( '<option value="'.$counter.'"'.(isset($_POST['topicId']) && $_POST['topicId']==$counter ? ' selected="selected"':'').'>'.$ticketCategory.'</option>'.PHP_EOL );
+			$pge->put( '<option value="'.$counter.'"'.(isset($_POST['topicId']) && is_numeric($_POST['topicId']) && $_POST['topicId']==$counter ? ' selected="selected"':'').'>'.$ticketCategory.'</option>'.PHP_EOL );
 			$counter++;
-		}			
+		}
 $pge->put( '</select>' );
 $pge->put( '<div class="labsys_mop_ticketRow"><label class="labsys_mop_ticketLabel" for="message">message</label><textarea class="labsys_mop_ticketTextArea" name="message" id="message" onFocus="if (this.value==\'Your Message...\'){this.select();}"'.($ticket_id!=0?' disabled="disabled"':'').'>'.(isset($_POST['message']) ? $_POST['message'] : 'Your Message...').'</textarea>' );
 $pge->put('<input type="submit" id="submit-button" class="labsys_mop_ticketButton" value="'.($ticket_id==0?$lng->get("save"):'Created ticket '.$ticket_id.'" disabled="disabled').'" />');

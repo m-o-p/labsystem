@@ -209,6 +209,10 @@ corrected           = "corrected"
 edited              = "edited"
 correctionSaved     = "saved"
 
+;t
+pleaseSelect 		= "Please select..."
+didNotSelectCategory= "You did not select a ticket category."
+
 ; Alerts provided saving scripts
 NotAllNecValPosted  = "Not all necessary values were posted to the script!" ; This should only happen when someone tries to hack a script.
 NotAllowedToMkCall  = "You are not allowed to make this call!"              ; Happens for example if a saving script is called by someone having not enough rights.
