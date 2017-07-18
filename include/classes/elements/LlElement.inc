@@ -635,7 +635,7 @@ class LlElement extends Element{
                                                     !$labStatus['labClosed'] /* &&
                                                     !$this->isInSched always allow closing */)
                                                    ) ?
-                                "<a href=\"".$url->link2( '../php/executeOnLab.php', Array('address' => 'l'.$this->idx, 'function' => 'closeAllLabInputs', 'param0', $labStatus['currentTeam'], 'redirectTo' => '../pages/view.php?address='.$url->get('address')) ) ."\">"
+                                "<a href=\"".$url->link2( '../php/executeOnLab.php', Array('address' => 'l'.$this->idx, 'function' => 'closeAllLabInputs', 'param0' => $labStatus['currentTeam'], 'redirectTo' => '../pages/view.php?address='.$url->get('address')) ) ."\">"
                                                    : '' ).
                      " <img src=\"../syspix/button_lock_".
                      ( $labStatus['labClosed'] ?  "closed" :  "open"  ).
