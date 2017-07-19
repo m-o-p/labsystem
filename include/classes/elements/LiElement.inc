@@ -1061,7 +1061,7 @@ class LiElement extends Element{
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
   */
   /*static*/ function setUserAnswerLock(){
-    global $url, $lng;
+    global $url, $usr, $lng;
     if ( !isset($_POST['IDX']) ||
          !isset($_POST['REDIRECTTO']) ||
          !isset($_POST['FULLADDRESS'])
