@@ -31,8 +31,8 @@ define( "INCLUDE_DIR", "../include" );
 /** CHECK FOR OBVIOUS USER ERRORS */
 // check version
 require( INCLUDE_DIR."/customErrHandle.inc" );  // The custom Error handler.
-if ( version_compare( "4.3.0", phpversion(), ">=" ) ){
-                                                        trigger_error( "You need at least PHP 4.3 to run the labsystem!", E_USER_ERROR );
+if ( version_compare( PHP_VERSION, '5.5.0' ) < 0) {
+                                                        trigger_error( "You need at least PHP 5.5 to run the labsystem!", E_USER_ERROR );
                                                         exit;
                                                       }
 
@@ -42,13 +42,6 @@ if ( !file_exists( 'information.txt' ) ){
                                             trigger_error( "/setup/information.txt missing!", E_USER_ERROR );
                                             exit;
                                          }
-
-/** If password_hash is missing, the passwords are not hashed correctly... */
-if ( !function_exists( 'password_hash' ) ){
-	trigger_error( "Function 'password_hash' is missing! If your php version is too old, you can include the library 'password_compat' in the setup/index.php and in the include/init.inc files.", E_USER_ERROR );
-	exit;	
-}
-                                         
   echo('
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
