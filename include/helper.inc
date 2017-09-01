@@ -271,13 +271,13 @@ function removeFromArray($array, $key) {
 }
 
 /**
- * Replaces the key of a value in an array with a new key while preserving order of the array.
+ * Renames the key of a value in an array with a new key while preserving order of the array.
  * @param $array $array The array to change
  * @param $value $value The value of the key that should be replaced
  * @param $key $new_key The new key that should be set for the given value
  * @return array The array with the new key
  */
-function replace_key_of_value($array, $value, $new_key) {
+function renameKeyInArray($array, $value, $new_key) {
     //if the array doesn't contain the value just return it without change.
     if (!in_array($value, $array)) {
         return $array;

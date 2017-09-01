@@ -85,7 +85,7 @@ foreach ( $mainMenuIni as $key => &$value ){
       $value[ $lng->get('MnuEntryCourseContent') ] = '../pages/accessibleLabs.php';
     } else {
       //if the element was assigned manually we have to set the key accordingly, otherwise the key set in the menu.ini would be used.
-      $value=replace_key_of_value($value, "../pages/accessibleLabs.php", $lng->get( "MnuEntryCourseContent" ));
+      $value=renameKeyInArray($value, "../pages/accessibleLabs.php", $lng->get( "MnuEntryCourseContent" ));
     }
 
     // Collect all visible labs in the order:
@@ -109,7 +109,7 @@ foreach ( $mainMenuIni as $key => &$value ){
       
     } else {
       //if the element was assigned manually we have to set the key accordingly, otherwise the key set in the menu.ini would be used.
-      $value=replace_key_of_value($value, "../pages/view.php?address=s1", $lng->get( "MnuEntrySchedule" ));
+      $value=renameKeyInArray($value, "../pages/view.php?address=s1", $lng->get( "MnuEntrySchedule" ));
     }
   }
 
