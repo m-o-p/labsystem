@@ -76,12 +76,17 @@ foreach ( $mainMenuIni as $key => &$value ){
     }
 
     // Possibly preface
-    if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
+    if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!='' && !in_array('!'.$cfg->get('prefaceID'), $value)){
       array_push( $value, '!'.$cfg->get('prefaceID') );
     }
 
-    // Menu from overview page -START-
-    $value[ $lng->get('MnuEntryCourseContent') ] = '../pages/accessibleLabs.php';
+    if (!in_array("../pages/accessibleLabs.php", $value)){
+      // Menu from overview page -START-
+      $value[ $lng->get('MnuEntryCourseContent') ] = '../pages/accessibleLabs.php';
+    } else {
+      //if the element was assigned manually we have to set the key accordingly, otherwise the key set in the menu.ini would be used.
+      $value=replace_key_of_value($value, "../pages/accessibleLabs.php", $lng->get( "MnuEntryCourseContent" ));
+    }
 
     // Collect all visible labs in the order:
     //   - Visible labs without schedule.
@@ -99,7 +104,13 @@ foreach ( $mainMenuIni as $key => &$value ){
     // Menu from overview page -STOP-
 
     array_push( $value, '' ); // spacer
-    $value[$lng->get( "MnuEntrySchedule" )]="../pages/view.php?address=s1"; // schedule
+    if (!in_array("../pages/view.php?address=s1", $value)){   
+      $value[$lng->get( "MnuEntrySchedule" )]="../pages/view.php?address=s1"; // schedule
+      
+    } else {
+      //if the element was assigned manually we have to set the key accordingly, otherwise the key set in the menu.ini would be used.
+      $value=replace_key_of_value($value, "../pages/view.php?address=s1", $lng->get( "MnuEntrySchedule" ));
+    }
   }
 
   if ( $key == "edit_menu" && $usr->isOfKind( IS_CONTENT_EDITOR )){
