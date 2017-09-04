@@ -269,6 +269,32 @@ function removeFromArray($array, $key) {
   unset($array[$key]);
   return $array;
 }
+
+/**
+ * Renames the key of a value in an array with a new key while preserving order of the array.
+ * @param $array $array The array to change
+ * @param $value $value The value of the key that should be replaced
+ * @param $key $new_key The new key that should be set for the given value
+ * @return array The array with the new key
+ */
+function renameKeyInArray($array, $value, $new_key) {
+    //if the array doesn't contain the value just return it without change.
+    if (!in_array($value, $array)) {
+        return $array;
+    }
+    
+    //find old key
+    $old_key = array_search ($value, $array,true);
+    //get all keys of the array
+    $keys = array_keys($array);
+
+    //replace the old_key with new_key
+    $keys[array_search($old_key, $keys)] = $new_key;
+
+    //combine the keys and values again
+    return array_combine($keys, array_values($array));
+}
+
 /**
  * These links are used for the arrow navigation in /include/page_layout.inc at the bottom.
  * They are set by EB::prev, EB::next, and EB::TOC.
