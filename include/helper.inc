@@ -271,26 +271,25 @@ function removeFromArray($array, $key) {
 }
 
 /**
- * Renames the key of a value in an array with a new key while preserving order of the array.
- * @param $array $array The array to change
- * @param $value $value The value of the key that should be replaced
- * @param $key $new_key The new key that should be set for the given value
- * @return array The array with the new key
+ * Creates a copy of an array with the key of a value renamed while preserving
+ * order of the array.
+ * @param $array    The array to change
+ * @param $value    The value of the key that should be replaced
+ * @param $new_key  The new key that should be set for the given value
+ * @return          A new array with the key renamed
  */
 function renameKeyInArray($array, $value, $new_key) {
+    //find original key for value
+    $orig_key = array_search($value, $array, TRUE);
     //if the array doesn't contain the value just return it without change.
-    if (!in_array($value, $array)) {
+    if ($orig_key === FALSE) {
         return $array;
     }
-    
-    //find old key
-    $old_key = array_search ($value, $array,true);
+
     //get all keys of the array
     $keys = array_keys($array);
-
-    //replace the old_key with new_key
-    $keys[array_search($old_key, $keys)] = $new_key;
-
+    //replace the orig_key with new_key
+    $keys[array_search($orig_key, $keys, TRUE)] = $new_key;
     //combine the keys and values again
     return array_combine($keys, array_values($array));
 }
