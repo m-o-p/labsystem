@@ -249,7 +249,7 @@ class BCElement extends LcElement{
       foreach( $structureArray as $value ){
           $linkAddr = $fullAddress.".".$value;
           $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
-          $isActive = ( $linkAddr == substr( $url->get('address'), 0, strlen( $linkAddr ) ) );
+          $isActive = ( $linkAddr . '.' == substr( $url->get('address') . '.', 0, strlen( $linkAddr ) + 1 ) );
 
          // show the element's menu entry
           $id = $value{0}; $num = substr( $value, 1 );
