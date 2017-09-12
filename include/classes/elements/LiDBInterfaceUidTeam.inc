@@ -60,7 +60,7 @@ class LiDBInterfaceUidTeam {
   */
   function getData4( $uid, $iIdx, $team ){
     global $cfg, $usr;
-    $result = $this->myDBC->mkSelect( "team", $this->myTable, "uid='".$uid."' && i_idx='".$iIdx."'" );
+    $result = $this->myDBC->mkSelect( "team", $this->myTable, "uid='".$this->myDBC->escapeString($uid)."' && i_idx='".$iIdx."'" );
     if ( !($data = $result->fetch_array()) ){
       /* no dataset found && $createNewRecord => create a new one with $usr->currentTeam */
       if ( $team!= 0 ) $this->setData4( $uid, $iIdx, $team );
@@ -97,6 +97,6 @@ class LiDBInterfaceUidTeam {
     global $usr;
     $toSet = "team='".$team."', ".
              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "i_idx='".$iIdx."' && uid='".$uid."'" );
+    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "i_idx='".$iIdx."' && uid='".$this->myDBC->escapeString($uid)."'" );
   }
 }

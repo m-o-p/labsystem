@@ -67,7 +67,7 @@ class LlDBInterfaceUidStatus {
   */
   function getData4( $uid ){
     global $cfg, $usr;
-    $result = $this->myDBC->mkSelect( "*", $this->myTable, "l_idx='".$this->labIdx."' && uid='".$uid."'" );
+    $result = $this->myDBC->mkSelect( "*", $this->myTable, "l_idx='".$this->labIdx."' && uid='".$this->myDBC->escapeString($uid)."'" );
     if ( !($data = $result->fetch_array()) ){
       /* no dataset found */
       return Array( "lIdx" => 1,
@@ -149,7 +149,7 @@ class LlDBInterfaceUidStatus {
              "lab_possible_credits='".($possibleCredits * 100)."', ".
              "detailed_credits='".$detailedCredits."', ".
              "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."\\n', ".$this->myTable.".history )";
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && uid='".$uid."'" );
+    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && uid='".$this->myDBC->escapeString($uid)."'" );
   }
 
   /**
@@ -227,7 +227,7 @@ class LlDBInterfaceUidStatus {
   * @param $uid  The id of the user to be queried.
   */
   function getAllUidData( $uid ){
-    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "uid='".$uid."' && l_idx='".$this->labIdx."'", "" );
+    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "uid='".$this->myDBC->escapeString($uid)."' && l_idx='".$this->labIdx."'", "" );
   }
 
   /**
@@ -236,7 +236,7 @@ class LlDBInterfaceUidStatus {
   */
   function getAllUidDataALLLabs( $uid ){
   // SELECT *, schedules.start FROM `lab_uid_status` LEFT JOIN `schedules` ON lab_uid_status.l_idx = schedules.num WHERE `uid` = "$uid" ORDER BY schedules.start, lab_uid_status.l_idx ASC
-    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable.' LEFT JOIN `schedules` ON lab_uid_status.l_idx = schedules.num', "`uid`='".$uid."' && `l_idx` != 1 GROUP BY lab_uid_status.l_idx", "schedules.start, lab_uid_status.l_idx ASC" );
+    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable.' LEFT JOIN `schedules` ON lab_uid_status.l_idx = schedules.num', "`uid`='".$this->myDBC->escapeString($uid)."' && `l_idx` != 1 GROUP BY lab_uid_status.l_idx", "schedules.start, lab_uid_status.l_idx ASC" );
   }
 
   /**

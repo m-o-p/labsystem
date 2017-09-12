@@ -63,7 +63,7 @@ class LmDBInterfaceAnswers {
   */
   function getData4( $uid, $mIdx, $countOfAnswers, $createDataset ){
     global $cfg, $lng;
-    $result = $this->myDBC->mkSelect( "*", $this->myTable, "uid='".$uid."' && mc_idx='".$mIdx."'" );
+    $result = $this->myDBC->mkSelect( "*", $this->myTable, "uid='".$this->myDBC->escapeString($uid)."' && mc_idx='".$mIdx."'" );
     if ( !($data = $result->fetch_array()) ){ // no dataset found => create a new one
       // first: The permutation aray of the answers
       $permutationArray = range (0, $countOfAnswers-1);
@@ -103,7 +103,7 @@ class LmDBInterfaceAnswers {
     array_unshift( $answerArray, $permutationArray ); // add at front;
     $toSet = "answer_array='".$this->myDBC->escapeString( serialize($answerArray) )."', ".
              "history=CONCAT( NOW(), ': ".$usr->uid.( ( $history != "" ) ? ": ".$this->myDBC->escapeString( $history ) : '')."\\n', ".$this->myTable.".history )";
-    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "mc_idx='".$mIdx."' && uid='".$uid."'" );
+    $this->myDBC->mkUpdIns( $toSet, $this->myTable, "mc_idx='".$mIdx."' && uid='".$this->myDBC->escapeString($uid)."'" );
   }
 
   var $queryResult;

@@ -54,7 +54,7 @@ class DBInterfaceUserRights {
     // The star is needed as the enabledRights will be missing for old instances...
     // mysql #1054 - Unknown column
     // "rights, enabledRights, currentTeam, history"
-    $result = $this->myDBC->mkSelect( '*', $this->myTable, "uid='".$uid."'" );
+    $result = $this->myDBC->mkSelect( '*', $this->myTable, "uid='".$this->myDBC->escapeString($uid)."'" );
     if ( !($data = $result->fetch_array()) ){
       /* no dataset found => create a new one with the default values */
       // each new member should get his own team number
@@ -65,7 +65,7 @@ class DBInterfaceUserRights {
       $toSet = ( !empty($rights) ?       "rights='".$rights."', " : '' ).
       		   "enabledRights='".$rights."', ".
                ( !empty($currentTeam) ?  "currentTeam='".$currentTeam."', "  : '' ).
-               "uid='".$uid."', ".
+               "uid='".$this->myDBC->escapeString($uid)."', ".
                "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' (rights: '.$rights.'; team: '.$currentTeam.') '."\\n', ".$this->myTable.".history )";
       $newIDX = $this->myDBC->mkInsertReturnIDX( $toSet, 'user_rights' );
       $currentTeam += $newIDX;
@@ -92,7 +92,7 @@ class DBInterfaceUserRights {
    * @param $uid The UID to be removed from the user rights table
    */
   function removeUID($uid){
-    $this->myDBC->mkDelete($this->myTable, "uid='".$uid."'");
+    $this->myDBC->mkDelete($this->myTable, "uid='".$this->myDBC->escapeString($uid)."'");
   }
 
   /**
@@ -111,7 +111,7 @@ class DBInterfaceUserRights {
              ( !empty($currentTeam) ?  "currentTeam='".$currentTeam."', "  : '' ).
              "history=CONCAT( NOW(), ': ".$usr->foreName." ".$usr->surName.' (rights: '.$rights.'; team: '.$currentTeam.') '.( ( $history != "" ) ?  ": ".$history : '' )."\\n', ".$this->myTable.".history )";
 
-    $this->myDBC->mkUpdIns( $toSet, "user_rights", "uid='".$uid."'" );
+    $this->myDBC->mkUpdIns( $toSet, "user_rights", "uid='".$this->myDBC->escapeString($uid)."'" );
   }
 
 
