@@ -61,11 +61,11 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 				$newPW = substr ( sha1 ( uniqid ( rand () ) ), 13, 10 );
 				
 				// set the new password, reset token data
-				$userDBC->mkUpdate ( 'pwReminderToken=DEFAULT, pwReminderValidUntil=DEFAULT, ' . $cfg->get ( 'UserDBField_password' ) . "='" . password_hash ( $newPW, PASSWORD_DEFAULT ) . "'", $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . "='" . $data [$cfg->get ( 'UserDBField_uid' )] . "'" );
+				$userDBC->mkUpdate ( 'pwReminderToken=DEFAULT, pwReminderValidUntil=DEFAULT, ' . $cfg->get ( 'UserDBField_password' ) . "='" . password_hash ( $newPW, PASSWORD_DEFAULT ) . "'", $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . "='" . $userDBC->escapeString($data [$cfg->get ( 'UserDBField_uid' )]) . "'" );
 				
 				// find out where the user can log in:
 				$groupMemberships = '';
-				$result = $userDBC->mkSelect ( '*', $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . '="' . $data ['uid'] . '"' );
+				$result = $userDBC->mkSelect ( '*', $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . '="' . $userDBC->escapeString($data ['uid']) . '"' );
 				while ( $memberData = $result->fetch_assoc() ) {
 					foreach ( $memberData as $key => $value ) {
 						if ($key [0] == '_' && $value == 1) {
@@ -98,7 +98,7 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 			} else {
 				// Store a new token and validity for 1 hour
 				$token = sha1 ( uniqid ( rand () ) );
-				$userDBC->mkUpdate ( 'pwReminderToken="' . $token . '", pwReminderValidUntil=' . (time () + 60 * 60), $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . "='" . $data [$cfg->get ( 'UserDBField_uid' )] . "'" );
+				$userDBC->mkUpdate ( 'pwReminderToken="' . $token . '", pwReminderValidUntil=' . (time () + 60 * 60), $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . "='" . $userDBC->escapeString($data [$cfg->get ( 'UserDBField_uid' )]) . "'" );
 				$urlParts = parse_url ( 'http' . (isset ( $_SERVER ['HTTPS'] ) ? 's' : '') . '://' . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'] );
 				
 				$mailPage->contents .= 'https://' . $urlParts ['host'] . $urlParts ['path'] . '?config=useradmin&EMAIL=' . urlencode ( $requesterEmail ) . '&TOKEN=' . urlencode ( $token );

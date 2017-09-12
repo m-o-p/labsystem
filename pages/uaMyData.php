@@ -56,7 +56,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
      // query ALL fields
      $result = $userDBC->mkSelect( "*",
                                    $cfg->get('UserDatabaseTable'),
-                                   $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
+                                   $cfg->get('UserDBField_uid')."='".$userDBC->escapeString( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
                                   );
      $data = $result->fetch_assoc(); // -> only associative array
 
@@ -122,7 +122,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
        // update the values
        $userDBC->mkUpdate( "`_unassigned`=0",
            $cfg->get('UserDatabaseTable'),
-           $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ?  $usr->theSeeingUid()  : $usr->uid  )."'"
+           $cfg->get('UserDBField_uid')."='".$userDBC->escapeString( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ?  $usr->theSeeingUid()  : $usr->uid  )."'"
        );
        $data['_unassigned']=0;
      }

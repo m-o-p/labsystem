@@ -66,7 +66,8 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
   for( $i=0; $i<count( $courseArray ); $i++ ){
     $key = $courseArray[ $i ];
     $postedValue = ( isset( $_POST[ $data[ $cfg->get('UserDBField_uid') ].$key ] ) ? 1 : 0 );
-    $updateString .= ', '.$key."='".$postedValue."'";
+    // TODO: validate key consists of something like [-_A-Za-z0-9] using regex
+    $updateString .= ', '.$key."='".$userDBC->escapeString($postedValue)."'";
   }
   // $updatestring starts with ", "!
 
@@ -91,12 +92,12 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
     srand((double)microtime()*1000000);
     $newPW = substr( md5( uniqid( rand() ) ), 13, 8 );
 
-    $userDBC->mkInsert( $cfg->get('UserDBField_username')."='".trim($entries[2])."', ".
-                        $cfg->get('UserDBField_name')."='".trim($entries[0])."', ".
-                        $cfg->get('UserDBField_forename')."='".trim($entries[1])."', ".
-                        $cfg->get('UserDBField_password')."='".sha1( $newPW )."', ".
-                        $cfg->get('UserDBField_email')."='".trim($entries[2])."', ".
-                        $cfg->get('UserDBField_uid')."='".md5( uniqid( rand() ) )."'".
+    $userDBC->mkInsert( $cfg->get('UserDBField_username')."='".$userDBC->escapeString(trim($entries[2]))."', ".
+                        $cfg->get('UserDBField_name')."='".$userDBC->escapeString(trim($entries[0]))."', ".
+                        $cfg->get('UserDBField_forename')."='".$userDBC->escapeString(trim($entries[1]))."', ".
+                        $cfg->get('UserDBField_password')."='".$userDBC->escapeString(sha1( $newPW ))."', ".
+                        $cfg->get('UserDBField_email')."='".$userDBC->escapeString(trim($entries[2]))."', ".
+                        $cfg->get('UserDBField_uid')."='".$userDBC->escapeString(md5( uniqid( rand() ) ))."'".
                         $updateString,
                         $cfg->get('UserDatabaseTable') );
 

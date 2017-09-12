@@ -145,7 +145,7 @@ class DBInterfaceUser
     global $cfg, $lng;
     $what = '*'; // load all fields...
     $from = $this->myTable;
-    $where= $cfg->get("UserDBField_uid")."='".$uid."' && ".
+    $where= $cfg->get("UserDBField_uid")."='".$this->myDBC->escapeString($uid)."' && ".
             $cfg->get("User_courseID")."='1'";
     $result = $this->myDBC->mkSelect( $what, $from, $where );
     if ( $result->num_rows != 1 )

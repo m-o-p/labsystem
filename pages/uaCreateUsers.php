@@ -196,7 +196,7 @@ if ( !$pge->isVisible() ){ // directly show warning and close.
             }
             srand((double)microtime()*1000000);
             $UID         = md5( $row[$cfg->get('UserDBField_email')].uniqid( rand() ) );
-            $insertString .= ','.$cfg->get('UserDBField_uid').'="'.$UID.'"';
+            $insertString .= ','.$cfg->get('UserDBField_uid').'="'.$userDBC->escapeString($UID).'"';
           }
           // add newly subscribed courses for all users (also existing ones)
           foreach ($subscribedCourses as $value){

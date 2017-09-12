@@ -78,7 +78,7 @@ else{
                                   $cfg->get('UserDBField_uid'),
                                   $cfg->get('UserDatabaseTable'),
                                   $cfg->get('UserDBField_username')."='".$userDBC->escapeString( $_POST['USERNAME'] )."' && ".
-                                  $cfg->get('UserDBField_uid')."!='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
+                                  $cfg->get('UserDBField_uid')."!='".$userDBC->escapeString( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  )."'"
                                  );
     $data = $result->fetch_assoc();
     if ( $result->num_rows != 0){
@@ -120,7 +120,7 @@ else{
                           $cfg->get('UserDBField_forename')."='".$userDBC->escapeString( $_POST['FORENAME'] )."', ".
                           $cfg->get('UserDBField_email')."='".$userDBC->escapeString( $_POST['EMAIL'] )."'",
                           $cfg->get('UserDatabaseTable'),
-                          $cfg->get('UserDBField_uid')."='".( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ?  $usr->theSeeingUid()  : $usr->uid  )."'"
+                          $cfg->get('UserDBField_uid')."='".$userDBC->escapeString( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ?  $usr->theSeeingUid()  : $usr->uid  )."'"
                          );
       // note
       $url->put( "sysinfo", $lng->get("DataHasBeenSaved") );
