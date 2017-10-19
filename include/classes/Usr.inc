@@ -167,8 +167,8 @@ class Usr extends ElementUser{
                             	if (!$userDetailedData){
                             		$userDetailedData = $uLabDBI->getData4( $this->iSeeUID );
                             	}
+                            	$this->iSeeUID = $userDetailedData['uid'];
                             }
-                            $this->iSeeUID = $userDetailedData['uid'];
                             $currentTeam = $userDetailedData['currentTeam'];
                             $userData = $this->getGlobalUserData( $this->iSeeUID );
                             $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$currentTeam.")";
