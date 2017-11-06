@@ -562,7 +562,7 @@ class LlElement extends Element{
         $iElementFragments = array();
         $iElementTitles = array();
         $alreadyInSum = array();
-        foreach ($base->lab->deepIterate('i', $currentPage, '#' . $currentPage) as list($value, $element, $addr, $fragment)) {
+        if ($base->lab !== false) foreach ($base->lab->deepIterate('i', $currentPage, '#' . $currentPage) as list($value, $element, $addr, $fragment)) {
           if (!array_key_exists($value, $alreadyInSum)) {
               $alreadyInSum[$value] = true;
               array_push($iElementLinks, $addr);
