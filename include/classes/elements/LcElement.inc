@@ -488,6 +488,7 @@ class LcElement extends Element{
           "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" ".
           "value=\"".$lng->get("checkPrelab")."\">\n".
           "</FORM>\n";
+      $GLOBALS['linkForMCcheckUp']='';
       // /Show check up button
     }
 
