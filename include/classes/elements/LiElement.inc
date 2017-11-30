@@ -355,8 +355,10 @@ class LiElement extends Element{
       // We want a thumbnail for this...
       $thumbFilePath = $filePath.'.thumb.jpg';
       $this->checkThumb( $filePath, $thumbFilePath );
-      return ' <a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $team, 'iIdx' => $iIdx, 'filename' => $fileName) ).'">' .
-        '<img src="'.$url->link2('../php/getUploadedFile.php', Array('team' => $team, 'iIdx' => $iIdx, 'filename' => $fileName.'.thumb.jpg') ).'" onclick="zoomPreviewImage(this); return false">'.
+      // get lab index from address:
+      require( "../php/getFirstLastFinal.inc" );
+      return ' <a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $team, 'lIdx' => $firstFinal, 'iIdx' => $iIdx, 'filename' => $fileName) ).'">' .
+        '<img src="'.$url->link2('../php/getUploadedFile.php', Array('team' => $team, 'lIdx' => $firstFinal, 'iIdx' => $iIdx, 'filename' => $fileName.'.thumb.jpg') ).'" onclick="zoomPreviewImage(this); return false">'.
         '</a>';
     }
   }
@@ -394,7 +396,7 @@ class LiElement extends Element{
         $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'lIdx' => $firstFinal, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'], 'download' => 'true')).'">' .
                 $pathInfo['basename'].
                 '</a> '.
-                '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'])).'">' .
+                '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'lIdx' => $firstFinal, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'])).'">' .
                 '<img src="../syspix/button_view_13x12.gif">'.
                 '</a> '.
                 '<div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.
