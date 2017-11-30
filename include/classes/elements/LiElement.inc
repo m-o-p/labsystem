@@ -389,7 +389,9 @@ class LiElement extends Element{
         $filesize = round($file['size'] / 1024).' KB';
         $fileTime = date('H:i j.n.Y', $file['timestamp']);
         $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />';
-        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'], 'download' => 'true')).'">' .
+        // get lab index from address:
+        require( "../php/getFirstLastFinal.inc" );
+        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'lIdx' => $firstFinal, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'], 'download' => 'true')).'">' .
                 $pathInfo['basename'].
                 '</a> '.
                 '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'])).'">' .

@@ -122,8 +122,7 @@ class LlElement extends Element{
     $this->labIsClosed              = $permissions['labClosed'];
     $this->labClosedMailSent		= $permissions['labClosedMailSent'];
     $this->labIsCorrected           = $permissions['labCorrected'];
-    // available but not used
-    // $this->labTeam                  = $permissions['current_team'];
+    $this->labTeam                  = $permissions['currentTeam'];
 
     $this->userIsViewing            = !($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ); // is a user viewing or a corrector or example solution viewer watching?
 

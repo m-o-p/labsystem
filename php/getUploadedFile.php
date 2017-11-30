@@ -31,9 +31,20 @@
 require_once( "../include/init.inc" );
 require_once( "../include/classes/elements/LiDBInterfaceAnswers.inc" );
 
-if (($usr->currentTeam != $GLOBALS['url']->get('team')) && !$usr->isOfKind( IS_CORRECTOR )) {
+if (!$usr->isOfKind( IS_CORRECTOR )) {
+	// get team number from the lab status (team that is actually used in that lab
+	// might differ from the $usr->currentTeam!)
+	$givenLab = $GLOBALS['url']->get('lIdx');
+	$labStatusTeamNumber = NULL;
+	if ($givenLab{0} == 'l' && is_numeric(substr( $givenLab, 1))){
+		$labStatusTeamNumber = $GLOBALS['lDBI']->getData2idx(substr( $givenLab, 1))->labTeam;
+	}
+
+	// check if given team number equals the historic one
+	if ($labStatusTeamNumber != $GLOBALS['url']->get('team')){
 	        trigger_error('Permission denied', E_USER_ERROR);
           exit;
+	}
 }
 if (!ctype_digit($GLOBALS['url']->get('team')) || !ctype_digit($GLOBALS['url']->get('iIdx'))) {
 	        trigger_error('Wrong parameters', E_USER_ERROR);
