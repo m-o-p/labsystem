@@ -39,7 +39,7 @@ require( INCLUDE_DIR."/classes/elements/BCElement.inc" );
 class BCDBInterface extends LcDBInterface {
   var $myDBC;
   function __construct(){
-    $this->LcDBInterface();
+    parent::__construct();
   }
 
   /* The following functions have to return a BCElement instead of an LcElement.
