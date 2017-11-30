@@ -31,7 +31,7 @@
 */
 class Rom{
   var $theDataArray;
-  function Rom( $dataArray ){
+  function __construct( $dataArray ){
     $this->theDataArray = $dataArray;
   }
     

@@ -34,7 +34,7 @@ class Url
 {
   var $getParams;
 
-  function Url(){
+  function __construct(){
     $this->getParams = Array();
   }
 
