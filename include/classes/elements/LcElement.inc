@@ -63,7 +63,7 @@ class LcElement extends Element{
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   * @param $isInLab                   Am I inside a lab? (important for view visibility).
   */
-  function LcElement( $idx, $title, $contents, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false, $isInLab=false ){
+  function __construct( $idx, $title, $contents, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false, $isInLab=false ){
 
     $this->elementId                = "c";
 

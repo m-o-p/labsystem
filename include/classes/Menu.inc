@@ -68,7 +68,7 @@ class Menu{
   * @param $cssCellClassTitle   Used to format a table cell that contains a title.
   * @param $cssCellClassSpacer  Used to format a table cell that contains a spacer (empty).
   */
-  function Menu( $cssRowClass, $cssCellClassOn, $cssCellClassOff, $cssCellClassHover, $cssCellClassTitle, $cssCellClassSpacer ){
+  function __construct( $cssRowClass, $cssCellClassOn, $cssCellClassOff, $cssCellClassHover, $cssCellClassTitle, $cssCellClassSpacer ){
     global $cfg;
     $this->cssRowClass = $cssRowClass;
     $this->cssCellClassOn = $cssCellClassOn;

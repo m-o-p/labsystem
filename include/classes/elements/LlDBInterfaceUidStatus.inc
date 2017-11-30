@@ -38,7 +38,7 @@ class LlDBInterfaceUidStatus {
   /**
   * As you can see the class holds to which lab it belongs.
   */
-  function LlDBInterfaceUidStatus( $labIdx ){
+  function __construct( $labIdx ){
     global $wDBI;
     $this->myDBC   = $wDBI;
     $this->myTable = "lab_uid_status";

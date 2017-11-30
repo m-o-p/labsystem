@@ -39,7 +39,7 @@ require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 class LmDBInterfaceAnswers {
   var $myDBC;
   var $myTable;
-  function LmDBInterfaceAnswers(){
+  function __construct(){
     global $wDBI;
     $this->myDBC   = $wDBI;
     $this->myTable = "multiple_choice_answers";

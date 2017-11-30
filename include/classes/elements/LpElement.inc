@@ -48,7 +48,7 @@ class LpElement extends Element{
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
-  function LpElement( $idx, $title, $contents, $matchingMenu, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
+  function __construct( $idx, $title, $contents, $matchingMenu, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
     global $usr;
     $this->elementId                = "p";
     $this->idx                      = $idx;

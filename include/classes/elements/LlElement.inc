@@ -87,7 +87,7 @@ class LlElement extends Element{
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
-  function LlElement( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
+  function __construct( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
     global $CDBI, $usr, $sDBI, $cfg, $lng, $url, $mailFunc;
     $this->elementId                = "l";
 

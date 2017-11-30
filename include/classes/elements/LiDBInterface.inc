@@ -36,7 +36,7 @@ class LiDBInterface extends Ddbc{
   var $myDBC;
   var $myTable;
 
-  function LiDBInterface(){
+  function __construct(){
     global $dDBI;
     $this->myDBC   = $dDBI;
     $this->myTable = "inputs";

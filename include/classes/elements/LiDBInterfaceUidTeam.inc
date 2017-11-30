@@ -45,7 +45,7 @@ require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 class LiDBInterfaceUidTeam {
   var $myDBC;
   var $myTable;
-  function LiDBInterfaceUidTeam(){
+  function __construct(){
     global $wDBI;
     $this->myDBC   = $wDBI;
     $this->myTable = "input_answers_uid_team";

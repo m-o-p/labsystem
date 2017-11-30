@@ -38,7 +38,7 @@ require( INCLUDE_DIR."/classes/elements/BCElement.inc" );
 
 class BCDBInterface extends LcDBInterface {
   var $myDBC;
-  function BCDBInterface(){
+  function __construct(){
     $this->LcDBInterface();
   }
 

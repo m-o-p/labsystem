@@ -52,7 +52,7 @@ class LsElement extends Element{
   * @param $isInColl  Am I inside a collection? (with other elements important for visibility aspects).
   *                   Only passed because it is given. Has no use in this implementation.
   */
-  function LsElement( $idx, $id, $num, $start, $stop, $comment, $history, $isInColl=false ){
+  function __construct( $idx, $id, $num, $start, $stop, $comment, $history, $isInColl=false ){
     global $usr;
     $this->elementId                = "s";
     $this->idx                      = $idx;

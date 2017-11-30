@@ -41,7 +41,7 @@ class ElementUser {
   var $mailAddress;
   var $history;
 
-  function ElementUser( $uid, $userName, $foreName, $surName, $currentTeam, $userRights, $userMaximumRights, $mailAddress, $history ){
+  function __construct( $uid, $userName, $foreName, $surName, $currentTeam, $userRights, $userMaximumRights, $mailAddress, $history ){
     $this->uid                      = $uid;
     $this->userName                 = $userName;
     $this->foreName                 = $foreName;

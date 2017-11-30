@@ -36,7 +36,7 @@ class LlDBInterface {
   var $myDBC;
   var $myTable;
 
-  function LlDBInterface(){
+  function __construct(){
     global $dDBI;
     $this->myDBC   = $dDBI;
     $this->myTable = "labs";

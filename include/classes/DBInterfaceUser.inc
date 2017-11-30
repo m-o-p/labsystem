@@ -70,7 +70,7 @@ class DBInterfaceUser
   var $myDBC;
   var $myTable;
 
-  function DBInterfaceUser( ){
+  function __construct( ){
     global $cfg;
 
     $this->myDBC = new DBConnection($cfg->get("UserDatabaseHost"),

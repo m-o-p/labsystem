@@ -40,7 +40,7 @@ class Pge extends LpElement{
   /**
   * In this function the strings that will be replaced when displaying and their replacements are initialized.
   */
-  function Pge(){
+  function __construct(){
     global $cfg, $usr;
     $this->LpElement( 0, "?untitled page!", "", "", 0, false, "" );
     $this->replaceKey   = Array( "__LINKQUERY__",

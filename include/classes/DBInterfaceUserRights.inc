@@ -36,7 +36,7 @@ require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 class DBInterfaceUserRights {
   var $myDBC;
   var $myTable;
-  function DBInterfaceUserRights(){
+  function __construct(){
     global $wDBI;
     $this->myDBC   = $wDBI;
     $this->myTable = "user_rights";

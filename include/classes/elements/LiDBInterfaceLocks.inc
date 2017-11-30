@@ -34,7 +34,7 @@ require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 class LiDBInterfaceLocks {
   var $myDBC;
   var $myTable;
-  function LiDBInterfaceLocks(){
+  function __construct(){
     global $wDBI;
     $this->myDBC   = $wDBI;
     $this->myTable = "input_answers_locks";

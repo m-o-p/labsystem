@@ -108,7 +108,7 @@ class LiElement extends Element{
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
-  function LiElement( $idx, $question, $exampleSolution, $possibleCredits, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
+  function __construct( $idx, $question, $exampleSolution, $possibleCredits, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
     global $usr;
     $this->elementId                = "i";
     $this->idx                      = $idx;
