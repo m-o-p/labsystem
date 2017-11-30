@@ -42,7 +42,7 @@ class Pge extends LpElement{
   */
   function __construct(){
     global $cfg, $usr;
-    $this->LpElement( 0, "?untitled page!", "", "", 0, false, "" );
+    parent::__construct( 0, "?untitled page!", "", "", 0, false, "" );
     $this->replaceKey   = Array( "__LINKQUERY__",
                                  "__PAGETITLE__",
                                  "__SYSTEMTITLE__",
