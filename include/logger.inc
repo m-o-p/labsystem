@@ -138,7 +138,7 @@ class Logger{
   var $myTable;
   var $referrerID;
   var $doTheLogging;
-  function Logger(){
+  function __construct(){
     global $cfg;
     global $wDBI;
     $this->myDBC   = $wDBI;
