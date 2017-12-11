@@ -122,7 +122,7 @@ class Url
     if (!isset($baseParams))
       $baseParams = $this->getParams;
     if (isset($additionalParams))
-      return $baseParams + $additionalParams;  // values in the left-hand array override base params
+      return $additionalParams + $baseParams;  // values in the left-hand array override base params
     else
       return $baseParams;
   }

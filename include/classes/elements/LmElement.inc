@@ -227,6 +227,7 @@ class LmElement extends Element{
       $this->isCorrectlyAnswered  = ( ( $this->triesUp2Now > 0 ) && 
       								  $this->computeIfAnswerConsideredCorrect( $this->previousAnswersArray[$this->triesUp2Now-1] ) ); 
       $this->isAnswered =  $this->isCorrectlyAnswered || ( $this->triesUp2Now >= $cfg->get("MCAnsweringAttempts") );
+      //echo(($this->isCorrectlyAnswered ? 't' : 'f').'||'.$this->triesUp2Now.'>='.$cfg->get("MCAnsweringAttempts").'<br>');
     } else { // the example solution
       $this->answerHistory        = '';
       $this->displayPermutation   = range( 0, $this->answerCount-1 ); // identity
