@@ -73,13 +73,15 @@ if (typeof String.prototype.endsWith !== 'function') {
 
 function zoomPreviewImage(imageTag){
 	var mySuffix=".thumb.jpg";
-	if (imageTag.src.endsWith(mySuffix)){
+	var regEx = /(filename=)([^\&]+)/;
+	var imgFileName = imageTag.src.match(regEx)[2];
+	if (imgFileName.endsWith(mySuffix)){
 		// We see the thumbnail.
-		imageTag.src=imageTag.src.substring(0,imageTag.src.length-mySuffix.length);
+		imageTag.src=imageTag.src.replace( regEx, '$1' + imgFileName.substring(0,imgFileName.length-mySuffix.length) );
 		imageTag.style.display="block";
 	}else{
 		// We see the big image.
-		imageTag.src=imageTag.src+mySuffix;
+		imageTag.src=imageTag.src.replace( regEx, '$1' + imgFileName+mySuffix );
 		imageTag.style.display="inline";
 	}
 }
