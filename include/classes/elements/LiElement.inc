@@ -170,8 +170,8 @@ class LiElement extends Element{
       $this->answerComment = $answerData["comment"];
       $this->correctorsNote= $answerData['correctorsNote'];
       $this->givenCredits  = $answerData["givenCredits"];
-      $this->isClosed      = $answerData["isClosed"];
-      $this->isCorrected   = $answerData["isCorrected"];
+      $this->isClosed      = $answerData["closed"];
+      $this->isCorrected   = $answerData["corrected"];
       $this->answerHistory = $answerData["history"];
 
       /* A team can only answer the questions one by one. Reason: Force them to work together.
@@ -678,7 +678,7 @@ class LiElement extends Element{
                                 $this->uaDBI->getAllTeams( $this->idx/*, "team"*/ ); // as is unsorted/ order of answering
                                 while ( ($nextTeam = $this->uaDBI->getNextData()) ){
                                   $this->loadUserData4( $nextTeam );
-                                $link2ThisCorrection = $url->link2('../pages/view.php', Array('address' => $url->get('address'), 'seeMe' => $this->utDBI->getUID4( $nextTeam, $this->idx ))) . '#'.$fullAddress.'.'.$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' );
+                                  $link2ThisCorrection = $url->link2('../pages/view.php', Array('address' => $url->get('address'), 'seeMe' => $this->utDBI->getUID4( $nextTeam, $this->idx ))) . '#'.$fullAddress.'.'.$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' );
                                   $answers .= '<div class="labsys_mop_i_teamnr"><a href="javascript:showExampleSolutionHere('.$this->idx.','.$nextTeam.')" title="'.$lng->get('exmpleSolutionHere').'">s |</a> <a href="'.$link2ThisCorrection.'">'.$lng->get("team")." ".($url->available('pseudoNames')?'':$nextTeam)."</a></div>\n".
                                     		  '<div class="labsys_mop_i_example_solution_hidden" id="i'.$this->idx.'_exampleSolution_'.$nextTeam.'"></div>'.PHP_EOL.
                                               $this->showAnswerData( $fullAddress );
