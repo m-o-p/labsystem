@@ -673,7 +673,7 @@ class LiElement extends Element{
     if ( $usr->isSeeingSomeonesData() ) // correcting someone
       if ( $usr->theSeeingUid() != "all" ){
 								$seeMeTeam = $this->utDBI->getData4( $usr->theSeeingUid(), $this->idx, 0 ); // ( 0 = don't create the record )
-								if($seeMeTeam == 0){
+								if(empty($seeMeTeam)){
 									// No question specific mapping existing... assume lab wide mapping...
 									$seeMeTeam = $usr->theSeeingTeam(); // use the user's current team as fallback
 								}
