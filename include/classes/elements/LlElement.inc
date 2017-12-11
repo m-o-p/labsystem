@@ -487,7 +487,9 @@ class LlElement extends Element{
       $summandsLab = 0;
     }
 
-
+	$arrayOfReachableCredits = array(); // For the summarized detailed statistics
+	$arrayOfSummedUpCredits = array(); // For the summarized detailed statistics
+	$numberOfSummedUpCredits = array();; // For the summarized detailed statistics
     while( $labStatus = $this->usDBI->getNextData() ){
       if ( $showSummation ){
         if ( $labStatus['preLabFinished'] &&
@@ -597,6 +599,14 @@ class LlElement extends Element{
             $creditsArray = explode('/', $value);
             $extra_get_params['address'] = $iElementLinks[$key];
             $myRetVal .= '<a href="'.$url->link2('../pages/view.php', $extra_get_params).$iElementFragments[$key].'">'.$this->percentStick($creditsArray[0], $creditsArray[1], $iElementTitles[$key]).'</a>';
+            // Collect Statistics
+            $arrayOfReachableCredits[$key] = $creditsArray[1];
+            $numberOfSummedUpCredits[$key] = $numberOfSummedUpCredits[$key]+1;
+            if(empty($arrayOfSummedUpCredits[$key])){
+            	$arrayOfSummedUpCredits[$key] = $creditsArray[0];
+            }else{
+            	$arrayOfSummedUpCredits[$key] = $arrayOfSummedUpCredits[$key]+$creditsArray[0];
+            }
           }
           $myRetVal .= '</div>';
         }
@@ -684,6 +694,16 @@ class LlElement extends Element{
       $myRetVal .=      "<a href=\"".$url->link2(NULL, Array('seeMe' => 'all'), $_GET)."\">".
                         $lng->get("showAllUsersAnswers").
                         "</a>";
+      // Averaged statistics
+      $extra_get_params['seeMe'] = 'all';
+      if (!empty($arrayOfSummedUpCredits) && $usr->isOfKind( IS_CORRECTOR )){
+      	$myRetVal .= '<div class="labsys_mop_l_status_percentSticksDiv">';
+      	foreach ($arrayOfSummedUpCredits as $key=>$value){
+      		$extra_get_params['address'] = $iElementLinks[$key];
+      		$myRetVal .= '<a href="'.$url->link2('../pages/view.php', $extra_get_params).$iElementFragments[$key].'">'.$this->percentStick(round($value/$numberOfSummedUpCredits[$key],2), $arrayOfReachableCredits[$key], $iElementTitles[$key]).'</a>';
+      	}
+      	$myRetVal .= '</div>';
+      }
     }
 
       $myRetVal .=   "</td>".
@@ -696,8 +716,8 @@ class LlElement extends Element{
             $myRetVal  .= round($percentage*100, 2)."%\n";
             $myRetVal  .= $this->percentBar( $percentage, $cfg->get("percentageFailedPreLab") );
             $myRetVal  .= '<span class="labsys_mop_grayed">'.
-                          round( $sumGivenCreditsPreLab/*/ $summandsPreLab*/, 2 )."/ ".
-                          round( $sumPossibleCreditsPreLab/*/ $summandsPreLab*/, 2 ).
+                          round( $sumGivenCreditsPreLab/ $summandsPreLab, 2 )."/ ".
+                          round( $sumPossibleCreditsPreLab/ $summandsPreLab, 2 ).
                           "</span>\n";
 /* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')){
             echo( round($percentage*100, 2)."%\t" );
@@ -718,8 +738,8 @@ class LlElement extends Element{
             $myRetVal  .= round($percentage*100, 2)."%\n";
             $myRetVal  .= $this->percentBar( $percentage, $cfg->get("percentageFailedLab") );
             $myRetVal  .= '<span class="labsys_mop_grayed">'.
-                          round( $sumGivenCreditsLab/*/ $summandsLab*/, 2 )."/ ".
-                          round( $sumPossibleCreditsLab/*/ $summandsLab*/, 2 ).
+                          round( $sumGivenCreditsLab/ $summandsLab, 2 )."/ ".
+                          round( $sumPossibleCreditsLab/ $summandsLab, 2 ).
                           "</span>\n";
 /* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')){
             echo( round($percentage*100, 2)."%\t" );
