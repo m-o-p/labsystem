@@ -170,8 +170,8 @@ class LiElement extends Element{
       $this->answerComment = $answerData["comment"];
       $this->correctorsNote= $answerData['correctorsNote'];
       $this->givenCredits  = $answerData["givenCredits"];
-      $this->isClosed      = $answerData["closed"];
-      $this->isCorrected   = $answerData["corrected"];
+      $this->isClosed      = $answerData["isClosed"];
+      $this->isCorrected   = $answerData["isCorrected"];
       $this->answerHistory = $answerData["history"];
 
       /* A team can only answer the questions one by one. Reason: Force them to work together.
@@ -672,7 +672,12 @@ class LiElement extends Element{
 
     if ( $usr->isSeeingSomeonesData() ) // correcting someone
       if ( $usr->theSeeingUid() != "all" ){
-                                $this->loadUserData4( $this->utDBI->getData4( $usr->theSeeingUid(), $this->idx, 0 ) ); // ( 0 = don't create the record )
+								$seeMeTeam = $this->utDBI->getData4( $usr->theSeeingUid(), $this->idx, 0 ); // ( 0 = don't create the record )
+								if($seeMeTeam == 0){
+									// No question specific mapping existing... assume lab wide mapping...
+									$seeMeTeam = $usr->theSeeingTeam(); // use the user's current team as fallback
+								}
+                                $this->loadUserData4( $seeMeTeam );
                                 $answers = $this->showAnswerData( $fullAddress );
       }else{ // crosscorrecting all
                                 $this->uaDBI->getAllTeams( $this->idx/*, "team"*/ ); // as is unsorted/ order of answering

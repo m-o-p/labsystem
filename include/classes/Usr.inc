@@ -38,6 +38,7 @@ require_once( INCLUDE_DIR."/classes/DBInterfaceUserRights.inc" );
 
 class Usr extends ElementUser{
   private $iSeeUID;
+  private $iSeeTeam;
   private $iSeeDesc;
   function __construct()
   {
@@ -95,6 +96,7 @@ class Usr extends ElementUser{
   	
   	// Initialize them...
   	$this->iSeeUID='';
+  	$this->iSeeTeam='';
   	$this->iSeeDesc='nobody is seen';
   }
 
@@ -124,6 +126,16 @@ class Usr extends ElementUser{
       return $this->iSeeUID;
     } else return false;
   }
+  
+  /**
+   * Whom is the user viewing?
+   * @return The team of the watched user or false.
+   */
+  function theSeeingTeam(){
+  	if ( $this->isSeeingSomeonesData() ) {
+  		return $this->iSeeTeam;
+  	} else return false;
+  }
 
   /**
   * What is the description of the viewed user?
@@ -148,7 +160,7 @@ class Usr extends ElementUser{
     $this->iSeeUID = $uid;
     $userDetailedData = false;
     if ( $this->iSeeUID != 'all' ){ // seeing one member's answers
-                            $currentTeam = 'unk';
+                            $this->iSeeTeam = 'unk';
                             if (!($url->available('address') && $url->get('address')[0]=='l')){
                             	// We are not viewing a lab => load current team number from the user rights data
                             	global $urDBI;
@@ -169,9 +181,9 @@ class Usr extends ElementUser{
                             	}
                             	$this->iSeeUID = $userDetailedData['uid'];
                             }
-                            $currentTeam = $userDetailedData['currentTeam'];
+                            $this->iSeeTeam = $userDetailedData['currentTeam'];
                             $userData = $this->getGlobalUserData( $this->iSeeUID );
-                            $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$currentTeam.")";
+                            $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$this->iSeeTeam.")";
     }else{ // seeing ALL member's answers
                             $this->iSeeDesc = $lng->get("showAllUADesc");
     }
