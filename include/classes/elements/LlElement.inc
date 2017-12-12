@@ -689,11 +689,12 @@ class LlElement extends Element{
                      "<td class=\"labsys_mop_l_status_table_cell_name\">";
 
     // add entry to correct all users
-    if( $usr->isOfKind( IS_CORRECTOR ) &&
-        ( !$usr->isSeeingSomeonesData() || ( $usr->theSeeingUid() != "all" ) ) ){
-      $myRetVal .=      "<a href=\"".$url->link2(NULL, Array('seeMe' => 'all'), $_GET)."\">".
-                        $lng->get("showAllUsersAnswers").
-                        "</a>";
+    if( $usr->isOfKind( IS_CORRECTOR ) ){
+		if ( !$usr->isSeeingSomeonesData() || ( $usr->theSeeingUid() != "all" ) ){
+      		$myRetVal .= "<a href=\"".$url->link2(NULL, Array('seeMe' => 'all'), $_GET)."\">".
+                        	$lng->get("showAllUsersAnswers").
+                        	"</a>";
+		}
       // Averaged statistics
       $extra_get_params['seeMe'] = 'all';
       if (!empty($arrayOfSummedUpCredits) && $usr->isOfKind( IS_CORRECTOR )){
@@ -705,6 +706,7 @@ class LlElement extends Element{
       	$myRetVal .= '</div>';
       }
     }
+
 
       $myRetVal .=   "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_lab_prelab_credits\">";
