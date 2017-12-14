@@ -366,7 +366,7 @@ class LlElement extends Element{
   function labStatusUIDALLLabs( $uid, $compact=false ){
     $this->usDBI->getAllUidDataALLLabs( $uid );
 
-    return $this->showTableResults( true, $compact );
+    return $this->showTableResults( true, $compact, FALSE );
   }
 
   /**
@@ -439,10 +439,11 @@ class LlElement extends Element{
   *
   * @param $showSummation   Should the points be summated and a summary be added as last row?
   * @param $onlySummation   Only show the summation.
+  * @param $averageSummedCredits Shall the summed credits in the last row be averages? 30/ 42 instead of 345/ 432
   *
   * @return string          The html code of the query result's table.
   */
-  function showTableResults( $showSummation=false, $onlySummation=false ){
+  function showTableResults( $showSummation=false, $onlySummation=false, $averageSummedCredits=TRUE ){
     global $usr, $lng, $url, $pge, $cfg, $lDBI;
    // The different learning units might are given only by index.
    // So for the human being I put the name (besides the index that
@@ -696,14 +697,16 @@ class LlElement extends Element{
                         	"</a>";
 		}
       // Averaged statistics
-      $extra_get_params['seeMe'] = 'all';
-      if (!empty($arrayOfSummedUpCredits) && $usr->isOfKind( IS_CORRECTOR )){
-      	$myRetVal .= '<div class="labsys_mop_l_status_percentSticksDiv">';
-      	foreach ($arrayOfSummedUpCredits as $key=>$value){
-      		$extra_get_params['address'] = $iElementLinks[$key];
-      		$myRetVal .= '<a href="'.$url->link2('../pages/view.php', $extra_get_params).$iElementFragments[$key].'">'.$this->percentStick(round($value/$numberOfSummedUpCredits[$key],2), $arrayOfReachableCredits[$key], $iElementTitles[$key]).'</a>';
-      	}
-      	$myRetVal .= '</div>';
+      if ($averageSummedCredits){
+	      $extra_get_params['seeMe'] = 'all';
+	      if (!empty($arrayOfSummedUpCredits) && $usr->isOfKind( IS_CORRECTOR )){
+	      	$myRetVal .= '<div class="labsys_mop_l_status_percentSticksDiv">';
+	      	foreach ($arrayOfSummedUpCredits as $key=>$value){
+	      		$extra_get_params['address'] = $iElementLinks[$key];
+	      		$myRetVal .= '<a href="'.$url->link2('../pages/view.php', $extra_get_params).$iElementFragments[$key].'">'.$this->percentStick(round($value/$numberOfSummedUpCredits[$key],2), $arrayOfReachableCredits[$key], $iElementTitles[$key]).'</a>';
+	      	}
+	      	$myRetVal .= '</div>';
+	      }
       }
     }
 
@@ -718,8 +721,8 @@ class LlElement extends Element{
             $myRetVal  .= round($percentage*100, 2)."%\n";
             $myRetVal  .= $this->percentBar( $percentage, $cfg->get("percentageFailedPreLab") );
             $myRetVal  .= '<span class="labsys_mop_grayed">'.
-                          round( $sumGivenCreditsPreLab/ $summandsPreLab, 2 )."/ ".
-                          round( $sumPossibleCreditsPreLab/ $summandsPreLab, 2 ).
+                          round( $sumGivenCreditsPreLab/ ($averageSummedCredits ? $summandsPreLab : 1), 2 )."/ ".
+                          round( $sumPossibleCreditsPreLab/ ($averageSummedCredits ? $summandsPreLab : 1), 2 ).
                           "</span>\n";
 /* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')){
             echo( round($percentage*100, 2)."%\t" );
@@ -740,8 +743,8 @@ class LlElement extends Element{
             $myRetVal  .= round($percentage*100, 2)."%\n";
             $myRetVal  .= $this->percentBar( $percentage, $cfg->get("percentageFailedLab") );
             $myRetVal  .= '<span class="labsys_mop_grayed">'.
-                          round( $sumGivenCreditsLab/ $summandsLab, 2 )."/ ".
-                          round( $sumPossibleCreditsLab/ $summandsLab, 2 ).
+                          round( $sumGivenCreditsLab/ ($averageSummedCredits ? $summandsLab : 1), 2 )."/ ".
+                          round( $sumPossibleCreditsLab/ ($averageSummedCredits ? $summandsLab : 1), 2 ).
                           "</span>\n";
 /* CSV Export of summarised results */ if ($GLOBALS['url']->available('exportCSV')){
             echo( round($percentage*100, 2)."%\t" );
