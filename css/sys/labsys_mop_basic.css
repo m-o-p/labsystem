@@ -1091,6 +1091,24 @@ fieldset{
                     border: none;
                     background-color: #eeeeee;
   }
+  .labsys_mop_m_name_wrong{ /* Correctors see that style containing the unsername if they are "correcting all" */
+                    margin-top: 5px;
+                    margin-left: -20px;
+                    padding: 5px 5px 5px 25px;
+                    font-size: 0.7em;
+                    text-align: right;
+                    border: none;
+                    background-color: #faa;
+  }
+  .labsys_mop_m_name_unanswered, .labsys_mop_m_name_unanswered_wrong{ /* Correctors see that style containing the unsername if they are "correcting all" */
+                    margin-top: 5px;
+                    margin-left: -20px;
+                    padding: 5px 5px 5px 25px;
+                    font-size: 0.7em;
+                    text-align: right;
+                    border: none;
+                    background-color: #ffa;
+  }
   
 /* ------ additional styles for the i element ------ */ 
   .labsys_mop_elements_i_around{ /* put around the i element */

@@ -919,10 +919,13 @@ class LlElement extends Element{
                       "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."\">\n".
                       "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"updateStatus\">\n".
+                      '<div class="labsys_mop_note">'.
                       "<input tabindex=\"".$pge->nextTab++."\"
                                type=\"submit\"
                                class=\"labsys_mop_button_fullwidth\"
                                value=\"".$lng->get("updateStatus")."\">\n".
+                      '<div><input type="checkbox" id="CHECK_PRELAB" name="CHECK_PRELAB" value="checkPreLab" /><label for="CHECK_PRELAB">'.$lng->get('checkPrelab').'</label></div>'.PHP_EOL.
+                      '</div>'.
                       "</FORM>\n";
 
     $myRetVal .= $this->getTableResultsLegend();
@@ -1797,16 +1800,29 @@ class LlElement extends Element{
    */
   function isPrelabFinishedByAllCurrentTeammates( $teamToCheck ){
     // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
-    global $urDBI;
-
-    $urDBI->getAllData( "", true, "`currentTeam` = '".$teamToCheck."'" );
-    $preLabAllTeammatesFin = true;
-    while ( ($dataArray = $urDBI->getNextData()) ){
-      $uid          = $dataArray['uid'];
-      $permissions  = $this->usDBI->getData4( $uid );
-      $preLabAllTeammatesFin &= $permissions['preLabFinished'];
-      // Fixed?: log this to check why the program sometimes does not open the lab for teams both having finished the prelab
-    }
+    // Attention: This is wrong if the team number of someone changed!
+    
+  	$preLabAllTeammatesFin = true;
+  	if (!$this->isInSched){
+  		// Use archive data as noone can be added 
+  	    $this->usDBI->getAllTeamData($teamToCheck);
+//    	    echo('Loading team '.$teamToCheck.'<br>');
+  	    while ($dataArray = $this->usDBI->getNextData()){
+  	    	$preLabAllTeammatesFin &= $dataArray['preLabFinished'];
+//   	    	echo($dataArray['uid'].' finished? '.($dataArray['preLabFinished'] ? 'T':'F').'<br>');
+      	}
+//       	echo(' result: '.($preLabAllTeammatesFin ? 't':'f').'<br>');
+  	}else{
+  		// Use current mapping
+	    global $urDBI;
+	    $urDBI->getAllData( "", true, "`currentTeam` = '".$teamToCheck."'" );
+	    while ( ($dataArray = $urDBI->getNextData()) ){
+	      $uid          = $dataArray['uid'];
+	      $permissions  = $this->usDBI->getData4( $uid );
+	      $preLabAllTeammatesFin &= $permissions['preLabFinished'];
+	      // Fixed?: log this to check why the program sometimes does not open the lab for teams both having finished the prelab
+	    }  		
+  	}
     return $preLabAllTeammatesFin;
   }
 
@@ -2000,7 +2016,7 @@ class LlElement extends Element{
          }
 
     // calculate prelab stats for EXISTING entries
-    $this->updateStatus2();
+	if (isset($_POST['CHECK_PRELAB']) && $_POST['CHECK_PRELAB']=='checkPreLab') $this->updateStatus2();
 
     // Validity (session ID) is checked by the calling script already.
 
@@ -2100,15 +2116,16 @@ class LlElement extends Element{
           trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
           exit;
          }
-    // Validity (session ID) is checked by the calling script yet.
-
-    $is2bClosed = $this->isAfter1stSched && !$this->isInSched; // should the lab be closed?
 
     // iterate over EXISTING statistics
-    $this->usDBI->getAllData( "current_team" );
+    $this->usDBI->getAllData( 'current_team' );
 
-    while( ($labStatus = $this->usDBI->getNextData()) ){
-
+    $teams = array();
+    while( $labStatus = $this->usDBI->getNextData() ){
+//       echo('checking '.$labStatus['uid'].' of '.$labStatus['currentTeam'].'<br>');
+      if (!in_array($labStatus['currentTeam'], $teams)){
+      	$teams[] = $labStatus['currentTeam'];
+      }
       // Are all multiple choice questions answered (->LmElement)?
       $allPreLabAnswered = true;
       $givenCredits = 0;
@@ -2122,32 +2139,13 @@ class LlElement extends Element{
               $givenCredits += $element->getGivenCredits();
           $possibleCredits += $element->getPossibleCredits();
       }
-
-    // check DURING and after 1st schedule if all teammates finished to set this status correctly:
-    $prelabFinishedByTeam = ($numberOfPrelabMC == 0) || // no questions
-                            ( // if it is running do a check
-                                ($this->isInSched || $this->visibleBefore1stSched) &&
-                                $this->isPrelabFinishedByAllCurrentTeammates( $labStatus['currentTeam'] )
-                            ) || ( // if we did not check we take what was there
-                                !($this->isInSched || $this->visibleBefore1stSched) &&
-                                $labStatus['preLabAllTeammFinished']
-                            );
-    // Change? -> Change status
-    if ( $labStatus['preLabAllTeammFinished'] != $prelabFinishedByTeam ){
-            $this->usDBI->setPrelabFinished( $labStatus['currentTeam'] );
-            $GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lPreLabFinished, $labStatus['currentTeam']);
-    }
-
-//echo( $givenCredits.'/ '.$possibleCredits.'<br>' );
-       // changes?
-        //if ( true// $labStatus['preLabPossibleCredits'] == 0
-        //    ) // yes -> save them.
+      // Update newly computed data:
               $this->usDBI->setData4( $labStatus['uid'],
                                       $labStatus['currentTeam'],
                                       $allPreLabAnswered, // $labStatus['preLabFinished'],
                                       $givenCredits, // $labStatus['preLabGivenCredits'],     // $prelabGivenCredits
                                       $possibleCredits, // $labStatus['preLabPossibleCredits'],  // $prelabPossibleCredits
-                                      $prelabFinishedByTeam, // $labStatus['preLabAllTeammFinished'],
+                                      false, // $labStatus['preLabAllTeammFinished'],
                                       $labStatus['labClosed'],
                                       $labStatus['labClosedMailSent'],
                                       $labStatus['labCorrected'],
@@ -2157,7 +2155,14 @@ class LlElement extends Element{
                                       $labStatus['detailedCredits'],
                                       $lng->get("statusUpdated") ); // create my dataset
     }
-
+    // As the prelab status check is also using the usDBI, we can only use it afterwards...
+    foreach($teams as $nextTeam){
+	    if ($this->isPrelabFinishedByAllCurrentTeammates( $nextTeam )){
+// 	    	echo('setting team '.$nextTeam.' green <br>');
+	    	$this->usDBI->setPrelabFinished( $nextTeam );
+	    	$GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lPreLabFinished, $nextTeam);
+	    }    	
+    }
     //header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }
 }

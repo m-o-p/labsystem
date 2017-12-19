@@ -168,14 +168,49 @@ class LmElement extends Element{
   }
   
   /**
-   * Returns if the given $answer is considered correct.
-   * @param unknown $answerMask
+   * Returns if the given $answer is considered correct. Requires $this->displayPermutation to be set.
+   * @param array $answerMaskArray The array of previously given answers.
+   * @param $uid The user UID.
    * @return boolean Returns if the given $answer is considered correct.
    */
-  function computeIfAnswerConsideredCorrect($answerMask){
-  	if ($answerMask == $this->correctMask){
-		return TRUE;  		
+  function computeIfAnswerConsideredCorrect(&$answerMaskArray, $uid){
+  	
+  	// I do not know how but it seems the systems sometime does not accept right answers?
+  	// As fix, the answer record of the user is repaired by removing all answers behing?!? the correct one...
+  	$i=-1;
+  	$previousAnswersArray = array();
+  	if ($answerMaskArray[$this->triesUp2Now-1] == $this->correctMask){
+  		return TRUE;
+  	}else while($i++<$this->triesUp2Now){
+  		$previousAnswersArray[] = $answerMaskArray[$i];
+		if ($answerMaskArray[$i] == $this->correctMask){
+			$previousAnswersArray[] = $this->markAsUnChanged(0); // insert place holder
+// 			echo('Fixing entry for '.$uid.' at m'.$this->idx.'.<br>'."\r\n");
+			trigger_error( 'Fixing entry for '.$uid.' at m'.$this->idx.' where '.$this->correctMask.' is correct.', E_USER_WARNING );
+// 			.' ('.$answerMaskArray[$i].'&'.$this->correctMask.' ## ');
+// 			print_r($previousAnswersArray);
+// 			print_r($answerMaskArray);
+// 			echo('<br>');
+ 			$this->mcDBI->setData4( $uid, $this->idx, $this->displayPermutation, $previousAnswersArray, "-fixed entry-" );
+			return TRUE;
+		}
   	}
+  	
+//   	if (($answerMask & $this->correctMask) == $answerMask){
+// 		return TRUE;  		
+//   	}
+  	
+//   	echo('m'.$this->idx.' expects '.$this->correctMask.' but given '.$answerMask.'<br>');
+//   	$m = -1;
+//   	while ($m++<=sqrt($this->correctMask)){
+//   		echo((($this->mask($m) & $this->correctMask) == $this->mask($m) ? 'X':'#'));
+//   	}
+//   	echo(' ('.$this->correctMask.') is correct<br>');
+//   	$m = -1;
+//   	while ($m++<=sqrt($answerMask)){
+//   		echo((($this->mask($m) & $answerMask) == $this->mask($m) ? 'X':'#'));
+//   	}
+//   	echo('('.$answerMask.') is given<br>');
   	
   	if (!is_null($this->requiresNcorrect)){
   		// fewer correct answers are considered okay
@@ -225,7 +260,7 @@ class LmElement extends Element{
       $this->triesUp2Now          = count( $this->previousAnswersArray )-1; // Last holds the current try.
       // If the answer is considered correct depends on the "requiresNcorrect" parameter
       $this->isCorrectlyAnswered  = ( ( $this->triesUp2Now > 0 ) && 
-      								  $this->computeIfAnswerConsideredCorrect( $this->previousAnswersArray[$this->triesUp2Now-1] ) ); 
+      								  $this->computeIfAnswerConsideredCorrect( $this->previousAnswersArray, $uid ) ); 
       $this->isAnswered =  $this->isCorrectlyAnswered || ( $this->triesUp2Now >= $cfg->get("MCAnsweringAttempts") );
       //echo(($this->isCorrectlyAnswered ? 't' : 'f').'||'.$this->triesUp2Now.'>='.$cfg->get("MCAnsweringAttempts").'<br>');
     } else { // the example solution
@@ -356,69 +391,6 @@ class LmElement extends Element{
 
     $ret.=$this->getAnswerFieldsHTML( FALSE, $isGettingAnswered );
 
-    //// The answer(attempt)s will be put inside a table.
-    //$ret .= "<table id=\"aTable".$this->idx."\" class=\"labsys_mop_m_answers_table\" cellspacing=\"5px\">\n".
-    //        "<tr><!-- fixed layout -->";
-    //        // all previous answering attempts
-    //        for ( $i=0; $i < $this->triesUp2Now; $i++ ) $ret .= "<td class=\"labsys_mop_m_answers_table_checkbox_cell\"></td>";
-
-    //        // the solution
-    //        if ( !$this->isAnswered || !$this->isCorrectlyAnswered ) $ret .= "<td class=\"labsys_mop_m_answers_table_checkbox_cell\"></td>";
-
-    //        // the answers
-    //        $ret .= "<td class=\"labsys_mop_m_answers_table_answer_cell\"></td></tr>\n";
-
-    //for ( $i=0; $i < $this->answerCount; $i++){ // iteration over the number of answers
-    //  $ret .=  "<tr class=\"labsys_mop_m_answers_table_row\">\n";
-    //  $actualAnswer = $this->displayPermutation[$i];
-
-    //  for ( $j=0; $j < $this->triesUp2Now; $j++ ) { // Iteration over the previous answers
-    //    $actualMask = $this->previousAnswersArray[$j]; // the answer given there
-
-    //    $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell_".( $actualMask == $this->correctMask ?  "right" :  "wrong"  )."\">".
-    //             "<input type=\"checkbox\" ".
-    //                    "tabindex=\"".$pge->nextTab++."\" ".
-    //                    "title='".$lng->get( 'isCorrect' )."' ".
-    //                     ( ($actualMask & LmElement::mask($actualAnswer)) ?
-    //                                "checked=\"checked\" " : ''
-    //                               ).
-    //                     "disabled=\"disabled\" ".
-    //              " onchange='isDirty=true'></td>\n";
-    //   } // Iteration over the previous answers (end)
-
-    //   if ( !$this->isAnswered ) $actualMask = $this->previousAnswersArray[$this->triesUp2Now]; // the current answer
-    //                        else $actualMask = $this->correctMask; // the example solution
-
-    //   if ( !$this->isAnswered || !$this->isCorrectlyAnswered ){
-    //   // show current answer or example solution
-    //    $ret .=  "\t<td class=\"labsys_mop_m_answers_table_checkbox_cell\">".
-    //             "<input type=\"checkbox\" ".
-    //                    "id=\"m".$this->idx."a".$actualAnswer."\" ".
-    //                    "name=\"ANSWER".$actualAnswer."\" ".
-    //                    "value=\"".LmElement::mask($actualAnswer)/*2^$actualAnswer*/."\" ".
-    //                    "tabindex=\"".$pge->nextTab++."\" ".
-    //                     ( ($actualMask & LmElement::mask($actualAnswer)) ?
-    //                                "checked=\"checked\" " : ''
-    //                               ).
-    //                     ( !$isGettingAnswered ?
-    //                                "disabled=\"disabled\" " : ''
-    //                               ).
-    //              " onchange='isDirty=true'></td>\n";
-    //   }
-
-    //   // The answers:
-    //   $ret .=  "\t<td class=\"labsys_mop_m_answers_table_answer_cell\">".
-    //            "<label for=\"m".$this->idx."a".$actualAnswer."\">".
-    //            ( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))) ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
-    //            returnHTML( $this->answerArray[$actualAnswer] ).
-    //            ( ($this->isAnswered && !($this->correctMask & LmElement::mask($actualAnswer))) ?  "</span>"  : '' ).
-    //            "</label>".
-    //            "</td>\n</tr>\n";
-    //} // iteration over the number of answers (end)
-
-    //$ret .= "</table>\n";
-
-
     $hints = $this->getHints();
 
     if(!empty($hints)){
@@ -498,10 +470,11 @@ class LmElement extends Element{
                   while ( ($nextUID = $this->mcDBI->getNextData()) ){
                     //information row
                     $userData = $usr->getGlobalUserData( $nextUID );
-                    $answers .= "<div class=\"labsys_mop_m_name\">".$userData['foreName'].' '.$userData['name']."</div>\n";
                     // answer
                     $this->loadUserData4( $nextUID );
-                    $answers .= $this->showAnswer( $fullAddress );
+                    $answers .= '<div class="labsys_mop_m_name'.($this->isAnswered ? '' : '_unanswered').($this->isCorrectlyAnswered ? '' : '_wrong').'">'.$userData['foreName'].' '.$userData['name'].
+                                ( $this->isAnswered || $this->isChangedByUser( end($this->previousAnswersArray) ) ? '' : " <img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get('explainUnChanged')."\"> ")."</div>\n". // can answer?
+                                $this->showAnswer( $fullAddress );
                   }
         }
     }
@@ -609,7 +582,7 @@ class LmElement extends Element{
                         ( $i<$this->triesUp2Now || !($isGettingEdited || $isGettingAnswered) ? ' disabled="disabled"' : ' onchange="isDirty=true" tabindex="'.$pge->nextTab++.'"').
                         '></div>'.
                         ($colorMe || $colorExampleSolution ? '</div>' : '' ).PHP_EOL;
-        if ($this->previousAnswersArray[$i] == $this->getCorrectMask()){ break; }
+        //if ($this->previousAnswersArray[$i] == $this->getCorrectMask()){ break; }
       }
       return $returnValue;
     }
@@ -1002,7 +975,7 @@ class LmElement extends Element{
   }
 
   /**
-  * Marks the answer as UNanswered. Used to mark if the user already saved
+  * Marks the answer as Unanswered. Used to mark if the user already saved
   * an answer.
   * Only questions answered once get checked on the checkup.
   * $input The value to mark
