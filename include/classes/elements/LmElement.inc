@@ -211,7 +211,7 @@ class LmElement extends Element{
 //   		echo((($this->mask($m) & $answerMask) == $this->mask($m) ? 'X':'#'));
 //   	}
 //   	echo('('.$answerMask.') is given<br>');
-  	
+  	$answerMask = $answerMaskArray[$this->triesUp2Now-1];
   	if (!is_null($this->requiresNcorrect)){
   		// fewer correct answers are considered okay
   		// The algorithm is correctlyChecked-wronglyChecked =
@@ -224,7 +224,7 @@ class LmElement extends Element{
   			$didUserCheckAnswer = (($answerMask & (1<<$answerNumber)) == (1<<$answerNumber));
   			if ($didUserCheckAnswer){
   				if ($isAnswerCorrect){
-  					$amountCheckedCorrectAnswers++; // correctly checked: -1
+  					$amountCheckedCorrectAnswers++; // correctly checked: +1
   				}else{
   					$amountCheckedCorrectAnswers--; // wrongly checked: -1
   				}
