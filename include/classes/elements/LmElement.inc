@@ -174,7 +174,6 @@ class LmElement extends Element{
    * @return boolean Returns if the given $answer is considered correct.
    */
   function computeIfAnswerConsideredCorrect(&$answerMaskArray, $uid){
-  	
   	// I do not know how but it seems the systems sometime does not accept right answers?
   	// As fix, the answer record of the user is repaired by removing all answers behing?!? the correct one...
   	$i=-1;
@@ -183,7 +182,7 @@ class LmElement extends Element{
   		return TRUE;
   	}else while($i++<$this->triesUp2Now){
   		$previousAnswersArray[] = $answerMaskArray[$i];
-		if ($answerMaskArray[$i] == $this->correctMask){
+		if (($i<$this->triesUp2Now-1) && ($answerMaskArray[$i] == $this->correctMask)){
 			$previousAnswersArray[] = $this->markAsUnChanged(0); // insert place holder
 // 			echo('Fixing entry for '.$uid.' at m'.$this->idx.'.<br>'."\r\n");
 			trigger_error( 'Fixing entry for '.$uid.' at m'.$this->idx.' where '.$this->correctMask.' is correct.', E_USER_WARNING );
@@ -953,6 +952,11 @@ class LmElement extends Element{
   */
   /*static*/ function checkUserAnswer(){
     global $usr, $cfg;
+    
+    if ( !$this->isChangedByUser() ){
+    	// not answered yet -> do nothing
+    	return false;
+    }
 
     $GLOBALS['Logger']->logToDatabase('l'.$_POST['IDX'].'~m'.$this->idx, logActions::mCheck);
     $GLOBALS['Logger']->logToDatabase('l'.$_POST['IDX'].'~m'.$this->idx, ($this->isCorrectlyAnswered?logActions::mIsCorrectAnswer:logActions::mIsWrongAnswer));
@@ -960,11 +964,6 @@ class LmElement extends Element{
     // if it is not answered it will not be correct as the not answered status sets a bit...
     if ( $this->isAnswered ){  // enough checks yet or correct...
       return true;
-    }
-
-    if ( !$this->isChangedByUser() ){
-      // not answered yet -> do nothing
-      return false;
     }
 
     $this->previousAnswersArray[] = $this->markAsUnChanged(0); // insert empty answer at the end
