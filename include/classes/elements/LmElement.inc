@@ -473,7 +473,7 @@ class LmElement extends Element{
                     // answer
                     $this->loadUserData4( $nextUID );
                     $answers .= '<div class="labsys_mop_m_name'.($this->isAnswered ? '' : '_unanswered').($this->isCorrectlyAnswered ? '' : '_wrong').'">'.$userData['foreName'].' '.$userData['name'].
-                                ( $this->isAnswered || $this->isChangedByUser( end($this->previousAnswersArray) ) ? '' : " <img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get('explainUnChanged')."\"> ")."</div>\n". // can answer?
+                                ( $this->isAnswered || $this->isChangedByUser() ? '' : " <img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get('explainUnChanged')."\"> ")."</div>\n". // can answer?
                                 $this->showAnswer( $fullAddress );
                   }
         }
@@ -486,7 +486,7 @@ class LmElement extends Element{
              "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
              "<div class=\"labsys_mop_m_question\">".
               "<label for=\"aTable".$this->idx."\">".
-               ( $this->isAnswered || $this->isChangedByUser( end($this->previousAnswersArray) ) ? '' : "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get('explainUnChanged')."\"> ").
+               ( $this->isAnswered || $this->isChangedByUser() ? '' : "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get('explainUnChanged')."\"> ").
                '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).returnHTML($this->question).'<a href="#'.$fullAddress.'" class="link-anchor">¶</a></div>'.
               "</label>".
              "</div>\n".
@@ -962,7 +962,7 @@ class LmElement extends Element{
       return true;
     }
 
-    if ( !$this->isChangedByUser(end($this->previousAnswersArray)) ){
+    if ( !$this->isChangedByUser() ){
       // not answered yet -> do nothing
       return false;
     }
@@ -987,12 +987,13 @@ class LmElement extends Element{
 
   /**
    * Is the question marked as answered?
-   * $input The value to check
    * return If the question is marked as answered
    */
-  private function isChangedByUser( $input ){
+  private function isChangedByUser(){
   	// magic number alarm! If you have more than 60 answers => trouble...
-    return !($input & $this->mask(60));
+    return !(end($this->previousAnswersArray) & $this->mask(60)) &&
+           // if the user did not change the anser to the previous try -> ignore try as it is not serious... (prevent checking in empty answers)
+    	   (count($this->previousAnswersArray)>1 && ($this->previousAnswersArray[$this->triesUp2Now] != $this->previousAnswersArray[$this->triesUp2Now-1]));
   }
 
 // The next functions are used for the element's manage page. ***********************************************
