@@ -991,9 +991,9 @@ class LmElement extends Element{
    */
   private function isChangedByUser(){
   	// magic number alarm! If you have more than 60 answers => trouble...
-    return !(end($this->previousAnswersArray) & $this->mask(60)) &&
+    return !(end($this->previousAnswersArray) == $this->mask(60)) &&
            // if the user did not change the anser to the previous try -> ignore try as it is not serious... (prevent checking in empty answers)
-    	   (count($this->previousAnswersArray)>1 && ($this->previousAnswersArray[$this->triesUp2Now] != $this->previousAnswersArray[$this->triesUp2Now-1]));
+    	   (count($this->previousAnswersArray)==1 || ($this->previousAnswersArray[$this->triesUp2Now] != $this->previousAnswersArray[$this->triesUp2Now-1]));
   }
 
 // The next functions are used for the element's manage page. ***********************************************
