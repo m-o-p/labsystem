@@ -953,7 +953,7 @@ class LmElement extends Element{
   /*static*/ function checkUserAnswer(){
     global $usr, $cfg;
     
-    if ( !$this->isChangedByUser() ){
+    if ( ($this->triesUp2Now>=$cfg->get('MCAnsweringAttempts')) || !$this->isChangedByUser() ){
     	// not answered yet -> do nothing
     	return false;
     }
@@ -990,9 +990,9 @@ class LmElement extends Element{
    */
   private function isChangedByUser(){
   	// magic number alarm! If you have more than 60 answers => trouble...
-    return !(end($this->previousAnswersArray) == $this->mask(60)) &&
+    return !(end($this->previousAnswersArray) == $this->markAsUnChanged(0)) &&
            // if the user did not change the anser to the previous try -> ignore try as it is not serious... (prevent checking in empty answers)
-    	   (count($this->previousAnswersArray)==1 || ($this->previousAnswersArray[$this->triesUp2Now] != $this->previousAnswersArray[$this->triesUp2Now-1]));
+    	   (count($this->previousAnswersArray)<2 || ($this->previousAnswersArray[$this->triesUp2Now] != $this->previousAnswersArray[$this->triesUp2Now-1]));
   }
 
 // The next functions are used for the element's manage page. ***********************************************

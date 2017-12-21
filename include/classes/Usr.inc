@@ -161,31 +161,50 @@ class Usr extends ElementUser{
     $userDetailedData = false;
     if ( $this->iSeeUID != 'all' ){ // seeing one member's answers
                             $this->iSeeTeam = 'unk';
-                            if (!($url->available('address') && $url->get('address')[0]=='l')){
-                            	// We are not viewing a lab => load current team number from the user rights data
-                            	global $urDBI;
-                            	$userDetailedData = $urDBI->getData4( $this->iSeeUID );
-                            } else {
+                            $foundRecord = FALSE;
+                            // 1) Try to load user mapping from the lab status
+                            if (($url->available('address') && $url->get('address')[0]=='l')){
                             	// We are viewing a lab => load team from the labs user data record
                             	require_once( INCLUDE_DIR."/classes/elements/LlDBInterfaceUidStatus.inc" );
                             	require( "../php/getFirstLastFinal.inc" ); $labIdx = substr( $firstFinal, 1);
                             	$uLabDBI = new LlDBInterfaceUidStatus( $labIdx );
+                            	// 1a) Load team data by picking the first participant
                             	if (is_numeric($uid)){
+//                             		trigger_error('Using TEAM record of '.$this->iSeeUID, E_USER_NOTICE);
                             		// Assume we have a team number here...
-                            	    $uLabDBI->getAllTeamData( $uid );
-                            	    // Just take the first team member...
-                            	    $userDetailedData = $uLabDBI->getNextData();
+                            		$uLabDBI->getAllTeamData( $uid );
+                            		// Just take the first team member...
+                            		$userDetailedData = $uLabDBI->getNextData();
                             	}
-                            	if (!$userDetailedData){
+                            	// 1b) Load individual user
+                            	if (!$userDetailedData || empty($userDetailedData) || empty($userDetailedData['uid'])){
+//                             		trigger_error('Using individual record of '.$this->iSeeUID, E_USER_NOTICE);
                             		$userDetailedData = $uLabDBI->getData4( $this->iSeeUID );
                             	}
-                            	$this->iSeeUID = $userDetailedData['uid'];
                             }
-                            $this->iSeeTeam = $userDetailedData['currentTeam'];
-                            $userData = $this->getGlobalUserData( $this->iSeeUID );
-                            $this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$this->iSeeTeam.")";
-    }else{ // seeing ALL member's answers
-                            $this->iSeeDesc = $lng->get("showAllUADesc");
+                            
+                            
+                            if (!$userDetailedData || empty($userDetailedData) || empty($userDetailedData['uid'])){
+                            	// We do not have data yet, e.g. are not viewing a lab => load current team number from the user rights data
+                            	global $urDBI;
+//                             	trigger_error('Using general record of '.$this->iSeeUID, E_USER_NOTICE);
+                            	$userDetailedData = $urDBI->getData4( $this->iSeeUID, FALSE );
+                            }
+                            $this->iSeeUID = $userDetailedData['uid'];                            
+                            if ($userDetailedData && !empty($userDetailedData) && !empty($userDetailedData['uid'])){
+                            	$this->iSeeTeam = $userDetailedData['currentTeam'];
+                            	$userData = $this->getGlobalUserData( $this->iSeeUID );
+                            	$this->iSeeDesc = $userData["foreName"]." ".$userData["name"]." (".$this->iSeeTeam.")";
+                            }else{
+                            	// No user data found...
+                            	trigger_error('No user data found for '.$uid.'; fallback: all.', E_USER_WARNING);
+                            	$this->iSeeUID = 'all';
+                            }
+    }
+    
+    if ( $this->iSeeUID == 'all' ){ // could have been set as fallback directly above...
+    	// seeing ALL member's answers
+        $this->iSeeDesc = $lng->get("showAllUADesc");
     }
   }
 
