@@ -1723,7 +1723,7 @@ class LlElement extends Element{
   * Calls the prelab collection's allMultipleChoicesAnswered().
   * Sets the stats in $usDBI.
   */
-  function checkPreLab(){ // called to check the answers here
+  function checkPreLab($uid=FALSE){ // called to check the answers here
     global $url, $lng, $usr;
     if ( !isset($_POST['REDIRECTTO'])
        ){
@@ -1731,8 +1731,16 @@ class LlElement extends Element{
           exit;
          }
 
-    // Validity (session ID) is checked by the calling script yet.
-
+         // Remove duplicate code with update2()
+         // Addparameter here and call this
+	// Who is using the script?
+// 	if ($usr->isOfKind(IS_CORRECTOR)){
+// 		if ($uid){
+// 			// Prefer user status record for getting team assignment.
+// 			// If lab based user status does not exist use fallback from 
+// 		}
+// 	}
+         
     if( $this->preLabIsVisible2Me && !$this->preLabIsFinished ){
    // Are all multiple choice questions answered (->LmElement)?
     $allPreLabAnswered = true;
@@ -1747,8 +1755,10 @@ class LlElement extends Element{
             $givenCredits += $element->getGivenCredits();
         }
         $possibleCredits += $element->getPossibleCredits();
+//         if (!$element->checkUserAnswer()){
+//         	echo('m'.$element->idx.' not answered<br>');
+//         }
     }
-
       if( $allPreLabAnswered ){
 
          // create my dataset
@@ -1788,7 +1798,7 @@ class LlElement extends Element{
           }
       }
     }
-
+//     exit;
     // One could also display the page here but that way it is left to the normal mechanism...
     header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }

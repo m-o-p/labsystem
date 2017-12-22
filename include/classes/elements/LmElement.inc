@@ -953,17 +953,15 @@ class LmElement extends Element{
   /*static*/ function checkUserAnswer(){
     global $usr, $cfg;
     
-    if ( ($this->triesUp2Now>=$cfg->get('MCAnsweringAttempts')) || !$this->isChangedByUser() ){
-    	// not answered yet -> do nothing
-    	return false;
-    }
-
     $GLOBALS['Logger']->logToDatabase('l'.$_POST['IDX'].'~m'.$this->idx, logActions::mCheck);
     $GLOBALS['Logger']->logToDatabase('l'.$_POST['IDX'].'~m'.$this->idx, ($this->isCorrectlyAnswered?logActions::mIsCorrectAnswer:logActions::mIsWrongAnswer));
 
     // if it is not answered it will not be correct as the not answered status sets a bit...
     if ( $this->isAnswered ){  // enough checks yet or correct...
       return true;
+    }elseif ( ($this->triesUp2Now<$cfg->get('MCAnsweringAttempts')) && !$this->isChangedByUser() ){
+	  // no new answering attempt -> do nothing
+   	  return false;
     }
 
     $this->previousAnswersArray[] = $this->markAsUnChanged(0); // insert empty answer at the end
