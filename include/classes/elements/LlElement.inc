@@ -1082,7 +1082,10 @@ class LlElement extends Element{
     // preLab statistics
     elseif ( $last == "preLabStatistics" &&
     		$scndLast == $me &&
-    		$this->preLabIsVisible2Me )      $myRetVal .= $this->showPrelabStatistics( 'm', 'l'.$this->idx, $extParagraph );
+    		$this->preLabIsVisible2Me ){
+    	$usr->validateAllUsers();
+    	$myRetVal .= $this->showPrelabStatistics( 'm', 'l'.$this->idx, $extParagraph );
+    }
    // all lab questions
     elseif ( $last == "allLabQ" &&
              $scndLast == $me &&
@@ -1090,19 +1093,24 @@ class LlElement extends Element{
    // lab's status
     elseif ( $last == "labStatus" &&
              $scndLast == $me &&
-             $this->isVisible() )             $myRetVal .= $this->showLabStatus( $extParagraph );
+             $this->isVisible() ){
+    	$usr->validateAllUsers();
+    	$myRetVal .= $this->showLabStatus( $extParagraph );
+    }
    // ALL lab's status
     elseif ( $last == "ALLlabStatus" &&
              $scndLast == $me ) {
-                                              $myRetVal .= $this->showStatusALLLabs();
-                                              $this->title = $lng->get('MnuEntryMyStatistics');
+    	$usr->validateAllUsers();
+    	$myRetVal .= $this->showStatusALLLabs();
+        $this->title = $lng->get('MnuEntryMyStatistics');
 
                                  }
    // ALL lab's status compact
     elseif ( $last == "ALLlabStatusCompact" &&
              $scndLast == $me ) {
-                                              $myRetVal .= $this->showStatusALLLabs( true );
-                                              $this->title = $lng->get('MnuEntryMyStatistics');
+    	$usr->validateAllUsers();
+    	$myRetVal .= $this->showStatusALLLabs( true );
+        $this->title = $lng->get('MnuEntryMyStatistics');
                                  }
    // all visible contents of the lab on one page
     elseif ( $last == "all" &&

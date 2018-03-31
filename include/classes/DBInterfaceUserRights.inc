@@ -73,11 +73,11 @@ class DBInterfaceUserRights {
 	      $currentTeam += $newIDX;
 	      $this->setData4( $uid, $cfg->get("DefaultAuthUserRights"), '', $currentTeam, $lng->get("dataSetCreated") );
       }
-      return Array( 'uid' => '',
+      return Array( 'uid' => $uid,
       		        "rights"      => $cfg->get("DefaultAuthUserRights"),
       				"enabledRights"      => $cfg->get("DefaultAuthUserRights"),	
       				"currentTeam" => $currentTeam,
-                    "history"     => "");
+                    "history"     => $lng->get("dataSetCreated"));
     }else{
       $enabledRights = ( !isset($data['enabledRights']) 
       		             || empty($data['enabledRights']) 

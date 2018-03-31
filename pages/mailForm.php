@@ -90,6 +90,8 @@ function setCheckboxes(do_check)
 
 ";
 
+$usr->validateAllUsers();
+
 $allSupporter = array ();
 $allOther = array ();
 

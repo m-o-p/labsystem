@@ -63,15 +63,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 // the sorter
   $pge->put( $sorter );
 
-// remove access rights for users without access (as they may have been removed
-// from the instance and if they were part of a team they may cause trouble...)
-$urDBI->getAllData();
-while( $nextUserDataSet = $urDBI->getNextData() ){
-  if ($uDBI->getData4($nextUserDataSet['uid']) === false){
-    $urDBI->removeUID($nextUserDataSet['uid']);
-    echo('Removed all user rights for UID '.$nextUserDataSet['uid']);
-  }
-}
+$usr->validateAllUsers();
 
 $pge->put('<FORM NAME="userRights" METHOD="POST" ACTION="'.$url->link2("../php/saveUserRights.php").'"><div>'."\n");
 

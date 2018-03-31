@@ -146,6 +146,31 @@ class Usr extends ElementUser{
     else return false;
   }
 
+  /**
+   * Check if all users with access rights in the $uDBI (global) have the proper access rights here
+   * and that all users that had rights here but do not have access anymore are removed.
+   * Called on labstatus, manage users and mail.
+   */
+  function validateAllUsers(){
+  	global $lng, $uDBI, $urDBI, $SYSINFO;
+  	// import users
+  	$uDBI->getAllData();
+  	while( $nextUserDataSet = $uDBI->getNextData() ){
+  		$usrRights = $urDBI->getData4($nextUserDataSet['uid']); // creates default record for non existent.
+  		if ($usrRights['history'] == $lng->get("dataSetCreated")){
+  			$SYSINFO .= $nextUserDataSet['uid'].' ('.$nextUserDataSet["userName"].' ['.$nextUserDataSet["foreName"].' '.$nextUserDataSet["name"].'] '.$usrRights["currentTeam"].'); ';
+  		} 
+  	}
+  	// remove access rights for users without access (as they may have been removed
+  	// from the instance and if they were part of a team they may cause trouble...)
+  	$urDBI->getAllData();
+  	while( $nextUserDataSet = $urDBI->getNextData() ){
+  		if ($uDBI->getData4($nextUserDataSet['uid']) === false){
+  			$urDBI->removeUID($nextUserDataSet['uid']);
+  			$SYSINFO .= $nextUserDataSet['uid'].' '.$lng->get('deleted').'; ';
+  		}
+  	}
+  }
 
   /**
   * Modifier to set whom the user is watching.
