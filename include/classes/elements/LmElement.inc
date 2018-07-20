@@ -639,7 +639,7 @@ class LmElement extends Element{
       $returnValue =  '<div class="labsys_mop_m_answers">';
       // How many answer fields?
       for ( $i=0; $i < (count( $this->getAnswerArray() ) + ($isGettingEdited ? $cfg->get("DefaultMCAnswerPlusAmount") : 0)); $i++){
-        $returnValue .= '<div class="answer'.($this->horizontalLayout ? 'Horizontal" style="width:'.(1/$cfg->get("MCAnsweringAttempts")*100-11).'%"': '"').'>'.PHP_EOL.
+        $returnValue .= '<div class="answer'.($this->horizontalLayout ? 'Horizontal"' : '"').'>'.PHP_EOL.
                         $this->getCheckMarksHTML(($isGettingEdited || $this->doNotShuffleAnswers ? $i : $this->displayPermutation[$i]), $isGettingEdited, $isGettingAnswered).
                         $this->getAnswerHTML(($isGettingEdited || $this->doNotShuffleAnswers ? $i : $this->displayPermutation[$i]), $isGettingEdited).
                         '<div class="clearBoth"></div></div>'.PHP_EOL;
