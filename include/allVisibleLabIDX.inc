@@ -36,7 +36,9 @@ $allVisibleLabIDX = array();
 $otherVisibleLabs = array();
 // Currently scheduled in order of schedule
 //SELECT `num` FROM `schedules` WHERE 1 GROUP BY num ORDER BY `start`
-$sDBI->queryResult = $sDBI->myDBC->mkSelect( 'id, num', $sDBI->myTable, 'idx!=1', '`start`', 'num' );
+$sDBI->queryResult = $sDBI->myDBC->mkSelect( 'id, num, start', $sDBI->myTable, 'idx!=1', '`start`', 'num, start, id' );
+// make sure that the group by and order by fields are also part of the select!
+// otherwise: error GROUP_BY strict
 while( $nextData=$sDBI->queryResult->fetch_array() ){
   $otherVisibleLabs[] = $nextData['id'].$nextData['num'];
 }
