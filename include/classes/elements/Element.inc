@@ -123,6 +123,15 @@ class Element{
     
     return $output;
   }
+ 
+  // TODO on 2018-08-28 with Oliver
+  //function getCSVline{
+  	// How MC tries?
+  	// Probably: linear questions on "y-axis" and students with identifier on "x-axis" preceeded by example solution.
+  	//
+  	// MC attemptes as extra column
+  	// i/ m reached to available credits
+  //}
 
   /**
    * Imports using the XML format.
