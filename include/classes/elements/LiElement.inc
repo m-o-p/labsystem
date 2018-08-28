@@ -146,6 +146,28 @@ class LiElement extends Element{
     $this->serializationArray       = array( 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
     $this->varNamesForCSV           = array( 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'getDataOfTeam', 'isCorrected', 'userAnswer', 'answerHistory', 'answerComment', 'correctorsNote', 'givenCredits');
   }
+  
+  /**
+   * Serializes the element as CSV line.
+   */
+  function getCSVline(){
+  	global $usr;
+  	$csvData = array();
+  	if ( $usr->theSeeingUid() != "all" ){
+  		$this->loadUserData4( ( $usr->isSeeingSomeonesData() ? $usr->theSeeingUid() : $usr->uid )); // empty or my answer
+  		getCSVline();
+  	}else{
+  		// Seeing all's data
+  		$this->mcDBI->getAllUIDs( $this->idx );
+  		while ( ($nextUID = $this->mcDBI->getNextData()) ){
+  			//information row
+  			$userData = $usr->getGlobalUserData( $nextUID );
+  			// answer
+  			$this->loadUserData4( $nextUID );
+  			getCSVline();
+  		}
+  	}
+  }
 
   /**
   * Serialize the element for export.

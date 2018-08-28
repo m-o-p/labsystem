@@ -58,6 +58,8 @@ class LmElement extends Element{
   var $isCorrectlyAnswered;         // Was the last answer given correct?
   var $isAnswered;                  // Is the last answer correct or the number of tries too high?
   var $answerHistory;               // Who answered when?
+  
+  var $specialCSVFields;            // list of CSV special fields that have to be handled on export
 
 
   /**
@@ -139,26 +141,81 @@ class LmElement extends Element{
     $this->mcDBI                    = new LmDBInterfaceAnswers();
     $this->loadUserData4(''); // Fills rest of the structures with neutral values.
 
-    $this->serializationArray       = array( 'idx', 'question', 'answerArray', 'reactionArray', ' doNotShuffleAnswers', 'onlyOneAnswerPossible', 'requiresNcorrect', 'enableReactions', 'showHintForClicked', 'reshowLastHint', 'enableDetailedGrading', 'horizontalLayout', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
-    $this->varNamesForCSV           = array( 'idx', 'question', 'answerArray', 'reactionArray', ' doNotShuffleAnswers', 'onlyOneAnswerPossible', 'requiresNcorrect', 'enableReactions', 'showHintForClicked', 'reshowLastHint', 'enableDetailedGrading', 'horizontalLayout', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // Attention: We overload the getCSVline and getCSVheaderLine method below.
+    $this->serializationArray       = array( 'idx', 'question', 'answerArray', 'reactionArray', ' doNotShuffleAnswers', 'onlyOneAnswerPossible', 'requiresNcorrect', 'enableReactions', 'showHintForClicked', 'reshowLastHint', 'enableDetailedGrading', 'possibleCredits', 'horizontalLayout', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
+    $this->specialCSVFields         = array('PLC_answerOption', 'PLC_answer'); // Placholder
+    $this->varNamesForCSV           = array( 'idx', 'question', $this->specialCSVFields[0], $this->specialCSVFields[1], 'requiresNcorrect', 'answerExplanation', 'possibleCredits', 'givenCredits', 'answerCount', 'isCorrectlyAnswered', '$isAnswered', 'answerHistory'); // Attention: We overload the getCSVline and getCSVheaderLine method below.
+    // PLC_ = placeholder that gets resolved in getCSVline()
+    // - resolve answerArray
   }
   
   // Override methods for CSV export because of handling user answers as explicit rows in CSV (see parent)
+  private function getOneCSVLine(){
+  	$specialCSVFields = array('PLC_answerOption', 'PLC_answer'); // Placholder
+  	$csvFields = array();
+  	for( $currentAnswerNum=0; $currentAnswerNum < count($this->answerArray); $currentAnswerNum++){
+  		foreach( $this->varNamesForCSV as $fieldName ){
+  			// Handle special fields
+  			switch($fieldName){
+  				case $this->specialCSVFields[0]:
+  					$csvFields[]=$this->answerArray[$currentAnswerNum].' '.($this->getCorrectMask() & $this->mask($currentAnswerNum) ? '(correct)' : '(wrong)');
+  					break;
+  				case $this->specialCSVFields[1]:
+  					for( $countMe=0; $countMe<count($this->previousAnswersArray); $countMe++ ){
+  						$csvFields[]=( $this->previousAnswersArray[$countMe] & $this->mask($countMe) ? 'X' : '');
+  					}
+  					break;
+  				default:
+  					$csvFields[]=$this->$fieldName;
+  			}
+  		}
+  	}
+  }
+  
   /**
    * Serializes the element as CSV line.
    */
   function getCSVline(){
-  	csv_encode($csvLineToInclude);
+  	global $usr;
+  	$csvData = array();
+  	if ( $usr->theSeeingUid() != "all" ){
+  		$this->loadUserData4( ( $usr->isSeeingSomeonesData() ? $usr->theSeeingUid() : $usr->uid )); // empty or my answer
+  		$csvData[] = getOneCSVLine();
+  	}else{
+  		// Seeing all's data
+  			$this->mcDBI->getAllUIDs( $this->idx );
+  			while ( ($nextUID = $this->mcDBI->getNextData()) ){
+  				//information row
+  				$userData = $usr->getGlobalUserData( $nextUID );
+  				// answer
+  				$this->loadUserData4( $nextUID );
+  				$csvData[] = getOneCSVLine();
+  			}
+  	}
+
+ 	foreach ($csvData as $csvLine){ 	
+   	  csv_encode($csvLine);
+ 	}
   }
   
   /**
    * prints the header line with the filed names.
    */
   function getCSVheaderLine(){
-  	
-  	csv_encode( specialCollectVariablesFromArray($this->serializationArray) );
+  	$csvFields = array();
+  	foreach( $this->varNamesForCSV as $fieldName ){
+  		// Handle special fields
+  		switch($fieldName){
+  			case $this->specialCSVFields[1]: //'PLC_answers'
+  				for( $countMe=0; $countMe<$cfg->get('MCAnsweringAttempts'); $countMe++ ){
+  					$csvFields[]=$fieldName.'_'.$countMe;
+  				}
+  				break;
+  			default:
+  				$csvFields[]=$fieldName;
+  		}
+  	}
+  	csv_encode( $csvFields );
   }
-  
 
   // Selectors
   function getQuestion()               { return $this->question; }
