@@ -144,6 +144,7 @@ class LiElement extends Element{
     }
 
     $this->serializationArray       = array( 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
+    $this->varNamesForCSV           = array( 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'getDataOfTeam', 'isCorrected', 'userAnswer', 'answerHistory', 'answerComment', 'correctorsNote', 'givenCredits');
   }
 
   /**

@@ -140,7 +140,25 @@ class LmElement extends Element{
     $this->loadUserData4(''); // Fills rest of the structures with neutral values.
 
     $this->serializationArray       = array( 'idx', 'question', 'answerArray', 'reactionArray', ' doNotShuffleAnswers', 'onlyOneAnswerPossible', 'requiresNcorrect', 'enableReactions', 'showHintForClicked', 'reshowLastHint', 'enableDetailedGrading', 'horizontalLayout', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
+    $this->varNamesForCSV           = array( 'idx', 'question', 'answerArray', 'reactionArray', ' doNotShuffleAnswers', 'onlyOneAnswerPossible', 'requiresNcorrect', 'enableReactions', 'showHintForClicked', 'reshowLastHint', 'enableDetailedGrading', 'horizontalLayout', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // Attention: We overload the getCSVline and getCSVheaderLine method below.
   }
+  
+  // Override methods for CSV export because of handling user answers as explicit rows in CSV (see parent)
+  /**
+   * Serializes the element as CSV line.
+   */
+  function getCSVline(){
+  	csv_encode($csvLineToInclude);
+  }
+  
+  /**
+   * prints the header line with the filed names.
+   */
+  function getCSVheaderLine(){
+  	
+  	csv_encode( specialCollectVariablesFromArray($this->serializationArray) );
+  }
+  
 
   // Selectors
   function getQuestion()               { return $this->question; }
