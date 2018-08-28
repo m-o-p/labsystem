@@ -121,24 +121,27 @@ class Element{
    * Remove if part of PHP.
    * @param unknown $array
    */
-  private function csv_encode( $array ){
-  	$out = fopen('php://output', 'w');
-  	fputcsv($out, $array);
-  	fclose($out);
+  protected function csv_encode( $array ){
+  	if (!empty($array)){
+  		$out = fopen('php://output', 'w');
+  		array_walk( $array, function(&$item, $key){$item=preg_replace( "/\r|\n/", "_ ",$item);});
+  		fputcsv($out, $array);
+  		fclose($out);
+  	}
   }
 
  /**
   * Serializes the element as CSV line.
   */
   function getCSVline(){
-  	csv_encode( collectVariablesFromArray( $this->varNamesForCSV ) );
+  	$this->csv_encode( $this->collectVariablesFromArray( $this->varNamesForCSV ) );
   }
 
   /**
    * prints the header line with the filed names.
    */
   function getCSVheaderLine(){
-  	csv_encode( $varNamesForCSV );
+  	$this->csv_encode( $this->varNamesForCSV );
   }
  
   // TODO on 2018-08-28 with Oliver

@@ -169,6 +169,7 @@ class LmElement extends Element{
   			}
   		}
   	}
+  	return $csvFields;
   }
   
   /**
@@ -179,7 +180,7 @@ class LmElement extends Element{
   	$csvData = array();
   	if ( $usr->theSeeingUid() != "all" ){
   		$this->loadUserData4( ( $usr->isSeeingSomeonesData() ? $usr->theSeeingUid() : $usr->uid )); // empty or my answer
-  		$csvData[] = getOneCSVLine();
+  		$csvData[] = $this->getOneCSVLine();
   	}else{
   		// Seeing all's data
   			$this->mcDBI->getAllUIDs( $this->idx );
@@ -188,12 +189,12 @@ class LmElement extends Element{
   				$userData = $usr->getGlobalUserData( $nextUID );
   				// answer
   				$this->loadUserData4( $nextUID );
-  				$csvData[] = getOneCSVLine();
+  				$csvData[] = $this->getOneCSVLine();
   			}
   	}
 
  	foreach ($csvData as $csvLine){ 	
-   	  csv_encode($csvLine);
+   	  $this->csv_encode($csvLine);
  	}
   }
   
@@ -201,6 +202,7 @@ class LmElement extends Element{
    * prints the header line with the filed names.
    */
   function getCSVheaderLine(){
+  	global $cfg;
   	$csvFields = array();
   	foreach( $this->varNamesForCSV as $fieldName ){
   		// Handle special fields
@@ -214,7 +216,7 @@ class LmElement extends Element{
   				$csvFields[]=$fieldName;
   		}
   	}
-  	csv_encode( $csvFields );
+  	$this->csv_encode( $csvFields );
   }
 
   // Selectors

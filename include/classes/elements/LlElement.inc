@@ -271,6 +271,7 @@ class LlElement extends Element{
   	// export CSV data
   	$this->preLab->exportCSV( $elementID );
   	$this->lab->exportCSV( $elementID );
+  	exit;
   }
 
   /**
@@ -1145,13 +1146,13 @@ class LlElement extends Element{
    // CSV export of all visible i elements
     elseif ( $last == "iCSV" &&
              $scndLast == $me ){
-    	exportCSV( 'i' );    	
+    	$this->exportCSV( 'i' );    	
     }
 
     // CSV export of all visible m elements
     elseif ( $last == "mCSV" &&
-    		$scndLast == $me ){
-    	exportCSV( 'm' );
+    		 $scndLast == $me ){
+    	$this->exportCSV( 'm' );
     }
     
    // preLab

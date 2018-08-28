@@ -155,7 +155,7 @@ class LiElement extends Element{
   	$csvData = array();
   	if ( $usr->theSeeingUid() != "all" ){
   		$this->loadUserData4( ( $usr->isSeeingSomeonesData() ? $usr->theSeeingUid() : $usr->uid )); // empty or my answer
-  		getCSVline();
+  		parent::getCSVline();
   	}else{
   		// Seeing all's data
   		$this->mcDBI->getAllUIDs( $this->idx );
@@ -164,7 +164,7 @@ class LiElement extends Element{
   			$userData = $usr->getGlobalUserData( $nextUID );
   			// answer
   			$this->loadUserData4( $nextUID );
-  			getCSVline();
+  			parent::getCSVline();
   		}
   	}
   }
