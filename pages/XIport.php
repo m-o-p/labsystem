@@ -64,40 +64,55 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
       // load information about the lab
         $labToImport = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
-        $labToImport->initFromSerialized( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/l0000002.txt') );
-
+        $labJsonDecoded = json_decode_elementData( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/elementData.txt') );
+        
+        //Store the solution data in an array. TO-DO: I expect problems if there is only one i or m element in a collection.
+        if ( file_exists($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ){ $labSolutionDecoded = json_decode_elementData( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ); }
+        
+        
+        $jsonEncodedLab = json_encode($labJsonDecoded[0]); //grab the first Element, the "l" element serves as Meta Data
+        $labToImport->initFromSerialized( $jsonEncodedLab );
       // create the mapping from the directory and create the "empty" DB objects for the elements
-        $labElementArray = createIdImportMappingInitDB( $labToImport->uniqueID );
-
+        $labElementArray = createIdImportMappingInitDB( $labToImport->uniqueID , $subDir );
+        
         $newLabId = $labElementArray['l2'];
 
         $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.$newLabId.' <a href="'.$url->link2('../pages/edit.php', Array('address' => $newLabId) ).'">edit...</a>)</h3>'."\r\n" );
-
       // import elements
-        $importCounter = 0; // used for setting the schedules accordingly when importing
+        $importCounter = 0; // used to iterate through our JSON-Element-array.
+       
         foreach ($labElementArray as $value=>$newID){
+          
           $nextElement = $GLOBALS[ $newID[0]."DBI" ]->getData2idx( substr($newID, 1) ); // load existing empty DB object
-
-          $importBaseDir = $cfg->get('exportImportDir').$subDir.DIRECTORY_SEPARATOR;
-          $importDataDirectory = 'data';
-          $importFileName = DIRECTORY_SEPARATOR.$value[0].str_pad( substr($value, 1), 7, "0", STR_PAD_LEFT ).'.txt';
           switch( $value[0] ){
               // i and m can be stored with and without solutions.
             case 'i':
             case 'm':
-              $importDataDirectory = EXPORT_DATA_DIR_PUBLIC; // default: take them from the public directory without solutions
-              if ( file_exists($importBaseDir.EXPORT_DATA_DIR_PRIVATE.$importFileName) ){ $importDataDirectory = EXPORT_DATA_DIR_PRIVATE; }// if the version with solutions exists: take it!
+                // if i or m element search for it in the solution array. TO-DO: I expect problems if there is only one i or m element in a collection.
+                if ( file_exists($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ){ // if the solutions exist, try to import them
+                    for ( $i = 0; $i < count($labSolutionDecoded); $i++ ){ // Loop through the i&m elements and to find the right element
+                        $tmp_element = $labSolutionDecoded[$i];
+                        $elementType = $tmp_element["elementId"]; // get type
+                        $elementID = $tmp_element["idx"]; // get number
+                        if ($value[0]==$elementType && $value[1] == $elementID){ //if Id and type match we found the solution.
+                            $nextElement->initFromSerialized( json_encode($labSolutionDecoded[$i]) ); // init the next element
+                            break;
+                        }
+                    }
+                }
             default:
-              $nextElement->initFromSerialized( file_get_contents( $importBaseDir.$importDataDirectory.$importFileName ) ); // init the next element
+                $nextElement->initFromSerialized( json_encode($labJsonDecoded[$importCounter]) ); // init the next element
+              break;
           }
-
           processElement( $nextElement, $labElementArray, 2, true );
 
         // renumber element
           $nextElement->idx = substr( $newID, 1);
 
           $pge->put( persistElement( $nextElement, '', true ) );
+          $importCounter++;
         } // /foreach
+        
 
       // Integrate css/user_styles.css into the current user stylesheet.
         if (file_exists( $cfg->get('exportImportDir').$subDir.'/css/user_styles.css' ) ){
@@ -175,7 +190,14 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         createIdMapping( $labElementArray );
 
       // Needed in some XIlib functions.
+      
+        // TO-DO quick fix for empty UniqueID, needs better fix
+        if (empty($labToExport->uniqueID)) {
+            $labToExport->uniqueID = substr(md5(rand()), 0, 7);
+        }
+        
         $GLOBALS['exportUID'] = $labToExport->uniqueID;
+        
         $GLOBALS['externallyLinkedElements'] = array();
 
         deleteExportDirectory( $GLOBALS['exportUID'] ); // empty export directory

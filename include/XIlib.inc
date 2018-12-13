@@ -60,7 +60,7 @@ function createIdMapping( &$labElementArray ){
  *
  * @param  string $labFolder     	        Lab folder name on the disk inside the $cfg->get('exportImportDir')
  * @return array						              array with the reverse mapping index
- */
+ *
 function createIdImportMappingInitDB( $labFolder ){
   global $cfg;
   $IdMapping = array();
@@ -77,6 +77,35 @@ function createIdImportMappingInitDB( $labFolder ){
 
   return $IdMapping;
 }
+*/
+
+function createIdImportMappingInitDB( $labFolder, $subDir ){
+    global $cfg;
+    $IdMapping = array();
+    //Decode elementData array
+    $labElementsOnDisk = json_decode_elementData( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/elementData.txt') );
+    
+    $tmp_element = $labElementsOnDisk[0]; //assume that l-element is the first element in array, because we export it that way. Avoids the missing elementType Problem and makes our life easier for displaying lab title 
+    $elementType = "l"; // l-element has no elementType, maybe should be changed for consistency
+    $elementID = $tmp_element["idx"];
+    $newIdx = createNew( $elementType ); // creates element in DB
+    $IdMapping[$elementType.$elementID] = $elementType.$newIdx;
+    //loop through array and create empty elements in the Database
+    //TO-DO fix for countable, we expect an array, if the saved lab contains only a single "l" elements and no further elements this will throw an error
+    for ( $i = 1; $i < count($labElementsOnDisk); $i++ ){
+        $tmp_element = $labElementsOnDisk[$i];
+        $elementType = $tmp_element["elementId"]; // get type
+        //print_r($elementType);
+        $elementID = $tmp_element["idx"]; // get number
+        
+        $newIdx = createNew( $elementType ); // creates element in DB
+        $IdMapping[$elementType.$elementID] = $elementType.$newIdx;
+    }
+    
+    //print_r($IdMapping);
+
+    return $IdMapping;
+}
 
 /**
  * Persists the element given.
@@ -87,18 +116,26 @@ function createIdImportMappingInitDB( $labFolder ){
  */
 function persistElement( &$element, $labUID, $isImport=false ){
   if (!$isImport) { // EXPORT
-    $fileName = 'data/'.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // default dir
+    $fileName = 'data/elementData.txt'; // default dir
     switch( $element->elementId ){
       case 'i':
       case 'm':
-        $fileName = EXPORT_DATA_DIR_PRIVATE.DIRECTORY_SEPARATOR.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt';
-        fileWrite( $fileName, $element->getSerialized(), $labUID ); // save full version
+          $fileName = EXPORT_DATA_DIR_PRIVATE.DIRECTORY_SEPARATOR.'elementData.txt';
+        fileAppend( $fileName, $element->getSerialized().',', $labUID ); // save full version
         // clear sensitive data
         if ($element->elementId == 'i') $element->exampleSolution = 'Here will be the example solution in the full data set.';
         if ($element->elementId == 'm') $element->answerExplanation = 'Here will be the answer explanation in the full data set.';
-        $fileName = EXPORT_DATA_DIR_PUBLIC.DIRECTORY_SEPARATOR.$element->elementId.substr( '0000000'.$element->idx, -7 ).'.txt'; // save "public" version.
+        $fileName = EXPORT_DATA_DIR_PUBLIC.DIRECTORY_SEPARATOR.'elementData.txt'; // save "public" version.
+        fileAppend( $fileName, $element->getSerialized().',', $labUID ); 
+        break;
+      case 'l': //TO-DO dirty fix for empty uniqueID
+          if(empty($element->uniqueID)) {
+              $element->uniqueID = $GLOBALS['exportUID'];
+          }
+        filePrepend( $fileName, $element->getSerialized().',', $labUID ); //Using the "l" element as the first element in the array
+        break;
       default:
-        fileWrite( $fileName, $element->getSerialized(), $labUID );
+        fileAppend( $fileName, $element->getSerialized().',', $labUID ); //Appends the elements to the file
     }
 
   	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
@@ -120,6 +157,18 @@ function persistElement( &$element, $labUID, $isImport=false ){
 }
 
 /**
+ * 
+ * 
+ * @return mixed
+ */
+function json_decode_elementData($rawElementArray) {
+    if(substr($rawElementArray, -1) == ',')
+        $rawElementArray = substr($rawElementArray, 0, -1);
+        return json_decode("[$rawElementArray]", true);
+}
+
+
+/**
  * Writes the $content into $fileName into $cfg->get('exportImportDir').
  *
  * @param $fileNameWithPath    Path and Name of the file to be created.
@@ -135,6 +184,49 @@ function fileWrite( $fileName, $content, $labUID ) {
 	$fh = fopen($fileNameWithPath, 'w') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
 	fwrite($fh, $content);
 	fclose($fh);
+}
+
+
+/**
+ * Appends the $content into $fileName into $cfg->get('exportImportDir').
+ *
+ * @param $fileNameWithPath    Path and Name of the file to be created.
+ * @param $content             Content to be written in the file.
+ * @param string $labUID       The unique identifier of this lab (UID for export).
+ * @return
+ */
+function fileAppend( $fileName, $content, $labUID ) {
+    global $cfg;
+    $fileNameWithPath = $cfg->get('exportImportDir').$labUID.DIRECTORY_SEPARATOR.$fileName;
+    if ( !file_exists(dirname($fileNameWithPath))) {
+        mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
+    }
+    $fh = fopen($fileNameWithPath, 'a') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
+    fwrite($fh, $content);
+    fclose($fh);
+}
+
+
+/**
+ * Prepends the $content into $fileName into $cfg->get('exportImportDir').
+ * Needed for "l" element
+ *
+ * @param $fileNameWithPath    Path and Name of the file to be created.
+ * @param $content             Content to be written in the file.
+ * @param string $labUID       The unique identifier of this lab (UID for export).
+ * @return
+ */
+function filePrepend ($fileName, $content, $labUID) {
+    global $cfg;
+    $fileNameWithPath = $cfg->get('exportImportDir').$labUID.DIRECTORY_SEPARATOR.$fileName;
+    if ( !file_exists(dirname($fileNameWithPath))) {
+        mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
+        $fileContent = "";
+    }
+    else{
+        $fileContent = file_get_contents ($fileNameWithPath);
+    }
+    file_put_contents($fileNameWithPath, $content . "\n" . $fileContent);
 }
 
 /**
@@ -673,10 +765,15 @@ function getLabsFromDirectory( $directory ){
   for( $i=0; $i<sizeof( $subDirs ); $i++){
     if (!is_dir( $directory.$subDirs[$i] )) continue; // skip non-directories
     if ( $subDirs[$i] == '.' || $subDirs[$i] == '..' ) continue; // skip those
-    $file_name = $directory.$subDirs[$i].'/data/l0000002.txt';
+    $file_name = $directory.$subDirs[$i].'/data/elementData.txt';
     if( file_exists($file_name) ){
       $myLelement = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
-      $myLelement->initFromSerialized( file_get_contents( $file_name ) );
+      $labJsonDecoded = json_decode_elementData( file_get_contents( $file_name ) );
+      
+      //TO-DO expects array of multiple elements, if imported lab only contains single "l" element and no Collections, the name will fail to display.
+
+      $jsonEncodedLab = json_encode($labJsonDecoded[0]);
+      $myLelement->initFromSerialized( $jsonEncodedLab );
       $myLelement->title .= '&nbsp;<div class="labsys_mop_l_file_description">&nbsp;'.date ( $lng->get("DateFormat"), filemtime($file_name)).'&nbsp;</div>&nbsp;';
       $myLelement->idx = base64_encode( $subDirs[$i] ); // set the base64_encode( directory ) as ID for importable directories
       // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(

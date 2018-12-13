@@ -93,7 +93,7 @@ class LcElement extends Element{
 
     $this->allowedElementIDs        = array('C', 'c', 'm', 'i', 'p', 's');
 
-    $this->serializationArray       = array(  'idx', 'title', 'contents', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'history' ); // see Element.inc for details
+    $this->serializationArray       = array( 'elementId', 'idx', 'title', 'contents', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'history' ); // see Element.inc for details
   }
 
 // The next functions are used for the element's view page. *************************************************
@@ -277,21 +277,6 @@ class LcElement extends Element{
     }
   }
 
-  /**
-   * Exports all elements of type $elementID as CSV.
-   * @param unknown $elementID
-   */
-  function exportCSV( $elementID ){
-  	foreach ($this->simpleIterate(array("c", $elementID)) as list($value, $element)) {
-  		if (strtolower($element->elementId) == "c"){
-  			$element->exportCSV( $elementID );
-  		}else{
-  			// actual work
-  			$element->getCSVline();
-  		}
-  	}
-  }
-  
   /**
   * Generates a page with all the collection's elements of a special type (given by $typePrefix ).
   *
