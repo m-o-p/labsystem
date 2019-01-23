@@ -254,6 +254,25 @@ class LlElement extends Element{
 
     return $myRet;
   }
+  
+  /**
+   * Exports all elements of type $elementID as CSV.
+   * @param unknown $elementID
+   */
+  function exportCSV( $elementID ){
+  	header('Content-type: text/x-csv');
+  	header('Content-Disposition: attachment; filename="'.$GLOBALS['cfg']->get('User_courseID').'_lab'.$this->idx.'_element_'.strtoupper($elementID).'.txt"');
+
+  	// render header line from prototype
+  	$elementIDsmall = strtolower($elementID);
+  	$element = $GLOBALS[ $elementIDsmall.'DBI' ]->getData2idx( 1 );
+  	$element->getCSVheaderLine();
+  	
+  	// export CSV data
+  	$this->preLab->exportCSV( $elementID );
+  	$this->lab->exportCSV( $elementID );
+  	exit;
+  }
 
   /**
   * Displays all multiple choice questions of the prelab and (if not done) the check button.
@@ -1125,7 +1144,18 @@ class LlElement extends Element{
                                             // 2019-01-23: Removed this as it prevents the close menu to work properly (iLab2 YE...)
                                             //$_GET['address'] = $parentAddr.$me;
                               }
+   // CSV export of all visible i elements
+    elseif ( $last == "iCSV" &&
+             $scndLast == $me ){
+    	$this->exportCSV( 'i' );    	
+    }
 
+    // CSV export of all visible m elements
+    elseif ( $last == "mCSV" &&
+    		 $scndLast == $me ){
+    	$this->exportCSV( 'm' );
+    }
+    
    // preLab
     elseif ( $this->preLabIsVisible2Me &&
              ($first == "C".$this->prelabCollectionIdx) )
