@@ -79,7 +79,7 @@ Explain_UR_8        = "is available as mail supporter from the email-menu"  ; IS
 Explain_UR_16       = "is able to send to all users specified next"         ; IS_ALL_MAILER
 Explain_UR_32       = "available from the mail2 interface"                  ; IS_MAIL_RECEIVER
 Explain_UR_64       = "is able to make schedules"                           ; IS_SCHEDULER
-Explain_UR_128      = "is able to correct the closed labs"                  ; IS_CORRECTOR
+Explain_UR_128      = "is able to mark the closed labs"                  ; IS_CORRECTOR
 Explain_UR_256      = "is able to view the example solutions"               ; IS_EX_SOLUTION_VIEWER
 Explain_UR_512      = "is able to administrate users at the uai"            ; IS_DB_USER_ADMIN (only necessary if you use the uai)
 Explain_UR_1024     = "is able to edit and create config, css, menu files in the uai" ; IS_CONFIG_EDITOR (only necessary if you edit configs in the uai)
@@ -160,7 +160,7 @@ cloneThisElement    = "Clone this element"
 DataHasBeenSaved    = "The data has been saved."
 
 ;l
-dataOf              = "Data of "                ;; In title row when a corrector views someones data (followed by user's name)
+dataOf              = "Data of "                ;; In title row when a marker views someones data (followed by user's name)
 showAllUADesc       = "all users"               ;; Follows to the previous if the user views all user's data.
 
 ; sendMail.php
@@ -205,7 +205,7 @@ upload              = "Upload files"
 hasFileUpload       = "Activate attach files option (file upload)"
 options             = "Options"
 answered            = "answered"
-corrected           = "corrected"
+corrected           = "marked"
 edited              = "edited"
 correctionSaved     = "saved"
 
@@ -250,8 +250,8 @@ youCanClickOn       = "You can click on"
 toReOpenTheLab      = "to reOpen this lab..."
 toCloseTheLab       = "to close this lab... To become able to reOpen a lab you have to make a schedule first!"
 
-labCloseNote        = "If you click this button all your <b>answers will be closed</b>. You can not answer anymore but we can start to correct."
-prelabCheckNote     = "Click this button to get all <b>given answers above corrected</b>. Unanswered questions are <b>marked by the <img src='../syspix/button_edit_13x12.gif' />-icon</b> and <b>will not be checked</b>.<br />Remember: only if all prelab questions are answered correctly (row turns green) by all teammates (or you had too much attempts) the lab will get accessible.<br />The total amount of answering attempts is: "
+labCloseNote        = "If you click this button all your <b>answers will be closed</b>. You can not answer anymore but we can start to mark."
+prelabCheckNote     = "Click this button to get all <b>given answers above marked</b>. Unanswered questions are <b>marked by the <img src='../syspix/button_edit_13x12.gif' />-icon</b> and <b>will not be checked</b>.<br />Remember: only if all prelab questions are answered correctly (row turns green) by all teammates (or you had too much attempts) the lab will get accessible.<br />The total amount of answering attempts is: "
 prelabStatusNote    = "Below you find a list of all members that finished the prelab. The list is <b>ordered by</b> the <b>time</b> the user <b>finished</b> the prelab."
 
 uniqueIDnote        = "This Identifier is used when you export the lab. It must be unique for each lab as it is used to check the lab into the svn. It is a good idea to use a prefix for your institution followed by an ID for this ly like TUM-ILAB1-BASICS. Note: if you change this ID and export the module it will be exported under the new ID that has no relation to the old ID."
@@ -264,7 +264,7 @@ abstractNote        = "This abstract is shown on the lab index page and inside t
 uaMyDataNote        = "Here you can change your personal data.<br />Provide a <b>valid mailAddress</b> to be able to receive roundmails, new passwords etc."
 uaMyPwNote          = "Here you can change your password."
 uaUnPwRemNote       = "As member you can receive a mail with your login <b>username</b> and a <b>new password</b> from this page.<br />Just enter the mailaddress you provided to the system."
-uaManageUsrNote     = "You can edit the user's by clicking on them. (You have to be able to correct for that!).<br />You can change the subsciptions to the courses here."
+uaManageUsrNote     = "You can edit the user's by clicking on them. (You have to be able to mark for that!).<br />You can change the subsciptions to the courses here."
 uaCreateUsrNote     = "You can create new users here by pasting a CSV below.<br />The first row is the header row. You must <b>insert the field names given below at the right positions</b> in you CSV header!<br>After submitting you get a preview on the parsed data.<br>The users will get the mail address as user name and no password.<br />Their dataset is incomplete and they are supposed to <b>request username and password from the reminder page</b> and to change/ enter their data after that.<br/>Normally the <b>self registration over register.php</b> should be the method of choice as it directly fills all data."
 uaNewUsrsSubscript  = "The new users will have these subscriptions."
 uaUnassignedNote    = "You have currently registered for a course and <b>you are not assigned yet</b>. <br>Below you find a list of the other people who registered in the order of the registration. <br>Please keep in mind that usually not all students participate so do not worry if you are on a waiting list place only."
@@ -361,13 +361,13 @@ detailedCreditsEnable = "Enable detailed automated grading."
 horizontalLayout    = "Show the answers horizontally."
 
 ;i
-inputExSolutionExpl = "The <b>example solution</b>. Here you should note down what you expect as answer so the correctors know."
+inputExSolutionExpl = "The <b>example solution</b>. Here you should note down what you expect as answer so the markers know."
 Credits             = "credits"
 
 ;l
 inputPreLab         = "PreLab"                  ;; l-edit field descriptor
 inputLab            = "Lab"                     ;; l-edit field descriptor
-inputIsCorrected    = "Correction of this question finished?"           ;; Explanation to the corrector's checkbox.
+inputIsCorrected    = "Correction of this question finished?"           ;; Explanation to the marker's checkbox.
 metaData            = "meta data"               ;; Explanation on the edit field around the following meta data
 authors             = "authors"
 abstract            = "abstract"
@@ -425,14 +425,14 @@ apply               = "apply"
 
 ;i
 giveAnswer          = "give answer..."
-correct             = "correct"                 ;; button for corector
+correct             = "mark"                 ;; button for corector
 correctThoughNotClosed = "!closed, CORRECT anyways"
 
 ;l
 checkPrelab         = "check up if the prelab questions are answered correctly" ; label of the button...
 closeLab            = "close the lab"
 showAllUsersAnswers = "Answers of ALL USERS"
-stopSeeingData      = "Stop seeing someones data." ;; below the user statistic page if the corrector is viewing someones data
+stopSeeingData      = "Stop seeing someones data." ;; below the user statistic page if the marker is viewing someones data
 hideExampleSolutionInThisTab = "Hide example solutions"
 exmpleSolutionHere  = "Open/ close the example solution here."
 pseudoNames         = "Show pseudo names"
@@ -452,10 +452,10 @@ reMapIconExplain    = "By clicking on this icon the respective user will be mapp
 prelabAllnoFExplain = "The prelab is not finished by all teammembers."
 prelabAllFinExplain = "The prelab is finished by all teammembers. So they are allowed to perform the lab."
 labOpenExplain      = "The lab is still open. So the questions can be answered."
-labScheduleOverExpl = "The schedule for this lab is over. Students cannot answer anymore." ; sent in mail to correctors
-labClosedExplain    = "The lab got closed. So it can be corrected now."
-labNoCorrExplain    = "The lab/ question is not corrected yet."
-labCorrExplain      = "The lab/ question correction is finished."
+labScheduleOverExpl = "The schedule for this lab is over. Students cannot answer anymore." ; sent in mail to markers
+labClosedExplain    = "The lab got closed. So it can be marked now."
+labNoCorrExplain    = "The lab/ question is no marked yet."
+labCorrExplain      = "The lab/ question marking is finished."
 
 
 ;; The standard error *********************************************************************************
@@ -490,9 +490,9 @@ explainTicket       = "Create a new support ticket for this element..."
 ;l
 exAllowedToAnswer   = "Is the user allowed to answer?"
 exLabClosed         = "Did the user close the lab?"
-exLabCorrected      = "Is the lab corrected?"
+exLabCorrected      = "Is the lab marked?"
 reMapUsrTo          = "remap user to" ;; " USR->CURRTEAM" gets appended
-corrected           = "corrected?"    ;; as legend hover on the "which question corrected" states (#q gets put before)
+corrected           = "marked?"    ;; as legend hover on the "which question marked" states (#q gets put before)
 
 ;i
 LockSetButForce     = "By clicking on the lock you can obtain the lock from input"
