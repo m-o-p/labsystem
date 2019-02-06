@@ -1122,7 +1122,8 @@ class LlElement extends Element{
                                               $myRetVal .= $this->preLab->show( $parentAddr.$me.".C".$this->prelabCollectionIdx.".all", ( $lng->get("lPrefixPreLab") != "" ?  $extParagraph.".".$lng->get("lPrefixPreLab")  :  $extParagraph  ) );
                                             if ( $this->labIsVisible2Me )
                                               $myRetVal .= $this->lab->show( $parentAddr.$me.".C".$this->labCollectionIdx.".all", ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
-                                            $_GET['address'] = $parentAddr.$me;
+                                            // 2019-01-23: Removed this as it prevents the close menu to work properly (iLab2 YE...)
+                                            //$_GET['address'] = $parentAddr.$me;
                               }
 
    // preLab

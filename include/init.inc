@@ -47,6 +47,10 @@ require( INCLUDE_DIR."/classes/Url.inc" );      // Include url handling and rewr
 require( INCLUDE_DIR."/helper.inc" );           // Some helper functions that are used.
 
 require( INCLUDE_DIR."/configuration.inc" );    // Include the global configuration. => Object $cfg.
+
+if ($cfg->doesExist('myTimeZone'))
+	date_default_timezone_set($cfg->get('myTimeZone'));
+
 require( $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles") );  // Include the user role constants.
 require( INCLUDE_DIR."/language.inc" );         // Include the localized Strings. => Object $lng.
 
