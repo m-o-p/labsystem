@@ -88,6 +88,8 @@ class Element{
 
   var $serializationArray;      // This array is used for serialization and unserialization. It contains all variable names to be (un-)serialized as value.
 
+  var $varNamesForCSV;       // This array stores the field names that should be included into our CSV line (for export of questions / answers and elements).
+
   /**
   * Is the element visible?
   * @return BOOL  Is the element visible?
@@ -97,7 +99,14 @@ class Element{
     return  $this->IamVisible
             || $usr->isOfKind( IS_CONTENT_EDITOR ); /* contents editors are able to view any page */
   }
-
+  
+ function collectVariablesFromArray( $array ){
+  	$valueArray = array();
+  	foreach ( $array as $value ){
+  		$valueArray[$value] = $this->$value;
+  	}
+  	return $valueArray;
+  }
   /**
   /**
   * Serialises the element. Uses $this->serializationArray
@@ -109,19 +118,40 @@ class Element{
     $toBeSerialized = array();
     foreach ( $this->serializationArray as $value ){
     	$toBeSerialized[$value] = $this->$value;
-// This is the old hand-written "XML" export code. You should not need it anaymore.
-//       $output .= '<'.$value.'>';
-//       if( is_array($this->$value) ){
-//         $output .=  "<arrayElement>".implode("</arrayElement>\n<arrayElement>", $this->$value)."</arrayElement>"; // transform the array elements to XML
-//       }else{
-//         $output .= $this->$value;
-//       }
-//       $output .= '</'.$value.'>'."\r\n";
     }
     
     $output = json_encode( $toBeSerialized );
     
     return $output;
+  }
+ 
+  
+  /**
+   * On 2018-08-28 still missing in PHP so we implement it here.
+   * Remove if part of PHP.
+   * @param unknown $array
+   */
+  protected function csv_encode( $array ){
+  	if (!empty($array)){
+  		$out = fopen('php://output', 'w');
+  		array_walk( $array, function(&$item, $key){$item=preg_replace( "/\r|\n/", "_ ",$item);});
+  		fputcsv($out, $array);
+  		fclose($out);
+  	}
+  }
+
+ /**
+  * Serializes the element as CSV line.
+  */
+  function getCSVline(){
+  	$this->csv_encode( $this->collectVariablesFromArray( $this->varNamesForCSV ) );
+  }
+
+  /**
+   * prints the header line with the filed names.
+   */
+  function getCSVheaderLine(){
+  	$this->csv_encode( $this->varNamesForCSV );
   }
 
   /**

@@ -69,9 +69,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         //Store the solution data in an array. TO-DO: I expect problems if there is only one i or m element in a collection.
         if ( file_exists($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ){ $labSolutionDecoded = json_decode_elementData( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ); }
         
-        
-        $jsonEncodedLab = json_encode($labJsonDecoded[0]); //grab the first Element, the "l" element serves as Meta Data
-        $labToImport->initFromSerialized( $jsonEncodedLab );
+        $labToImport->initFromSerialized( $labJsonDecoded[0] );
       // create the mapping from the directory and create the "empty" DB objects for the elements
         $labElementArray = createIdImportMappingInitDB( $labToImport->uniqueID , $subDir );
         
@@ -82,7 +80,6 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
         $importCounter = 0; // used to iterate through our JSON-Element-array.
        
         foreach ($labElementArray as $value=>$newID){
-          
           $nextElement = $GLOBALS[ $newID[0]."DBI" ]->getData2idx( substr($newID, 1) ); // load existing empty DB object
           switch( $value[0] ){
               // i and m can be stored with and without solutions.
@@ -91,17 +88,17 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                 // if i or m element search for it in the solution array. TO-DO: I expect problems if there is only one i or m element in a collection.
                 if ( file_exists($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ){ // if the solutions exist, try to import them
                     for ( $i = 0; $i < count($labSolutionDecoded); $i++ ){ // Loop through the i&m elements and to find the right element
-                        $tmp_element = $labSolutionDecoded[$i];
+                        $tmp_element = json_decode($labSolutionDecoded[$i]);
                         $elementType = $tmp_element["elementId"]; // get type
                         $elementID = $tmp_element["idx"]; // get number
                         if ($value[0]==$elementType && $value[1] == $elementID){ //if Id and type match we found the solution.
-                            $nextElement->initFromSerialized( json_encode($labSolutionDecoded[$i]) ); // init the next element
+                            $nextElement->initFromSerialized( $labSolutionDecoded[$i] ); // init the next element
                             break;
                         }
                     }
                 }
             default:
-                $nextElement->initFromSerialized( json_encode($labJsonDecoded[$importCounter]) ); // init the next element
+                $nextElement->initFromSerialized( $labJsonDecoded[$importCounter] ); // init the next element
               break;
           }
           processElement( $nextElement, $labElementArray, 2, true );
@@ -268,16 +265,37 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
     // /get the HTML PREVIEW
 
     // Iterate through the elements
+	$serializedElements=array();
+	$serializedSolutionElements=array();
+	$k=1;
         foreach ($labElementArray as $value=>$newID){
           $nextElement = $GLOBALS[ $value[0]."DBI" ]->getData2idx( substr($value, 1) );
-
           processElement( $nextElement, $labElementArray, $key );
-
-        // renumber element
+          // renumber element
           $nextElement->idx = substr( $newID, 1);
-          $pge->put( persistElement( $nextElement, $labToExport->uniqueID ) );
-        } // /foreach
-      fileWrite(  'data/externallyLinked.txt',
+		  switch( $nextElement->elementId ){
+			  case 'i':
+			  case 'm':
+				$serializedSolutionElements[$k]=$nextElement->getSerialized(); // save full version
+				// clear sensitive data
+				if ($nextElement->elementId == 'i') $nextElement->exampleSolution = 'Here will be the example solution in the full data set.';
+				if ($nextElement->elementId == 'm') $nextElement->answerExplanation = 'Here will be the answer explanation in the full data set.';
+				$serializedElements[$k++]=$nextElement->getSerialized(); 
+				break;
+			  case 'l':
+				  if(empty($nextElement->uniqueID)) {
+					  $nextElement->uniqueID = $GLOBALS['exportUID'];
+				  }
+				$serializedElements[0]=$nextElement->getSerialized(); //set l Element as array item with key 0; easier to decode labname for getLabsFromDirectory function
+				break;
+			  default:
+				$serializedElements[$k++]=$nextElement->getSerialized();  //Appends the element to the array
+          }
+
+		}		// /foreach
+	  $pge->put( persistElementArray( $serializedElements, $serializedSolutionElements, $labToExport->uniqueID ) ); //persist the Array as json encoded object on the disc
+      
+	  fileWrite(  'data/externallyLinked.txt',
                   'The following external ressources are linked in this lab:'."\n".
                   implode( "\n", $GLOBALS['externallyLinkedElements'] ),
                   $GLOBALS['exportUID'] );

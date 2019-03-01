@@ -278,6 +278,21 @@ class LcElement extends Element{
   }
 
   /**
+   * Exports all elements of type $elementID as CSV.
+   * @param unknown $elementID
+   */
+  function exportCSV( $elementID ){
+  	foreach ($this->simpleIterate(array("c", $elementID)) as list($value, $element)) {
+  		if (strtolower($element->elementId) == "c"){
+  			$element->exportCSV( $elementID );
+  		}else{
+  			// actual work
+  			$element->getCSVline();
+  		}
+  	}
+  }
+  
+  /**
   * Generates a page with all the collection's elements of a special type (given by $typePrefix ).
   *
   * @param $typePrefix    Element's type (p.e. p, m, i).

@@ -22,209 +22,210 @@
  * Helper functions used by ../pages/XIport.php
  *
  * @module     ../include/XIlib.inc
- * @author     Marc-Oliver Pahl, Meyyar Palaniappan
- * @version    2.0
+ * @author Marc-Oliver Pahl, Meyyar Palaniappan
+ * @version 2.0
  */
 
 // this directory is for the i, m elements WITH solutions
 define('EXPORT_DATA_DIR_PRIVATE', 'data/withSolutions');
 // this directory is for the i, m elements WITHOUT solutions
-define('EXPORT_DATA_DIR_PUBLIC', 'data'); // important for indexing!
-
-////////////////////////////// called externally /////////////////////////////////////////
+define('EXPORT_DATA_DIR_PUBLIC', 'data');
+ // important for indexing!
+                                          
+// //////////////////////////// called externally /////////////////////////////////////////
 /**
  * Creates the mapping array out of the array containing the existing element indices as values.
  *
- * @param array $labElementArray  An array containing all elements to be exported as values.
- * @return                        Acts directly on the given array.
+ * @param array $labElementArray
+ *            An array containing all elements to be exported as values.
+ * @return Acts directly on the given array.
  */
-function createIdMapping( &$labElementArray ){
-  $labElementArray = array_map( create_function( '$element', 'return strtolower( $element );' ), $labElementArray ); // uncapitalise all IDS
-	natsort( $labElementArray ); // sort values lexicographically
-	//remove stared values as they describe not existing elements:
-	$labElementArray = array_filter( $labElementArray, 'notStared' );
-	$labElementArray = array_flip( $labElementArray ); // exchange keys and values (+ remove duplicate elements...)
-	$lastSeenElement = '';
-	$elementCounter = 99;
-	foreach ($labElementArray as $key => $value){
-		if ( $lastSeenElement != $key[0] ){ // new element ID
-			$lastSeenElement = $key[0];
-			$elementCounter = 2; // 1 = prototype... (used by lab to indicate empty...)
-		}
-		$labElementArray[ $key ] = $lastSeenElement.$elementCounter++;
-	}
+function createIdMapping(&$labElementArray)
+{
+    $labElementArray = array_map(create_function('$element', 'return strtolower( $element );'), $labElementArray); // uncapitalise all IDS
+    natsort($labElementArray); // sort values lexicographically
+                                 // remove stared values as they describe not existing elements:
+    $labElementArray = array_filter($labElementArray, 'notStared');
+    $labElementArray = array_flip($labElementArray); // exchange keys and values (+ remove duplicate elements...)
+    $lastSeenElement = '';
+    $elementCounter = 99;
+    foreach ($labElementArray as $key => $value) {
+        if ($lastSeenElement != $key[0]) { // new element ID
+            $lastSeenElement = $key[0];
+            $elementCounter = 2; // 1 = prototype... (used by lab to indicate empty...)
+        }
+        $labElementArray[$key] = $lastSeenElement . $elementCounter ++;
+    }
 }
 
 /**
  * creates the new empty elements for the imported lab elements and populates the reverse index mapping array
  *
- * @param  string $labFolder     	        Lab folder name on the disk inside the $cfg->get('exportImportDir')
- * @return array						              array with the reverse mapping index
- *
-function createIdImportMappingInitDB( $labFolder ){
-  global $cfg;
-  $IdMapping = array();
-  $labElementsOnDisk = scandir( $cfg->get('exportImportDir').$labFolder.'/data' );
-  foreach ( $labElementsOnDisk as $value ){
-    if ( (strlen( $value ) < 4) || (substr($value, -4) != '.txt') || ($value[1] != '0') ) continue; // skip all uninteresting files
-
-    $elementType = $value[0]; // get type (first letter)
-    $elementID = intval( substr($value, 1, 7) ); // get number (rest)
-
-    $newIdx = createNew( $elementType ); // creates element in DB
-    $IdMapping[$elementType.$elementID] = $elementType.$newIdx;
-  }
-
-  return $IdMapping;
-}
-*/
-
-function createIdImportMappingInitDB( $labFolder, $subDir ){
+ * @param string $labFolder
+ *            Lab folder name on the disk inside the $cfg->get('exportImportDir')
+ * @return array array with the reverse mapping index
+ *        
+ */
+function createIdImportMappingInitDB($labFolder, $subDir)
+{
     global $cfg;
     $IdMapping = array();
-    //Decode elementData array
-    $labElementsOnDisk = json_decode_elementData( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/elementData.txt') );
-    
-    $tmp_element = $labElementsOnDisk[0]; //assume that l-element is the first element in array, because we export it that way. Avoids the missing elementType Problem and makes our life easier for displaying lab title 
-    $elementType = "l"; // l-element has no elementType, maybe should be changed for consistency
-    $elementID = $tmp_element["idx"];
-    $newIdx = createNew( $elementType ); // creates element in DB
-    $IdMapping[$elementType.$elementID] = $elementType.$newIdx;
-    //loop through array and create empty elements in the Database
-    //TO-DO fix for countable, we expect an array, if the saved lab contains only a single "l" elements and no further elements this will throw an error
-    for ( $i = 1; $i < count($labElementsOnDisk); $i++ ){
-        $tmp_element = $labElementsOnDisk[$i];
+    // Decode elementData array
+    $labElementsOnDisk = json_decode_elementData(file_get_contents($cfg->get('exportImportDir') . $subDir . '/data/elementData.txt'));
+    // loop through array and create empty elements in the Database
+    for ($i = 0; $i < count($labElementsOnDisk); $i ++) {
+        $tmp_element = json_decode($labElementsOnDisk[$i], True);
         $elementType = $tmp_element["elementId"]; // get type
-        //print_r($elementType);
         $elementID = $tmp_element["idx"]; // get number
-        
-        $newIdx = createNew( $elementType ); // creates element in DB
-        $IdMapping[$elementType.$elementID] = $elementType.$newIdx;
+        $newIdx = createNew($elementType); // creates element in DB
+        $IdMapping[$elementType . $elementID] = $elementType . $newIdx;
     }
-    
-    //print_r($IdMapping);
-
     return $IdMapping;
 }
 
 /**
  * Persists the element given.
  *
- * @param object &$element     The element.
- * @param string $labUID       The unique identifier of this lab (UID for export).
- * @return string              Status information
+ * @param
+ *            object &$element The element.
+ * @param string $labUID
+ *            The unique identifier of this lab (UID for export).
+ * @return string Status information
  */
-function persistElement( &$element, $labUID, $isImport=false ){
-  if (!$isImport) { // EXPORT
-    $fileName = 'data/elementData.txt'; // default dir
-    switch( $element->elementId ){
-      case 'i':
-      case 'm':
-          $fileName = EXPORT_DATA_DIR_PRIVATE.DIRECTORY_SEPARATOR.'elementData.txt';
-        fileAppend( $fileName, $element->getSerialized().',', $labUID ); // save full version
-        // clear sensitive data
-        if ($element->elementId == 'i') $element->exampleSolution = 'Here will be the example solution in the full data set.';
-        if ($element->elementId == 'm') $element->answerExplanation = 'Here will be the answer explanation in the full data set.';
-        $fileName = EXPORT_DATA_DIR_PUBLIC.DIRECTORY_SEPARATOR.'elementData.txt'; // save "public" version.
-        fileAppend( $fileName, $element->getSerialized().',', $labUID ); 
-        break;
-      case 'l': //TO-DO dirty fix for empty uniqueID
-          if(empty($element->uniqueID)) {
-              $element->uniqueID = $GLOBALS['exportUID'];
-          }
-        filePrepend( $fileName, $element->getSerialized().',', $labUID ); //Using the "l" element as the first element in the array
-        break;
-      default:
-        fileAppend( $fileName, $element->getSerialized().',', $labUID ); //Appends the elements to the file
+function persistElement(&$element, $labUID, $isImport = false)
+{
+    if (! $isImport) { // EXPORT is in own function TO-DO delete unnecessary parts
+        $fileName = 'data/elementData.txt'; // default dir
+        switch ($element->elementId) {
+            case 'i':
+            case 'm':
+                $fileName = EXPORT_DATA_DIR_PRIVATE . DIRECTORY_SEPARATOR . 'elementData.txt';
+                fileAppend($fileName, $element->getSerialized() . ',', $labUID); // save full version
+                                                                                 // clear sensitive data
+                if ($element->elementId == 'i')
+                    $element->exampleSolution = 'Here will be the example solution in the full data set.';
+                if ($element->elementId == 'm')
+                    $element->answerExplanation = 'Here will be the answer explanation in the full data set.';
+                $fileName = EXPORT_DATA_DIR_PUBLIC . DIRECTORY_SEPARATOR . 'elementData.txt'; // save "public" version.
+                fileAppend($fileName, $element->getSerialized() . ',', $labUID);
+                break;
+            case 'l': // TO-DO dirty fix for empty uniqueID
+                if (empty($element->uniqueID)) {
+                    $element->uniqueID = $GLOBALS['exportUID'];
+                }
+                filePrepend($fileName, $element->getSerialized() . ',', $labUID); // Using the "l" element as the first element in the array
+                break;
+            default:
+                fileAppend($fileName, $element->getSerialized() . ',', $labUID); // Appends the elements to the file
+        }
+        
+        // debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
+        return '<div class="labsys_mop_elements_menu_' . strtolower($element->elementId) . '">' . "\r\n" . htmlentities($element->title, ENT_QUOTES | ENT_IGNORE) . ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> ' . $fileName . ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">' . "</div>\r\n";
+    } else { // IMPORT
+        $element->history = ']' . $element->history; // add sign for indicating not to stamp data
+        $GLOBALS[$element->elementId . "DBI"]->setData($element);
+        return '<div class="labsys_mop_elements_menu_' . strtolower($element->elementId) . '">' . "\r\n" . htmlentities($element->title, ENT_QUOTES | ENT_IGNORE) . ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> ' . $element->elementId . $element->idx . "</div>\r\n";
     }
+}
 
-  	//debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
-  	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
-  	htmlentities($element->title, ENT_QUOTES | ENT_IGNORE ).
-           ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> '.
-  	$fileName.
-           ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
-           "</div>\r\n";
-  } else { // IMPORT
-    $element->history = ']'.$element->history; // add sign for indicating not to stamp data
-    $GLOBALS[ $element->elementId."DBI" ]->setData( $element );
-  	return '<div class="labsys_mop_elements_menu_'.strtolower( $element->elementId ).'">'."\r\n".
-  	htmlentities($element->title, ENT_QUOTES | ENT_IGNORE ).
-           ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
-  	$element->elementId.$element->idx.
-           "</div>\r\n";
-  }
+
+/**
+ * Persists the element array given in json encoded format
+ *
+ * @param
+ *            object &$element The element.
+ * @param string $labUID
+ *            The unique identifier of this lab (UID for export).
+ * @return string Status information
+ */
+function persistElementArray(&$element, &$elementSolution, $labUID)
+{
+    $fileName = 'data/elementData.txt'; // default dir
+    
+    $fileName = EXPORT_DATA_DIR_PRIVATE . DIRECTORY_SEPARATOR . 'elementData.txt';
+    fileAppend($fileName, json_encode($elementSolution), $labUID); // save full version
+    
+    $fileName = EXPORT_DATA_DIR_PUBLIC . DIRECTORY_SEPARATOR . 'elementData.txt'; // save "public" version.
+    fileAppend($fileName, json_encode($element), $labUID);
 }
 
 /**
- * 
- * 
+ * Decodes an element array that has been encoded as a json object
  * @return mixed
  */
-function json_decode_elementData($rawElementArray) {
-    if(substr($rawElementArray, -1) == ',')
-        $rawElementArray = substr($rawElementArray, 0, -1);
-        return json_decode("[$rawElementArray]", true);
+function json_decode_elementData($rawElementArray)
+{
+    $decodedData = array();
+    $decodedData = json_decode($rawElementArray, true);
+    return $decodedData;
 }
-
 
 /**
  * Writes the $content into $fileName into $cfg->get('exportImportDir').
  *
- * @param $fileNameWithPath    Path and Name of the file to be created.
- * @param $content             Content to be written in the file.
- * @param string $labUID       The unique identifier of this lab (UID for export).
+ * @param $fileNameWithPath Path
+ *            and Name of the file to be created.
+ * @param $content Content
+ *            to be written in the file.
+ * @param string $labUID
+ *            The unique identifier of this lab (UID for export).
  * @return
  */
-function fileWrite( $fileName, $content, $labUID ) {
-	global $cfg;
-	$fileNameWithPath = $cfg->get('exportImportDir').$labUID.DIRECTORY_SEPARATOR.$fileName;
-	if ( !file_exists(dirname($fileNameWithPath)))
-    mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
-	$fh = fopen($fileNameWithPath, 'w') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
-	fwrite($fh, $content);
-	fclose($fh);
-}
-
-
-/**
- * Appends the $content into $fileName into $cfg->get('exportImportDir').
- *
- * @param $fileNameWithPath    Path and Name of the file to be created.
- * @param $content             Content to be written in the file.
- * @param string $labUID       The unique identifier of this lab (UID for export).
- * @return
- */
-function fileAppend( $fileName, $content, $labUID ) {
+function fileWrite($fileName, $content, $labUID)
+{
     global $cfg;
-    $fileNameWithPath = $cfg->get('exportImportDir').$labUID.DIRECTORY_SEPARATOR.$fileName;
-    if ( !file_exists(dirname($fileNameWithPath))) {
-        mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
-    }
-    $fh = fopen($fileNameWithPath, 'a') or trigger_error("Can't create/ open file ".$fileNameWithPath, E_USER_ERROR);
+    $fileNameWithPath = $cfg->get('exportImportDir') . $labUID . DIRECTORY_SEPARATOR . $fileName;
+    if (! file_exists(dirname($fileNameWithPath)))
+        mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder " . dirname($fileNameWithPath), E_USER_ERROR);
+    $fh = fopen($fileNameWithPath, 'w') or trigger_error("Can't create/ open file " . $fileNameWithPath, E_USER_ERROR);
     fwrite($fh, $content);
     fclose($fh);
 }
 
+/**
+ * Appends the $content into $fileName into $cfg->get('exportImportDir').
+ *
+ * @param $fileNameWithPath Path
+ *            and Name of the file to be created.
+ * @param $content Content
+ *            to be written in the file.
+ * @param string $labUID
+ *            The unique identifier of this lab (UID for export).
+ * @return
+ */
+function fileAppend($fileName, $content, $labUID)
+{
+    global $cfg;
+    $fileNameWithPath = $cfg->get('exportImportDir') . $labUID . DIRECTORY_SEPARATOR . $fileName;
+    if (! file_exists(dirname($fileNameWithPath))) {
+        mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder " . dirname($fileNameWithPath), E_USER_ERROR);
+    }
+    $fh = fopen($fileNameWithPath, 'a') or trigger_error("Can't create/ open file " . $fileNameWithPath, E_USER_ERROR);
+    fwrite($fh, $content);
+    fclose($fh);
+}
 
 /**
  * Prepends the $content into $fileName into $cfg->get('exportImportDir').
  * Needed for "l" element
  *
- * @param $fileNameWithPath    Path and Name of the file to be created.
- * @param $content             Content to be written in the file.
- * @param string $labUID       The unique identifier of this lab (UID for export).
+ * @param $fileNameWithPath Path
+ *            and Name of the file to be created.
+ * @param $content Content
+ *            to be written in the file.
+ * @param string $labUID
+ *            The unique identifier of this lab (UID for export).
  * @return
  */
-function filePrepend ($fileName, $content, $labUID) {
+function filePrepend($fileName, $content, $labUID)
+{
     global $cfg;
-    $fileNameWithPath = $cfg->get('exportImportDir').$labUID.DIRECTORY_SEPARATOR.$fileName;
-    if ( !file_exists(dirname($fileNameWithPath))) {
-        mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder ".dirname($fileNameWithPath), E_USER_ERROR);
+    $fileNameWithPath = $cfg->get('exportImportDir') . $labUID . DIRECTORY_SEPARATOR . $fileName;
+    if (! file_exists(dirname($fileNameWithPath))) {
+        mkdir(dirname($fileNameWithPath), 0755, true) or trigger_error("Error creating folder " . dirname($fileNameWithPath), E_USER_ERROR);
         $fileContent = "";
-    }
-    else{
-        $fileContent = file_get_contents ($fileNameWithPath);
+    } else {
+        $fileContent = file_get_contents($fileNameWithPath);
     }
     file_put_contents($fileNameWithPath, $content . "\n" . $fileContent);
 }
@@ -232,516 +233,534 @@ function filePrepend ($fileName, $content, $labUID) {
 /**
  * rm -rf $cfg->get('exportImportDir').$labUID
  *
- * @param string $labUID       The unique identifier of this lab (UID for export).
+ * @param string $labUID
+ *            The unique identifier of this lab (UID for export).
  * @return boolean Success?
  */
-function deleteExportDirectory( $labUID ) {
-  global $cfg, $pge;
-  $dir = $cfg->get('exportImportDir').$labUID;
-
-  $pge->put( '<div class="labsys_mop_elements_menu_l">Exporting to directory '.$dir.'.</div>' );
-
-  if (!file_exists($dir)) return true;
-
-  $pge->put( '<div class="labsys_mop_elements_menu_l">Removed existing content.</div>' );
-  return deleteDirectory( $dir );
+function deleteExportDirectory($labUID)
+{
+    global $cfg, $pge;
+    $dir = $cfg->get('exportImportDir') . $labUID;
+    
+    $pge->put('<div class="labsys_mop_elements_menu_l">Exporting to directory ' . $dir . '.</div>');
+    
+    if (! file_exists($dir))
+        return true;
+    
+    $pge->put('<div class="labsys_mop_elements_menu_l">Removed existing content.</div>');
+    return deleteDirectory($dir);
 }
 
 // from http://php.net/manual/en/function.rmdir.php [EDITOR NOTE: "Credits to erkethan at free dot fr." - thiago]
-function deleteDirectory($dir) {
-  if (!file_exists($dir)) return true;
-  if (!is_dir($dir) || is_link($dir)) return unlink($dir);
-      foreach (scandir($dir) as $item) {
-          if ($item == '.' || $item == '..') continue;
-          if (!deleteDirectory($dir . "/" . $item)) {
-              chmod($dir . "/" . $item, 0777);
-              if (!deleteDirectory($dir . "/" . $item)) return false;
-          };
-      }
-      return rmdir($dir);
+function deleteDirectory($dir)
+{
+    if (! file_exists($dir))
+        return true;
+    if (! is_dir($dir) || is_link($dir))
+        return unlink($dir);
+    foreach (scandir($dir) as $item) {
+        if ($item == '.' || $item == '..')
+            continue;
+        if (! deleteDirectory($dir . "/" . $item)) {
+            chmod($dir . "/" . $item, 0777);
+            if (! deleteDirectory($dir . "/" . $item))
+                return false;
+        }
+        ;
+    }
+    return rmdir($dir);
 }
 
 /**
  * Removes the example solutions from $HTMLcode.
  *
- * @param string  &$HTMLcode                The html code to be altered.
- * @return                                  Alters the code directly.
+ * @param
+ *            string &$HTMLcode The html code to be altered.
+ * @return Alters the code directly.
  */
-function removeExampleSolutions(&$HTMLcode){
-  // inputs
-	$HTMLcode= preg_replace_callback( '#(?<=<!-- example solution -->)'. // Assertion "must be preceded by"
-                                    '(.*)'.
-                                    '(?=<!-- /example solution -->)'.
-                                    '#msU',
-                                      create_function(
-                                          '$matches',
-                                          'return "<br><br><br><br>";'
-                                      ),
-                                   $HTMLcode
-                                   );
-  // MCs
-  // remove checked boxes
-	$HTMLcode= str_replace(' checked="checked"', '', $HTMLcode);
-  //remove answer explanations
-	$HTMLcode= preg_replace_callback( '#(<div class="labsys_mop_m_answer_explanation">'. // Assertion "must be preceded by"
-                                    '.*'.
-                                    '</div>)'.
-                                    '#msU',
-                                      create_function(
-                                          '$matches',
-                                          'return "";'
-                                      ),
-                                   $HTMLcode
-                                   );
-  // remove disabled (just for fun)
-	$HTMLcode= str_replace(' disabled="disabled" ', '', $HTMLcode);
-  // remove graying showing right solutions
-	$HTMLcode= preg_replace_callback( '#(<span class="labsys_mop_grayed">)'. // Assertion "must be preceded by"
-                                    '(.*)'.
-                                    '(</span>)'.
-                                    '#msU',
-                                      create_function(
-                                          '$matches',
-                                          'return $matches[2];'
-                                      ),
-                                   $HTMLcode
-                                   );
-  // remove graying showing right solutions
-	$HTMLcode= preg_replace_callback( '#(<a href="/pages/XIport.php\?)(\S+)#s',
-                                      create_function(
-                                          '$matches',
-                                          'return "...";'
-                                      ),
-                                   $HTMLcode
-                                   );
-
-
-
+function removeExampleSolutions(&$HTMLcode)
+{
+    // inputs
+    $HTMLcode = preg_replace_callback('#(?<=<!-- example solution -->)' . // Assertion "must be preceded by"
+    '(.*)' . '(?=<!-- /example solution -->)' . '#msU', create_function('$matches', 'return "<br><br><br><br>";'), $HTMLcode);
+    // MCs
+    // remove checked boxes
+    $HTMLcode = str_replace(' checked="checked"', '', $HTMLcode);
+    // remove answer explanations
+    $HTMLcode = preg_replace_callback('#(<div class="labsys_mop_m_answer_explanation">' . // Assertion "must be preceded by"
+    '.*' . '</div>)' . '#msU', create_function('$matches', 'return "";'), $HTMLcode);
+    // remove disabled (just for fun)
+    $HTMLcode = str_replace(' disabled="disabled" ', '', $HTMLcode);
+    // remove graying showing right solutions
+    $HTMLcode = preg_replace_callback('#(<span class="labsys_mop_grayed">)' . // Assertion "must be preceded by"
+    '(.*)' . '(</span>)' . '#msU', create_function('$matches', 'return $matches[2];'), $HTMLcode);
+    // remove graying showing right solutions
+    $HTMLcode = preg_replace_callback('#(<a href="/pages/XIport.php\?)(\S+)#s', create_function('$matches', 'return "...";'), $HTMLcode);
 }
 
 /**
  * Processes the $content:
- *   - reindexes linked elements
- *   - relocates images to $IMAGE_PATH
- *   - adds images to $filesToBeExported
- *   - relocated linked objects like PDF files
- *   - adds linked objects to $filesToBeExported
+ * - reindexes linked elements
+ * - relocates images to $IMAGE_PATH
+ * - adds images to $filesToBeExported
+ * - relocated linked objects like PDF files
+ * - adds linked objects to $filesToBeExported
  *
- * @param string  &$HTMLcode                The html code to be altered.
- * @param int     $labNumber                The number of the lab to be exported.
- * @param array   &$IDmappingArray          The array containing the mappingbetween the element IDs.
- * @param array   &$ImagefilesToBeExported  Collects all image files  to be exported.
- * @param array   &$OtherfilesToBeExported  Collects all additional files  to be exported.
+ * @param
+ *            string &$HTMLcode The html code to be altered.
+ * @param int $labNumber
+ *            The number of the lab to be exported.
+ * @param
+ *            array &$IDmappingArray The array containing the mappingbetween the element IDs.
+ * @param
+ *            array &$ImagefilesToBeExported Collects all image files to be exported.
+ * @param
+ *            array &$OtherfilesToBeExported Collects all additional files to be exported.
  * @return
  */
-function processContent( &$HTMLcode, $labNumber, &$IDmappingArray, $doCopy=true, $isImport=false ){
-	reMapIDs($HTMLcode, $labNumber, $IDmappingArray); // Replace the linked internal elements in $HTMLcode identified by address= or #
-  if ( !$isImport ){ // Export
-    if ( substr( $HTMLcode, 0, 6 ) == '[HTML]' ){
-      tidyHTML($HTMLcode); // clean HTML up if enabled
-      updateUsedClasses($HTMLcode); // collect Style information
+function processContent(&$HTMLcode, $labNumber, &$IDmappingArray, $doCopy = true, $isImport = false)
+{
+    reMapIDs($HTMLcode, $labNumber, $IDmappingArray); // Replace the linked internal elements in $HTMLcode identified by address= or #
+    if (! $isImport) { // Export
+        if (substr($HTMLcode, 0, 6) == '[HTML]') {
+            tidyHTML($HTMLcode); // clean HTML up if enabled
+            updateUsedClasses($HTMLcode); // collect Style information
+        }
+        processLocalPix($HTMLcode, $doCopy);
+        processLocalFiles($HTMLcode, $doCopy);
+    } else { // Import
+        importPix($HTMLcode);
+        importFiles($HTMLcode);
     }
-    processLocalPix($HTMLcode, $doCopy);
-    processLocalFiles($HTMLcode, $doCopy);
-  } else { // Import
-    importPix($HTMLcode);
-    importFiles($HTMLcode);
-  }
 }
 
-////////////////////////////// called only internally /////////////////////////////////////////
+// //////////////////////////// called only internally /////////////////////////////////////////
 /**
  * Remaps the relative internal links in $HTMLcode according to the $IDmappingArray.
  * The elements are identified by address= or # (anchor in page).
  *
- * @param string $HTMLcode        The HTML code. It will be altered during this processing.
- * @param int $labNumber          The number of the lab. The match is against IDs starting with l$labNumber.
- * @param array &$IDmappingArray  The array containing the mapping between the element IDs.
- *                                NOTE: The l? element must be included! (necessary at import).
+ * @param string $HTMLcode
+ *            The HTML code. It will be altered during this processing.
+ * @param int $labNumber
+ *            The number of the lab. The match is against IDs starting with l$labNumber.
+ * @param
+ *            array &$IDmappingArray The array containing the mapping between the element IDs.
+ *            NOTE: The l? element must be included! (necessary at import).
  * @return
  */
-  /** helper functions */
-  /**
-   * Maps the element to its mapping element or returns the element if no mapping exists.
-   * @param string $oldID  Element ID to be mapped.
-   * @return string        The new ID of the given element.
-   */
-  function mapIt( $oldID, &$IDmappingArray ){
-    $ID = strtolower( $oldID[0] ); // make ID small letter (big and small c's...
-    $IDX = substr( $oldID, 1 );
-    if ($IDX == 1) return $oldID; // 1 = prototype => preserve
-    return array_key_exists( $ID.$IDX, $IDmappingArray ) ? $oldID[0].substr( $IDmappingArray[$ID.$IDX], 1 ) /*keep first letter big... */ : 'missing' /* not found */;
-  }
-  /** end of functions */
+/**
+ * helper functions
+ */
+/**
+ * Maps the element to its mapping element or returns the element if no mapping exists.
+ *
+ * @param string $oldID
+ *            Element ID to be mapped.
+ * @return string The new ID of the given element.
+ */
+function mapIt($oldID, &$IDmappingArray)
+{
+    $ID = strtolower($oldID[0]); // make ID small letter (big and small c's...
+    $IDX = substr($oldID, 1);
+    if ($IDX == 1)
+        return $oldID; // 1 = prototype => preserve
+    return array_key_exists($ID . $IDX, $IDmappingArray) ? $oldID[0] . substr($IDmappingArray[$ID . $IDX], 1) /*keep first letter big... */ : 'missing' /* not found */;
+}
 
-function reMapIDs( &$HTMLcode, $labNumber, &$IDmappingArray){
-  $GLOBALS['mappingTmp'] = $IDmappingArray; // hack to hand it in the callback :/
-  $HTMLcode= preg_replace_callback(  '/(#|address=)(l'.preg_quote($labNumber).'[0-9]*(?:\.[mipcC][0-9]*)*)/s', // '{address=l, #l}(?P<data>(\.\p{LN})+)'
-                                       function ($matches){
-                                         $parts = explode( ".", $matches[2] );
-                                         foreach ( $parts as $key=>$value ){
-                                           $parts[ $key ] = mapIt( $value, $GLOBALS['mappingTmp'] );
-                                         }
-                                         return $matches[1].implode ( ".", $parts );
-                                       },
-                                     $HTMLcode
-                                     );
+/**
+ * end of functions
+ */
+function reMapIDs(&$HTMLcode, $labNumber, &$IDmappingArray)
+{
+    $GLOBALS['mappingTmp'] = $IDmappingArray; // hack to hand it in the callback :/
+    $HTMLcode = preg_replace_callback('/(#|address=)(l' . preg_quote($labNumber) . '[0-9]*(?:\.[mipcC][0-9]*)*)/s', // '{address=l, #l}(?P<data>(\.\p{LN})+)'
+    function ($matches) {
+        $parts = explode(".", $matches[2]);
+        foreach ($parts as $key => $value) {
+            $parts[$key] = mapIt($value, $GLOBALS['mappingTmp']);
+        }
+        return $matches[1] . implode(".", $parts);
+    }, $HTMLcode);
 }
 
 /**
  * Handlers for images and a href linked LOCAL files.
  */
-  /** helper functions */
-  /**
-   * Returns true if the url of the element is local.
-   * @param string $fileWithPath  url.
-   * @return bool
-   */
-  function isLocal( $fileWithPath ){
-    if (($fileWithPath == '') || ($fileWithPath[0] == '#') || (strpos($fileWithPath, '?') !== false)) return false; // anchor, file with ?
-    $ignorePaths = array( 'extern', 'pages', 'ini', 'include', 'css', 'php', 'sessiondata', 'syspix');
-    $parts = explode( DIRECTORY_SEPARATOR, $fileWithPath );
-    return ((substr( $fileWithPath, 0, 4 ) != 'http') && (substr( $fileWithPath, 0, 6 ) != 'mailto') && !(is_array( $parts ) && isset($parts[1]) && in_array( $parts[1], $ignorePaths )) );
-  }
+/**
+ * helper functions
+ */
+/**
+ * Returns true if the url of the element is local.
+ *
+ * @param string $fileWithPath
+ *            url.
+ * @return bool
+ */
+function isLocal($fileWithPath)
+{
+    if (($fileWithPath == '') || ($fileWithPath[0] == '#') || (strpos($fileWithPath, '?') !== false))
+        return false; // anchor, file with ?
+    $ignorePaths = array(
+        'extern',
+        'pages',
+        'ini',
+        'include',
+        'css',
+        'php',
+        'sessiondata',
+        'syspix'
+    );
+    $parts = explode(DIRECTORY_SEPARATOR, $fileWithPath);
+    return ((substr($fileWithPath, 0, 4) != 'http') && (substr($fileWithPath, 0, 6) != 'mailto') && ! (is_array($parts) && isset($parts[1]) && in_array($parts[1], $ignorePaths)));
+}
 
-  /**
-   * Makes the given String a valid filename.
-   * This function is used to sanitize filenames for making
-   * the exported files more compatible with any destination
-   * system.
-   * @param string  The current filename
-   * @return string The sanitized filename
-   */
-  function validFilename($string = ''){
-   // Replace all weird characters with dashes
-   $string = preg_replace('/[^\w\-~_\.]+/u', '-', $string);
-   // Only allow one dash separator at a time
-   return preg_replace('/--+/u', '-', $string);
-  }
+/**
+ * Makes the given String a valid filename.
+ * This function is used to sanitize filenames for making
+ * the exported files more compatible with any destination
+ * system.
+ *
+ * @param
+ *            string The current filename
+ * @return string The sanitized filename
+ */
+function validFilename($string = '')
+{
+    // Replace all weird characters with dashes
+    $string = preg_replace('/[^\w\-~_\.]+/u', '-', $string);
+    // Only allow one dash separator at a time
+    return preg_replace('/--+/u', '-', $string);
+}
 
-  /** For Export:
-   * If the file passed by $localFileWithPath is recognized as local and
-   * $doCopy is set (not the case for the HTML preview), then the file
-   * is copied to $destDir.
-   *
-   * The new valid link to the file is returned.
-   * (So if nothing is done the original link is returned.)
-   *
-   * @param string $localFileWithPath The url of the lnked file.
-   * @param string $destDir           The directory where the file should be relocated if possible.
-   * @param bool   $doCopy            Only if set copy action is done. Otherwhise just relocation (false for preview.html).
-   * @return string                   New url of file.
-   */
-  function handleLocalFile( $localFileWithPath, $destDir, $doCopy ){
+/**
+ * For Export:
+ * If the file passed by $localFileWithPath is recognized as local and
+ * $doCopy is set (not the case for the HTML preview), then the file
+ * is copied to $destDir.
+ *
+ * The new valid link to the file is returned.
+ * (So if nothing is done the original link is returned.)
+ *
+ * @param string $localFileWithPath
+ *            The url of the lnked file.
+ * @param string $destDir
+ *            The directory where the file should be relocated if possible.
+ * @param bool $doCopy
+ *            Only if set copy action is done. Otherwhise just relocation (false for preview.html).
+ * @return string New url of file.
+ */
+function handleLocalFile($localFileWithPath, $destDir, $doCopy)
+{
     global $cfg, $pge, $externallyLinkedElements;
-
+    
     // Remove urlencoded chars as they are not in filenames.
     // Remove heading and trailing whitespaces.
     $localFileWithPath = trim(urldecode($localFileWithPath));
-
+    
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
-    $localFileWithPath = preg_replace_callback(  '/=["|\'](?:http(?:s?)\:\/\/)?('.preg_quote($_SERVER['SERVER_NAME']).')\/(.*)/',
-                                                 create_function(
-                                                                '$matches',
-                                                                // only replace it if something follows. Links to the server itself may be intended...
-                                                                'return ( (strlen($matches[2]) > 0) ? \'"../\'.$matches[2] : $matches[0] );'
-                                                               ),
-                                                 $localFileWithPath );
-
+    $localFileWithPath = preg_replace_callback('/=["|\'](?:http(?:s?)\:\/\/)?(' . preg_quote($_SERVER['SERVER_NAME']) . ')\/(.*)/', create_function('$matches', 
+        // only replace it if something follows. Links to the server itself may be intended...
+        'return ( (strlen($matches[2]) > 0) ? \'"../\'.$matches[2] : $matches[0] );'), $localFileWithPath);
+    
     // Now there could be a fragment in case of linked html files...
     $fragment = '';
-    if (strrpos($localFileWithPath, '#') !== false && strrpos(strtolower($localFileWithPath), '.htm') !== false){
-    	$fragment = substr( $localFileWithPath, strrpos($localFileWithPath, '#'));
-    	$localFileWithPath = substr($localFileWithPath, 0, strrpos($localFileWithPath, '#'));
+    if (strrpos($localFileWithPath, '#') !== false && strrpos(strtolower($localFileWithPath), '.htm') !== false) {
+        $fragment = substr($localFileWithPath, strrpos($localFileWithPath, '#'));
+        $localFileWithPath = substr($localFileWithPath, 0, strrpos($localFileWithPath, '#'));
     }
     // Files linked "/" should be "../"
-    if ( $localFileWithPath[0] == DIRECTORY_SEPARATOR ) $localFileWithPath = '..'.$localFileWithPath;
-
+    if ($localFileWithPath[0] == DIRECTORY_SEPARATOR)
+        $localFileWithPath = '..' . $localFileWithPath;
+    
     // not local: do nothing
-    if ( !isLocal( $localFileWithPath ) ){
-      if ($doCopy){
-        $pge->put( 'non-local: |'.$localFileWithPath.'|<br>'."\r\n" );
-        array_push( $externallyLinkedElements, $localFileWithPath );
-      }
-      return $localFileWithPath;
+    if (! isLocal($localFileWithPath)) {
+        if ($doCopy) {
+            $pge->put('non-local: |' . $localFileWithPath . '|<br>' . "\r\n");
+            array_push($externallyLinkedElements, $localFileWithPath);
+        }
+        return $localFileWithPath;
     }
-    //break else:
+    // break else:
     $fileName = end(explode(DIRECTORY_SEPARATOR, $localFileWithPath));
-    $fileName = validFilename( $fileName );
-    if ($doCopy){
-      // Here the move to server should happen...
-      $itWorked = (file_exists(str_replace( ' ', '%20', $localFileWithPath)) && copy( str_replace( ' ', '%20', $localFileWithPath), str_replace( ' ', '%20', $cfg->get('exportImportDir').$GLOBALS['exportUID'].DIRECTORY_SEPARATOR.$destDir.$fileName )))
-      or trigger_error("Can't copy file [".htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].DIRECTORY_SEPARATOR.$destDir.$fileName.']', E_USER_WARNING);
-      $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
-                  $localFileWithPath.
-                  ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">'.
-                 "</div>\r\n".
-      		( $itWorked ? '' : "<div class='copyError'>Can't copy file [".htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE ).']->['.$cfg->get('exportImportDir').$GLOBALS['exportUID'].DIRECTORY_SEPARATOR.$destDir.$fileName.']</div>' )
-      		 );
+    $fileName = validFilename($fileName);
+    if ($doCopy) {
+        // Here the move to server should happen...
+        $itWorked = (file_exists(str_replace(' ', '%20', $localFileWithPath)) && copy(str_replace(' ', '%20', $localFileWithPath), str_replace(' ', '%20', $cfg->get('exportImportDir') . $GLOBALS['exportUID'] . DIRECTORY_SEPARATOR . $destDir . $fileName))) or trigger_error("Can't copy file [" . htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE) . ']->[' . $cfg->get('exportImportDir') . $GLOBALS['exportUID'] . DIRECTORY_SEPARATOR . $destDir . $fileName . ']', E_USER_WARNING);
+        $pge->put('<div class="labsys_mop_elements_menu_s">' . $localFileWithPath . ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">' . "</div>\r\n" . ($itWorked ? '' : "<div class='copyError'>Can't copy file [" . htmlentities($localFileWithPath, ENT_QUOTES | ENT_IGNORE) . ']->[' . $cfg->get('exportImportDir') . $GLOBALS['exportUID'] . DIRECTORY_SEPARATOR . $destDir . $fileName . ']</div>'));
     }
-    return ((!isset( $itWorked ) // $doCopy === false...
-            || $itWorked) ? $destDir.$fileName : $localFileWithPath).$fragment;
-  }
+    return ((! isset($itWorked) || // $doCopy === false...
+    $itWorked) ? $destDir . $fileName : $localFileWithPath) . $fragment;
+}
 
-  /** For Import
-   * The file passed by $file2importWithPath
-   * is copied to $destDir
-   *
-   * The new valid link to the file is returned.
-   * (So if nothing is done the original link is returned.)
-   *
-   * @param string $file2importWithPath   File to be imported inclusive full path to the backupped file
-   * @param string $destDir               The directory where the file should be relocated relative to the script without UID subdir.
-   * @return string                       New url of file.
-   */
-  function importFile( $file2importWithPath, $destDir ){
-    global $cfg, $pge;
-
-    $destDir .= $GLOBALS['exportUID'].DIRECTORY_SEPARATOR; // add subdirectory
-    $file2importWithPath = $cfg->get('exportImportDir').$GLOBALS['exportUID'].DIRECTORY_SEPARATOR.$file2importWithPath; // complete full path
-    $fileName = end(explode(DIRECTORY_SEPARATOR, $file2importWithPath));
-    if ( !file_exists($destDir)){ mkdir($destDir, 0755, true) or trigger_error("Can't create directory ".$destDir, E_USER_ERROR); }
-
-    (file_exists($file2importWithPath) && copy( $file2importWithPath, $destDir.$fileName ) )
-    or trigger_error("Can't copy file from '".htmlentities($file2importWithPath, ENT_QUOTES | ENT_IGNORE )."' to '".$destDir.$fileName, E_USER_WARNING);
-    $pge->put(  '<div class="labsys_mop_elements_menu_s">'.
-                ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.
-                $fileName.
-                "</div>\r\n" );
-
-    return $destDir.$fileName;
-  }
-  /** end of functions */
-
-/** The following processors parse the code for links and pictures.
+/**
+ * For Import
+ * The file passed by $file2importWithPath
+ * is copied to $destDir
  *
- *  The content may be
- *   - HTML (prefix "[HTML]")
- *   - MarkDown (prefix "[MD]")
- *   - plain (no prefix)
+ * The new valid link to the file is returned.
+ * (So if nothing is done the original link is returned.)
+ *
+ * @param string $file2importWithPath
+ *            File to be imported inclusive full path to the backupped file
+ * @param string $destDir
+ *            The directory where the file should be relocated relative to the script without UID subdir.
+ * @return string New url of file.
+ */
+function importFile($file2importWithPath, $destDir)
+{
+    global $cfg, $pge;
+    
+    $destDir .= $GLOBALS['exportUID'] . DIRECTORY_SEPARATOR; // add subdirectory
+    $file2importWithPath = $cfg->get('exportImportDir') . $GLOBALS['exportUID'] . DIRECTORY_SEPARATOR . $file2importWithPath; // complete full path
+    $fileName = end(explode(DIRECTORY_SEPARATOR, $file2importWithPath));
+    if (! file_exists($destDir)) {
+        mkdir($destDir, 0755, true) or trigger_error("Can't create directory " . $destDir, E_USER_ERROR);
+    }
+    
+    (file_exists($file2importWithPath) && copy($file2importWithPath, $destDir . $fileName)) or trigger_error("Can't copy file from '" . htmlentities($file2importWithPath, ENT_QUOTES | ENT_IGNORE) . "' to '" . $destDir . $fileName, E_USER_WARNING);
+    $pge->put('<div class="labsys_mop_elements_menu_s">' . ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> ' . $fileName . "</div>\r\n");
+    
+    return $destDir . $fileName;
+}
+
+/**
+ * end of functions
+ */
+
+/**
+ * The following processors parse the code for links and pictures.
+ *
+ * The content may be
+ * - HTML (prefix "[HTML]")
+ * - MarkDown (prefix "[MD]")
+ * - plain (no prefix)
  */
 
 /**
  * Helper: Apples regex on text and call func on matches.
- * @param $regEx   To be identified in $text
- * @param $func    To be executed on $matches (array containing regex matches)
- * @param &$text   Text to be searched in
+ *
+ * @param $regEx To
+ *            be identified in $text
+ * @param $func To
+ *            be executed on $matches (array containing regex matches)
+ * @param
+ *            &$text Text to be searched in
  */
-function applyFunctionOnRegEx( $regEx, $func, &$text ){
-  $text = preg_replace_callback( $regEx,
-                                 create_function(
-                                   '$matches',
-                                   $func
-                                  ),
-                                  $text
-                                );
+function applyFunctionOnRegEx($regEx, $func, &$text)
+{
+    $text = preg_replace_callback($regEx, create_function('$matches', $func), $text);
 }
 
-/** EXPORT
+/**
+ * EXPORT
  * Searches $HTMLcode for local images and if $doCopy is set copies them to the server/ directory.
  *
- * @param string &$HTMLcode          The html code to be altered.
- * @param bool   $doCopy             Only if set copy action is done. Otherwhise just relocation (false for preview.html).
- * @return                           Directly alters $HTMLcode.
+ * @param
+ *            string &$HTMLcode The html code to be altered.
+ * @param bool $doCopy
+ *            Only if set copy action is done. Otherwhise just relocation (false for preview.html).
+ * @return Directly alters $HTMLcode.
  */
-function processLocalPix( &$HTMLcode, $doCopy=true ){
-  if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
-       && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
-       ) return; // nothing to do as it is plaintext
-
-  if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
-  // MarkDown: Additionally to the <img tag it has
-  // ![Alt text](/path/to/img.jpg)
-  // ![Alt text](/path/to/img.jpg "Optional title")
-  //
-  // The following will NOT BE SUPPORTED for ewxport:
-  // ![Alt text][id]
-  // [id]: url/to/image  "Optional title attribute"
-  	applyFunctionOnRegEx( '#(\!\[.*\]\()(?!../syspix/|/syspix/)(\S+)([\s\S]?(?<!\))\))#',
-                          'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];',
-                           $HTMLcode
-                         );
-
-	applyFunctionOnRegEx( '/(<img [^\>]*?src\s*=\s*[",\'])(?!..\/syspix\/|\/syspix\/)(.+?)([",\'])/s',
-                        'return $matches[1].handleLocalFile( $matches[2], \'images/\', '.intval($doCopy).' ).$matches[3];',
-                        $HTMLcode
-                       );
+function processLocalPix(&$HTMLcode, $doCopy = true)
+{
+    if (! (substr($HTMLcode, 0, 6) == '[HTML]') && // HTML
+    ! (substr($HTMLcode, 0, 4) == '[MD]')) // MarkDown
+        return; // nothing to do as it is plaintext
+    
+    if (substr($HTMLcode, 0, 4) == '[MD]') // MarkDown
+                                             // MarkDown: Additionally to the <img tag it has
+                                             // ![Alt text](/path/to/img.jpg)
+                                             // ![Alt text](/path/to/img.jpg "Optional title")
+                                             //
+                                             // The following will NOT BE SUPPORTED for ewxport:
+                                             // ![Alt text][id]
+                                             // [id]: url/to/image "Optional title attribute"
+        applyFunctionOnRegEx('#(\!\[.*\]\()(?!../syspix/|/syspix/)(\S+)([\s\S]?(?<!\))\))#', 'return $matches[1].handleLocalFile( $matches[2], \'images/\', ' . intval($doCopy) . ' ).$matches[3];', $HTMLcode);
+    
+    applyFunctionOnRegEx('/(<img [^\>]*?src\s*=\s*[",\'])(?!..\/syspix\/|\/syspix\/)(.+?)([",\'])/s', 'return $matches[1].handleLocalFile( $matches[2], \'images/\', ' . intval($doCopy) . ' ).$matches[3];', $HTMLcode);
 }
-/** IMPORT
+
+/**
+ * IMPORT
  * Searches $HTMLcode for images and if copies them to the $cfg->get("importPictureDir") directory.
  *
- * @param string &$HTMLcode          The html code to be altered.
- * @return                           Directly alters $HTMLcode.
+ * @param
+ *            string &$HTMLcode The html code to be altered.
+ * @return Directly alters $HTMLcode.
  */
-function importPix( &$HTMLcode ){
-  global $cfg;
-  if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
-       && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
-       ) return; // nothing to do as it is plaintext
-
-  if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
-  // MarkDown: Additionally to the <img tag it has
-  // ![Alt text](/path/to/img.jpg)
-  // ![Alt text](/path/to/img.jpg "Optional title")
-  //
-  // The following will NOT BE SUPPORTED for ewxport:
-  // ![Alt text][id]
-  // [id]: url/to/image  "Optional title attribute"
-  	applyFunctionOnRegEx( '#(\!\[.*\]\()(images/\S+)([\s\S]?(?<!\))\))#',
-                          'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
-                          $HTMLcode
-                         );
-
-	applyFunctionOnRegEx( '/(<img [^\>]*?src\s*=\s*[",\'])(images\/\S+)([",\'])/s',
-                        'return $matches[1].importFile( $matches[2], "'.$cfg->get('importPictureDir').'" ).$matches[3];',
-                        $HTMLcode
-                       );
+function importPix(&$HTMLcode)
+{
+    global $cfg;
+    if (! (substr($HTMLcode, 0, 6) == '[HTML]') && // HTML
+    ! (substr($HTMLcode, 0, 4) == '[MD]')) // MarkDown
+        return; // nothing to do as it is plaintext
+    
+    if (substr($HTMLcode, 0, 4) == '[MD]') // MarkDown
+                                             // MarkDown: Additionally to the <img tag it has
+                                             // ![Alt text](/path/to/img.jpg)
+                                             // ![Alt text](/path/to/img.jpg "Optional title")
+                                             //
+                                             // The following will NOT BE SUPPORTED for ewxport:
+                                             // ![Alt text][id]
+                                             // [id]: url/to/image "Optional title attribute"
+        applyFunctionOnRegEx('#(\!\[.*\]\()(images/\S+)([\s\S]?(?<!\))\))#', 'return $matches[1].importFile( $matches[2], "' . $cfg->get('importPictureDir') . '" ).$matches[3];', $HTMLcode);
+    
+    applyFunctionOnRegEx('/(<img [^\>]*?src\s*=\s*[",\'])(images\/\S+)([",\'])/s', 'return $matches[1].importFile( $matches[2], "' . $cfg->get('importPictureDir') . '" ).$matches[3];', $HTMLcode);
 }
 
-/** EXPORT
+/**
+ * EXPORT
  * Searches $HTMLcode for locally referenced files and if $doCopy is set copies them to the server/ directory.
  *
- * @param string &$HTMLcode          The html code to be altered.
- * @param bool   $doCopy             Only if set copy action is done. Otherwhise just relocation (false for preview.html).
- * @return                           Directly alters $HTMLcode.
+ * @param
+ *            string &$HTMLcode The html code to be altered.
+ * @param bool $doCopy
+ *            Only if set copy action is done. Otherwhise just relocation (false for preview.html).
+ * @return Directly alters $HTMLcode.
  */
-function processLocalFiles( &$HTMLcode, $doCopy=true ){
-  if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
-       && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
-       ) return; // nothing to do as it is plaintext
-
-  if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
-  // MarkDown: Additionally to the <img tag it has
-  // This is [an example](http://example.com/ "Title") inline link.
-  // [This link](http://example.net/) has no title attribute.
-  //
-  // The following will NOT BE SUPPORTED for ewxport:
-  // This is [an example] [id] reference-style link.
-  // [id]: http://example.com/  "Optional Title Here"
-  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(?!../pages/|/pages/|\#)(\S+)([\s\S]?(?<!\))\))#',
-                          'return $matches[1].handleLocalFile( $matches[2], \'files/\', '.intval($doCopy).' ).$matches[3];',
-                          $HTMLcode
-                         );
-
-	applyFunctionOnRegEx( '/(<a [^\>]*?href\s*=\s*[",\'])(?!..\/pages\/|\/pages\/)(.+?)([",\'])/s',
-                        'return $matches[1].handleLocalFile( $matches[2], \'files/\', '.intval($doCopy).' ).$matches[3];',
-                        $HTMLcode
-                       );
+function processLocalFiles(&$HTMLcode, $doCopy = true)
+{
+    if (! (substr($HTMLcode, 0, 6) == '[HTML]') && // HTML
+    ! (substr($HTMLcode, 0, 4) == '[MD]')) // MarkDown
+        return; // nothing to do as it is plaintext
+    
+    if (substr($HTMLcode, 0, 4) == '[MD]') // MarkDown
+                                             // MarkDown: Additionally to the <img tag it has
+                                             // This is [an example](http://example.com/ "Title") inline link.
+                                             // [This link](http://example.net/) has no title attribute.
+                                             //
+                                             // The following will NOT BE SUPPORTED for ewxport:
+                                             // This is [an example] [id] reference-style link.
+                                             // [id]: http://example.com/ "Optional Title Here"
+        applyFunctionOnRegEx('#((?<!\!)\[.*\]\()(?!../pages/|/pages/|\#)(\S+)([\s\S]?(?<!\))\))#', 'return $matches[1].handleLocalFile( $matches[2], \'files/\', ' . intval($doCopy) . ' ).$matches[3];', $HTMLcode);
+    
+    applyFunctionOnRegEx('/(<a [^\>]*?href\s*=\s*[",\'])(?!..\/pages\/|\/pages\/)(.+?)([",\'])/s', 'return $matches[1].handleLocalFile( $matches[2], \'files/\', ' . intval($doCopy) . ' ).$matches[3];', $HTMLcode);
 }
-/** IMPORT
+
+/**
+ * IMPORT
  * Searches $HTMLcode for referenced files and copies them to the $cfg->get("importFilesDir") directory.
  *
- * @param string &$HTMLcode          The html code to be altered.
- * @return                           Directly alters $HTMLcode.
+ * @param
+ *            string &$HTMLcode The html code to be altered.
+ * @return Directly alters $HTMLcode.
  */
-function importFiles( &$HTMLcode ){
-  global $cfg;
-  if ( !( substr( $HTMLcode, 0, 6 ) == '[HTML]' ) // HTML
-       && !(substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
-       ) return; // nothing to do as it is plaintext
-
-  if (substr( $HTMLcode, 0, 4 ) == '[MD]') // MarkDown
-  // MarkDown: Additionally to the <img tag it has
-  // This is [an example](http://example.com/ "Title") inline link.
-  // [This link](http://example.net/) has no title attribute.
-  //
-  // The following will NOT BE SUPPORTED for ewxport:
-  // This is [an example] [id] reference-style link.
-  // [id]: http://example.com/  "Optional Title Here"
-  	applyFunctionOnRegEx( '#((?<!\!)\[.*\]\()(files/\S+)([\s\S]?(?<!\))\))#',
-                          'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
-                          $HTMLcode
-                         );
-
-	applyFunctionOnRegEx( '/(<a [^\>]*?href\s*=\s*[",\'])(files\/.+?)([",\'])/s',
-                        'return $matches[1].importFile( $matches[2], "'.$cfg->get("importFilesDir").'" ).$matches[3];',
-                        $HTMLcode
-                       );
+function importFiles(&$HTMLcode)
+{
+    global $cfg;
+    if (! (substr($HTMLcode, 0, 6) == '[HTML]') && // HTML
+    ! (substr($HTMLcode, 0, 4) == '[MD]')) // MarkDown
+        return; // nothing to do as it is plaintext
+    
+    if (substr($HTMLcode, 0, 4) == '[MD]') // MarkDown
+                                             // MarkDown: Additionally to the <img tag it has
+                                             // This is [an example](http://example.com/ "Title") inline link.
+                                             // [This link](http://example.net/) has no title attribute.
+                                             //
+                                             // The following will NOT BE SUPPORTED for ewxport:
+                                             // This is [an example] [id] reference-style link.
+                                             // [id]: http://example.com/ "Optional Title Here"
+        applyFunctionOnRegEx('#((?<!\!)\[.*\]\()(files/\S+)([\s\S]?(?<!\))\))#', 'return $matches[1].importFile( $matches[2], "' . $cfg->get("importFilesDir") . '" ).$matches[3];', $HTMLcode);
+    
+    applyFunctionOnRegEx('/(<a [^\>]*?href\s*=\s*[",\'])(files\/.+?)([",\'])/s', 'return $matches[1].importFile( $matches[2], "' . $cfg->get("importFilesDir") . '" ).$matches[3];', $HTMLcode);
 }
 
 /**
  * Reindexes a collection's $content.
  *
- * @param string &$HTMLcode          The html code to be altered.
- * @param array &$IDmappingArray     The array containing the mapping between the element IDs.
+ * @param
+ *            string &$HTMLcode The html code to be altered.
+ * @param
+ *            array &$IDmappingArray The array containing the mapping between the element IDs.
  * @return
  */
-function reindexCollectionElements( &$content, &$IDmappingArray ){
-	$contents = explode(' ', $content);
-	$content = '';
-	foreach ( $contents as $element ){
-	  $new = mapIt( $element, $IDmappingArray );
-    if ($new == 'missing')
-      $GLOBALS['pge']->put( 'Element MISSING and removed: '.$element );
-    else
-      $content .= ' '.$new;
-  }
-	$content = substr( $content, 1); // cut first space
+function reindexCollectionElements(&$content, &$IDmappingArray)
+{
+    $contents = explode(' ', $content);
+    $content = '';
+    foreach ($contents as $element) {
+        $new = mapIt($element, $IDmappingArray);
+        if ($new == 'missing')
+            $GLOBALS['pge']->put('Element MISSING and removed: ' . $element);
+        else
+            $content .= ' ' . $new;
+    }
+    $content = substr($content, 1); // cut first space
 }
 
 /**
  * Called by createIdMapping as helper to remove stared values as they describe not existing elements
  *
- * @param sting $value   The value to be checked.
- * @return boolean       Is the value not starred?
+ * @param sting $value
+ *            The value to be checked.
+ * @return boolean Is the value not starred?
  */
-function notStared( $value ){
-	return $value[0] != '*';
+function notStared($value)
+{
+    return $value[0] != '*';
 }
 
 /**
  * Called in XIport's import and export to do the processing on the elements using the $mappingArray
  *
- * @param object $element       The element to be handled
- * @param object $mappingArray  The mapping array containing the replacement mapping for the element indices
- * @param int $labnumber        The number of the lab currently to be processed (for search and replace this is used as start marker for internal links)
- * @param bool $isImport=false  If set the import functions are called (for copying)
+ * @param object $element
+ *            The element to be handled
+ * @param object $mappingArray
+ *            The mapping array containing the replacement mapping for the element indices
+ * @param int $labnumber
+ *            The number of the lab currently to be processed (for search and replace this is used as start marker for internal links)
+ * @param bool $isImport=false
+ *            If set the import functions are called (for copying)
  * @return -
  */
-function processElement( &$element, &$mappingArray, $labNumber, $isImport=false ){
-  global $usr;
-  // Remove versioning links from history...
-  $element->history = preg_replace('/^@@([\d]*) (.*)/m', '$2', $element->history);
-  switch ( $element->elementId ){
-/*******************************************************
-ToDo: the elements are loaded now. The data is in the respective fields.
-Do all necessary parsings and store the files (txt+pictures+local_material)!
-Fill $exportContent and write it at the bottom once!
-*******************************************************/
-    case 'l':
-      // replace the elements according to the renaming:
-        $element->prelabCollectionIdx = substr( mapIt( 'c'.$element->prelabCollectionIdx, $mappingArray ), 1 );
-        $element->labCollectionIdx    = substr( mapIt( 'c'.$element->labCollectionIdx,    $mappingArray ), 1 );
-    // add export information to history
-        $element->history = ( $isImport ?  'Imported ' :  'Exported '  ).' by '.$usr->foreName.' '.$usr->surName.' ('.$usr->userName.') from '.$_SERVER['SERVER_NAME'].' at '.date('r')."\r\n".$element->history;
-        processContent( $element->title,  $labNumber, $mappingArray, true, $isImport );
-        processContent( $element->authors,$labNumber, $mappingArray, true, $isImport );
-        processContent( $element->comment,$labNumber, $mappingArray, true, $isImport );
-      break;
-    case 'C':
-    case 'c':
-      reindexCollectionElements( $element->contents, $mappingArray );
-      break;
-    case 'p':
-      processContent( $element->title,    $labNumber, $mappingArray, true, $isImport );
-      processContent( $element->contents, $labNumber, $mappingArray, true, $isImport );
-      break;
-    case 'm':
-      processContent( $element->question, $labNumber, $mappingArray, true, $isImport );
-      processContent( $element->answerExplanation, $labNumber, $mappingArray, true, $isImport );
-      // Do NOT use $element->answerCount here as it was initialized with the default 3 entries...
-      for ($i=0; $i < count($element->answerArray); $i++)
-        processContent( $element->answerArray[$i], $labNumber, $mappingArray, true, $isImport );
-      break;
-    case 'i':
-      processContent( $element->question,       $labNumber, $mappingArray, true, $isImport );
-      processContent( $element->exampleSolution,$labNumber, $mappingArray, true, $isImport );
-      break;
-    default:
-      $pge->put( 'Element NOT '.( $isImport ?  'Imported ' :  'Exported '  ).'! '.$element->elementId.$element->idx );
-      break;
-  }
+function processElement(&$element, &$mappingArray, $labNumber, $isImport = false)
+{
+    global $usr;
+    // Remove versioning links from history...
+    $element->history = preg_replace('/^@@([\d]*) (.*)/m', '$2', $element->history);
+    switch ($element->elementId) {
+        /**
+         * *****************************************************
+         * ToDo: the elements are loaded now.
+         * The data is in the respective fields.
+         * Do all necessary parsings and store the files (txt+pictures+local_material)!
+         * Fill $exportContent and write it at the bottom once!
+         * *****************************************************
+         */
+        case 'l':
+            // replace the elements according to the renaming:
+            $element->prelabCollectionIdx = substr(mapIt('c' . $element->prelabCollectionIdx, $mappingArray), 1);
+            $element->labCollectionIdx = substr(mapIt('c' . $element->labCollectionIdx, $mappingArray), 1);
+            // add export information to history
+            $element->history = ($isImport ? 'Imported ' : 'Exported ') . ' by ' . $usr->foreName . ' ' . $usr->surName . ' (' . $usr->userName . ') from ' . $_SERVER['SERVER_NAME'] . ' at ' . date('r') . "\r\n" . $element->history;
+            processContent($element->title, $labNumber, $mappingArray, true, $isImport);
+            processContent($element->authors, $labNumber, $mappingArray, true, $isImport);
+            processContent($element->comment, $labNumber, $mappingArray, true, $isImport);
+            break;
+        case 'C':
+        case 'c':
+            reindexCollectionElements($element->contents, $mappingArray);
+            break;
+        case 'p':
+            processContent($element->title, $labNumber, $mappingArray, true, $isImport);
+            processContent($element->contents, $labNumber, $mappingArray, true, $isImport);
+            break;
+        case 'm':
+            processContent($element->question, $labNumber, $mappingArray, true, $isImport);
+            processContent($element->answerExplanation, $labNumber, $mappingArray, true, $isImport);
+            // Do NOT use $element->answerCount here as it was initialized with the default 3 entries...
+            for ($i = 0; $i < count($element->answerArray); $i ++)
+                processContent($element->answerArray[$i], $labNumber, $mappingArray, true, $isImport);
+            break;
+        case 'i':
+            processContent($element->question, $labNumber, $mappingArray, true, $isImport);
+            processContent($element->exampleSolution, $labNumber, $mappingArray, true, $isImport);
+            break;
+        default:
+            $pge->put('Element NOT ' . ($isImport ? 'Imported ' : 'Exported ') . '! ' . $element->elementId . $element->idx);
+            break;
+    }
 }
 
 /**
@@ -754,38 +773,43 @@ Fill $exportContent and write it at the bottom once!
  *
  * ! sets the base64_encode( directory ) as ID for importable directories !
  *
- * @param sting $directory  The directory to be searched.
- * @return array            The array containing the l-Elements as values.
+ * @param sting $directory
+ *            The directory to be searched.
+ * @return array The array containing the l-Elements as values.
  */
-function getLabsFromDirectory( $directory ){
-  global $lng;
-  $retArray = array();
-  if (!is_dir( $directory )) return $retArray;
-	$subDirs = scandir( $directory );
-  for( $i=0; $i<sizeof( $subDirs ); $i++){
-    if (!is_dir( $directory.$subDirs[$i] )) continue; // skip non-directories
-    if ( $subDirs[$i] == '.' || $subDirs[$i] == '..' ) continue; // skip those
-    $file_name = $directory.$subDirs[$i].'/data/elementData.txt';
-    if( file_exists($file_name) ){
-      $myLelement = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
-      $labJsonDecoded = json_decode_elementData( file_get_contents( $file_name ) );
-      
-      //TO-DO expects array of multiple elements, if imported lab only contains single "l" element and no Collections, the name will fail to display.
-
-      $jsonEncodedLab = json_encode($labJsonDecoded[0]);
-      $myLelement->initFromSerialized( $jsonEncodedLab );
-      $myLelement->title .= '&nbsp;<div class="labsys_mop_l_file_description">&nbsp;'.date ( $lng->get("DateFormat"), filemtime($file_name)).'&nbsp;</div>&nbsp;';
-      $myLelement->idx = base64_encode( $subDirs[$i] ); // set the base64_encode( directory ) as ID for importable directories
-      // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(
-      array_push( $retArray, $myLelement );
+function getLabsFromDirectory($directory)
+{
+    global $lng;
+    $retArray = array();
+    if (! is_dir($directory))
+        return $retArray;
+    $subDirs = scandir($directory);
+    for ($i = 0; $i < sizeof($subDirs); $i ++) {
+        if (! is_dir($directory . $subDirs[$i]))
+            continue; // skip non-directories
+        if ($subDirs[$i] == '.' || $subDirs[$i] == '..')
+            continue; // skip those
+        $file_name = $directory . $subDirs[$i] . '/data/elementData.txt';
+        if (file_exists($file_name)) {
+            $myLelement = new LlElement(0, 0, '', '', '', 1, 1, '', false, false, false, false, '');
+            
+            $labJsonDecoded = array();
+            $labJsonDecoded = json_decode_elementData(file_get_contents($file_name)); //decode the element array
+            
+            $myLelement->initFromSerialized($labJsonDecoded[0]); //element with key 0 is an l-Element
+            $myLelement->title .= '&nbsp;<div class="labsys_mop_l_file_description">&nbsp;' . date($lng->get("DateFormat"), filemtime($file_name)) . '&nbsp;</div>&nbsp;';
+            $myLelement->idx = base64_encode($subDirs[$i]); // set the base64_encode( directory ) as ID for importable directories
+                                                              // the bas64 encoding is needed as the form.input in HTML replaces . by _ and so the name of the directory gets disturbed :(
+            array_push($retArray, $myLelement);
+        }
     }
-  }
-  return $retArray;
+    return $retArray;
 }
 
-/////////////////////////////////// Stylesheet functions ////////////////////////////////////////////////////////
+// ///////////////////////////////// Stylesheet functions ////////////////////////////////////////////////////////
 /**
- * The system has a user stylesheet. There editors can define their own styles.
+ * The system has a user stylesheet.
+ * There editors can define their own styles.
  * As the styles belong to the modules we want to export them as well.
  * This usually makes it necessary to build a dom tree as the styles are nested.
  *
@@ -797,114 +821,121 @@ function getLabsFromDirectory( $directory ){
 // Content processing
 
 /**
-* Collects all styles used in the current $content.
-* Has to be called for each HTML content to be parsed.
-*
-* @param $content  The content to search in.
-* @param global $usedClasses Gets filled.
-*/
-$usedClasses = array(); // has to be initialized for each export
-function updateUsedClasses( $content ){
-  preg_replace_callback( '#\<[^\>]*class[^\>]*=[^\>]*[",\']([^>]*)[",\']#i',
-                         function ($matches){
-                           global $usedClasses;
-                           if (!in_array($matches[1], $usedClasses)){
-                             $usedClasses[] = trim($matches[1]);
-                           }
-                         },
-                         $content
-                         );
+ * Collects all styles used in the current $content.
+ * Has to be called for each HTML content to be parsed.
+ *
+ * @param $content The
+ *            content to search in.
+ * @param global $usedClasses
+ *            Gets filled.
+ */
+$usedClasses = array();
+ // has to be initialized for each export
+function updateUsedClasses($content)
+{
+    preg_replace_callback('#\<[^\>]*class[^\>]*=[^\>]*[",\']([^>]*)[",\']#i', function ($matches) {
+        global $usedClasses;
+        if (! in_array($matches[1], $usedClasses)) {
+            $usedClasses[] = trim($matches[1]);
+        }
+    }, $content);
 }
-
 
 // StyleSheet processing
 
 /**
  * Parses the $styleSheetTxt and returns a list of tags $tagArray and definitions $styleDefinitions
- * @param $styleSheetTxt    The text of the style
- * @param $tagArray         The array that should get filled with the tags (without comments). Indexed the same way as the definitions.
- * @param $definitionsArray The array that should get filled with the style definitions. Indexed the same way as the tags.
+ *
+ * @param $styleSheetTxt The
+ *            text of the style
+ * @param $tagArray The
+ *            array that should get filled with the tags (without comments). Indexed the same way as the definitions.
+ * @param $definitionsArray The
+ *            array that should get filled with the style definitions. Indexed the same way as the tags.
  */
-function parseStyleSheet( $styleSheetTxt, &$tagArray, &$definitionsArray ){
-  global $tagNamesTmp, $styleDefinitionsTmp;
-
-  $tagNamesTmp = array();
-  $styleDefinitionsTmp = array();
-
-  // remove all comments:
- $styleSheetTxt = preg_replace("/(\/\*[^\/]*\*\/)/s", '', $styleSheetTxt);
-
-  // 1) Separate $tagNames and $styleDefinitions (preserve everything in here)
-  preg_replace_callback(   '/\s*(([^{]*)\s*{[^}]*})/s',//#(((?<!{).)*){.*?}#s',
-                           function($matches){
-                             global $tagNamesTmp, $styleDefinitionsTmp;
-                             $tag=trim($matches[2]);
-                             $definition=$matches[1];
-                             $existsAtPosition = array_search($tag, $tagNamesTmp);
-                             if ($existsAtPosition === FALSE){
-                               // new
-                               $tagNamesTmp[] = $tag;
-                               $styleDefinitionsTmp[] = $definition;
-                             }else{
-                               // as in the browser use the last definition...
-                               $styleDefinitionsTmp[$existsAtPosition] = $definition;
-                             }
-                           },
-                           $styleSheetTxt
-                           );
-
-  // 2) Remove comments from $tagNames
-  foreach ( $tagNamesTmp as $key=>$value )
-    $tagNamesTmp[$key] = preg_replace_callback(  '#(\/\*.*\*\/)#s',
-                                                 function($matches){
-                                                   return '';
-                                                 },
-                                                 $value
-                                                 );
-
-   $tagArray = $tagNamesTmp;
-   $definitionsArray = $styleDefinitionsTmp;
+function parseStyleSheet($styleSheetTxt, &$tagArray, &$definitionsArray)
+{
+    global $tagNamesTmp, $styleDefinitionsTmp;
+    
+    $tagNamesTmp = array();
+    $styleDefinitionsTmp = array();
+    
+    // remove all comments:
+    $styleSheetTxt = preg_replace("/(\/\*[^\/]*\*\/)/s", '', $styleSheetTxt);
+    
+    // 1) Separate $tagNames and $styleDefinitions (preserve everything in here)
+    preg_replace_callback('/\s*(([^{]*)\s*{[^}]*})/s', // #(((?<!{).)*){.*?}#s',
+    function ($matches) {
+        global $tagNamesTmp, $styleDefinitionsTmp;
+        $tag = trim($matches[2]);
+        $definition = $matches[1];
+        $existsAtPosition = array_search($tag, $tagNamesTmp);
+        if ($existsAtPosition === FALSE) {
+            // new
+            $tagNamesTmp[] = $tag;
+            $styleDefinitionsTmp[] = $definition;
+        } else {
+            // as in the browser use the last definition...
+            $styleDefinitionsTmp[$existsAtPosition] = $definition;
+        }
+    }, $styleSheetTxt);
+    
+    // 2) Remove comments from $tagNames
+    foreach ($tagNamesTmp as $key => $value)
+        $tagNamesTmp[$key] = preg_replace_callback('#(\/\*.*\*\/)#s', function ($matches) {
+            return '';
+        }, $value);
+    
+    $tagArray = $tagNamesTmp;
+    $definitionsArray = $styleDefinitionsTmp;
 }
 
 /**
  * Keep only the last Tag and there only the custom ones (starting with .)
  * This leeds to a limited search that is restricted to last tags only.
  * This approach is chosen to prevent from building DOM trees.
- * @param $tagList  The list of the available tags.
+ *
+ * @param $tagList The
+ *            list of the available tags.
  * @return $tagStylePointer An array with style name pointing to an array of indices in the definitions.
  */
-function getTagPointer( $tagList ){
-  $tagStylePointer = array(); // holds a list of pointers to each tag
-  foreach ( $tagList as $indexStyle=>$value )
-    foreach( explode(',', $value ) as $value2 ){ //$value2 are all style tags
-      $value2=trim($value2); // remove white spaces
-      $lastSubTagStart = strrpos( $value2, ' ' ); // where does the last subtag start?
-      $lastTag = ( $lastSubTagStart===false ? $value2 : substr( $value2, $lastSubTagStart+1 ) );
-      if ($lastTag[0] == '.'){ // ignore non custom HTML tags
-        $tagName = substr($lastTag, 1);
-        if ( !isset( $tagStylePointer[$tagName] ) || !in_array( $indexStyle, $tagStylePointer[$tagName] ) ) //already in => do nothing
-          $tagStylePointer[$tagName][] = $indexStyle; // entry exists but pointer has to be added
-      }
-    }
-  return $tagStylePointer;
+function getTagPointer($tagList)
+{
+    $tagStylePointer = array(); // holds a list of pointers to each tag
+    foreach ($tagList as $indexStyle => $value)
+        foreach (explode(',', $value) as $value2) { // $value2 are all style tags
+            $value2 = trim($value2); // remove white spaces
+            $lastSubTagStart = strrpos($value2, ' '); // where does the last subtag start?
+            $lastTag = ($lastSubTagStart === false ? $value2 : substr($value2, $lastSubTagStart + 1));
+            if ($lastTag[0] == '.') { // ignore non custom HTML tags
+                $tagName = substr($lastTag, 1);
+                if (! isset($tagStylePointer[$tagName]) || ! in_array($indexStyle, $tagStylePointer[$tagName])) // already in => do nothing
+                    $tagStylePointer[$tagName][] = $indexStyle; // entry exists but pointer has to be added
+            }
+        }
+    return $tagStylePointer;
 }
 
 /**
  * Creates a list of the hashed tags ($hashArray) and a mapping array for back matching ($mappingArray).
  * This is needed to merge the existing with the new stylesheets (prevent double definitions).
  *
- * @param $sourceArray  The array with the values to be hashed.
- * @param $hashArray    The array containing the hashed values.
- * @param $mappingArray The back mapping array
+ * @param $sourceArray The
+ *            array with the values to be hashed.
+ * @param $hashArray The
+ *            array containing the hashed values.
+ * @param $mappingArray The
+ *            back mapping array
  */
-function getTagHashes( $sourceArray, &$hashArray, &$mappingArray ){
-  $hashArray = array();
-  $mappingArray = array();
-  foreach ( $sourceArray as $key=>$value ){
-    $hashedValue = preg_replace('/\s+/', '', $value ); // try to hash something unchangeable...
-    $hashArray[] = $hashedValue;
-    $mappingArray[ $hashedValue ] = $key;
-  }
+function getTagHashes($sourceArray, &$hashArray, &$mappingArray)
+{
+    $hashArray = array();
+    $mappingArray = array();
+    foreach ($sourceArray as $key => $value) {
+        $hashedValue = preg_replace('/\s+/', '', $value); // try to hash something unchangeable...
+        $hashArray[] = $hashedValue;
+        $mappingArray[$hashedValue] = $key;
+    }
 }
 
 ?>
