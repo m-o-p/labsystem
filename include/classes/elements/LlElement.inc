@@ -185,7 +185,7 @@ class LlElement extends Element{
                                       ( $this->preLabIsVisible2Me || $this->labIsVisible2Me ) && // is anything visible?
                                       ( !$this->userIsViewing || $visiblePerSchedule ) &&  // is it visible by a schedule?
                                       ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) ); // in collection restriction fulfilled?
-    $this->serializationArray       = array( 'idx', 'uniqueID', 'title', 'authors', 'comment', 'prelabCollectionIdx', 'labCollectionIdx', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'visibleOnlyInCollection', 'history' );  // see Element.inc for details
+    $this->serializationArray       = array( 'elementId', 'idx', 'uniqueID', 'title', 'authors', 'comment', 'prelabCollectionIdx', 'labCollectionIdx', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'visibleOnlyInCollection', 'history' );  // see Element.inc for details
 
     $this->lastUploadedFile         = false;
   }
@@ -255,6 +255,24 @@ class LlElement extends Element{
     return $myRet;
   }
 
+  /**
+   * Exports all elements of type $elementID as CSV.
+   * @param unknown $elementID
+   */
+  function exportCSV( $elementID ){
+  	header('Content-type: text/x-csv');
+  	header('Content-Disposition: attachment; filename="'.$GLOBALS['cfg']->get('User_courseID').'_lab'.$this->idx.'_element_'.strtoupper($elementID).'.txt"');
+  	// render header line from prototype
+  	$elementIDsmall = strtolower($elementID);
+  	$element = $GLOBALS[ $elementIDsmall.'DBI' ]->getData2idx( 1 );
+  	$element->getCSVheaderLine();
+  	
+  	// export CSV data
+  	$this->preLab->exportCSV( $elementID );
+  	$this->lab->exportCSV( $elementID );
+  	exit;
+  }
+  
   /**
   * Displays all multiple choice questions of the prelab and (if not done) the check button.
   *
@@ -1124,7 +1142,17 @@ class LlElement extends Element{
                                               $myRetVal .= $this->lab->show( $parentAddr.$me.".C".$this->labCollectionIdx.".all", ( $lng->get("lPrefixLab") != "" ?  $extParagraph.".".$lng->get("lPrefixLab")  :  $extParagraph  ) );
                                             $_GET['address'] = $parentAddr.$me;
                               }
-
+	// CSV export of all visible i elements
+    elseif ( $last == "iCSV" &&
+             $scndLast == $me ){
+    	$this->exportCSV( 'i' );    	
+    }
+    // CSV export of all visible m elements
+    elseif ( $last == "mCSV" &&
+    		 $scndLast == $me ){
+    	$this->exportCSV( 'm' );
+    }
+    
    // preLab
     elseif ( $this->preLabIsVisible2Me &&
              ($first == "C".$this->prelabCollectionIdx) )
