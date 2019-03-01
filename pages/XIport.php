@@ -88,7 +88,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
                 // if i or m element search for it in the solution array. TO-DO: I expect problems if there is only one i or m element in a collection.
                 if ( file_exists($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ){ // if the solutions exist, try to import them
                     for ( $i = 0; $i < count($labSolutionDecoded); $i++ ){ // Loop through the i&m elements and to find the right element
-                        $tmp_element = $labSolutionDecoded[$i];
+                        $tmp_element = json_decode($labSolutionDecoded[$i]);
                         $elementType = $tmp_element["elementId"]; // get type
                         $elementID = $tmp_element["idx"]; // get number
                         if ($value[0]==$elementType && $value[1] == $elementID){ //if Id and type match we found the solution.
