@@ -92,13 +92,8 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
             case 'm':
                 // if i or m element search for it in the solution array. TO-DO: I expect problems if there is only one i or m element in a collection.
                 if ( $solutionsExist ){ // if the solutions exist, try to import them
-                        $tmp_element = json_decode($labSolutionDecoded[$importCounter], True);
-                        $elementType = $tmp_element["elementId"]; // get type
-                        $elementID = $tmp_element["idx"]; // get number
-                        if ($value[0]==$elementType && $value[1] == $elementID){ //if Id and type match we found the solution.
-                            $nextElement->initFromSerialized( $labSolutionDecoded[$importCounter] ); // init the next element
-                            break;
-                        }
+                    $nextElement->initFromSerialized( $labSolutionDecoded[$importCounter] ); // init the next element
+                    break;
                 }
             default:
                 $nextElement->initFromSerialized( $labJsonDecoded[$importCounter] ); // init the next element
