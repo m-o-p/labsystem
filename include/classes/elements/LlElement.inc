@@ -245,11 +245,18 @@ class LlElement extends Element{
     $allowEpub         = $cfg->doesExist('allowEpubDownload') && ($cfg->get('allowEpubDownload') == "1");
     if ($allowEpub && $usr->isOfKind( IS_USER )){
       $myRet .= "<div class=\"labsys_mop_l_ePubLinkBox\">\n".
-          '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$this->idx.'.epub') ).'">'.
-          '<img src="'.$url->link2( '../pages/getEPubCover.php', Array('address' => 'l'.$this->idx) ).'" width="75px" style="float: left; padding-right: 1em;" />
-                '.( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'
-                <div style="clear: left;"></div>
-                </a></div>';
+          
+          '<img src="'.$url->link2( '../pages/getEPubCover.php', Array('address' => 'l'.$this->idx) ).'" width="75px" style="float: left; padding-right: 2em;" />'.
+                '<ul>'.
+                '<li>'.EB::link2epub( 'l'.$this->idx.'.epub' ).' '.
+                      '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$this->idx.'.epub') ).'">'.                      
+                      ( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'</a>'.
+                '<li>'.EB::printView( 'l'.$this->idx.'.all' ).' '.
+                      '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$this->idx.'.all') ).'">'.
+                      $lng->get('explainPrintView').
+                '</ul>'.
+                '<div style="clear: left;"></div>
+                </div>';
     }
 
     return $myRet;
