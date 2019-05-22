@@ -10,7 +10,20 @@ class EmojiDBInterface{
         global $wDBI;
         $this->myDBC = $wDBI;
         $this->myTable = "emoji_selections";
-    }
+	// check if DB exists
+        $isDB = $this->myDBC->table_exists( $this->myTable );
+	if ( !$isDB )
+	{
+		$sqlq = "CREATE TABLE emoji_selections (
+		id INT(32) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		emojiId VARCHAR(32),
+		elemId VARCHAR(32),
+		uid VARCHAR(64)
+		)";
+		$this->myDBC->query( $sqlq );
+	}
+
+   }
 
     /** Finds the number of selections of a given emoji for a given element. Uses the full address of the element.
      *
@@ -86,19 +99,7 @@ class EmojiDBInterface{
             $this->myDBC->mkInsert( "elemId = '".$elemId."', uid = '". $uid ."', emojiId = '". $emojiId . "'", $this->myTable);
 
         } else {
-            // select the emojiId for which there is an entry in the table
-            $select = $this->myDBC->mkSelect("emojiId", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'");
-            $resultSelect = $select->fetch_array();
-
-            // check if the user has clicked on the same emoji for the second time
-            if ($resultSelect[0] == $emojiId) {
-                // if she has - delete the entry
-                $this->myDBC->mkDelete($this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'");
-            } else {
-                // if the user has clicked on a new emoji - update the table entry
                 $this->myDBC->mkUpdate("emojiId = '". $emojiId ."'", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'");
-            }
-
         }
     }
 }

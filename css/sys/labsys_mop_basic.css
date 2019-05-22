@@ -1472,19 +1472,12 @@ label.labsys_mop_multiselectoption:hover {
 }
 
 .emoji-dropbtn {
-  color: #222222;
+  border: solid 1px #4682B4;
 }
-/**
-.emoji-dropbtn:hover, .dropbtn:focus {
-  background-color: #ADD8E6;
-}
-**/
 
 .emoji-menu-items {
   float: right;
   display: none;
 }
 
-/** .emoji-menu-item:hover {background-color: #ADD8E6}
- **/
 .show {display:block;}
