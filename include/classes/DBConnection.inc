@@ -56,6 +56,7 @@ class DBConnection{
         trigger_error('Failed to enable native int and flow types', E_USER_ERROR);
         exit;
     }
+
     if (!$this->link->real_connect( $host, $user, $password, $dataBase, null, null, MYSQLI_CLIENT_FOUND_ROWS)) {
         trigger_error( $host.' unreachable with given credentials!' , E_USER_ERROR );
         exit;
@@ -82,7 +83,7 @@ rows by setting the CLIENT_FOUND_ROWS flag
   * @return             The return value of the query.
   */
   function query( $theQuery ){
-//   	echo( 'query: '.htmlentities($theQuery).'<br>'.PHP_EOL );
+   	//echo( 'query: '.htmlentities($theQuery).'<br>'.PHP_EOL );
     $ret = $this->link->query( $theQuery );
     if ($ret === FALSE)
        trigger_error( /*$theQuery.*/"DB Connector --&gt; "./*$this->dataBase.': '.*/ $this->link->error, E_USER_ERROR );
@@ -271,5 +272,58 @@ rows by setting the CLIENT_FOUND_ROWS flag
   static function unEscapeString( $val ){
     return $val;
   }
+
+    /** Creates a select sum(column) query.
+     *
+     * @param  $what   Fields to select.
+     * @param  $from   Name of the database to select from.
+     * @param  $where  Clause defining where to search (p.e. name="marc").
+     * @param  $order  Clause defining how to order the results (p.e. idx ASC).
+     * @param  $order  Defining the grouping.
+     * @return         The return value of the query.
+     */
+    function mkSelectSum($what, $from, $where="", $orderBy="", $groupBy='' ){
+      // SELECT $what FROM $from {WHERE $where} {GROUP BY $groupBy} {ORDER BY $orderBy}
+      $theQuery  = "SELECT SUM(".$what.") FROM ".$from;
+      if ( $where != "" )   $theQuery .= " WHERE ".$where;
+      if ( $groupBy != "" ) $theQuery .= " GROUP BY ".$groupBy;
+      if ( $orderBy != "" ) $theQuery .= " ORDER BY ".$orderBy;
+      return $this->query(  $theQuery );
+  }
+
+    /** Creates a select count(column) query.
+     * @param $what
+     * @param $from
+     * @param string $where
+     * @param string $orderBy
+     * @param string $groupBy
+     * @return The
+     */
+    function mkSelectCount($what, $from, $where="", $orderBy="", $groupBy='' ){
+        // SELECT $what FROM $from {WHERE $where} {GROUP BY $groupBy} {ORDER BY $orderBy}
+        $theQuery  = "SELECT COUNT(".$what.") FROM ".$from;
+        if ( $where != "" )   $theQuery .= " WHERE ".$where;
+        if ( $groupBy != "" ) $theQuery .= " GROUP BY ".$groupBy;
+        if ( $orderBy != "" ) $theQuery .= " ORDER BY ".$orderBy;
+        return $this->query(  $theQuery );
+    }
+
+    /**
+     * @param $what
+     * @param $from
+     * @param string $where
+     * @param string $orderBy
+     * @param string $groupBy
+     * @return The
+     */
+    function row_exists($what, $from, $where="", $orderBy="", $groupBy='' ){
+        // SELECT $what FROM $from {WHERE $where} {GROUP BY $groupBy} {ORDER BY $orderBy}
+        $theQuery  = "SELECT EXISTS( SELECT ".$what." FROM ".$from;
+        if ( $where != "" )   $theQuery .= " WHERE ".$where;
+        if ( $groupBy != "" ) $theQuery .= " GROUP BY ".$groupBy;
+        if ( $orderBy != "" ) $theQuery .= " ORDER BY ".$orderBy;
+        return $this->query(  $theQuery.")" );
+    }
+
 }
 ?>

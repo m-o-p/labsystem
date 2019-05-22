@@ -31,6 +31,9 @@
 * @copyright  Marc-Oliver Pahl 2005
 * @version    1.0
 */
+
+include (INCLUDE_DIR."/classes/EmojiDBInterface.inc");
+
 class EB{ /* ElementButtons */
 
   /**
@@ -414,5 +417,90 @@ class EB{ /* ElementButtons */
     $link = $url->link2( '../pages/mailForm.php', Array('subject' => '[><] '.$subject, 'text' => "\r\n\r\n".'-> http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$address.( $usr->isOfKind(IS_CORRECTOR) && $usr->isSeeingSomeonesData() && (strrpos($_SERVER['REQUEST_URI'], 'seeMe')===false)?'&seeMe='.urlencode($usr->theSeeingUid()):'')) );
     return EB::mkLink( $link, "<img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"mail\" title=\"".$lng->get("explainMailLink2")."\">" );
   }
+
+   static function emojiMenu($fullAddress, $eIDX){
+   $emID = "emBttn".$eIDX;
+   
+   global $pge;
+   $emojiDBI = new EmojiDBInterface();
+   $query1 = $emojiDBI->findUserSelectionsFor($_SESSION['uid'], $eIDX);
+   $selections = $query1->fetch_array();
+   $path = "../syspix/button_def.png";
+      switch($selections[0]){
+	case 1:
+		$path = "../syspix/button_like.png";
+		break;
+	case 2:
+		$path = "../syspix/button_frust.png";
+		break;
+	case 3:
+		$path = "../syspix/button_sleep.png";
+		break;
+	case 4:
+		$path = "../syspix/button_dislike.png";
+		break;
+	}
+
+   return "<div class=\"emoji-menu-pop\">
+	  <button onclick=\"updateEmojiMenu($emID); showEmojiMenu($emID);\" class=\"emoji-dropbtn\"><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
+              <div id=".$emID." class=\"emoji-menu-items\">".
+                EB::likeButton($eIDX,$emID).
+                EB::dislikeButton($eIDX,$emID).
+                EB::boredButton($eIDX,$emID).
+                EB::confusedButton($eIDX,$emID)."
+        </div> 
+     </div>
+     ";
+   }
+
+
+
+    /**
+     * @return string
+     */
+    static function likeButton($fullAddress,$emID){
+        global $pge;
+        return "<div class=\"emoji-menu-item\"  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 1); updateEmojiButton($emID , 1); showEmojiMenu($emID);'>
+                    <img src=\"../syspix/button_like.png\" width=\"13\" height=\"12\" >
+                 </div>
+                ";
+    }
+
+    /**
+     * @return string
+     */
+    static function confusedButton($fullAddress,$emID){
+        global $pge;
+
+        return "<div class=\"emoji-menu-item\"  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 2); updateEmojiButton($emID , 2); showEmojiMenu($emID);'>
+                    <img src=\"../syspix/button_frust.png\" width=\"13\" height=\"12\" >
+                 </div>
+                ";
+    }
+
+    /**
+     * @return string
+     */
+    static function boredButton($fullAddress,$emID){
+        global $pge;
+
+        return "<div class=\"emoji-menu-item\"  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 3); updateEmojiButton($emID , 3); showEmojiMenu($emID);'>
+                    <img src=\"../syspix/button_sleep.png\" width=\"13\" height=\"12\" >
+                 </div>
+                ";
+    }
+
+    /**
+     * @return string
+     */
+    static function dislikeButton($fullAddress,$emID){
+        global $pge;
+
+        return "<div class=\"emoji-menu-item\" onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 4); updateEmojiButton($emID , 4); showEmojiMenu($emID);'>
+                    <img src=\"../syspix/button_dislike.png\" width=\"13\" height=\"12\" >
+                 </div>
+                ";
+    }
+
 }
-?>
+

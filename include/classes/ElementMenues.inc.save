@@ -79,15 +79,23 @@ class EM{ /* ElementMenues */
             EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx).
              "</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
-    else
+    else if ( $usr->isOfKind( IS_USER ) )
       return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
 //              EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
-             EB::ticket ( $fullAddress ).
-         ($usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx) : '').
+            EB::ticket ( $fullAddress ).
+            EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx).
             EB::history( $theEl->history, $fullAddress ).
              "</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
-  }
+   else 
+     return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
+//              EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
+            EB::ticket ( $fullAddress ).
+.
+            EB::history( $theEl->history, $fullAddress ).
+             "</div>\n".
+             "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n"; 
+ }
 
   /**
   * The following functions return the element's top and bottom menus.

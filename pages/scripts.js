@@ -73,15 +73,13 @@ if (typeof String.prototype.endsWith !== 'function') {
 
 function zoomPreviewImage(imageTag){
 	var mySuffix=".thumb.jpg";
-	var regEx = /(filename=)([^\&]+)/;
-	var imgFileName = imageTag.src.match(regEx)[2];
-	if (imgFileName.endsWith(mySuffix)){
+	if (imageTag.src.endsWith(mySuffix)){
 		// We see the thumbnail.
-		imageTag.src=imageTag.src.replace( regEx, '$1' + imgFileName.substring(0,imgFileName.length-mySuffix.length) );
+		imageTag.src=imageTag.src.substring(0,imageTag.src.length-mySuffix.length);
 		imageTag.style.display="block";
 	}else{
 		// We see the big image.
-		imageTag.src=imageTag.src.replace( regEx, '$1' + imgFileName+mySuffix );
+		imageTag.src=imageTag.src+mySuffix;
 		imageTag.style.display="inline";
 	}
 }
@@ -102,3 +100,62 @@ function showExampleSolutionHere(iIdx,teamNr){
 		targetElement.className=exampleSolutionElement.className;
 	}
 }
+
+/**
+ * This function is called by clicking on an emoji. It creates a new entry in the database.
+ */
+
+function insertEmojiSelection(elemId, uid, emojiId) {
+    var strURL=encodeURI("../php/emojiClick.php?elemId=" + elemId + "&uid=" + uid + "&emojiId=" + emojiId);
+    var req = new XMLHttpRequest();
+
+    if (req) {
+        req.open("GET", strURL, true);
+        req.send(strURL);
+    }
+}
+
+function updateEmojiButton(emBId, emChoice){
+ var path=""
+ switch(emChoice)
+ {
+   case 1:
+   path = "../syspix/button_like.png";
+   break;
+  case 2:
+   path = "../syspix/button_frust.png";
+   break;
+  case 3:
+   path = "../syspix/button_sleep.png";
+   break;
+  case 4:
+   path = "../syspix/button_dislike.png";
+   break;
+  default:
+   path = "../syspix/button_def.png";
+ }
+ var emBIdVar="img"+emBId.id;
+ document.getElementById(emBIdVar).src=path;
+}
+
+function updateEmojiMenu(emBId){
+}
+
+function showEmojiMenu(emBId) {
+  document.getElementById(emBId.id).classList.toggle("show");
+}
+
+
+//window.onclick = function(event) {
+//  if (!event.target.matches('.emoji-dropbtn')) {
+//    var dropdowns = document.getElementsByClassName("emoji-menu-items");
+//    var i;
+//    for (i = 0; i < dropdowns.length; i++) {
+//      var openDropdown = dropdowns[i];
+//      if (openDropdown.classList.contains('show')) {
+//        openDropdown.classList.remove('show');
+//      }
+//    }
+//  }
+//}
+
