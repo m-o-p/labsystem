@@ -7,7 +7,7 @@ class LSE_Decorator
 {
     /**
      * Generates string from the element
-     * 
+     *
      * @param type $type
      * @param output $content
      * @param LSE_Element $element
@@ -17,33 +17,33 @@ class LSE_Decorator
         switch ($type) {
             case 'Ll':
                 return $this->decorateLowl($childContent, $element);
-                
+
             case 'BC':
                 return $this->decorateBigC($childContent, $element);
-                
+
             case 'Lc':
                 return $this->decorateLowC($childContent, $element);
-            
+
             case 'Lp':
                 return $this->decorateLowP($childContent, $element);
-                
+
             case 'Lm':
                 return $this->decorateLowM($childContent, $element);
-                
+
             case 'Li':
                 return $this->decorateLowI($childContent, $element);
-                
+
             default:
                 throw new Exception('Decoratory type ' . $type . ' not found');
                 return $this->decorateDefault($childContent, $element);
         }
     }
-    
+
     public function decorateDefault($content, $element)
     {
         // return $content;
     }
-    
+
     public function decorateLowl($childContent, $element)
     {
         $oView = new SPT_View();
@@ -59,7 +59,7 @@ class LSE_Decorator
         $oView->assign($vars);
         return $oView->render(LSE_ROOT . "/templates/decorators/Ll.phtml", true);
     }
-    
+
     public function decorateBigC($childContent, $element)
     {
         $oView = new SPT_View();
@@ -72,7 +72,7 @@ class LSE_Decorator
         $oView->assign($vars);
         return $oView->render(LSE_ROOT . "/templates/decorators/BigC.phtml", true);
     }
-    
+
     /**
      * @todo strange we also receive BigC in LowC
      */
@@ -84,7 +84,7 @@ class LSE_Decorator
         if ($isParentBigC && $selfType == 'c') {
             $includePageBreak = true;
         }
-        
+
         $oView = new SPT_View();
         $vars = array(
             'title'            => $element->getOption('title'),
@@ -95,7 +95,7 @@ class LSE_Decorator
         $oView->assign($vars);
         return $oView->render(LSE_ROOT . "/templates/decorators/LowC.phtml", true);
     }
-    
+
     public function decorateLowP($content, $element)
     {
         $includePageBreak = false;
@@ -111,7 +111,7 @@ class LSE_Decorator
         $oView->assign($vars);
         return $oView->render(LSE_ROOT . "/templates/decorators/LowP.phtml", true);
     }
-    
+
     public function decorateLowI($content, $element)
     {
         $oView = new SPT_View();
@@ -123,7 +123,7 @@ class LSE_Decorator
         $output = $oView->render(LSE_ROOT . '/templates/decorators/lowI.phtml', true);
         return $output;
     }
-    
+
     public function decorateLowM($content, $element)
     {
         $oView = new SPT_View();

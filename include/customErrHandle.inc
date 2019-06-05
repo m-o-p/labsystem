@@ -66,7 +66,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
   $errstr = htmlentities( $errstr );
   $errfile = htmlentities( $errfile );
   $errline = htmlentities( $errline );
-  
+
   // Immediately send a mail in case the user does not provide more details:
   if (empty($_POST['ERROR_EXPLANATION']) && isset($usr) && $usr->uid && !empty($ERRORMAIL_RECEIVER_UID)){
   	$mailFunc->sendMail($usr,
@@ -88,7 +88,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
         ($_POST['ERROR_EXPLANATION']!=$lng->get('detailedFeedBack')) &&
     	!empty($ERRORMAIL_RECEIVER_UID)){
       $errorDetailsProvided=TRUE;
-      
+
       $mailFunc->sendMail($usr,
           $ERRORMAIL_RECEIVER_UID,
           'Error Report '.$errorMailUID.': '.$_POST['ERROR_REFERRER'],

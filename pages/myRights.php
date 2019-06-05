@@ -72,7 +72,7 @@ $pge->put( '<FORM class="labsys_mop_std_form" NAME="myRightsEdit" METHOD="POST" 
   		$usr->userRights=$newUsrRights; // validity checked above already!
   	}
   }
-    
+
 $pge->put( "</div>\n".
            "</fieldset>\n".
            "<input tabindex=\"".++$pge->nextTab."\" type=\"submit\" class=\"labsys_mop_button\" name=\"change_rights\" value=\"".$lng->get("apply")."\" onclick='isDirty=false'>".PHP_EOL.

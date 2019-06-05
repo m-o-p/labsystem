@@ -3,12 +3,12 @@ class SPT_View
 {
 // I don't think we need this.
 //    protected $_pathRoot = NULL;
-//    
+//
 //    public function setPathRoot($pathRoot)
 //    {
 //        $this->_pathRoot = $pathRoot;
 //    }
-    
+
     public function assign($vars)
     {
         foreach ($vars as $key => $value) {

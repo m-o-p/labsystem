@@ -31,7 +31,7 @@ define('EXPORT_DATA_DIR_PRIVATE', 'data/withSolutions');
 // this directory is for the i, m elements WITHOUT solutions
 define('EXPORT_DATA_DIR_PUBLIC', 'data');
  // important for indexing!
-                                          
+
 // //////////////////////////// called externally /////////////////////////////////////////
 /**
  * Creates the mapping array out of the array containing the existing element indices as values.
@@ -64,7 +64,7 @@ function createIdMapping(&$labElementArray)
  * @param string $labFolder
  *            Lab folder name on the disk inside the $cfg->get('exportImportDir')
  * @return array array with the reverse mapping index
- *        
+ *
  */
 function createIdImportMappingInitDB($labFolder, $subDir)
 {
@@ -118,7 +118,7 @@ function persistElement(&$element, $labUID, $isImport = false)
             default:
                 fileAppend($fileName, $element->getSerialized() . ',', $labUID); // Appends the elements to the file
         }
-        
+
         // debug: $element->initFromSerialized( $element->getSerialized() ); // identity!
         return '<div class="labsys_mop_elements_menu_' . strtolower($element->elementId) . '">' . "\r\n" . htmlentities($element->title, ENT_QUOTES | ENT_IGNORE) . ' <img src="../syspix/button_next_13x12.gif" width="13" height="12" border="0" alt="-&gt;" title="-&gt;"> ' . $fileName . ' <img src="../syspix/button_export2disk_30x12.gif" width="30" height="12" border="0" alt="export" title="export">' . "</div>\r\n";
     } else { // IMPORT
@@ -141,10 +141,10 @@ function persistElement(&$element, $labUID, $isImport = false)
 function persistElementArray(&$element, &$elementSolution, $labUID)
 {
     $fileName = 'data/elementData.txt'; // default dir
-    
+
     $fileName = EXPORT_DATA_DIR_PRIVATE . DIRECTORY_SEPARATOR . 'elementData.txt';
     fileAppend($fileName, json_encode($elementSolution), $labUID); // save full version
-    
+
     $fileName = EXPORT_DATA_DIR_PUBLIC . DIRECTORY_SEPARATOR . 'elementData.txt'; // save "public" version.
     fileAppend($fileName, json_encode($element), $labUID);
 }
@@ -241,12 +241,12 @@ function deleteExportDirectory($labUID)
 {
     global $cfg, $pge;
     $dir = $cfg->get('exportImportDir') . $labUID;
-    
+
     $pge->put('<div class="labsys_mop_elements_menu_l">Exporting to directory ' . $dir . '.</div>');
-    
+
     if (! file_exists($dir))
         return true;
-    
+
     $pge->put('<div class="labsys_mop_elements_menu_l">Removed existing content.</div>');
     return deleteDirectory($dir);
 }
@@ -452,17 +452,17 @@ function validFilename($string = '')
 function handleLocalFile($localFileWithPath, $destDir, $doCopy)
 {
     global $cfg, $pge, $externallyLinkedElements;
-    
+
     // Remove urlencoded chars as they are not in filenames.
     // Remove heading and trailing whitespaces.
     $localFileWithPath = trim(urldecode($localFileWithPath));
-    
+
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
-    $localFileWithPath = preg_replace_callback('/=["|\'](?:http(?:s?)\:\/\/)?(' . preg_quote($_SERVER['SERVER_NAME']) . ')\/(.*)/', create_function('$matches', 
+    $localFileWithPath = preg_replace_callback('/=["|\'](?:http(?:s?)\:\/\/)?(' . preg_quote($_SERVER['SERVER_NAME']) . ')\/(.*)/', create_function('$matches',
         // only replace it if something follows. Links to the server itself may be intended...
         'return ( (strlen($matches[2]) > 0) ? \'"../\'.$matches[2] : $matches[0] );'), $localFileWithPath);
-    
+
     // Now there could be a fragment in case of linked html files...
     $fragment = '';
     if (strrpos($localFileWithPath, '#') !== false && strrpos(strtolower($localFileWithPath), '.htm') !== false) {
@@ -472,7 +472,7 @@ function handleLocalFile($localFileWithPath, $destDir, $doCopy)
     // Files linked "/" should be "../"
     if ($localFileWithPath[0] == DIRECTORY_SEPARATOR)
         $localFileWithPath = '..' . $localFileWithPath;
-    
+
     // not local: do nothing
     if (! isLocal($localFileWithPath)) {
         if ($doCopy) {
@@ -510,17 +510,17 @@ function handleLocalFile($localFileWithPath, $destDir, $doCopy)
 function importFile($file2importWithPath, $destDir)
 {
     global $cfg, $pge;
-    
+
     $destDir .= $GLOBALS['exportUID'] . DIRECTORY_SEPARATOR; // add subdirectory
     $file2importWithPath = $cfg->get('exportImportDir') . $GLOBALS['exportUID'] . DIRECTORY_SEPARATOR . $file2importWithPath; // complete full path
     $fileName = end(explode(DIRECTORY_SEPARATOR, $file2importWithPath));
     if (! file_exists($destDir)) {
         mkdir($destDir, 0755, true) or trigger_error("Can't create directory " . $destDir, E_USER_ERROR);
     }
-    
+
     (file_exists($file2importWithPath) && copy($file2importWithPath, $destDir . $fileName)) or trigger_error("Can't copy file from '" . htmlentities($file2importWithPath, ENT_QUOTES | ENT_IGNORE) . "' to '" . $destDir . $fileName, E_USER_WARNING);
     $pge->put('<div class="labsys_mop_elements_menu_s">' . ' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> ' . $fileName . "</div>\r\n");
-    
+
     return $destDir . $fileName;
 }
 
@@ -567,7 +567,7 @@ function processLocalPix(&$HTMLcode, $doCopy = true)
     if (! (substr($HTMLcode, 0, 6) == '[HTML]') && // HTML
     ! (substr($HTMLcode, 0, 4) == '[MD]')) // MarkDown
         return; // nothing to do as it is plaintext
-    
+
     if (substr($HTMLcode, 0, 4) == '[MD]') // MarkDown
                                              // MarkDown: Additionally to the <img tag it has
                                              // ![Alt text](/path/to/img.jpg)
@@ -577,7 +577,7 @@ function processLocalPix(&$HTMLcode, $doCopy = true)
                                              // ![Alt text][id]
                                              // [id]: url/to/image "Optional title attribute"
         applyFunctionOnRegEx('#(\!\[.*\]\()(?!../syspix/|/syspix/)(\S+)([\s\S]?(?<!\))\))#', 'return $matches[1].handleLocalFile( $matches[2], \'images/\', ' . intval($doCopy) . ' ).$matches[3];', $HTMLcode);
-    
+
     applyFunctionOnRegEx('/(<img [^\>]*?src\s*=\s*[",\'])(?!..\/syspix\/|\/syspix\/)(.+?)([",\'])/s', 'return $matches[1].handleLocalFile( $matches[2], \'images/\', ' . intval($doCopy) . ' ).$matches[3];', $HTMLcode);
 }
 
@@ -595,7 +595,7 @@ function importPix(&$HTMLcode)
     if (! (substr($HTMLcode, 0, 6) == '[HTML]') && // HTML
     ! (substr($HTMLcode, 0, 4) == '[MD]')) // MarkDown
         return; // nothing to do as it is plaintext
-    
+
     if (substr($HTMLcode, 0, 4) == '[MD]') // MarkDown
                                              // MarkDown: Additionally to the <img tag it has
                                              // ![Alt text](/path/to/img.jpg)
@@ -605,7 +605,7 @@ function importPix(&$HTMLcode)
                                              // ![Alt text][id]
                                              // [id]: url/to/image "Optional title attribute"
         applyFunctionOnRegEx('#(\!\[.*\]\()(images/\S+)([\s\S]?(?<!\))\))#', 'return $matches[1].importFile( $matches[2], "' . $cfg->get('importPictureDir') . '" ).$matches[3];', $HTMLcode);
-    
+
     applyFunctionOnRegEx('/(<img [^\>]*?src\s*=\s*[",\'])(images\/\S+)([",\'])/s', 'return $matches[1].importFile( $matches[2], "' . $cfg->get('importPictureDir') . '" ).$matches[3];', $HTMLcode);
 }
 
@@ -624,7 +624,7 @@ function processLocalFiles(&$HTMLcode, $doCopy = true)
     if (! (substr($HTMLcode, 0, 6) == '[HTML]') && // HTML
     ! (substr($HTMLcode, 0, 4) == '[MD]')) // MarkDown
         return; // nothing to do as it is plaintext
-    
+
     if (substr($HTMLcode, 0, 4) == '[MD]') // MarkDown
                                              // MarkDown: Additionally to the <img tag it has
                                              // This is [an example](http://example.com/ "Title") inline link.
@@ -634,7 +634,7 @@ function processLocalFiles(&$HTMLcode, $doCopy = true)
                                              // This is [an example] [id] reference-style link.
                                              // [id]: http://example.com/ "Optional Title Here"
         applyFunctionOnRegEx('#((?<!\!)\[.*\]\()(?!../pages/|/pages/|\#)(\S+)([\s\S]?(?<!\))\))#', 'return $matches[1].handleLocalFile( $matches[2], \'files/\', ' . intval($doCopy) . ' ).$matches[3];', $HTMLcode);
-    
+
     applyFunctionOnRegEx('/(<a [^\>]*?href\s*=\s*[",\'])(?!..\/pages\/|\/pages\/)(.+?)([",\'])/s', 'return $matches[1].handleLocalFile( $matches[2], \'files/\', ' . intval($doCopy) . ' ).$matches[3];', $HTMLcode);
 }
 
@@ -652,7 +652,7 @@ function importFiles(&$HTMLcode)
     if (! (substr($HTMLcode, 0, 6) == '[HTML]') && // HTML
     ! (substr($HTMLcode, 0, 4) == '[MD]')) // MarkDown
         return; // nothing to do as it is plaintext
-    
+
     if (substr($HTMLcode, 0, 4) == '[MD]') // MarkDown
                                              // MarkDown: Additionally to the <img tag it has
                                              // This is [an example](http://example.com/ "Title") inline link.
@@ -662,7 +662,7 @@ function importFiles(&$HTMLcode)
                                              // This is [an example] [id] reference-style link.
                                              // [id]: http://example.com/ "Optional Title Here"
         applyFunctionOnRegEx('#((?<!\!)\[.*\]\()(files/\S+)([\s\S]?(?<!\))\))#', 'return $matches[1].importFile( $matches[2], "' . $cfg->get("importFilesDir") . '" ).$matches[3];', $HTMLcode);
-    
+
     applyFunctionOnRegEx('/(<a [^\>]*?href\s*=\s*[",\'])(files\/.+?)([",\'])/s', 'return $matches[1].importFile( $matches[2], "' . $cfg->get("importFilesDir") . '" ).$matches[3];', $HTMLcode);
 }
 
@@ -792,10 +792,10 @@ function getLabsFromDirectory($directory)
         $file_name = $directory . $subDirs[$i] . '/data/elementData.txt';
         if (file_exists($file_name)) {
             $myLelement = new LlElement(0, 0, '', '', '', 1, 1, '', false, false, false, false, '');
-            
+
             $labJsonDecoded = array();
             $labJsonDecoded = json_decode_elementData(file_get_contents($file_name)); //decode the element array
-            
+
             $myLelement->initFromSerialized($labJsonDecoded[0]); //element with key 0 is an l-Element
             $myLelement->title .= '&nbsp;<div class="labsys_mop_l_file_description">&nbsp;' . date($lng->get("DateFormat"), filemtime($file_name)) . '&nbsp;</div>&nbsp;';
             $myLelement->idx = base64_encode($subDirs[$i]); // set the base64_encode( directory ) as ID for importable directories
@@ -856,13 +856,13 @@ function updateUsedClasses($content)
 function parseStyleSheet($styleSheetTxt, &$tagArray, &$definitionsArray)
 {
     global $tagNamesTmp, $styleDefinitionsTmp;
-    
+
     $tagNamesTmp = array();
     $styleDefinitionsTmp = array();
-    
+
     // remove all comments:
     $styleSheetTxt = preg_replace("/(\/\*[^\/]*\*\/)/s", '', $styleSheetTxt);
-    
+
     // 1) Separate $tagNames and $styleDefinitions (preserve everything in here)
     preg_replace_callback('/\s*(([^{]*)\s*{[^}]*})/s', // #(((?<!{).)*){.*?}#s',
     function ($matches) {
@@ -879,13 +879,13 @@ function parseStyleSheet($styleSheetTxt, &$tagArray, &$definitionsArray)
             $styleDefinitionsTmp[$existsAtPosition] = $definition;
         }
     }, $styleSheetTxt);
-    
+
     // 2) Remove comments from $tagNames
     foreach ($tagNamesTmp as $key => $value)
         $tagNamesTmp[$key] = preg_replace_callback('#(\/\*.*\*\/)#s', function ($matches) {
             return '';
         }, $value);
-    
+
     $tagArray = $tagNamesTmp;
     $definitionsArray = $styleDefinitionsTmp;
 }

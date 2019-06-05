@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2011  Marc-Oliver Pahl
  *
@@ -36,9 +36,9 @@ $pge->title        = $lng->get('TitleSysLngSelect');
      if ( $usr->isOfKind( IS_CONTENT_EDITOR ) ) $pge->put(  "<div class=\"labsys_mop_elements_menu_p\">\n".EB::link2Url( '../pages/selectSysLng.php' )."</div>\n" );
   // title
      $pge->put( "<div class=\"labsys_mop_h2\">__PAGETITLE__</div>\n" );
-     
+
   // note
-     if ( $lng->get("NoteChooseSysLng") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("NoteChooseSysLng")."</div>\n" ); 
+     if ( $lng->get("NoteChooseSysLng") != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get("NoteChooseSysLng")."</div>\n" );
 
   //select
       // remove current language line from url:
@@ -57,13 +57,13 @@ $pge->title        = $lng->get('TitleSysLngSelect');
       $pge->put("</p>\n");
       // add running language to url
       $url->put('lng', $runningSystemLanguage);
-      
+
   // note: create own
      if ( $lng->get("NoteCreateOwnLng") != "" ) $pge->put(  "<div class=\"labsys_mop_note\">\n".$lng->get("NoteCreateOwnLng").
                                                             '<pre>'.returnEditable( file_get_contents($languageFile) ).'</pre>'.
-                                                            "</div>\n" ); 
-    
+                                                            "</div>\n" );
+
      $pge->put( '</div>' );
-  
+
 require( $cfg->get("SystemPageLayoutFile") );
 ?>

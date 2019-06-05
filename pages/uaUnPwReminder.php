@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -27,7 +27,7 @@
  * @author Marc-Oliver Pahl
  * @copyright Marc-Oliver Pahl 2016
  * @version 1.1
- *         
+ *
  */
 require ("../include/init.inc");
 require_once( "../include/config.inc" );
@@ -46,7 +46,7 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 	// Load data to mail address
 	// new Interface to the userDB
 	$userDBC = new DBConnection ( $cfg->get ( 'UserDatabaseHost' ), $cfg->get ( 'UserDatabaseUserName' ), $cfg->get ( 'UserDatabasePassWord' ), $cfg->get ( 'UserDatabaseName' ) );
-	
+
 	// check if the mailAddress exists:
 	$result = $userDBC->mkSelect ( 'pwReminderToken,pwReminderValidUntil,' . $cfg->get ( 'UserDBField_uid' ) . ' AS uid', $cfg->get ( 'UserDatabaseTable' ), 'UPPER(' . $cfg->get ( 'UserDBField_email' ) . ")=UPPER('" . $requesterEmail . "')" );
 	if ($result->num_rows < 1)
@@ -59,10 +59,10 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 				// generate new Password:
 				srand ( ( double ) microtime () * 1000000 );
 				$newPW = substr ( sha1 ( uniqid ( rand () ) ), 13, 10 );
-				
+
 				// set the new password, reset token data
 				$userDBC->mkUpdate ( 'pwReminderToken=DEFAULT, pwReminderValidUntil=DEFAULT, ' . $cfg->get ( 'UserDBField_password' ) . "='" . password_hash ( $newPW, PASSWORD_DEFAULT ) . "'", $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . "='" . $userDBC->escapeString($data [$cfg->get ( 'UserDBField_uid' )]) . "'" );
-				
+
 				// find out where the user can log in:
 				$groupMemberships = '';
 				$result = $userDBC->mkSelect ( '*', $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . '="' . $userDBC->escapeString($data ['uid']) . '"' );
@@ -100,7 +100,7 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 				$token = sha1 ( uniqid ( rand () ) );
 				$userDBC->mkUpdate ( 'pwReminderToken="' . $token . '", pwReminderValidUntil=' . (time () + 60 * 60), $cfg->get ( 'UserDatabaseTable' ), $cfg->get ( 'UserDBField_uid' ) . "='" . $userDBC->escapeString($data [$cfg->get ( 'UserDBField_uid' )]) . "'" );
 				$urlParts = parse_url ( 'http' . (isset ( $_SERVER ['HTTPS'] ) ? 's' : '') . '://' . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'] );
-				
+
 				$mailPage->contents .= 'https://' . $urlParts ['host'] . $urlParts ['path'] . '?config=useradmin&EMAIL=' . urlencode ( $requesterEmail ) . '&TOKEN=' . urlencode ( $token );
 			}
 			require_once (INCLUDE_DIR . "/classes/MailFunctionality.inc");
@@ -118,15 +118,15 @@ else if ( $writeBody ) { // showing password fields
 	// note
 	if ($lng->get ( "uaUnPwRemNote" ) != "")
 		$pge->put ( "<div class=\"labsys_mop_note\">\n" . $lng->get ( "uaUnPwRemNote" ) . "</div>\n" );
-	
+
 	$pge->put ( "<FORM class=\"labsys_mop_std_form\" NAME=\"UnPwRemainder\" METHOD=\"POST\" ACTION=\"#\">\n" . "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/uaUnPwReminder.php\">\n" . "<fieldset><legend>" . $lng->get ( "eMail" ) . "</legend>\n" . "<div class=\"labsys_mop_in_fieldset\">\n" );
-	
-	$pge->put ( 
+
+	$pge->put (
 			// email address
 			'<label for="eMail" class="labsys_mop_input_field_label_top">' . $lng->get ( 'eMail' ) . '</label>' . "\n" . '<input tabindex="' . $pge->nextTab ++ . '" type="text" id="eMail" name="EMAIL" class="labsys_mop_input_fullwidth" value="user@server.tld" />' . "\n" );
-	
+
 	$pge->put ( "</div>\n" . "</fieldset>\n" . "<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"submit\" class=\"labsys_mop_button\">\n" . "</FORM>" );
-	
+
 	// focus
 	$pge->put ( '<script language="JavaScript" type="text/javascript">
 
@@ -144,7 +144,7 @@ else if ( $writeBody ) { // showing password fields
 
                 </script>' );
 } // /showing reminder stuff
-  
+
 // show!
 require ($cfg->get ( "SystemPageLayoutFile" ));
 ?>
