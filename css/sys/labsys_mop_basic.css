@@ -1463,21 +1463,88 @@ label.labsys_mop_multiselectoption:hover {
 }
 
 /** emoji css**/
-.emoji-menu-pop {
+.emoji-popup {
   position: relative;
-}
- 
-.emoji-menu-item {
-  float: left;
-}
-
-.emoji-dropbtn {
-  border: solid 1px #4682B4;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.emoji-menu-items {
-  float: right;
+/* The actual popup */
+.emoji-popuptext {
   display: none;
+  width: 64px;
+  background-color: #1e90ff;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -32px;
 }
 
-.show {display:block;}
+/* The actual popup */
+.emoji-popuptext a{
+  display: block;
+  witdh: 64px;
+  background-color: #1e90ff;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -32px;
+}
+
+
+/* Popup arrow */
+.emoji-popuptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.emoji-popuptext a:hover {background-color: #1e90ff;}
+
+.emoji-popup:hover .emoji-popuptext {display: block;}
+
+.emoji-popup:hover .emoji-dropbtn {background-color: #1e90ff;}
+
+/* Toggle this class - hide and show the popup */
+.emoji-popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+.emoji-dropbtn {
+  color: white;
+  padding: 8px;
+  font-size: 16px;
+  border: none;
+}
+

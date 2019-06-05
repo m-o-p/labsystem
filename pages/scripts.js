@@ -138,13 +138,32 @@ function updateEmojiButton(emBId, emChoice){
  document.getElementById(emBIdVar).src=path;
 }
 
-function updateEmojiMenu(emBId){
-}
+function updateEmojiMenu(elemId){
+    var strURL=encodeURI("../php/emojiUpdate.php?elemId=" + elemId);
+    var req = new XMLHttpRequest();
+    req.onload = function() {
+	var obj = JSON.parse(req.response);
+	var likeBttn = "emBttn"+elemId+"like";
+	var sleepBttn = "emBttn"+elemId+"sleep";
+	var conBttn = "emBttn"+elemId+"confused";
+	var dislikeBttn = "emBttn"+elemId+"dislike";
+	document.getElementById(likeBttn).innerHTML = obj["like"];
+        document.getElementById(sleepBttn).innerHTML = obj["bored"];
+        document.getElementById(conBttn).innerHTML = obj["confused"];
+        document.getElementById(dislikeBttn).innerHTML = obj["dislike"];
 
+    };
+    if (req) {
+        req.open("GET", strURL, true);
+        req.send(strURL);
+    }
+
+}
+/**
 function showEmojiMenu(emBId) {
   document.getElementById(emBId.id).classList.toggle("show");
 }
-
+**/
 
 //window.onclick = function(event) {
 //  if (!event.target.matches('.emoji-dropbtn')) {
