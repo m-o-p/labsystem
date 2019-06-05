@@ -180,10 +180,10 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 					     (($labToExport->lab->idx != 1)?'c'.$labToExport->lab->idx.' '.$labToExport->lab->buildStructure(true, true).' ':'') // 1 means empty
                                 ).'l'.$key
                               );
-
+    // remove empty entries (that occur with empty collections!)
+        $labElementArray = array_filter( $labElementArray, 'strlen' ); 
     // build the array that contains the renaming: [oldID] => exportedID
         createIdMapping( $labElementArray );
-
       // Needed in some XIlib functions.
       
         // TO-DO quick fix for empty UniqueID, needs better fix
@@ -287,7 +287,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 				$serializedElements[0]=$nextElement->getSerialized(); //set l Element as array item with key 0; easier to decode labname for getLabsFromDirectory function
 				break;
 			  default:
-				$serializedElements[$k++]=$nextElement->getSerialized();  //Appends the element to the array
+				    $serializedElements[$k++]=$nextElement->getSerialized();  //Appends the element to the array
           }
 
 		}		// /foreach

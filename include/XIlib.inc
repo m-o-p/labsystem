@@ -47,8 +47,8 @@ function createIdMapping(&$labElementArray)
                                  // remove stared values as they describe not existing elements:
     $labElementArray = array_filter($labElementArray, 'notStared');
     $labElementArray = array_flip($labElementArray); // exchange keys and values (+ remove duplicate elements...)
-    $lastSeenElement = '';
-    $elementCounter = 99;
+    $lastSeenElement = null;
+    $elementCounter = 12345;
     foreach ($labElementArray as $key => $value) {
         if ($lastSeenElement != $key[0]) { // new element ID
             $lastSeenElement = $key[0];
@@ -716,7 +716,7 @@ function notStared($value)
  */
 function processElement(&$element, &$mappingArray, $labNumber, $isImport = false)
 {
-    global $usr;
+    global $usr,$pge;
     // Remove versioning links from history...
     $element->history = preg_replace('/^@@([\d]*) (.*)/m', '$2', $element->history);
     switch ($element->elementId) {
