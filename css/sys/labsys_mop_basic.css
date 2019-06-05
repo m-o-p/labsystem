@@ -1518,12 +1518,13 @@ label.labsys_mop_multiselectoption:hover {
   border-color: #555 transparent transparent transparent;
 }
 
-.emoji-popuptext a:hover {background-color: #1e90ff;}
+.emoji-popuptext a:hover {background-color: white;}
 
 .emoji-popup:hover .emoji-popuptext {display: block;}
 
 .emoji-popup:hover .emoji-dropbtn {background-color: #1e90ff;}
 
+.emoji-popup:hover .emoji-popup-btn {}
 /* Toggle this class - hide and show the popup */
 .emoji-popup .show {
   visibility: visible;
@@ -1548,3 +1549,5 @@ label.labsys_mop_multiselectoption:hover {
   border: none;
 }
 
+.emoji-popup-btn {
+}
