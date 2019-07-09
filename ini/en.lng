@@ -454,7 +454,7 @@ prelabAllFinExplain = "The prelab is finished by all teammembers. So they are al
 labOpenExplain      = "The lab is still open. So the questions can be answered."
 labScheduleOverExpl = "The schedule for this lab is over. Students cannot answer anymore." ; sent in mail to markers
 labClosedExplain    = "The lab got closed. So it can be marked now."
-labNoCorrExplain    = "The lab/ question is no marked yet."
+labNoCorrExplain    = "The lab/ question is not marked yet."
 labCorrExplain      = "The lab/ question marking is finished."
 
 
