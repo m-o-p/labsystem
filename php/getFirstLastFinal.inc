@@ -43,6 +43,6 @@ if (!preg_match('/^[0-9a-zA-Z.]+$/', $GLOBALS['url']->get('address'))) {
     exit;
 }
 
-$firstFinal = array_shift ( explode ( ".", $url->get('address') ) );
-$lastFinal  = array_pop   ( explode ( ".", $url->get('address') ) );
+$firstFinal = array_shift ( explode ( ".", $GLOBALS['url']->get('address') ) );
+$lastFinal  = array_pop   ( explode ( ".", $GLOBALS['url']->get('address') ) );
 ?>
