@@ -30,6 +30,7 @@
 * @copyright  Marc-Oliver Pahl 2005
 * @version    1.0
 */
+
 class EM{ /* ElementMenues */
 // V I E W
   /**
@@ -83,7 +84,7 @@ class EM{ /* ElementMenues */
       return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
 //              EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
              EB::ticket ( $fullAddress ).
-         ($usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx) : '').
+		EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx).
             EB::history( $theEl->history, $fullAddress ).
              "</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
@@ -203,15 +204,17 @@ class EM{ /* ElementMenues */
 //                EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
                EB::ticket ( $fullAddress ).
                EB::history( $eC->history, $fullAddress ).
+		EB::emojiMenu($fullAddress, $eC->elementId.$eC->idx).
+		//($usr->isOfKind( IS_CONTENT_EDITOR ) ? EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx) : '').
                //EB::viewStructure( $fullAddress ).
-               EB::link2Element( $fullAddress, $eC ).
+		EB::link2Element( $fullAddress, $eC ).
                //EB::createNew( "c" ).
 //                EB::delete( $fullAddress ).
                
     		   (strpos(strtolower($fullAddress), 'c') < strpos(strtolower($fullAddress), 'c'.$eC->idx) ? EB::delete( $fullAddress ):'').
                // EB::manageElements().
                EB::edit( $fullAddress );
-    else $menu = EB::printView( $fullAddress.".all" );
+    else $menu = EB::printView( $fullAddress.".all" ) . EB::emojiMenu($fullAddress, $eC->elementId.$eC->idx);
 
     return "\n\n\t<!-- *************************start of c-element************************* -->\n\n".
            '<div class="labsys_mop_elements_menu_c'.$add2Style.'">'.PHP_EOL.
@@ -498,6 +501,7 @@ class EM{ /* ElementMenues */
     	   EB::link2Element(  $fullAddress ).
            //($theEl->elementId == 'l' ? EB::createNew(     $elShortcut  ).EB::delete(        $fullAddress ) : '').
            EB::view(          $fullAddress ).
+	EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx).
            EB::edit(          $fullAddress ).
            EB::cloneMe(   $theEl->elementId.$theEl->idx );
   }

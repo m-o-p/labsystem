@@ -1,4 +1,7 @@
-<?php
+#<?php
+
+if ( isset( $GLOBALS["eDBI"] ) ) return; /* require_once doesn't work well */
+
 
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 
@@ -10,19 +13,21 @@ class EmojiDBInterface{
         global $wDBI;
         $this->myDBC = $wDBI;
         $this->myTable = "emoji_selections";
-	// check if DB exists
-        $isDB = $this->myDBC->table_exists( $this->myTable );
+	
+	/** check if DB exists
+	$isDB = $this->myDBC->table_exists( $this->myTable );
 	if ( !$isDB )
 	{
 		$sqlq = "CREATE TABLE emoji_selections (
 		id INT(32) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 		emojiId VARCHAR(32),
 		elemId VARCHAR(32),
-		uid VARCHAR(64)
+		uid VARCHAR(64),
+		history VARCHAR(256)
 		)";
 		$this->myDBC->query( $sqlq );
 	}
-
+	*/
    }
 
     /** Finds the number of selections of a given emoji for a given element. Uses the full address of the element.
@@ -91,17 +96,19 @@ class EmojiDBInterface{
 
         // checks whether the user has already given an input for this element, (elemId, uid) - primary key
         $checkKey = $this->myDBC->row_exists("*", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'");
-        $resultCheckKey = $checkKey->fetch_array();
-
+        $resultCheckKey = $checkKey->fetch_array();	
         if ($resultCheckKey[0] == 0) {
 
             // if the entry does not exist insert the new row
-            $this->myDBC->mkInsert( "elemId = '".$elemId."', uid = '". $uid ."', emojiId = '". $emojiId . "'", $this->myTable);
+            $this->myDBC->mkInsert( "elemId = '".$elemId."', uid = '". $uid ."', emojiId = '". $emojiId . "', history = ''", $this->myTable);
 
         } else {
-                $this->myDBC->mkUpdate("emojiId = '". $emojiId ."'", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'");
-        }
+		$historyArray = $this->myDBC->mkSelect("history", $this->myTable, "elemId = '" . $elemId . "' and uid = '". $uid . "'");
+		$history = $historyArray->fetch_array();
+		$this->myDBC->mkUpdate("emojiId = '". $emojiId ."'", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'" );
+		$this->myDBC->mkUpdate("history = '" . $emojiId.";".$history[0] . "'", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'" );
+	}
     }
 }
 
-?>
+$GLOBALS["eDBI"] = new EmojiDBInterface();

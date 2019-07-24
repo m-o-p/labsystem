@@ -7,6 +7,7 @@
  */
 
 require_once ("../include/init.inc");
+global $eDBI;
 
 if (!empty($_REQUEST['elemId'])) {
     $elemId = $_REQUEST['elemId'];
@@ -14,21 +15,19 @@ if (!empty($_REQUEST['elemId'])) {
     echo "Wrong element ID!";
 }
 
-$emojiDBI = new EmojiDBInterface();
-
-$selections = $emojiDBI->findNumOfSelectionsFor(1, $elemId);
+$selections = $eDBI->findNumOfSelectionsFor(1, $elemId);
 $elem=$selections->fetch_array();
 $data["like"] = $elem[0];
 
-$selections = $emojiDBI->findNumOfSelectionsFor(2, $elemId);
+$selections = $eDBI->findNumOfSelectionsFor(2, $elemId);
 $elem=$selections->fetch_array();
 $data["confused"] = $elem[0];
 
-$selections = $emojiDBI->findNumOfSelectionsFor(3, $elemId);
+$selections = $eDBI->findNumOfSelectionsFor(3, $elemId);
 $elem=$selections->fetch_array();
 $data["bored"] = $elem[0];
 
-$selections = $emojiDBI->findNumOfSelectionsFor(4, $elemId);
+$selections = $eDBI->findNumOfSelectionsFor(4, $elemId);
 $elem=$selections->fetch_array();
 $data["dislike"] =  $elem[0];
 

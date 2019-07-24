@@ -120,19 +120,19 @@ function updateEmojiButton(emBId, emChoice){
  switch(emChoice)
  {
    case 1:
-   path = "../syspix/button_like.png";
+   path = "../syspix/button_like.gif";
    break;
   case 2:
-   path = "../syspix/button_frust.png";
+   path = "../syspix/button_frust.gif";
    break;
   case 3:
-   path = "../syspix/button_sleep.png";
+   path = "../syspix/button_sleep.gif";
    break;
   case 4:
-   path = "../syspix/button_dislike.png";
+   path = "../syspix/button_dislike.gif";
    break;
   default:
-   path = "../syspix/button_def.png";
+   path = "../syspix/button_def.gif";
  }
  var emBIdVar="img"+emBId.id;
  document.getElementById(emBIdVar).src=path;

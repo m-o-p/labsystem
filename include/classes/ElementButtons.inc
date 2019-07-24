@@ -418,37 +418,40 @@ class EB{ /* ElementButtons */
     return EB::mkLink( $link, "<img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"mail\" title=\"".$lng->get("explainMailLink2")."\">" );
   }
 
-   static function emojiMenu($fullAddress, $eIDX){
-   $emID = "emBttn".$eIDX;
-   
-   global $pge;
-   $emojiDBI = new EmojiDBInterface();
-   $query1 = $emojiDBI->findUserSelectionsFor($_SESSION['uid'], $eIDX);
+   static function emojiMenu($fullAddress, $eIDXI){
+   $emID = "emBttn". strtolower($eIDXI);
+   $eIDX = strtolower($eIDXI);   
+   global $pge, $eDBI;
+
+   require_once( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0};	
+   $labopen = !($GLOBALS[ $id."DBI" ]->isLabClosed); // add ! closed = true == open = false
+
+   $query1 = $eDBI->findUserSelectionsFor($_SESSION['uid'], $eIDX);
    $selections = $query1->fetch_array();
-   $path = "../syspix/button_def.png";
+   $path = "../syspix/button_def.gif";
       switch($selections[0]){
 	case 1:
-		$path = "../syspix/button_like.png";
+		$path = "../syspix/button_like.gif";
 		break;
 	case 2:
-		$path = "../syspix/button_frust.png";
+		$path = "../syspix/button_frust.gif";
 		break;
 	case 3:
-		$path = "../syspix/button_sleep.png";
+		$path = "../syspix/button_sleep.gif";
 		break;
 	case 4:
-		$path = "../syspix/button_dislike.png";
+		$path = "../syspix/button_dislike.gif";
 		break;
 	}
 
    
    return "<div class=\"emoji-popup\">
-	  <button onmouseover='updateEmojiMenu(\"" . $eIDX . "\");' class=\"emoji-dropbtn\"><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
-              <div id=".$emID." class=\"emoji-popuptext\">".
-                EB::likeButton($eIDX,$emID).
-                EB::dislikeButton($eIDX,$emID).
-                EB::boredButton($eIDX,$emID).
-                EB::confusedButton($eIDX,$emID)."
+	  <button onmouseover='updateEmojiMenu(\"" . $eIDX . "\");' class=\"emoji-dropbtn4menu\"><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
+              <div id=".$emID." class=\"emoji-popupmenu\">".
+                EB::likeButton($eIDX,$emID,$labopen).
+                EB::dislikeButton($eIDX,$emID,$labopen).
+                EB::boredButton($eIDX,$emID,$labopen).
+                EB::confusedButton($eIDX,$emID,$labopen)."
         </div> 
      </div>
      ";
@@ -457,59 +460,91 @@ class EB{ /* ElementButtons */
 
 
     /**
-     * @return string
+     * If lab is open, renders clickable button to rate the lab
      */
-    static function likeButton($fullAddress,$emID){
+    static function likeButton($fullAddress,$emID,$labopen){
         global $pge;
-        return "<div>
-			<button onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 1); updateEmojiButton($emID , 1); updateEmojiMenu(\"" . $fullAddress . "\");' class=\"emoji-dropbtn\">
- 				<img src=\"../syspix/button_like.png\" width=\"13\" height=\"12\" >
-                	</button>
-			<span id=".$emID."like>test</span>
-		 </div>
-                ";
+        if ( $labopen )
+        {
+        return "
+                    <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 1);
+                        updateEmojiButton($emID , 1); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
+                    <img src=\"../syspix/button_like.gif\" width=\"24\" height=\"24\" ><span id=".$emID."like></span></button>
+            ";
+        }else
+        {
+            return "<div>
+                <span id=".$emID."like><img src=\"../syspix/button_like.gif\" width=\"24\" height=\"24\" ></span>
+            </div>
+            ";
+        } 
     }
 
     /**
-     * @return string
+     * If lab is open, renders clickable button to rate the lab
      */
-    static function confusedButton($fullAddress,$emID){
+    static function confusedButton($fullAddress,$emID,$labopen){
         global $pge;
+        if ( $labopen )
+        {
+        return "
+                    <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 2);
+                        updateEmojiButton($emID , 2); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
+                    <img src=\"../syspix/button_frust.gif\" width=\"24\" height=\"24\" ><span id=".$emID."confused></span></button>
+            
+            ";
+        }else
+        {
+            return "<div>
+                <span id=".$emID."consfused><img src=\"../syspix/button_frust.gif\" width=\"24\" height=\"24\" ></span>
+            </div>
+            ";
+        } 
+    }
 
-        return "<div>
-                        <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 2); updateEmojiButton($emID , 2); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
-                    <img src=\"../syspix/button_frust.png\" width=\"13\" height=\"12\" ></button>
-                        <span id=".$emID."confused>test</span>
-                 </div>
-                ";
+
+    /**
+     * If lab is open, renders clickable button to rate the lab
+     */
+    static function boredButton($fullAddress,$emID,$labopen){
+        global $pge;
+        if ( $labopen )
+        {
+        return "
+                    <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 3);
+                        updateEmojiButton($emID , 3); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
+                    <img src=\"../syspix/button_sleep.gif\" width=\"24\" height=\"24\" ><span id=".$emID."sleep></span></button>
+            
+            ";
+        }else
+        {
+            return "<div>
+                <span id=".$emID."sleep><img src=\"../syspix/button_sleep.gif\" width=\"24\" height=\"24\" ></span>
+            </div>
+            ";
+        } 
     }
 
     /**
-     * @return string
+     * If lab is open, renders clickable button to rate the lab
      */
-    static function boredButton($fullAddress,$emID){
+    static function dislikeButton($fullAddress,$emID,$labopen){
         global $pge;
-
-        return "<div>
-                        <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 3); updateEmojiButton($emID , 3); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
-                    <img src=\"../syspix/button_sleep.png\" width=\"13\" height=\"12\" ></button>
-                        <span id=".$emID."sleep>test</span>
-                 </div>
-                ";
-    }
-
-    /**
-     * @return string
-     */
-    static function dislikeButton($fullAddress,$emID){
-        global $pge;
-
-        return "<div>
-                        <button onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 4); updateEmojiButton($emID , 4); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
-                    <img src=\"../syspix/button_dislike.png\" width=\"13\" height=\"12\" ></button>
-                        <span id=".$emID."dislike>test</span>
-                 </div>
-                ";
+        if ( $labopen )
+        {
+        return "
+                <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 4);
+                        updateEmojiButton($emID , 4); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
+                    <img src=\"../syspix/button_dislike.gif\" width=\"24\" height=\"24\" > <span id=".$emID."dislike></span> 
+                    </button>
+            ";
+        }else
+        {
+            return "<div>
+                <span id=".$emID."dislike><img src=\"../syspix/button_dislike.gif\" width=\"24\" height=\"24\" ></span>
+            </div>
+            ";
+        } 
     }
 
 }

@@ -7,6 +7,7 @@
  */
 
 require_once ("../include/init.inc");
+global $eDBI;
 
 if (!empty($_REQUEST['elemId'])) {
     $elemId = $_REQUEST['elemId'];
@@ -26,17 +27,11 @@ if (!empty($_REQUEST['emojiId'])) {
     echo "Wrong emoji ID!";
 }
 
-$emojiDBI = new EmojiDBInterface();
-$insert = $emojiDBI->insertRow($_REQUEST['elemId'], $_REQUEST['uid'], $_REQUEST['emojiId']);
-//$result = $insert->fetch_array();
+//$emojiDBI = new EmojiDBInterface();
+//$insert = $emojiDBI->insertRow($_REQUEST['elemId'], $_REQUEST['uid'], $_REQUEST['emojiId']);
 
-/*
-if ($result[0] === "TRUE") {
-    echo "OK";
-} else {
-    echo "Try again";
-}
-*/
+$eDBI->insertRow($_REQUEST['elemId'], $_REQUEST['uid'], $_REQUEST['emojiId']);
+
 
 echo "OK";
 
