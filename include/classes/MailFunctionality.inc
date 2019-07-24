@@ -21,7 +21,7 @@ class MailFunctionality{
 		echo('Additional Parameters: '.$additional_parameters.'<br>'.PHP_EOL);
 		echo('<br>'.PHP_EOL.'0-0-0-0-0-0-0-0-0'.'<br>'.PHP_EOL);
 	}
-	
+
    /**
    * Send a mail.
    * @param String $sender              The sender.
@@ -33,31 +33,31 @@ class MailFunctionality{
    */
   function sendMail( $senderUid, $receiverUIDs, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
     global $cfg, $usr, $uDBI, $urDBI;
-    
+
     if (empty($senderUid) || empty($senderUid->mailAddress) || empty($senderUid->uid))
     	$sender = '<noreply@'.$_SERVER['SERVER_NAME'].'>';
     else
     	$sender = $this->mailHeaderEncode($usr->foreName . ' ' . $usr->surName) . ' <' . $usr->mailAddress . '>';
-    
+
     preg_match("/\<(.*)\>/", $sender, $output_array);
     $senderMail = (!empty($output_array) ? $output_array[1] : $sender);
     if (empty($senderMail)){
     	$senderMail = $sender;
     }
-    
+
     $receiver = '';
     $allReceivers = ''; // Collect receivers for summary report to sender
     if ($CCsender){
     	$receiverUIDs .= ', labsystemReportSender';
     }
-    
+
     foreach( explode(',', $receiverUIDs) as $receiverUID ){
     	$receiverUID=trim($receiverUID);
 	    // Load receiver data including mail address
 	    if ($receiverUID != 'labsystemReportSender'){
 	    	$receiverUsrDataArray = $uDBI->getData4( $receiverUID );
 	    	$userDetailedData = $urDBI->getData4( $receiverUID );
-	    	$receiverUsrObject = new ElementUser( 
+	    	$receiverUsrObject = new ElementUser(
 	    			$receiverUID,//$uid
 	    			$receiverUsrDataArray['userName'], //$userName
 	    			$receiverUsrDataArray['foreName'], //$foreName
@@ -78,8 +78,8 @@ class MailFunctionality{
 	    	$receiver = $senderMail;
 	    	$replacedText = 'Sent to:'.PHP_EOL.$allReceivers.'--'.PHP_EOL.PHP_EOL.$text;
 	    }
-	    
-	    //$this->printMail 
+
+	    //$this->printMail
 	    mail( ($BCC ? $senderMail : $receiver), // TO
 	          '['.$cfg->get("SystemTitle").'] ' . $this->mailHeaderEncode($replacedSubject),
 	          $replacedText.PHP_EOL.PHP_EOL.
@@ -95,7 +95,7 @@ class MailFunctionality{
 	    );
      }
   }
-  
+
   /**
    * Replaces the page constants in the mail text with the current values.
    * This is valuable for personalized or othewise customized mails.

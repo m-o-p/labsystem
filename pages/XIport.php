@@ -65,25 +65,25 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
       // load information about the lab
         $labToImport = new LlElement( 0, 0, '', '', '', 1, 1, '', false, false, false, false, '' );
         $labJsonDecoded = json_decode_elementData( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/elementData.txt') );
-        
+
         //Store the solution data in an array. TO-DO: I expect problems if there is only one i or m element in a collection.
         $solutionsExist = false;
-        if ( file_exists($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ){ 
-                $labSolutionDecoded = json_decode_elementData( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ); 
+        if ( file_exists($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') ){
+                $labSolutionDecoded = json_decode_elementData( file_get_contents($cfg->get('exportImportDir').$subDir.'/data/withSolutions/elementData.txt') );
                 //print_r($labSolutionDecoded); //debug print
                 $solutionsExist = true;
         }
-        
+
         $labToImport->initFromSerialized( $labJsonDecoded[0] );
       // create the mapping from the directory and create the "empty" DB objects for the elements
         $labElementArray = createIdImportMappingInitDB( $labToImport->uniqueID , $subDir );
-        
+
         $newLabId = $labElementArray['l2'];
 
         $pge->put( '<h3>'.$labToImport->title.' ('.$labToImport->uniqueID.' <img src="../syspix/button_importFromDisk_30x12.gif" width="30" height="12" border="0" alt="import" title="import"> '.$newLabId.' <a href="'.$url->link2('../pages/edit.php', Array('address' => $newLabId) ).'">edit...</a>)</h3>'."\r\n" );
       // import elements
         $importCounter = 0; // used to iterate through our JSON-Element-array.
-       
+
         foreach ($labElementArray as $value=>$newID){
           $nextElement = $GLOBALS[ $newID[0]."DBI" ]->getData2idx( substr($newID, 1) ); // load existing empty DB object
           switch( $value[0] ){
@@ -107,7 +107,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
           $pge->put( persistElement( $nextElement, '', true ) );
           $importCounter++;
         } // /foreach
-        
+
 
       // Integrate css/user_styles.css into the current user stylesheet.
         if (file_exists( $cfg->get('exportImportDir').$subDir.'/css/user_styles.css' ) ){
@@ -180,19 +180,19 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 					     (($labToExport->lab->idx != 1)?'c'.$labToExport->lab->idx.' '.$labToExport->lab->buildStructure(true, true).' ':'') // 1 means empty
                                 ).'l'.$key
                               );
-
+    // remove empty entries (that occur with empty collections!)
+        $labElementArray = array_filter( $labElementArray, 'strlen' );
     // build the array that contains the renaming: [oldID] => exportedID
         createIdMapping( $labElementArray );
-
       // Needed in some XIlib functions.
-      
+
         // TO-DO quick fix for empty UniqueID, needs better fix
         if (empty($labToExport->uniqueID)) {
             $labToExport->uniqueID = substr(md5(rand()), 0, 7);
         }
-        
+
         $GLOBALS['exportUID'] = $labToExport->uniqueID;
-        
+
         $GLOBALS['externallyLinkedElements'] = array();
 
         deleteExportDirectory( $GLOBALS['exportUID'] ); // empty export directory
@@ -278,7 +278,7 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 				// clear sensitive data
 				if ($nextElement->elementId == 'i') $nextElement->exampleSolution = 'Here will be the example solution in the full data set.';
 				if ($nextElement->elementId == 'm') $nextElement->answerExplanation = 'Here will be the answer explanation in the full data set.';
-				$serializedElements[$k++]=$nextElement->getSerialized(); 
+				$serializedElements[$k++]=$nextElement->getSerialized();
 				break;
 			  case 'l':
 				  if(empty($nextElement->uniqueID)) {
@@ -287,12 +287,12 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 				$serializedElements[0]=$nextElement->getSerialized(); //set l Element as array item with key 0; easier to decode labname for getLabsFromDirectory function
 				break;
 			  default:
-				$serializedElements[$k++]=$nextElement->getSerialized();  //Appends the element to the array
+				    $serializedElements[$k++]=$nextElement->getSerialized();  //Appends the element to the array
           }
 
 		}		// /foreach
 	  $pge->put( persistElementArray( $serializedElements, $serializedSolutionElements, $labToExport->uniqueID ) ); //persist the Array as json encoded object on the disc
-      
+
 	  fileWrite(  'data/externallyLinked.txt',
                   'The following external ressources are linked in this lab:'."\n".
                   implode( "\n", $GLOBALS['externallyLinkedElements'] ),

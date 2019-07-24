@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -53,7 +53,7 @@ if ( !file_exists( $languageFile ) ){
                                      }
 
 $runningSystemLanguage = $GLOBALS['url']->available("lng") ? $GLOBALS['url']->get("lng") : substr( $cfg->get("SystemDefaultLanguage"), 0, strpos( $cfg->get("SystemDefaultLanguage"), '.' ) ); // used by /include/page_layout.inc to link to the language selector
-                                     
+
 $languageData = parse_ini_file( $languageFile );
 
 if (isset( $languageData['include'] )){ // we have an include for default values...

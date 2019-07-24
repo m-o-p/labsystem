@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -45,13 +45,13 @@ $pge->put('<div class="labsys_mop_h2">'.$pge->title.'</div>'."\n");
 
 // additional note
   if ( $lng->get( strtolower($id)."ManageNote" ) != "" ) $pge->put( "<div class=\"labsys_mop_note\">\n".$lng->get( strtolower($id)."ManageNote" )."</div>\n" );
-  
+
 // Multipageresult-Filtering Init $_GET as it is used by the sorter...
       if ( $GLOBALS['url']->available('startFrom') &&
            is_numeric ( $GLOBALS['url']->get('startFrom') ) &&
            ($GLOBALS['url']->get('startFrom') > 0)
           ) $startFrom = $GLOBALS['url']->get('startFrom'); else $startFrom = 1;
-    
+
       if ( $GLOBALS['url']->available('frameSize') &&
            is_numeric ( $GLOBALS['url']->get('frameSize') ) &&
            ($GLOBALS['url']->get('frameSize') > 0)
@@ -72,7 +72,7 @@ $url->preserve( 'address' );
   $legendShown = false;
 
 // iterate over all elements ordered by $orderBy, $asc
-  $DBI->getAllData( $orderBy, $asc ); 
+  $DBI->getAllData( $orderBy, $asc );
 
   $existingElemnts = $DBI->allSize();
 // With more than 360 elements more than 8M are used and it gets slow!
@@ -85,7 +85,7 @@ $url->preserve( 'address' );
     if ( $startFrom > $frameSize ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php',
                                                                                  Array('startFrom' => $startFrom-$frameSize,
                                                                                        'frameSize' => $frameSize) ).'">&lt;&lt;</a> '."\n";
-  
+
       $j = 1;
       for ( $i=1; $i<=$existingElemnts; $i+=$frameSize ){
         $manageNavigation .= '<a href="'.$url->link2('../pages/manage.php',
@@ -97,7 +97,7 @@ $url->preserve( 'address' );
                              ( ($startFrom == $i) ?  '</b>'  : '' ).
                              '</a> '."\n";
       }
-  
+
     // forward Arrows
     if ( $startFrom+$frameSize < $i ) $manageNavigation .= '<a href="'.$url->link2( '../pages/manage.php',
                                                                                     Array('startFrom' => $startFrom+$frameSize,
@@ -105,20 +105,20 @@ $url->preserve( 'address' );
 
   $manageNavigation .= '</div>'."\n";
   $manageNavigation .= '<!-- /navigation -->'."\n";
-  
+
 // otherwhise it ends up in the menu etc...
 $url->rem( 'address' );
 
   $pge->put( $manageNavigation );
-  
+
   $currElNr = 0;
   $stopAt = $startFrom+$frameSize;
-  while ( $element = $DBI->getNextData() ){ 
+  while ( $element = $DBI->getNextData() ){
     $currElNr++; if ( $currElNr < $startFrom ) continue; if ( $currElNr >= $stopAt ) break;
     if ( !$legendShown ){ /* I need an instance to call the showPropertyLegend() method.
                              A static call would not do the job since a variable is needed ( $this must be callable). */
                          // show the legend
-                          $pge->put( $element->showPropertyLegend() ); 
+                          $pge->put( $element->showPropertyLegend() );
                          // open the form
                           $pge->put('<FORM NAME="manage" METHOD="POST" ACTION="../php/saveAllElement.php?address='.$id.'"><div>'."\n");
                           $legendShown = true;
@@ -126,9 +126,9 @@ $url->rem( 'address' );
    // show the property row
     $pge->put( $element->showPropertyRow( $element->idx ) );
   }
-  
+
   $pge->put( $manageNavigation );
-  
+
 // saving
 /* The names of the inputs are prepared for saving all properties but there is no save function
  * implemented since I didn't find it helpful. If necessary you can easily implement one for each element

@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -45,13 +45,13 @@ if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this conf
      }
 
 // new Interface to the userDB
-$userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 
-                            $cfg->get('UserDatabaseUserName'), 
-                            $cfg->get('UserDatabasePassWord'), 
+$userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
+                            $cfg->get('UserDatabaseUserName'),
+                            $cfg->get('UserDatabasePassWord'),
                             $cfg->get('UserDatabaseName'));
 
 // which courses exist?
-  // ask for the couseID fields starting with _                         
+  // ask for the couseID fields starting with _
   // list all columns
   $result = $userDBC->query( 'SHOW COLUMNS FROM '.$cfg->get('UserDatabaseTable') );
   $courseArray = Array();
@@ -70,7 +70,7 @@ foreach ($uids as $uid => $courseData) {
     if (array_key_exists($course, $courses))
       $courses[$course] = $course . '=1';
   $userDBC->mkUpdate( implode(', ', $courses),
-                      $cfg->get('UserDatabaseTable'), 
+                      $cfg->get('UserDatabaseTable'),
                       $cfg->get('UserDBField_uid')."='" . $userDBC->escapeString($uid) . "'"
                      );
 }

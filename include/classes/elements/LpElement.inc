@@ -90,7 +90,7 @@ class LpElement extends Element{
     // replace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     parseHTML( $this->contents );             // Process [HTML]. (../include/helper.inc).
 	$this->contents = $pge->replaceElementTitle( $this->contents, '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false).'<a href="#'.$fullAddress.'" class="link-anchor">¶</a></div>' );
-    
+
     return EM::viewTopPage( $this, $fullAddress ).
            '<div id="'.$fullAddress.'" class="labsys_mop_contentArea">'.// anchor for retrieving after saving
            "<div class=\"labsys_mop_elements_p_around\">".
@@ -133,7 +133,7 @@ class LpElement extends Element{
 
     // rplace the tag __ELEMENTTITLE__ by $paragraph.$this->title
     $this->contents = $pge->replaceElementTitle( $this->contents, ( $paragraph != "" ?  $paragraph.". "  : '' ).htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false) );
-    
+
     parseHTML( $this->contents );              // Process [HTML]. (../include/helper.inc).
 
     return $pge->replaceConstants( $this->contents ); // Process custon fields;
@@ -213,7 +213,7 @@ class LpElement extends Element{
             EM::editBottomPage( $this, $fullAddress ).
             $this->show($fullAddress);
   }
-   
+
   /**
   * Used to save the edited element.
   *

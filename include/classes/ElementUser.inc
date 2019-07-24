@@ -36,7 +36,7 @@ class ElementUser {
   var $foreName;
   var $surName;
   var $currentTeam;
-  var $userRights; // The currentyly set rights out of $userMaximumRights 
+  var $userRights; // The currentyly set rights out of $userMaximumRights
   var $userMaximumRights; // The maximal rights the user can set.
   var $mailAddress;
   var $history;
@@ -52,7 +52,7 @@ class ElementUser {
     $this->mailAddress              = $mailAddress;
     $this->history                  = $history;
   }
-  
+
 
   function printMe(){
   	return htmlentities('uid: '.$this->uid.PHP_EOL.

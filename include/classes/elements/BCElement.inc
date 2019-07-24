@@ -136,6 +136,7 @@ class BCElement extends LcElement{
     if ( !$this->isVisible() ){ return $this->notFoundVisibleNote( $fullAddress ); exit; }
 
    $this->handleInsertElement( $fullAddress );
+   $this->deleteChildren();
 
    // Address splitting.
     $parentAddr = $fullAddress;

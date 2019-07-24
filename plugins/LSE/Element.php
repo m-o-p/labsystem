@@ -11,9 +11,9 @@ class LSE_Element
     protected $content;
     protected $renderedContent;
     protected $options = array();
-    
+
     protected $decorator;
-    
+
     /**
      * @return the $content
      */
@@ -45,7 +45,7 @@ class LSE_Element
     {
         $this->options = $options;
     }
-    
+
     public function addOption($key, $value)
     {
         $this->options[$key] = $value;
@@ -78,17 +78,17 @@ class LSE_Element
 	public function __construct()
     {
     }
-    
+
     public function setId($id)
     {
         $this->id = $id;
     }
-    
+
     public function setDecorator($decorator)
     {
         $this->decorator = $decorator;
     }
-    
+
     /**
      * Add the element as child of current element
      *
@@ -99,16 +99,16 @@ class LSE_Element
     {
         $this->elements[$element->getId()] = $element;
     }
-    
+
     public function getElements()
     {
         return $this->elements;
     }
-    
+
     /**
      * Returns a rendered element
      *
-     * Recursively renders all child elements first, adds their string and passes them to 
+     * Recursively renders all child elements first, adds their string and passes them to
      * decorator to do formatting
      *
      * @return string
@@ -119,7 +119,7 @@ class LSE_Element
         foreach ($this->elements as $element) {
             $output .= $element->render();
         }
-        
+
 //        var_dump($this);
         return $this->decorator->decorate($this->type, $output, $this);
     }

@@ -99,7 +99,7 @@ class Element{
     return  $this->IamVisible
             || $usr->isOfKind( IS_CONTENT_EDITOR ); /* contents editors are able to view any page */
   }
-  
+
  function collectVariablesFromArray( $array ){
   	$valueArray = array();
   	foreach ( $array as $value ){
@@ -119,13 +119,13 @@ class Element{
     foreach ( $this->serializationArray as $value ){
     	$toBeSerialized[$value] = $this->$value;
     }
-    
+
     $output = json_encode( $toBeSerialized );
-    
+
     return $output;
   }
- 
-  
+
+
   /**
    * On 2018-08-28 still missing in PHP so we implement it here.
    * Remove if part of PHP.
@@ -200,10 +200,10 @@ class Element{
   private function doJSONimport( &$serializedData ){
   	$importDataArray = json_decode($serializedData, TRUE);
   	foreach ( $this->serializationArray as $value ){
-  		$this->$value = $importDataArray[$value];  
+  		$this->$value = $importDataArray[$value];
   	}
   }
-  	
+
   /**
   * UnSerializes the element.
   *
@@ -287,7 +287,7 @@ class Element{
   	require( "../php/getDBIbyID.inc" );
   	return $DBI->setData( $this, true );
   }
-  
+
   /**
   * This function gets STATICALLY called from ../php/saveElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.

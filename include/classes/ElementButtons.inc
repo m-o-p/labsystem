@@ -186,7 +186,7 @@ class EB{ /* ElementButtons */
     $link = $url->link2( '../pages/edit.php', Array('address' => $address) );
     return EB::mkLink( $link, "<img src=\"../syspix/button_edit_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"edit\" title=\"".$lng->get("explainEdit")."\">" );
   }
-  
+
   /**
    * This button links to "clone the element".
    *
@@ -381,7 +381,7 @@ class EB{ /* ElementButtons */
     $linkToTOCPage = $url->rawLink2( '../pages/view.php', Array('address' => $address));
     return EB::mkLink( $link, "<img src=\"../syspix/button_toc_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"TOC\" title=\"".$lng->get("explainTOC")."\">" );
   }
-  
+
   /**
    * This button is used for creating a ticket on the current element.
    *
@@ -444,7 +444,7 @@ class EB{ /* ElementButtons */
 		break;
 	}
 
-   
+
    return "<div class=\"emoji-popup\">
 	  <button onmouseover='updateEmojiMenu(\"" . $eIDX . "\");' class=\"emoji-dropbtn4menu\"><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
               <div id=".$emID." class=\"emoji-popupmenu\">".

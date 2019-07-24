@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -22,7 +22,7 @@
 * Called some l-element pages to call a function.
 *  -> $allowedFunctions
 *
-* ../php/executeCommandOnElement.php can't be used since the function 
+* ../php/executeCommandOnElement.php can't be used since the function
 * must be called via url and not via post (no form).
 *
 * @module     ../php/executeCommandOnElement.php
@@ -47,9 +47,9 @@ require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
 if ( !( $GLOBALS['url']->available('function') &&
         $GLOBALS['url']->available('redirectTo') &&
-        array_key_exists( $GLOBALS['url']->get('function'), $allowedFunctions ) && 
+        array_key_exists( $GLOBALS['url']->get('function'), $allowedFunctions ) &&
         $usr->isOfKind( $allowedFunctions[$GLOBALS['url']->get('function')] ) // retriction fulfilled?
-       ) /* valid call? */   
+       ) /* valid call? */
     ){
         trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
         exit;

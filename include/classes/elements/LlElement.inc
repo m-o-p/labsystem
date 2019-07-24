@@ -245,11 +245,18 @@ class LlElement extends Element{
     $allowEpub         = $cfg->doesExist('allowEpubDownload') && ($cfg->get('allowEpubDownload') == "1");
     if ($allowEpub && $usr->isOfKind( IS_USER )){
       $myRet .= "<div class=\"labsys_mop_l_ePubLinkBox\">\n".
-          '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$this->idx.'.epub') ).'">'.
-          '<img src="'.$url->link2( '../pages/getEPubCover.php', Array('address' => 'l'.$this->idx) ).'" width="75px" style="float: left; padding-right: 1em;" />
-                '.( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'
-                <div style="clear: left;"></div>
-                </a></div>';
+
+          '<img src="'.$url->link2( '../pages/getEPubCover.php', Array('address' => 'l'.$this->idx) ).'" width="75px" style="float: left; padding-right: 2em;" />'.
+                '<ul>'.
+                '<li>'.EB::link2epub( 'l'.$this->idx.'.epub' ).' '.
+                      '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$this->idx.'.epub') ).'">'.
+                      ( $lng->doesExist('explainLink2epub') && $lng->get('explainLink2epub') != "" ? $lng->get('explainLink2epub') : 'get the ePub...' ).'</a>'.
+                '<li>'.EB::printView( 'l'.$this->idx.'.all' ).' '.
+                      '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$this->idx.'.all') ).'">'.
+                      $lng->get('explainPrintView').
+                '</ul>'.
+                '<div style="clear: left;"></div>
+                </div>';
     }
 
     return $myRet;
@@ -266,13 +273,13 @@ class LlElement extends Element{
   	$elementIDsmall = strtolower($elementID);
   	$element = $GLOBALS[ $elementIDsmall.'DBI' ]->getData2idx( 1 );
   	$element->getCSVheaderLine();
-  	
+
   	// export CSV data
   	$this->preLab->exportCSV( $elementID );
   	$this->lab->exportCSV( $elementID );
   	exit;
   }
-  
+
   /**
   * Displays all multiple choice questions of the prelab and (if not done) the check button.
   *
@@ -421,8 +428,8 @@ class LlElement extends Element{
     $percentageFailed = $cfg->get("percentageFailedPreLab");
 
     $divHeight = $possibleCredits;
-    
-    // extra credits 
+
+    // extra credits
     $extraCredits = 0;
     if ($givenCredits > $possibleCredits) {
 	    $extraCredits = $givenCredits - $possibleCredits;
@@ -547,7 +554,7 @@ class LlElement extends Element{
                         '<a href="'.$url->link2( '../pages/view.php', Array('address' => 'l'.$labStatus['lIdx']) ).'">'.$i.'</a>'.
                      "</td>".
                      "<td class=\"labsys_mop_l_status_table_cell_team\">".
-                        (($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind(IS_USER_RIGHTS_EDITOR) || $labStatus['uid'] == $usr->uid ) ? 
+                        (($usr->isOfKind( IS_CORRECTOR ) || $usr->isOfKind(IS_USER_RIGHTS_EDITOR) || $labStatus['uid'] == $usr->uid ) ?
                         		( $usr->isOfKind( IS_CORRECTOR ) ? "<a href=\"".$url->link2(NULL, Array('seeMe' => $labStatus['currentTeam']), $_GET) ."\">".$labStatus['currentTeam'].'</a>' : $labStatus['currentTeam'] ) : '');
 
        // user->team mapping possible
@@ -950,10 +957,10 @@ class LlElement extends Element{
 
     return $myRetVal;
   }
-  
+
   /**
    * Shows the statistics of the prelab.
-   * 
+   *
    * @param $typePrefix    Element's type (p.e. p, m, i).
    * @param $address       The element's full address (p.e. C23.c42.p13)
    * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
@@ -965,7 +972,7 @@ class LlElement extends Element{
    function showPrelabStatistics ( $typePrefix, $address, $extParagraph='' ){
 	global $lng;
 //  // We could collect here but then we would loose those not having a status record yet.
-//  // Instead we will collect from the MC directly $element->mcDBI->getAllUIDs( $this->idx ); 
+//  // Instead we will collect from the MC directly $element->mcDBI->getAllUIDs( $this->idx );
 // 	// collect all UIDs for this lab:
 // 	$uidArray = array();
 // 	$this->usDBI->getAllData();
@@ -1146,14 +1153,14 @@ class LlElement extends Element{
 	// CSV export of all visible i elements
     elseif ( $last == "iCSV" &&
              $scndLast == $me ){
-    	$this->exportCSV( 'i' );    	
+    	$this->exportCSV( 'i' );
     }
     // CSV export of all visible m elements
     elseif ( $last == "mCSV" &&
     		 $scndLast == $me ){
     	$this->exportCSV( 'm' );
     }
-    
+
    // preLab
     elseif ( $this->preLabIsVisible2Me &&
              ($first == "C".$this->prelabCollectionIdx) )
@@ -1421,14 +1428,14 @@ class LlElement extends Element{
   	global $url;
   	$filePath=$myPath.DIRECTORY_SEPARATOR.$fileName;
   	$mime = mime_content_type($filePath);
-  
+
   	// For those we create thumbs:
   	$possibleMimes=array( 'png' => 'image/png',
   			'jpe' => 'image/jpeg',
   			'jpeg' => 'image/jpeg',
   			'jpg' => 'image/jpeg',
   			'gif' => 'image/gif');
-  
+
   	if (in_array($mime, $possibleMimes)){
   		// We want a thumbnail for this...
   		$thumbFilePath = $filePath.'.thumb.jpg';
@@ -1438,7 +1445,7 @@ class LlElement extends Element{
   				'</a>';
   	}
   }
-  
+
   /**
    * Creates an upload interface for files from and to the directory $myPath.
    * $myPath      The directory the upload interface should be created for.
@@ -1571,7 +1578,7 @@ class LlElement extends Element{
   	$this->labCollectionIdx=$this->lab->cloneAndReturnNewIdx();
   	return $lDBI->setData( $this, true );
   }
-  
+
   /**
   * Used to save the edited element.
   *
@@ -1774,10 +1781,10 @@ class LlElement extends Element{
 // 	if ($usr->isOfKind(IS_CORRECTOR)){
 // 		if ($uid){
 // 			// Prefer user status record for getting team assignment.
-// 			// If lab based user status does not exist use fallback from 
+// 			// If lab based user status does not exist use fallback from
 // 		}
 // 	}
-         
+
     if( $this->preLabIsVisible2Me && !$this->preLabIsFinished ){
    // Are all multiple choice questions answered (->LmElement)?
     $allPreLabAnswered = true;
@@ -1848,10 +1855,10 @@ class LlElement extends Element{
   function isPrelabFinishedByAllCurrentTeammates( $teamToCheck ){
     // now CHECK whether ALL teammates (identified by DBInterfaceUserRights.inc->currentTeam) finished the prelab:
     // Attention: This is wrong if the team number of someone changed!
-    
+
   	$preLabAllTeammatesFin = true;
   	if (!$this->isInSched){
-  		// Use archive data as noone can be added 
+  		// Use archive data as noone can be added
   	    $this->usDBI->getAllTeamData($teamToCheck);
 //    	    echo('Loading team '.$teamToCheck.'<br>');
   	    while ($dataArray = $this->usDBI->getNextData()){
@@ -1868,7 +1875,7 @@ class LlElement extends Element{
 	      $permissions  = $this->usDBI->getData4( $uid );
 	      $preLabAllTeammatesFin &= $permissions['preLabFinished'];
 	      // Fixed?: log this to check why the program sometimes does not open the lab for teams both having finished the prelab
-	    }  		
+	    }
   	}
     return $preLabAllTeammatesFin;
   }
@@ -2093,7 +2100,7 @@ class LlElement extends Element{
             foreach ($teams as $team => &$teamData) {
             	// Is this element visible for regular users without special rights? No->do not consider.
             	if (!(isset($element->visibleFor) && $element->visibleFor<=IS_USER)) continue;
-            		
+
             	$element->loadUserData4($team);
                 if (!$element->isClosed && $is2bClosed) $element->closeInput($team); // if necessary close labinput
                 $teamData['areAllClosed']    &= $element->isClosed;
@@ -2208,7 +2215,7 @@ class LlElement extends Element{
 // 	    	echo('setting team '.$nextTeam.' green <br>');
 	    	$this->usDBI->setPrelabFinished( $nextTeam );
 	    	$GLOBALS['Logger']->logToDatabase('l'.$this->idx, logActions::lPreLabFinished, $nextTeam);
-	    }    	
+	    }
     }
     //header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
   }

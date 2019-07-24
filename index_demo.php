@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -27,7 +27,7 @@
  * It calls php/emptyDB.php?config=demoX where X is alternating
  * in [0..4].
  * To save the current state it uses the file counter.txt that
- * must exist in the labsystem's root directory and be read and 
+ * must exist in the labsystem's root directory and be read and
  * writable by php.
  *
  * /php/emptyDB.php contains further information on this.
@@ -36,7 +36,7 @@
  require( "include/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
                                             // needed to get parameters from the url ($url->get, ->available)
  $fileName = 'counter.txt';
- 
+
  // get current value
  $fileHandle = fopen( $fileName, "rb" );
  $currentIdx = fread ( $fileHandle, filesize ( $fileName ) );
