@@ -425,8 +425,8 @@ apply               = "apply"
 
 ;i
 giveAnswer          = "give answer..."
-correct             = "correct"                 ;; button for corector
-correctThoughNotClosed = "!closed, CORRECT anyways"
+correct             = "mark"                 ;; button for corector
+correctThoughNotClosed = "!closed, MARK anyways"
 
 ;l
 checkPrelab         = "check up if the prelab questions are answered correctly" ; label of the button...
@@ -452,10 +452,10 @@ reMapIconExplain    = "By clicking on this icon the respective user will be mapp
 prelabAllnoFExplain = "The prelab is not finished by all teammembers."
 prelabAllFinExplain = "The prelab is finished by all teammembers. So they are allowed to perform the lab."
 labOpenExplain      = "The lab is still open. So the questions can be answered."
-labScheduleOverExpl = "The schedule for this lab is over. Students cannot answer anymore." ; sent in mail to correctors
-labClosedExplain    = "The lab got closed. So it can be corrected now."
-labNoCorrExplain    = "The lab/ question is not corrected yet."
-labCorrExplain      = "The lab/ question correction is finished."
+labScheduleOverExpl = "The schedule for this lab is over. Students cannot answer anymore." ; sent in mail to markers
+labClosedExplain    = "The lab got closed. So it can be marked now."
+labNoCorrExplain    = "The lab/ question is not marked yet."
+labCorrExplain      = "The lab/ question marking is finished."
 
 
 ;; The standard error *********************************************************************************

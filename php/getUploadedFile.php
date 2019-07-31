@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de -
+ *  labsystem.m-o-p.de - 
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+ 
  /**
 * Gets called from an input to download uploaded files. Make sure to protect the $cfg->UploadDirectory via htaccess rsp the server's config.
 */
@@ -66,7 +66,7 @@ if (!file_exists($filePath)) {
 
 header("Content-Type: ".mime_content_type($filePath));
 if ($url->available('download')){
-  header('Content-Disposition: attachment; filename="' . basename($GLOBALS['url']->get('filename')) . '"');
+  header('Content-Disposition: attachment; filename="' . basename($GLOBALS['url']->get('lIdx').'-i'.$GLOBALS['url']->get('iIdx').'-team'.$GLOBALS['url']->get('team').'-'.$GLOBALS['url']->get('filename')) . '"');
 }
 
 $fp = fopen($filePath, 'rb');
