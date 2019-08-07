@@ -5,7 +5,7 @@ require_once("LabNode.inc");
 /**
  * This class extends the LabNode for aggregate information. The only difference is that it contains
  * additionally min and max values for the time tracked and the credits given.
- * 
+ *
  * @author fabian
  *
  */

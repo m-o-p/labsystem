@@ -3,12 +3,12 @@ class LSE_Logger
 {
     const DEBUG = 1;
     protected $_className;
-    
+
     public function __construct($className)
     {
         $this->_className = $className;
     }
-    
+
     public function log($mixed, $name = null, $type = LSE_Logger::DEBUG)
     {
         // if debugger is enabled globally

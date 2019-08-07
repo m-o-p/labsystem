@@ -4,7 +4,7 @@ require("Progress.inc");
 
 /**
  * This class determines the Progress of a team in a Lab
- * 
+ *
  * @author Fabian Oehlmann
  *
  */
@@ -13,7 +13,7 @@ class ProgressLab extends Progress {
 
   /**
    * Creates the object
-   * 
+   *
    * @param unknown $Logger
    * @param unknown $labIDX
    * @param unknown $teamNr
@@ -69,7 +69,7 @@ class ProgressLab extends Progress {
     $lab[] = 'l' . $this->labIDX . '.allLabQ';
     $lab[] = 'l' . $this->labIDX . '.labStatus';
     if (! $this->lDBI->noLab)
-      $lab = getAllAddressesAsArray('l' . $this->labIDX . '.C' . $this->lDBI->labCollectionIdx, 
+      $lab = getAllAddressesAsArray('l' . $this->labIDX . '.C' . $this->lDBI->labCollectionIdx,
           $this->lDBI->lab);
     else
       $lab = [];

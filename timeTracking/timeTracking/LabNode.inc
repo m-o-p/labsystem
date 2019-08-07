@@ -7,7 +7,7 @@ require_once("Timespan.inc");
 /**
  * A class with helper functions for lab-elements and pages. It serves as store and getter for
  * times tracked on an element and the given/possible credits on i- and m-elements.
- * 
+ *
  * @author Fabian Oehlmann
  *
  */
@@ -21,7 +21,7 @@ class LabNode {
 
   /**
    * Creates the LabNode
-   * 
+   *
    * @param unknown $resource The address of the element (e.g. l3.C42.c50.p4)
    */
   public function __construct($resource) {
@@ -30,7 +30,7 @@ class LabNode {
 
   /**
    * Gives the Timespans which were tracked on this element.
-   * 
+   *
    * @return multitype: Array of Timespans
    */
   public function getTimespans() {
@@ -42,7 +42,7 @@ class LabNode {
    * saved, unless they were in the student role. This is to determine whether an i- or m-element
    * was opened. Depending on the tracking logic the attention might not be tracked otherwise, if
    * another element in the collection also fires an open-event immediately afterwards.
-   * 
+   *
    * @param unknown $start  Timestamp of when it started
    * @param unknown $end    Timestamp of when it ended
    * @param unknown $role   The role in which the Timespan was recorded
@@ -62,7 +62,7 @@ class LabNode {
 
   /**
    * Gets how many credits can be obtained on this element.
-   * 
+   *
    * @return number The amount of credits (zero on non-i- and non-m-elements)
    */
   public function getPossibleCredits() {
@@ -78,7 +78,7 @@ class LabNode {
   /**
    * Gets the amount of credits which were given to a team (in case of i-elements) or user (in case
    * of m-elements) on this element.
-   * 
+   *
    * @param unknown $userOrTeam The user or team in question
    * @return number             The amount of credits
    */
@@ -100,7 +100,7 @@ class LabNode {
   /**
    * Whether the LabNode is an aggregate node, which contains max and min values for the given
    * credits and time tracked
-   * 
+   *
    * @return boolean
    */
   public function isAggregate() {

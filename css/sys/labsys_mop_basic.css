@@ -1507,11 +1507,11 @@ label.labsys_mop_multiselectoption:hover {
 .emoji-popupmenu a:hover {background-color: white;}
 
 
-.emoji-popupmenu button{ 
+.emoji-popupmenu button{
   cursor: pointer;
-} 
+}
 
-.emoji-popupmenu: hover { 
+.emoji-popupmenu: hover {
   backgroundcolor: #3e8e41;
 }
 
@@ -1551,7 +1551,7 @@ label.labsys_mop_multiselectoption:hover {
 }
 
 .emoji-dropbtn4menu {
-  color: white; 
+  color: white;
   padding: 8px;
   font-size: 16px;
   border: none;

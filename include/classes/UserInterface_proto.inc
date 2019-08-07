@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -28,7 +28,7 @@
 *
 * The uid field is the unique identifier!
 *   - It must be unique
-*   - It must be persistent 
+*   - It must be persistent
 * Because it is used as connector between the user database and the internal rights database.
 * Inside the labsystem the user is only identified by this UID.
 *
@@ -68,7 +68,7 @@ class DBInterfaceUser
                     "uid"      => $resArray["uid"],
                     "userName" => $username );
   }
-  
+
   /**
   * Returns some userdata to the given UID or false.
   * @param $uid     The user's unique identifier.
@@ -89,7 +89,7 @@ class DBInterfaceUser
                     "uid"      => $resArray["uid"],
                     "userName" => $resArray["username"] );
     }
-  
+
 
   var $queryResult;
   /**
@@ -100,7 +100,7 @@ class DBInterfaceUser
   function getAllData( $orderBy="", $asc=true ){
     $this->queryResult = $yourData;
   }
-  
+
   /**
   * Returns the next result of the getAllData() query or false (no more results).
   * @return Array(  "name" => string,

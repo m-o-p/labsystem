@@ -104,9 +104,9 @@ foreach ( $mainMenuIni as $key => &$value ){
     // Menu from overview page -STOP-
 
     array_push( $value, '' ); // spacer
-    if (!in_array("../pages/view.php?address=s1", $value)){   
+    if (!in_array("../pages/view.php?address=s1", $value)){
       $value[$lng->get( "MnuEntrySchedule" )]="../pages/view.php?address=s1"; // schedule
-      
+
     } else {
       //if the element was assigned manually we have to set the key accordingly, otherwise the key set in the menu.ini would be used.
       $value=renameKeyInArray($value, "../pages/view.php?address=s1", $lng->get( "MnuEntrySchedule" ));

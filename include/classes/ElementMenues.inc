@@ -50,7 +50,7 @@ class EM{ /* ElementMenues */
             //             $fullAddress.
             $theEl->elementId.$theEl->idx.(isset($theEl->visibleFor)?' <span class="labsys_mop_element_visibleFor_'.($theEl->visibleFor<=1?'regular':'special').'">('.$theEl->visibleFor.')</span>':'').
             "</span>".PHP_EOL.
-            
+
             '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.$theEl->title.'</a> | </div>'.
             ( $theEl->visibleOnlyInCollection ?  "<span class=\"labsys_mop_element_note_in_header\">".$lng->get("VisibleOnlyColl")."</span> \n"  : '' ).
 //             '<a href="http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'].'#'.$fullAddress.'">'.
@@ -209,7 +209,7 @@ class EM{ /* ElementMenues */
 		EB::link2Element( $fullAddress, $eC ).
                //EB::createNew( "c" ).
 //                EB::delete( $fullAddress ).
-               
+
     		   (strpos(strtolower($fullAddress), 'c') < strpos(strtolower($fullAddress), 'c'.$eC->idx) ? EB::delete( $fullAddress ):'').
                // EB::manageElements().
                EB::edit( $fullAddress );

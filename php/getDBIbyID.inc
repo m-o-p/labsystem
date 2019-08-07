@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -31,8 +31,8 @@
 * @return $DBI  Sets $DBI to the appropriate DBI.
 */
   $prefix = ( $id == strtoupper( $id ) ?  "B" :  "L"  ).$id; /* little */
-  
-  if ( !file_exists ( INCLUDE_DIR."/classes/elements/".$prefix."DBInterface.inc" ) ){ 
+
+  if ( !file_exists ( INCLUDE_DIR."/classes/elements/".$prefix."DBInterface.inc" ) ){
                                                                                       trigger_error( $id.": " . (isset($lng) ? $lng->get("elementNotExist") : "elementNotExist" ), E_USER_ERROR );
                                                                                       exit;
                                                                                      }

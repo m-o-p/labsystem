@@ -2,14 +2,14 @@
 
 /**
  * The interface a Progress object must fullfill in order to be able to be drawn in a PearlDrawing
- * 
+ *
  * @author Fabian Oehlmann
  *
  */
 interface iDrawable {
 
   /**
-   * Contains the i- or m-elements as LabNodes with the intervals to be drawn 
+   * Contains the i- or m-elements as LabNodes with the intervals to be drawn
    */
   public function getNodeList();
 

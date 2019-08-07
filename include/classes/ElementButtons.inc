@@ -420,10 +420,10 @@ class EB{ /* ElementButtons */
 
    static function emojiMenu($fullAddress, $eIDXI){
    $emID = "emBttn". strtolower($eIDXI);
-   $eIDX = strtolower($eIDXI);   
+   $eIDX = strtolower($eIDXI);
    global $pge, $eDBI;
 
-   require_once( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0};	
+   require_once( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0};
    $labopen = !($GLOBALS[ $id."DBI" ]->isLabClosed); // add ! closed = true == open = false
 
    $query1 = $eDBI->findUserSelectionsFor($_SESSION['uid'], $eIDX);
@@ -452,7 +452,7 @@ class EB{ /* ElementButtons */
                 EB::dislikeButton($eIDX,$emID,$labopen).
                 EB::boredButton($eIDX,$emID,$labopen).
                 EB::confusedButton($eIDX,$emID,$labopen)."
-        </div> 
+        </div>
      </div>
      ";
    }
@@ -477,7 +477,7 @@ class EB{ /* ElementButtons */
                 <span id=".$emID."like><img src=\"../syspix/button_like.gif\" width=\"24\" height=\"24\" ></span>
             </div>
             ";
-        } 
+        }
     }
 
     /**
@@ -491,7 +491,7 @@ class EB{ /* ElementButtons */
                     <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 2);
                         updateEmojiButton($emID , 2); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
                     <img src=\"../syspix/button_frust.gif\" width=\"24\" height=\"24\" ><span id=".$emID."confused></span></button>
-            
+
             ";
         }else
         {
@@ -499,7 +499,7 @@ class EB{ /* ElementButtons */
                 <span id=".$emID."consfused><img src=\"../syspix/button_frust.gif\" width=\"24\" height=\"24\" ></span>
             </div>
             ";
-        } 
+        }
     }
 
 
@@ -514,7 +514,7 @@ class EB{ /* ElementButtons */
                     <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 3);
                         updateEmojiButton($emID , 3); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
                     <img src=\"../syspix/button_sleep.gif\" width=\"24\" height=\"24\" ><span id=".$emID."sleep></span></button>
-            
+
             ";
         }else
         {
@@ -522,7 +522,7 @@ class EB{ /* ElementButtons */
                 <span id=".$emID."sleep><img src=\"../syspix/button_sleep.gif\" width=\"24\" height=\"24\" ></span>
             </div>
             ";
-        } 
+        }
     }
 
     /**
@@ -535,7 +535,7 @@ class EB{ /* ElementButtons */
         return "
                 <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 4);
                         updateEmojiButton($emID , 4); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
-                    <img src=\"../syspix/button_dislike.gif\" width=\"24\" height=\"24\" > <span id=".$emID."dislike></span> 
+                    <img src=\"../syspix/button_dislike.gif\" width=\"24\" height=\"24\" > <span id=".$emID."dislike></span>
                     </button>
             ";
         }else
@@ -544,7 +544,7 @@ class EB{ /* ElementButtons */
                 <span id=".$emID."dislike><img src=\"../syspix/button_dislike.gif\" width=\"24\" height=\"24\" ></span>
             </div>
             ";
-        } 
+        }
     }
 
 }

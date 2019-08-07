@@ -48,13 +48,13 @@ class Usr extends ElementUser{
   		call_user_func_array(array($this,$f),$a);
   	}
   }
-  
+
   function __construct0(){
   	parent::__construct( FALSE, "guest", "M.", "Guest", 0, IS_GUEST, IS_GUEST, "none@localhost", time() );
     $this->iSeeUID='';
     $this->iSeeDesc='';
   }
-  
+
   /**
    * Creates a new user object by retrieving all necessary information from the general and the course specific user database.
    * $uid The UID of the user.
@@ -73,7 +73,7 @@ class Usr extends ElementUser{
   	// Load the globally defined data:
   	// !This requires the rights to be set!
   	$globalData = $this->getGlobalUserData( $uid );
-  	 
+
   	$this->userName                 = $globalData['userName'];
   	$this->foreName                 = $globalData['foreName'];
   	$this->surName                  = $globalData['name'];
@@ -93,7 +93,7 @@ class Usr extends ElementUser{
   	if ($cfg->get('RightsAdminUsername') == $this->userName && (($this->userMaximumRights & intval(IS_USER_RIGHTS_EDITOR)) != intval(IS_USER_RIGHTS_EDITOR)) /* Only give the rights if they do not exist. Otherwise this user can never take his edit right temporarily away... */){
   		$this->userRights =  $this->userRights | intval(IS_USER_RIGHTS_EDITOR);
   	}
-  	
+
   	// Initialize them...
   	$this->iSeeUID='';
   	$this->iSeeTeam='';
@@ -126,7 +126,7 @@ class Usr extends ElementUser{
       return $this->iSeeUID;
     } else return false;
   }
-  
+
   /**
    * Whom is the user viewing?
    * @return The team of the watched user or false.
@@ -159,7 +159,7 @@ class Usr extends ElementUser{
   		$usrRights = $urDBI->getData4($nextUserDataSet['uid']); // creates default record for non existent.
   		if ($usrRights['history'] == $lng->get("dataSetCreated")){
   			$SYSINFO .= $nextUserDataSet['uid'].' ('.$nextUserDataSet["userName"].' ['.$nextUserDataSet["foreName"].' '.$nextUserDataSet["name"].'] '.$usrRights["currentTeam"].'); ';
-  		} 
+  		}
   	}
   	// remove access rights for users without access (as they may have been removed
   	// from the instance and if they were part of a team they may cause trouble...)
@@ -207,15 +207,15 @@ class Usr extends ElementUser{
                             		$userDetailedData = $uLabDBI->getData4( $this->iSeeUID );
                             	}
                             }
-                            
-                            
+
+
                             if (!$userDetailedData || empty($userDetailedData) || empty($userDetailedData['uid'])){
                             	// We do not have data yet, e.g. are not viewing a lab => load current team number from the user rights data
                             	global $urDBI;
 //                             	trigger_error('Using general record of '.$this->iSeeUID, E_USER_NOTICE);
                             	$userDetailedData = $urDBI->getData4( $this->iSeeUID, FALSE );
                             }
-                            $this->iSeeUID = $userDetailedData['uid'];                            
+                            $this->iSeeUID = $userDetailedData['uid'];
                             if ($userDetailedData && !empty($userDetailedData) && !empty($userDetailedData['uid'])){
                             	$this->iSeeTeam = $userDetailedData['currentTeam'];
                             	$userData = $this->getGlobalUserData( $this->iSeeUID );
@@ -226,7 +226,7 @@ class Usr extends ElementUser{
                             	$this->iSeeUID = 'all';
                             }
     }
-    
+
     if ( $this->iSeeUID == 'all' ){ // could have been set as fallback directly above...
     	// seeing ALL member's answers
         $this->iSeeDesc = $lng->get("showAllUADesc");
@@ -266,7 +266,7 @@ class Usr extends ElementUser{
       return $userData;
     }
   }
-  
+
   /**
    * Saves the given user rights as enabledRights for the current user.
    * @param unknown $newRights The new rights as bit mask.

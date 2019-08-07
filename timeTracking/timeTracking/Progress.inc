@@ -6,14 +6,14 @@ require_once("LabNode.inc");
 /**
  * The Progress class gets from the logger the times tracked for a team or user. The base class is
  * abstract and contains logic, which converts the logged events to tracked Timespans.
- * 
+ *
  * @author Fabian Oehlmann
  *
  */
 abstract class Progress implements iDrawable {
   const timeoutRegisterStr = '+60 minutes'; // After what time a tracked attention should timeout
   const timeoutAddStr = '+0 minutes';       // How much time should be added instead of the timed out attention
-  
+
   private $nodeList;
   private $logger;
   protected $labIDX;
@@ -23,8 +23,8 @@ abstract class Progress implements iDrawable {
   /**
    * Gets the relevant addresses of the Lab or PreLab and creates an array of according LabNodes and
    * queries the events from the logger. Then it performs the attention tracking and calculates the
-   * intervals spent between questions. 
-   * 
+   * intervals spent between questions.
+   *
    * @param unknown $Logger The logger
    * @param unknown $labIDX The lab in question
    */
@@ -33,13 +33,13 @@ abstract class Progress implements iDrawable {
     $this->logger = $Logger;
     $this->lDBI = $GLOBALS['lDBI']->getData2idx($labIDX);
     $this->schedule = $GLOBALS['sDBI']->getSchedule4('l', $labIDX);
-    
+
     $labAddresses = $this->labAddresses();
     $this->nodeList = $this->createNodes($labAddresses, $labIDX);
-    
+
     $eventList = $this->getEventlist();
     $this->expandEntries($eventList, $labAddresses);
-    
+
     $this->runAttentionTracking($eventList, $this->nodeList);
     $this->calculateIntervals($this->nodeList);
   }
@@ -54,7 +54,7 @@ abstract class Progress implements iDrawable {
 
   /**
    * The sum of credits which is possible to attain in this Lab or PreLab
-   * 
+   *
    * @return number
    */
   public function getSumOfPossibleCredits() {
@@ -69,7 +69,7 @@ abstract class Progress implements iDrawable {
 
   /**
    * The sum of credits which was given in this Lab or PreLab
-   * 
+   *
    * @return number
    */
   public function getSumOfGivenCredits() {
@@ -84,7 +84,7 @@ abstract class Progress implements iDrawable {
 
   /**
    * The total sum of times spent between answering the questions
-   * 
+   *
    * @return number
    */
   public function getSumOfIntervalTimes() {
@@ -126,18 +126,18 @@ abstract class Progress implements iDrawable {
 
   /**
    * Retrieves the relevant events from the logger
-   * 
+   *
    * @return multitype:unknown
    */
   private function getEventList() {
     $startTime = $this->schedule['start'];
     $stopTime = $this->schedule['stop'];
-    
+
     $where = $this->userRestriction();
     $where .= ' AND UNIX_TIMESTAMP(timestamp) > "' . $startTime .
          '" AND UNIX_TIMESTAMP(timestamp) < "' . $stopTime . '"';
-    
-    $query = $this->logger->myDBC->mkSelect("*, UNIX_TIMESTAMP(timestamp) as timestampInt", 
+
+    $query = $this->logger->myDBC->mkSelect("*, UNIX_TIMESTAMP(timestamp) as timestampInt",
         $this->logger->myTable, $where);
     $eventList = array();
     while ($rep = $query->fetch_array()) {
@@ -146,11 +146,11 @@ abstract class Progress implements iDrawable {
     }
     return $eventList;
   }
-  
+
   /**
    * Classifies the events by the role in which the event occured and whether it's an opening or
    * closing event
-   * 
+   *
    * @param unknown $event
    * @return multitype:number
    */
@@ -223,7 +223,7 @@ abstract class Progress implements iDrawable {
 
   /**
    * Creates the LabNodes from the lab addresses
-   * 
+   *
    * @param unknown $allResources The list of lab addresses or resource names
    * @return LabNode              The resulting list of LabNodes
    */
@@ -237,10 +237,10 @@ abstract class Progress implements iDrawable {
     }
     return $resourceList;
   }
-  
+
   /**
    * Expands entries with a '~' character to have a full resource name
-   * 
+   *
    * @param unknown $eventList      The list of relevant events
    * @param unknown $resourceNames  The addresses in the relevant part of the lab
    */
@@ -259,12 +259,12 @@ abstract class Progress implements iDrawable {
 
   /**
    * The actual attention tracking logic.
-   * 
+   *
    * Goes linearly through the list of events. If an opening event occurs it is assumed that the
    * participant's attention is on that element. If a closing event occurs the attention tracking
    * stops for that element. Furthemore, the attention tracking stops after a timeout is reached or
    * a different element is opened.
-   * 
+   *
    * @param unknown $eventlist  The list of events
    * @param unknown $nodelist   The list of LabNodes to work with
    */
@@ -272,34 +272,34 @@ abstract class Progress implements iDrawable {
     $lastOpenEvent = NULL;
     foreach ($eventlist as $event) {
       list($curRole, $curAO) = $this->determineRoleAndAO($event);
-      
+
       if ($curRole != RoleTypes::viewer && $curRole != RoleTypes::student) { // only work with student perspective
         continue;
       }
       if (! array_key_exists($event['resourceID'], $nodelist)) { // ignore events for addresses that are not available
         continue;
       }
-      
+
       $timeout = strtotime(Progress::timeoutRegisterStr, $lastOpenEvent['timestampInt']);
       if ($lastOpenEvent && $timeout < $event['timestampInt']) {
         // last open thing timed out
         $lastPotCloseEvent = $nodelist[$event['resourceID']]->lastPotClose;
-        
+
         if ($lastPotCloseEvent && $lastPotCloseEvent['timestampInt'] < $timeout &&
              $lastOpenEvent['timestampInt'] < $lastPotCloseEvent['timestampInt']) {
           // close with potclose
           list($lastRole, $lastAo) = $this->determineRoleAndAO($lastPotCloseEvent);
-          $nodelist[$lastOpenEvent['resourceID']]->addTimespan($lastOpenEvent['timestampInt'], 
+          $nodelist[$lastOpenEvent['resourceID']]->addTimespan($lastOpenEvent['timestampInt'],
               $lastPotCloseEvent['timestampInt'], $lastRole);
         } else {
           // close with timeout
           list($lastRole, $lastAo) = $this->determineRoleAndAO($lastOpenEvent);
-          $nodelist[$lastOpenEvent['resourceID']]->addTimespan($lastOpenEvent['timestampInt'], 
+          $nodelist[$lastOpenEvent['resourceID']]->addTimespan($lastOpenEvent['timestampInt'],
               strtotime(Progress::timeoutAddStr, $lastOpenEvent['timestampInt']), $lastRole);
         }
         $lastOpenEvent = NULL;
       }
-      
+
       if ($curAO == AO::start) {
         if (! $lastOpenEvent) {
           $lastOpenEvent = $event;
@@ -308,26 +308,26 @@ abstract class Progress implements iDrawable {
         if ($lastOpenEvent['resourceID'] != $event['resourceID'] ||
              $lastOpenEvent['action'] != $event['action']) {
           list($lastRole, $lastAo) = $this->determineRoleAndAO($lastOpenEvent);
-          $nodelist[$lastOpenEvent['resourceID']]->addTimespan($lastOpenEvent['timestampInt'], 
+          $nodelist[$lastOpenEvent['resourceID']]->addTimespan($lastOpenEvent['timestampInt'],
               $event['timestampInt'], $lastRole);
           $nodelist[$lastOpenEvent['resourceID']]->lastPotClose = NULL;
           $lastOpenEvent = $event;
         }
       }
-      
+
       if ($curAO == AO::end) {
         $nodelist[$event['resourceID']]->lastPotClose = $event;
       }
     }
   }
-  
+
   /**
    * Calculates the time intervals tracked between question elements. The Timespans are sorted by
    * their beginning and then processed. Timespans are summed up until a Timespan was recorded in a
    * student role, which is when a i- or m-element was worked with. The until then summed time is
    * then added to the time spent on answering this question. Time spent after answering the last
    * question is not used, as it apparently did not contribute to giving answers anymore.
-   * 
+   *
    * @param unknown $nodeList The list of nodes containing the Timespans
    */
   private function calculateIntervals($nodeList) {
@@ -338,7 +338,7 @@ abstract class Progress implements iDrawable {
     usort($timeSpanList, function ($a, $b) {
       return $a->start - $b->start;
     });
-    
+
     $sum = 0;
     foreach ($timeSpanList as $ts) {
       if ($ts->role != RoleTypes::student) {

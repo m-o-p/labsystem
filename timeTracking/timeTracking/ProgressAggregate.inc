@@ -4,7 +4,7 @@ require_once("LabNodeAggregate.inc");
 
 /**
  * The class calculates the progress of the average of the progresses of different teams
- * 
+ *
  * @author Fabian Oehlmann
  *
  */
@@ -14,7 +14,7 @@ class ProgressAggregate implements iDrawable {
 
   /**
    * Create the Progress of the average team.
-   * 
+   *
    * @param unknown $progresses An array containing the progresses of the single teams
    */
   public function __construct($progresses) {
@@ -50,7 +50,7 @@ class ProgressAggregate implements iDrawable {
 
   /**
    * Normalizes the time spent on each LabNode to the total time spent by one team
-   * 
+   *
    * @param unknown $totalTimeOfTeam  The total time to normalize to
    */
   public function normalizeToTeam($totalTimeOfTeam) {
@@ -65,7 +65,7 @@ class ProgressAggregate implements iDrawable {
 
   /**
    * Returns the sum of the time spent on all questions
-   * 
+   *
    * @return number
    */
   public function getSumOfIntervalTimes() {
@@ -78,7 +78,7 @@ class ProgressAggregate implements iDrawable {
 
   /**
    * Returns the sum of the credits given on all questions
-   * 
+   *
    * @return number
    */
   public function getSumOfGivenCredits() {
@@ -91,7 +91,7 @@ class ProgressAggregate implements iDrawable {
 
   /**
    * Returns the sum of all credits theoretically attainable on all questions
-   * 
+   *
    * @return number
    */
   public function getSumOfPossibleCredits() {
@@ -104,7 +104,7 @@ class ProgressAggregate implements iDrawable {
 
   /**
    * Makes a list of LabNodes containing only Nodes for question elements
-   * 
+   *
    * @param unknown $sourceNodeList The list of nodes of one of the single teams
    */
   private function generateNodeList($sourceNodeList) {
@@ -127,7 +127,7 @@ class ProgressAggregate implements iDrawable {
 
   /**
    * Aggregates the time of the interval spent on one LabNode from the single teams
-   * 
+   *
    * @param unknown $node
    */
   private function setTime($node) {
@@ -142,7 +142,7 @@ class ProgressAggregate implements iDrawable {
 
   /**
    * Aggregates the credits given on one LabNode from the single teams
-   * 
+   *
    * @param unknown $node
    */
   private function setCredits($node) {

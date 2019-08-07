@@ -2,17 +2,17 @@
 
 /**
  * This class generates an HTML5 canvas script and allows to put graphic elements on it.
- * 
+ *
  * @author Fabian Oehlmann
  *
  */
 class Canvas {
   private $script = '';
-  
+
   /**
    * Puts the script together and returns the final script. Takes as arguments the size of the
    * resulting canvas, which should be big enough to see all the contents, which are drawn.
-   * 
+   *
    * @param unknown $width  Width of the canvas
    * @param unknown $height Height of the canvas
    * @return string         The resulting script
@@ -24,7 +24,7 @@ class Canvas {
     $canvas .= '</canvas>' . "\n";
 
     $canvas .= '<a class="bu" id="ttrackimglink">download</a>';
-    
+
     $canvas .= '<script>' . "\n";
     $canvas .= 'var c = document.getElementById("ttrack");' . "\n";
     $canvas .= 'var ctx = c.getContext("2d");' . "\n";
@@ -35,11 +35,11 @@ class Canvas {
         </script>' . "\n";
     return $canvas;
   }
-  
+
 
   /**
    * Draws a circle.
-   * 
+   *
    * @param unknown $x          The x-coordinate of the center
    * @param unknown $y          The y-coordinate of the center
    * @param unknown $radius     Radius of the circle
@@ -60,7 +60,7 @@ class Canvas {
 
   /**
    * Writes a text to a position.
-   * 
+   *
    * @param string $label     What to write
    * @param unknown $x        The x-coordinate
    * @param unknown $y        The y-coordinate
@@ -78,7 +78,7 @@ class Canvas {
 
   /**
    * Draws a rectangle.
-   * 
+   *
    * @param unknown $x1 The x-coordinate of the first corner
    * @param unknown $y1 The y-coordinate of the first corner
    * @param unknown $x2 The x-coordinate of the opposing corner
@@ -99,7 +99,7 @@ class Canvas {
 
   /**
    * Colors the surface between a line and a straight line of the same height.
-   * 
+   *
    * @param unknown $x1   The x-coordinate of the beginning of the line
    * @param unknown $y1   The y-coordinate of the beginning of the line
    * @param unknown $x2   The x-coordinate of the ending of the line
@@ -127,7 +127,7 @@ class Canvas {
    * to the number and size of the strings it will contain. Changing the font in the graph might
    * break this, since HTML5 canvases only provide a function for measuring the width of a text, but
    * not for measuring the height.
-   * 
+   *
    * @param unknown $strings  An array containing all the strings, which should be in the textbox
    * @param unknown $x2       The x-coordinate of the top-right corner
    * @param unknown $y1       The y-coordinate of the top-right corner
@@ -162,7 +162,7 @@ class Canvas {
 
   /**
    * Puts a title of the graph on top of the image.
-   * 
+   *
    * @param unknown $title  The title
    */
   function title($title) {
@@ -179,7 +179,7 @@ class Canvas {
 
   /**
    * Draws a dashed line.
-   * 
+   *
    * @param unknown $x1 The x-coordinate of the beginning of the line
    * @param unknown $y1 The y-coordinate of the beginning of the line
    * @param unknown $x2 The x-coordinate of the ending of the line
@@ -200,7 +200,7 @@ class Canvas {
 
   /**
    * Draws a line
-   * 
+   *
    * @param unknown $x1   The x-coordinate of the beginning of the line
    * @param unknown $y1   The y-coordinate of the beginning of the line
    * @param unknown $x2   The x-coordinate of the ending of the line

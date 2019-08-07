@@ -3,7 +3,7 @@
 /**
  * This class provides mnemonics for the classification of events, i.e. in which role an event has
  * occured.
- * 
+ *
  * @author Fabian Oehlmann
  *
  */

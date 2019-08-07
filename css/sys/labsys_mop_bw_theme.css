@@ -8,9 +8,9 @@
  * CSS validated by http://jigsaw.w3.org/css-validator/ on 2005/09/09
  */
 
- 
+
  /* All font sizes are relative to the selected font (em tag). */
- 
+
  /* used Colors: ( to change you coul search and replace )
       Background: #89897c;
       MainElBack: #D5D5D5;
@@ -25,7 +25,7 @@ a:hover {             color:#990000; text-decoration:underline; }
   .labsys_mop_topHeader { /* for the custom logo etc. (taken from ../ini/config*.ini: TopHeader) */
                       background-color: #000000;
   }
-  
+
   .labsys_mop_ableMenuhover {
                       background-color: #aaaaaa;
   }
@@ -35,20 +35,20 @@ a:hover {             color:#990000; text-decoration:underline; }
                                           background-color: #000000;
                                   }
 
-  /* links */                                  
-    .labsys_mop_menu ul li  a:hover {  
+  /* links */
+    .labsys_mop_menu ul li  a:hover {
                                           background-color: #aaaaaa;
     }
-    
+
   /* on */
     .labsys_mop_menu ul li.on {
                                           background-color: #888888;
     }
 
-  /* off */    
-    .labsys_mop_menu ul li.off {    
+  /* off */
+    .labsys_mop_menu ul li.off {
                                           background-color: #bbbbbb;
-    }    
+    }
   /* the off rows shade to show the submenu additionally to the indention */
     .labsys_mop_menu ul li ul li.off { /* 1st grade */
                                           background-color: #cccccc;
@@ -62,7 +62,7 @@ a:hover {             color:#990000; text-decoration:underline; }
     .labsys_mop_menu ul li ul li ul li ul li ul li.off { /* 4th grade */
                                           background-color: #ffffff;
     }
-    
+
 
 /******************************* form element styles *******************************/
 .labsys_mop_input,

@@ -305,7 +305,7 @@ $linkToTOCPage = "#";
 /**
  * For preserving the user privacy, the history only stores the UID.
  * This method does the backwards resolution.
- * 
+ *
  * String $text	The text to replace.
  */
 function replaceUidClearName( $text ){
@@ -316,7 +316,7 @@ function replaceUidClearName( $text ){
 		$uDBI->getAllData();
 		while ($nextUser = $uDBI->getNextData()){
 			$pseudonym = $url->available('pseudoNames') && !($nextUser['uid']==$_SESSION['uid']);
-			$GLOBALS['uidClearNameLookup'][$nextUser['uid']] = htmlentities( ($pseudonym ? randomName() : $nextUser['foreName']).' '.($pseudonym ? randomName() : $nextUser['name'] ) ); 
+			$GLOBALS['uidClearNameLookup'][$nextUser['uid']] = htmlentities( ($pseudonym ? randomName() : $nextUser['foreName']).' '.($pseudonym ? randomName() : $nextUser['name'] ) );
 		}
 	}
 	return str_replace ( array_keys( $GLOBALS['uidClearNameLookup'] ) , array_values( $GLOBALS['uidClearNameLookup'] ) , $text );

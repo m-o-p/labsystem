@@ -13,7 +13,7 @@ class EmojiDBInterface{
         global $wDBI;
         $this->myDBC = $wDBI;
         $this->myTable = "emoji_selections";
-	
+
 	/** check if DB exists
 	$isDB = $this->myDBC->table_exists( $this->myTable );
 	if ( !$isDB )
@@ -96,7 +96,7 @@ class EmojiDBInterface{
 
         // checks whether the user has already given an input for this element, (elemId, uid) - primary key
         $checkKey = $this->myDBC->row_exists("uid", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'");
-        $resultCheckKey = $checkKey->fetch_array();	
+        $resultCheckKey = $checkKey->fetch_array();
         if ($resultCheckKey[0] == 0) {
 
             // if the entry does not exist insert the new row

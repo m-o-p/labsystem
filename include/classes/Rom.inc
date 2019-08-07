@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -34,7 +34,7 @@ class Rom{
   function __construct( $dataArray ){
     $this->theDataArray = $dataArray;
   }
-    
+
   /**
   * This method returns the value of the data cell specified by $stringID.
   * @param $stringID  Identifies the data cell.
@@ -43,10 +43,10 @@ class Rom{
   function get( $stringID ){
     if ( isset($this->theDataArray[ $stringID ]) )
       return($this->theDataArray[ $stringID ]);
-    else 
+    else
       return( 'String "'.$stringID.'" missing!' ); // only use constants here $lng uses this!
   }
-  
+
   /**
   * This method echos the value of the data cell specified by $stringID or an error.
   * @param $stringID  Identifies the data cell.
@@ -54,10 +54,10 @@ class Rom{
   function say( $stringID ){
     if ( isset($this->theDataArray[ $stringID ]) )
       echo($this->theDataArray[ $stringID ]);
-    else 
+    else
       echo( 'String "'.$stringID.'" missing!' ); // only use constants here $lng uses this!
   }
-  
+
   /**
   * Does a stinrId exist?
   * @param $stringID  Identifieer to check.

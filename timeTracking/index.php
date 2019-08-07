@@ -44,14 +44,14 @@ function getTitle($resourceFullAddress){
     $pos++;
   }
   $lastID = substr($resourceFullAddress, $pos);
-  
+
   $title = '';
   if (strtolower($lastID[0]) == 'a') {
   	$title .= $lastID;
   } else {
   	$title .= strip_tags($GLOBALS[strtolower($lastID[0]).'DBI']->getData2idx(substr($lastID,1))->title);
   }
-  
+
   $exploded = explode('.', $resourceFullAddress);
   if (sizeof($exploded) > 1) {
   	$num = "";
@@ -141,7 +141,7 @@ foreach (getTeamsOfLab($labIDX) as $nextTeamNr){
 $pge->put('<p>PearlView:</p>');
 require('timeTracking/pearlView.inc');
 
-    
+
 
 $pge->put( EM::manageBottom( $id ) );
 
