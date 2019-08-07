@@ -1,0 +1,76 @@
+<!--
+    labsystem.m-o-p.de - 
+                    the web based eLearning tool for practical exercises
+    Copyright (C) 2010  Marc-Oliver Pahl
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+This document describes how to set the demo functionality up
+as done on http://demo.labsystem.m-o-p.de/
+
+THIS IS NOT RELEVANT FOR NORMAL USE OF THE SYSTEM.
+
+
+For the demo logins we use one data database and multiple working
+data bases (for each demo account one).
+
+The data database must only be accessable for read not for write
+as we do not want the demo users to alter the content.
+
+The working databases contain the inputs of the users. This should
+be testable by the demo users.
+
+As data database we will just use the one that is already contained in
+the installation.
+
+1) Copy the 'config_demo.ini' to
+   a. config_demo1.ini
+   b. config_demo2.ini
+   c. config_demo3.ini
+   d. config_demo4.ini
+   e. config_demo5.ini
+
+2) Set the working database in each of the copied files above to
+   another one AND REAAD 3) before.
+
+   For instance:
+   In 'config_demo1.ini' do
+	'WorkingDatabaseName       = "labsystem_demo_working_database"'
+	=> 'WorkingDatabaseName       = "labsystem_demo_working_database1"'
+
+   In 'config_demo2.ini' do
+	'WorkingDatabaseName       = "labsystem_demo_working_database"'
+	=> 'WorkingDatabaseName       = "labsystem_demo_working_database2"'
+
+   ...
+
+3) Change the user of the DataDatabase in the configurations demo[1..5] to
+   one that has only READ access in order not to make the demo users alter 
+   the non reverted content.
+
+4) Run http://[url of your copy]/setup/?config=demo1
+       http://[url of your copy]/setup/?config=demo2
+       http://[url of your copy]/setup/?config=demo3
+       http://[url of your copy]/setup/?config=demo4
+       http://[url of your copy]/setup/?config=demo5
+
+5) Create the spinning counter as described in index_demo.php
+
+6) Now the demo login should be possible via calling
+   user perspective:	http://[url of your copy]/index_demo.php?userrole=user
+   corrector persp.:	http://[url of your copy]/index_demo.php?userrole=corrector
+   all perspective:	http://[url of your copy]/index_demo.php?userrole=all
+
+7) Done. Have fun ;)

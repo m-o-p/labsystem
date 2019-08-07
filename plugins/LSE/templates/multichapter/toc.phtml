@@ -1,0 +1,32 @@
+<?php
+// Available variables
+$graph =& $this->graph;
+$elementTable =& $this->elementTable;
+?>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="../css/sys/labsys_epub_theme.css" />
+  <title>Table of Contents</title>
+</head>
+<body id='multiChapterTocPage'>
+<h1>Table of Contents</h1>
+<hr/>
+<?php if (count($graph)): ?>
+<ul>
+<?php foreach ($graph as $key => $graphElement): ?>
+  <li><a href="<?php print $key?>.html"><?php print LSE_Util::filterPTag($elementTable[$key][1]) ?></a>
+    <?php if (is_array($graphElement) && !empty($graphElement)): ?>
+    <ul>
+      <?php foreach ($graphElement as $anchor => $graphSubElement): ?>
+        <li><a href="<?php print "$key.html#$anchor"?>"><?php print LSE_Util::filterPTag($elementTable[$anchor][1]) ?>
+        </a></li>
+      <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
+  </li>
+  <?php endforeach; ?>
+</ul>
+<?php endif; ?>
+</body>
+</html>
