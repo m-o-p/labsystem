@@ -95,7 +95,7 @@ class EmojiDBInterface{
     function insertRow($elemId, $uid, $emojiId){
 
         // checks whether the user has already given an input for this element, (elemId, uid) - primary key
-        $checkKey = $this->myDBC->row_exists("*", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'");
+        $checkKey = $this->myDBC->row_exists("uid", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'");
         $resultCheckKey = $checkKey->fetch_array();	
         if ($resultCheckKey[0] == 0) {
 
