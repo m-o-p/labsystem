@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de - 
+ *  labsystem.m-o-p.de -
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -37,7 +37,7 @@ $epubInstance = LSE_Exporter::getInstance();
 
 $l5 = $DBI->getData2idx( 5 ); // this is multicast
 $l6 = $DBI->getData2idx( 6 ); // this is static routing
- 
+
 $epubConfig = array(
     'title'  => 'iLab2',
     'author' => 'Multiple Authors',
@@ -52,6 +52,6 @@ $epubInstance->render();
 exit(0);
 
 makeLogEntry( 'view', 'show', $url->get("address") );
-  
+
 //require( $cfg->get("SystemPageLayoutFile") );
 ?>

@@ -64,7 +64,7 @@ if ( !($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD'
   }
   $NEWSESSION = $authUserData["uid"];
   require( INCLUDE_DIR."/session.inc" );
-  
+
 // The following field is for security reasons:
 // If the configuration would not be checked you could change the field in the url and would be logged on with your
 // current rights for the different configuration...

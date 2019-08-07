@@ -4,13 +4,13 @@
  * Base style
  */
 body {
-    padding:5pt; 
+    padding:5pt;
     margin: 5pt;
     font-size: 1em;
 }
 
 pre, table {
-    font-size: .95em; 
+    font-size: .95em;
 }
 
 a {
@@ -28,7 +28,7 @@ a[href] {
 input.answer {
     border: 1px solid black;
     list-style-type: square;
-    
+
 }
 
 img.input_mul, img.input_txt {
@@ -120,7 +120,7 @@ h3 { font-size: 1.2em; }
 
 hr{
 	color: #d4d4d4;
-	size: 1px;	
+	size: 1px;
 }
 
 .author{

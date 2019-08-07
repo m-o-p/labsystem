@@ -7,14 +7,14 @@ class LSE_Renderer_SingleChapter implements LSE_Renderer_Interface
     protected $_log;
     protected $_engine;
     protected $_plugin;
-    
+
     public function __construct(LSE_Engine $engine)
     {
         $this->_log = new LSE_Logger('LSE_Renderer_SingleChapter');
         $this->_engine = $engine;
         $this->_plugin = $engine->getEpub();
     }
-    
+
     public function render()
     {
         $this->_setupCoverPageAndCoverImage();
@@ -23,7 +23,7 @@ class LSE_Renderer_SingleChapter implements LSE_Renderer_Interface
         $this->_setupChapters();
         $this->_finalize();
     }
-    
+
     protected function _setupCoverPageAndCoverImage()
     {
         $vars['book'] = $this->_engine->getBook();
@@ -38,7 +38,7 @@ class LSE_Renderer_SingleChapter implements LSE_Renderer_Interface
             $ig->setText($text);
             $ig->generate();
             $this->_plugin->setCoverImage('coverImage', file_get_contents($dstPath), 'image/png');
-            
+
             // Readers like Kindle could use a separate startpage
             // images/coverImage will be created by Plugin, we just reference to it from coverpage
             $vars['imagePath'] = "images/coverImage";
@@ -46,31 +46,31 @@ class LSE_Renderer_SingleChapter implements LSE_Renderer_Interface
             $view->assign($vars);
             $coverPage = $view->render(LSE_ROOT . '/templates/coverpage.phtml', true);
             $this->_plugin->addChapter( 'coverpage', 'CoverPageInner.html', $coverPage, FALSE);
-            
+
             unlink($dstPath);
         }
     }
-    
+
     protected function _setupFrontMatter()
     {
         $vars = array('book' => $this->_engine->getBook());
         $view = new SPT_View();
         $view->assign($vars);
         $frontMatter = $view->render(LSE_ROOT . '/templates/frontmatter.phtml', true);
-        
+
         // Since everything is done relative to $this->_plugin->docRoot, we have to reset it
         $this->_plugin->addChapter( 'frontmatter', 'frontmatter.html', $frontMatter, FALSE, EPUB::EXTERNAL_REF_ADD);
     }
-    
+
     protected function _setupTOC()
     {
         $book = $this->_engine->getBook();
         $graph = $book->buildGraph(array("l", "C"));
         $elementTable = $book->getElementTable();
-        
+
         $this->_plugin->setNcxFromGraph($graph, $elementTable);
     }
-    
+
     protected function _setupChapters()
     {
         // we have only one chapter but the same function should work on both single and multi chapter
@@ -79,7 +79,7 @@ class LSE_Renderer_SingleChapter implements LSE_Renderer_Interface
         $output = '';
         foreach ($chapters as $chapterId => $chapter) {
             $output = $book->renderChapter($chapterId);
-            
+
             if (LSE_DEBUG) {
                 print $output;
             }
@@ -88,14 +88,14 @@ class LSE_Renderer_SingleChapter implements LSE_Renderer_Interface
             }
         }
     }
-    
+
     protected function _finalize()
     {
         $isFinalized = $this->_plugin->finalize();
         $this->_log->log($isFinalized, 'isFinalized');
 
         $bookTitle = str_replace(' ', '_', strtolower($this->_engine->getBook()->getTitle()));
-            
+
             // bookTitle is usually htmlencoded, so decode this first
         $bookTitle = LSE_Util::filterPTag($bookTitle);
         if (!LSE_DEBUG) {

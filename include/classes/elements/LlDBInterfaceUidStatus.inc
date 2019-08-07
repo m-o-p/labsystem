@@ -162,7 +162,7 @@ class LlDBInterfaceUidStatus {
              "history=CONCAT( NOW(), ': ".$lng->get("preLabAllTeamFin")."\\n', ".$this->myTable.".history )";
     $this->myDBC->mkUpdate( $toSet, $this->myTable, "l_idx='".$this->labIdx."' && current_team='".$team."'" );
   }
-  
+
   /**
    * Sets the lab_closed_mail_sent bit on the position specified by $labIdx & $team.
    * @param $team       The team to set the value for.

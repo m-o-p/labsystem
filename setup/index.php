@@ -308,7 +308,7 @@ if ( $ret === false ) say_failed($usrDB); else say_done();
 echo("Adding demo user to course ".$cfg->get("User_courseID").": ");
 if ( $_GET['config'] == 'demo' ){
   $result = $usrDB->mkSelect( $cfg->get("UserDBField_username"), $cfg->get("UserDatabaseTable"), $cfg->get("UserDBField_uid").'="participant" & '.$cfg->get("User_courseID").' = 1' );
-   
+
 	/* does exist? */
 	$demoUserExists = ( $usrDB->datasetsIn( $result ) > 0 );
 	if (!$demoUserExists ){
@@ -323,13 +323,13 @@ if ( $_GET['config'] == 'demo' ){
 	         '.$cfg->get("User_courseID").',
              labsys_mop_last_change
 	         ) VALUES (
-			"patrice", 
-  			"29833a5b1a7f877f998488e057ef0a4e364e4cd4", 
-  			"Participant", 
-  			"Patrice", 
-  			"participant@labsystem.m-o-p.de", 
-  			"participant", 
-  			1, 
+			"patrice",
+  			"29833a5b1a7f877f998488e057ef0a4e364e4cd4",
+  			"Participant",
+  			"Patrice",
+  			"participant@labsystem.m-o-p.de",
+  			"participant",
+  			1,
   			"2009-04-16 13:24:24"
 	         )';
 	$ret = $usrDB->query($query);

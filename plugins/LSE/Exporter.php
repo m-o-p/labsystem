@@ -90,7 +90,7 @@ class LSE_Exporter
      * - identifier: A string to uniquely identify the EPub. Could also be the ISBN number, prefered for published books, or a UUID.
      * - publisher: A string to use as publisher of EPub
      * - publisherUrl: A string to use as PUblisher Url.
-     * - date: A date, usually to represent time when EPub was generated. 
+     * - date: A date, usually to represent time when EPub was generated.
      * - rights: A string to be used as Copyright Text
      * - sourceURL: A string to be used as URL where the EPub was generated
      */

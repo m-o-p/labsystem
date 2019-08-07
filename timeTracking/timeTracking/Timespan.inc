@@ -2,7 +2,7 @@
 
 /**
  * This class describes a Timespan between two timestamps
- * 
+ *
  * @author fabian
  *
  */
@@ -14,8 +14,8 @@ class Timespan {
 
   /**
    * Creates the object
-   * 
-   * @param unknown $start    When the Timespan has started 
+   *
+   * @param unknown $start    When the Timespan has started
    * @param unknown $end      When it ended
    * @param unknown $resource What lab resource it was spent in
    * @param unknown $role     In what role it was done
@@ -29,7 +29,7 @@ class Timespan {
 
   /**
    * Difference between end and start
-   * 
+   *
    * @return number
    */
   function length() {

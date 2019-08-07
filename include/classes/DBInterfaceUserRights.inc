@@ -75,12 +75,12 @@ class DBInterfaceUserRights {
       }
       return Array( 'uid' => $uid,
       		        "rights"      => $cfg->get("DefaultAuthUserRights"),
-      				"enabledRights"      => $cfg->get("DefaultAuthUserRights"),	
+      				"enabledRights"      => $cfg->get("DefaultAuthUserRights"),
       				"currentTeam" => $currentTeam,
                     "history"     => $lng->get("dataSetCreated"));
     }else{
-      $enabledRights = ( !isset($data['enabledRights']) 
-      		             || empty($data['enabledRights']) 
+      $enabledRights = ( !isset($data['enabledRights'])
+      		             || empty($data['enabledRights'])
       		             || (intval($data['rights'])&intval($data['enabledRights'])!=intval($data['enabledRights']))
       					 ? $data['rights'] : $data['enabledRights'] );
       return Array( 'uid' => $data['uid'],

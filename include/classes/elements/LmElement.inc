@@ -58,7 +58,7 @@ class LmElement extends Element{
   var $isCorrectlyAnswered;         // Was the last answer given correct?
   var $isAnswered;                  // Is the last answer correct or the number of tries too high?
   var $answerHistory;               // Who answered when?
-  
+
   var $specialCSVFields;            // list of CSV special fields that have to be handled on export
 
 
@@ -171,7 +171,7 @@ class LmElement extends Element{
   	}
   	return $csvFields;
   }
-  
+
   /**
    * Serializes the element as CSV line.
    */
@@ -192,12 +192,12 @@ class LmElement extends Element{
   				$csvData[] = $this->getOneCSVLine();
   			}
   	}
-	
- 	foreach ($csvData as $csvLine){ 	
+
+ 	foreach ($csvData as $csvLine){
    	  $this->csv_encode($csvLine);
  	}
   }
-  
+
   /**
    * prints the header line with the filed names.
    */
@@ -243,7 +243,7 @@ class LmElement extends Element{
   function isCorrectlyAnswered(){
     return $this->isCorrectlyAnswered;
   }
-  
+
   /**
    * Returns if the given $answer is considered correct. Requires $this->displayPermutation to be set.
    * @param array $answerMaskArray The array of previously given answers.
@@ -271,11 +271,11 @@ class LmElement extends Element{
 			return TRUE;
 		}
   	}
-  	
+
 //   	if (($answerMask & $this->correctMask) == $answerMask){
-// 		return TRUE;  		
+// 		return TRUE;
 //   	}
-  	
+
 //   	echo('m'.$this->idx.' expects '.$this->correctMask.' but given '.$answerMask.'<br>');
 //   	$m = -1;
 //   	while ($m++<=sqrt($this->correctMask)){
@@ -291,7 +291,7 @@ class LmElement extends Element{
   	if (!is_null($this->requiresNcorrect)){
   		// fewer correct answers are considered okay
   		// The algorithm is correctlyChecked-wronglyChecked =
-  		// [all answers that should be checked and are checked] - 
+  		// [all answers that should be checked and are checked] -
   		// [all answers that should not be checked but are checked]
   		$answerNumber = $this->answerCount;
   		$amountCheckedCorrectAnswers = 0;
@@ -310,10 +310,10 @@ class LmElement extends Element{
   			return TRUE;
   		}
   	}
-      			
+
   	return FALSE;
   }
-  
+
   /**
   * Loads the answer data to the given $uid into this instance's field.
   *
@@ -335,8 +335,8 @@ class LmElement extends Element{
       $this->previousAnswersArray = $answerData['answers'];
       $this->triesUp2Now          = count( $this->previousAnswersArray )-1; // Last holds the current try.
       // If the answer is considered correct depends on the "requiresNcorrect" parameter
-      $this->isCorrectlyAnswered  = ( ( $this->triesUp2Now > 0 ) && 
-      								  $this->computeIfAnswerConsideredCorrect( $this->previousAnswersArray, $uid ) ); 
+      $this->isCorrectlyAnswered  = ( ( $this->triesUp2Now > 0 ) &&
+      								  $this->computeIfAnswerConsideredCorrect( $this->previousAnswersArray, $uid ) );
       $this->isAnswered =  $this->isCorrectlyAnswered || ( $this->triesUp2Now >= $cfg->get("MCAnsweringAttempts") );
       //echo(($this->isCorrectlyAnswered ? 't' : 'f').'||'.$this->triesUp2Now.'>='.$cfg->get("MCAnsweringAttempts").'<br>');
     } else { // the example solution
@@ -631,10 +631,10 @@ class LmElement extends Element{
       	// Shall each checkbox be individually colored for detailed feedback?
       	$individualColors = $colorMe && $this->isAnswered;
       	$colorExampleSolution = FALSE;
-      	
+
       	// Show example solution?
-      	$showExampleSolution = ($i == $cfg->get('MCAnsweringAttempts')) || 		 // The last is always empty... 
-      						   $isGettingEdited || 
+      	$showExampleSolution = ($i == $cfg->get('MCAnsweringAttempts')) || 		 // The last is always empty...
+      						   $isGettingEdited ||
       						   (($i == $this->triesUp2Now) && !$isGettingEdited && $usr->isOfKind(IS_EX_SOLUTION_VIEWER) && !$url->available('hideExampleSolutionInThisTab')) ||
       						   (($i == $this->triesUp2Now) && $this->isCorrectlyAnswered);
       	if ($showExampleSolution) {
@@ -785,7 +785,7 @@ class LmElement extends Element{
             '<input type="hidden" name="ONLY_ONE_ANSWER_POSSIBLE" value="0" /><input tabindex="'.$pge->nextTab++.'" type="checkbox" id="onlyOneAnswerPossible" name="ONLY_ONE_ANSWER_POSSIBLE" value="1"'.( $this->onlyOneAnswerPossible ? ' checked="checked"' : '').'>'.
             '<label for="onlyOneAnswerPossible" class="labsys_mop_input_field_label">'.$lng->get('onlyOneAnswerPossible').'</label>'.
             '</div>'.PHP_EOL.
-            
+
             '<div>'.
             '<select tabindex="'.$pge->nextTab++.'" name="CORRECT_WHEN_N_CORRECT_SELECTED" id="correctWhenNcorrectSelected" size="1">'.
             $answerNoptions.
@@ -1029,7 +1029,7 @@ class LmElement extends Element{
   */
   /*static*/ function checkUserAnswer(){
     global $usr, $cfg;
-    
+
     $GLOBALS['Logger']->logToDatabase('l'.$_POST['IDX'].'~m'.$this->idx, logActions::mCheck);
     $GLOBALS['Logger']->logToDatabase('l'.$_POST['IDX'].'~m'.$this->idx, ($this->isCorrectlyAnswered?logActions::mIsCorrectAnswer:logActions::mIsWrongAnswer));
 

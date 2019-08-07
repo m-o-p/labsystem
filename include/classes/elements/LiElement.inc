@@ -168,7 +168,7 @@ class LiElement extends Element{
   		}
 	}
   }
-	
+
   /**
   * Serialize the element for export.
   */
@@ -322,21 +322,21 @@ class LiElement extends Element{
           return;
         }
       }
-  
+
       // Get new dimensions
       list ( $width_orig, $height_orig ) = getimagesize ( $fileSrc );
-  
+
       $ratio_orig = $width_orig / $height_orig;
-  
+
       if ($width / $height > $ratio_orig) {
         $width = $height * $ratio_orig;
       } else {
         $height = $width / $ratio_orig;
       }
-  
+
       // Resample
       $image_p = imagecreatetruecolor ( $width, $height );
-      
+
       // Get mime
       switch(mime_content_type($fileSrc)){
         case 'image/gif':
@@ -348,11 +348,11 @@ class LiElement extends Element{
         default:
           $image = imagecreatefromjpeg ( $fileSrc );
       }
-  
+
       imagecopyresampled ( $image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig );
-  
+
     imagejpeg ( $image_p, $thumbnailFileName, 75 );
-      
+
       // Clean
       imagedestroy ( $image_p );
       imagedestroy ( $image );
@@ -366,14 +366,14 @@ class LiElement extends Element{
     global $url;
     $filePath = LiDBInterfaceAnswers::getUploadDirectory($iIdx, $team).DIRECTORY_SEPARATOR.$fileName;
     $mime = mime_content_type($filePath);
-    
+
     // For those we create thumbs:
     $possibleMimes=array( 'png' => 'image/png',
                     'jpe' => 'image/jpeg',
                     'jpeg' => 'image/jpeg',
                     'jpg' => 'image/jpeg',
                     'gif' => 'image/gif');
-    
+
     if (in_array($mime, $possibleMimes)){
       // We want a thumbnail for this...
       $thumbFilePath = $filePath.'.thumb.jpg';
@@ -457,8 +457,8 @@ class LiElement extends Element{
                      ( $this->isCorrected ?  "_green" :  "_red" ) : '' ).
           "\">".
             // the "is corrected" checkbox
-            ( $usr->isOfKind( IS_CORRECTOR ) 
-//             		&& $this->isClosed 
+            ( $usr->isOfKind( IS_CORRECTOR )
+//             		&& $this->isClosed
             		&& ($isInCorrection || ($this->isClosed && !$this->isCorrected)) && $usr->isSeeingSomeonesData() ?
                 "<input type=\"checkbox\" id=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" name=\"IS_CORRECTED\" value=\"1\" ".
                 "tabindex=\"".$pge->nextTab++.'"'.
@@ -575,8 +575,8 @@ class LiElement extends Element{
 
       $ret =   '<a name="i'.$this->idx.'"></a>'."<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
                "<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
-               "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR ) 
-//                		         && $this->isClosed 
+               "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR )
+//                		         && $this->isClosed
                		         && !$isInCorrection) ?
                                       // link for the corrector to unlock... (-> see description above method)
                                       $url->link2('../pages/view.php', Array('address' => $url->get('address')))."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' ) :
@@ -851,7 +851,7 @@ class LiElement extends Element{
             EM::editBottomInput( $this, $fullAddress ).
             $this->show($fullAddress);
   }
-  
+
   /**
   * Used to save the edited element.
   *

@@ -4,7 +4,7 @@ require_once("Progress.inc");
 
 /**
  * This class determines the Progress of a user in a Prelab
- * 
+ *
  * @author Fabian Oehlmann
  *
  */
@@ -13,7 +13,7 @@ class ProgressPrelab extends Progress {
 
   /**
    * Creates the object
-   * 
+   *
    * @param unknown $Logger
    * @param unknown $labIDX
    * @param unknown $userID
