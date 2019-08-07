@@ -1,10 +1,5 @@
 <?php
-/** This file handles the XMLHttpRequest of the insertEmojiSelection() function in scripts.js
- * Created by PhpStorm.
- * User: desi
- * Date: 10/3/17
- * Time: 2:27 PM
- */
+/** This file handles the XMLHttpRequest of the updateEmojiMenu() function in scripts.js */
 
 require_once ("../include/init.inc");
 global $eDBI;
