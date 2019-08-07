@@ -24,7 +24,7 @@
  * @module ../pages/mailForm.php
  *
  * @author Marc-Oliver Pahl
- *
+ *        
  */
 require ("../include/init.inc");
 
@@ -141,39 +141,39 @@ if ($usr->isOfKind ( IS_ALL_MAILER ))
 
 $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST\" ACTION=\"" . $url->link2 ( "../pages/mailForm.php" ) . "\">\n" . '<input type="hidden" name="SENDMAIL" value="sendMail">' . "\n" . "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/mailForm.php\">\n". /* index of saved el. will be added on save.php! */
 
-            "<input type=\"hidden\" name=\"POSSIBLE_RECVR\" value=\"" . $counter . "\">\n" . "<table class=\"labsys_mop_mailform_table\">\n" . "<tr><td class=\"labsys_mop_mailform_table_mail2\"></td><td class=\"labsys_mop_mailform_table_the_mail\"></td></tr>\n" .
+            "<input type=\"hidden\" name=\"POSSIBLE_RECVR\" value=\"" . $counter . "\">\n" . "<table class=\"labsys_mop_mailform_table\">\n" . "<tr><td class=\"labsys_mop_mailform_table_mail2\"></td><td class=\"labsys_mop_mailform_table_the_mail\"></td></tr>\n" . 
 
 // the mail2 row
-"<tr><td class=\"labsys_mop_mailform_table_mail2\">\n" .
+"<tr><td class=\"labsys_mop_mailform_table_mail2\">\n" . 
 
-($usr->isOfKind ( IS_ALL_MAILER ) ? "<fieldset><legend>" . $lng->get ( "roundmail" ) . "</legend>\n" . "<a href=\"" . $url->link2 ( '../pages/mailForm.php', Array('checkAll' => true) ) . "\" onclick=\"setCheckboxes(true); return false;\">" . $lng->get ( "checkAll" ) . "</a>/ \n" . "<a href=\"" . $url->link2 ( "../pages/mailForm.php" ) . "\" onclick=\"setCheckboxes(false); return false;\">" . $lng->get ( "unCheckAll" ) . "</a><br />\n" . "</fieldset>\n" : '') .
+($usr->isOfKind ( IS_ALL_MAILER ) ? "<fieldset><legend>" . $lng->get ( "roundmail" ) . "</legend>\n" . "<a href=\"" . $url->link2 ( '../pages/mailForm.php', Array('checkAll' => true) ) . "\" onclick=\"setCheckboxes(true); return false;\">" . $lng->get ( "checkAll" ) . "</a>/ \n" . "<a href=\"" . $url->link2 ( "../pages/mailForm.php" ) . "\" onclick=\"setCheckboxes(false); return false;\">" . $lng->get ( "unCheckAll" ) . "</a><br />\n" . "</fieldset>\n" : '') . 
 
-"<fieldset><legend>" . $lng->get ( "labSupporter" ) . "</legend>\n" . $allSupporterInputs . "</fieldset>\n" .
+"<fieldset><legend>" . $lng->get ( "labSupporter" ) . "</legend>\n" . $allSupporterInputs . "</fieldset>\n" . 
 
-($usr->isOfKind ( IS_ALL_MAILER ) ? "<fieldset><legend>" . $lng->get ( "otherUser" ) . "</legend>\n" . $allOtherInputs . "</fieldset>\n" : '') .
+($usr->isOfKind ( IS_ALL_MAILER ) ? "<fieldset><legend>" . $lng->get ( "otherUser" ) . "</legend>\n" . $allOtherInputs . "</fieldset>\n" : '') . 
 
-"</td>" .
+"</td>" . 
 
 // the mail subject/ body side
-"<td class=\"labsys_mop_mailform_table_the_mail\">\n" .
+"<td class=\"labsys_mop_mailform_table_the_mail\">\n" . 
 
-"<fieldset><legend>" . $lng->get ( "yourMail" ) . "</legend>\n" .
+"<fieldset><legend>" . $lng->get ( "yourMail" ) . "</legend>\n" . 
 
 // constants to be used
 "<div class=\"labsys_mop_input_field_note\">" . $lng->get ( "inputReplaceKeys" ) . "<div class=\"labsys_mop_p_field_constants\">" . str_replace ( "_", "&#x005F;", $pge->getConstants () ) . "</div>" . "</div>\n" .
 
 // subject
-"<label for=\"subject\" class=\"labsys_mop_input_field_label_top\">" . $lng->get ( "subject" ) . "</label>" . "<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"text\" id=\"subject\" name=\"SUBJECT\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"" . (isset ( $_POST ['SUBJECT'] ) ? $pge->escapeKeys ( $_POST ['SUBJECT'] ) : ($url->available ( 'subject' ) ? $url->get ( 'subject' ) : '')) . "\" onchange='isDirty=true'>\n" .
+"<label for=\"subject\" class=\"labsys_mop_input_field_label_top\">" . $lng->get ( "subject" ) . "</label>" . "<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"text\" id=\"subject\" name=\"SUBJECT\" class=\"labsys_mop_input_fullwidth\" maxlength=\"255\" value=\"" . (isset ( $_POST ['SUBJECT'] ) ? $pge->escapeKeys ( $_POST ['SUBJECT'] ) : ($url->available ( 'subject' ) ? $url->get ( 'subject' ) : '')) . "\" onchange='isDirty=true'>\n" . 
 // mailbody
-"<label for=\"mailtext\" class=\"labsys_mop_input_field_label_top\">" . $lng->get ( "message" ) . "</label>" . "<textarea tabindex=\"" . $pge->nextTab ++ . "\" id=\"mailtext\" name=\"MAILTEXT\" class=\"labsys_mop_textarea\" rows=\"" . $cfg->get ( "sendMailBodyRows" ) . "\" onchange='isDirty=true'>" . (isset ( $_POST ['MAILTEXT'] ) ? $pge->escapeKeys ( $_POST ['MAILTEXT'] ) : ($url->available ( 'text' ) ? $url->get ( 'text' ) : '')) . "</textarea>\n" .
+"<label for=\"mailtext\" class=\"labsys_mop_input_field_label_top\">" . $lng->get ( "message" ) . "</label>" . "<textarea tabindex=\"" . $pge->nextTab ++ . "\" id=\"mailtext\" name=\"MAILTEXT\" class=\"labsys_mop_textarea\" rows=\"" . $cfg->get ( "sendMailBodyRows" ) . "\" onchange='isDirty=true'>" . (isset ( $_POST ['MAILTEXT'] ) ? $pge->escapeKeys ( $_POST ['MAILTEXT'] ) : ($url->available ( 'text' ) ? $url->get ( 'text' ) : '')) . "</textarea>\n" . 
 
-"</fieldset>\n" .
+"</fieldset>\n" . 
 
-"<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"checkbox\" id=\"copy2Me\" name=\"COPY2ME\" value=\"1\"" . (isset($_POST['COPY2ME']) && $_POST['COPY2ME'] == 1 ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" . "<label for=\"copy2Me\" class=\"labsys_mop_input_field_label\">" . $lng->get ( "copy2Me" ) . "</label>" .
+"<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"checkbox\" id=\"copy2Me\" name=\"COPY2ME\" value=\"1\"" . (isset($_POST['COPY2ME']) && $_POST['COPY2ME'] == 1 ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" . "<label for=\"copy2Me\" class=\"labsys_mop_input_field_label\">" . $lng->get ( "copy2Me" ) . "</label>" . 
 
-"<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" value=\"" . $lng->get ( "sendMail" ) . "\" accesskey=\"s\" onclick='isDirty=false'>\n" .
+"<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" value=\"" . $lng->get ( "sendMail" ) . "\" accesskey=\"s\" onclick='isDirty=false'>\n" . 
 
-"</td></tr>\n" . "</table>\n" .
+"</td></tr>\n" . "</table>\n" . 
 
 "</FORM>\n" . '<script language="JavaScript" type="text/javascript">
 

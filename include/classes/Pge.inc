@@ -108,12 +108,12 @@ class Pge extends LpElement{
 
 
   /**
-   * Replaces the constants with the values but does NOT htmlexcape the values.
-   * This allows crossitescripting, w.g. by replacing my user name with JS code.
+   * Replaces the constants with the values but does NOT htmlexcape the values. 
+   * This allows crossitescripting, w.g. by replacing my user name with JS code. 
    * However, it only works for loged in users.
-   *
+   * 
    * This is used in the eMail functionality.
-   *
+   * 
    * @param String The content the constants should be replaced in.
    * @return The string with the replaced constants.
    */
@@ -132,12 +132,12 @@ class Pge extends LpElement{
   			$_SERVER['REQUEST_URI'],
   			$cfg->get("Link2UserAdminInterface"),
   			date( $lng->get("DateFormat") ) );
-
+  
   	return str_replace( array_merge( $this->replaceKey, $this->sanitizedKey ), // replace keys and sanitized keys.
   			array_merge( $replaceValue, $replaceValue ),
   			$text );
   }
-
+  
   /**
    * Returns the $content with __ELEMENTTITLE__ replacesd by $elementTitle.
    * @param unknown $title The title.
@@ -147,7 +147,7 @@ class Pge extends LpElement{
   	$replace = array($elementTitle, $elementTitle);
   	return str_replace( $needle, $replace, $content );
   }
-
+  
   /**
   * Replaces the constants with the values.
   * @param String The content the constants should be replaced in.

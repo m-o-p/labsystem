@@ -529,7 +529,7 @@ class LsElement extends Element{
         // show all schedules (calendar)
           $this->show( "s1" );
   }
-
+ 
   /**
   * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
   * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.

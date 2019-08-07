@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de -
+ *  labsystem.m-o-p.de - 
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -42,7 +42,7 @@ if ( !isset( $_POST['REDIRECTTO'] ) ||
      }
 
 if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
-     !($usr->isOfKind(IS_USER)) /* valid call? */
+     !($usr->isOfKind(IS_USER)) /* valid call? */   
    ){
       trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
       exit;
@@ -56,13 +56,13 @@ elseif ( strlen( $_POST['NEWPW'] ) < $cfg->get('uaMinPassLength') )
     $url->put( 'sysalert', $lng->get('uaPwTooShort').' ( '.$cfg->get('uaMinPassLength').' )' );
 else{ // save new PW
     // new Interface to the userDB
-    $userDBC = new DBConnection($cfg->get('UserDatabaseHost'),
-                                $cfg->get('UserDatabaseUserName'),
-                                $cfg->get('UserDatabasePassWord'),
+    $userDBC = new DBConnection($cfg->get('UserDatabaseHost'), 
+                                $cfg->get('UserDatabaseUserName'), 
+                                $cfg->get('UserDatabasePassWord'), 
                                 $cfg->get('UserDatabaseName'));
-    $accordingUID = ( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  );
+    $accordingUID = ( $usr->isOfKind( IS_DB_USER_ADMIN ) && $usr->isSeeingSomeonesData() ? $usr->theSeeingUid()  : $usr->uid  );                
     $userDBC->mkUpdate( $cfg->get('UserDBField_password')."='".$userDBC->escapeString( password_hash( $_POST['NEWPW'], PASSWORD_DEFAULT ) )."'",
-                        $cfg->get('UserDatabaseTable'),
+                        $cfg->get('UserDatabaseTable'), 
                         $cfg->get('UserDBField_uid')."='".$userDBC->escapeString($accordingUID)."'"
                        );
     // note

@@ -2,7 +2,7 @@
  * This is the printing stylesheet.
  *
  * It controls how the page looks when printed out.
- *
+ * 
  * What it currently does?
  *  - font gets smaller
  *  - menu disappears
@@ -14,7 +14,7 @@
  * CSS validated by http://jigsaw.w3.org/css-validator/ on 2005/09/09
  */
 body{
-      font-family: Times, serif;
+      font-family: Times, serif; 
 }
 
 body, div, tr{
@@ -61,7 +61,7 @@ a, a:visited{
                     text-align: justify;
                     line-height: 1em;
 }
-
+  
 .labsys_mop_menu ul{
                       display: none;
 }

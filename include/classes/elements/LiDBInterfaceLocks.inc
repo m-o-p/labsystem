@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de -
+ *  labsystem.m-o-p.de - 
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -19,7 +19,7 @@
  */
 
 /**
-* This is the interface to the working databse's "input_answers_locks" table
+* This is the interface to the working databse's "input_answers_locks" table 
 * which holds the user's answers to the inputs.
 */
 
@@ -39,7 +39,7 @@ class LiDBInterfaceLocks {
     $this->myDBC   = $wDBI;
     $this->myTable = "input_answers_locks";
   }
-
+  
   /**
   * Returns the locked input's idx address or false.
   * @param $team  The users currentTeam.
@@ -51,7 +51,7 @@ class LiDBInterfaceLocks {
     if ( !($data = $result->fetch_array()) ) return false; // no dataset found
                                               else return $data['lock_on_idx'];
   }
-
+  
   /**
   * Sets the lock.
   * @param $team          The users currentTeam.
@@ -61,11 +61,11 @@ class LiDBInterfaceLocks {
   function setData4( $team, $lockIdx, $history = "" ){
     global $usr;
     $toSet = "lock_on_idx='".$lockIdx."', ".
-             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."')";
-             // discards old history entries: a "one row history" should be enough. Otherwise it would get really big...
+             "history=CONCAT( NOW(), ': ".$this->myDBC->escapeString( $usr->foreName )." ".$this->myDBC->escapeString( $usr->surName ).( ( $history != "" ) ?  ": ".$this->myDBC->escapeString( $history ) : '' )."')"; 
+             // discards old history entries: a "one row history" should be enough. Otherwise it would get really big...    
     $this->myDBC->mkUpdIns( $toSet, $this->myTable, "team='".$team."'" );
   }
-
+  
   /**
   * Removes all locks (only one should exist) for the given team.
   * @param $team          The team to remove all locks of.

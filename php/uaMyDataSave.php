@@ -47,7 +47,7 @@ if ( !isset( $_POST['REDIRECTTO'] ) ||
      }
 
 if (  (substr( $url->get('config'), -9 ) != 'useradmin') || // only in this configuration you are allowed to make that call!
-     !($usr->isOfKind(IS_USER)) /* valid call? */
+     !($usr->isOfKind(IS_USER)) /* valid call? */   
    ){
       trigger_error( $lng->get( 'NotAllowedToMkCall' ), E_USER_ERROR );
       exit;

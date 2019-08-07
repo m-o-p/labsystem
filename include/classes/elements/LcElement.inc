@@ -291,7 +291,7 @@ class LcElement extends Element{
   		}
   	}
   }
-
+  
   /**
   * Generates a page with all the collection's elements of a special type (given by $typePrefix ).
   *
@@ -333,7 +333,7 @@ class LcElement extends Element{
     else
         return array("retVal" => $retVal, "count" => $count, "sumPossibleCredits" => $sumPossibleCredits);
   }
-
+  
   /**
    * Shows the negative highscore of the prelab MCs.
    *
@@ -347,7 +347,7 @@ class LcElement extends Element{
    */
   function showWorstAnsweredMCs( $typePrefix, $address, $paragraph="", $counted=false, &$count = 0, &$sumPossibleCredits = 0, &$inSum = array() ){
   	global $lng;
-
+  	 
   	$retVal = '';
   	// Iterate through all m elements of the prelab:
   	foreach ($this->simpleIterate(array('c', 'm')) as list($value, $element)) {
@@ -426,7 +426,7 @@ class LcElement extends Element{
   	}
   	return false;
   }
-
+  
   /**
    * Handles the inserts that happen when the edit buttons to insert new *p *i *m *c *C
    * are pressed.
@@ -650,7 +650,7 @@ class LcElement extends Element{
   	$this->contents = implode( $newContent, ' ' );
   	return $cDBI->setData( $this, true );
   }
-
+  
   /**
   * Used to save the edited element.
   *

@@ -23,9 +23,9 @@
  * ./pages/mailform.php to send a mail.
  *
  * @module ../php/sendMail.inc
- *
+ * 
  * @author Marc-Oliver Pahl
- *
+ *        
  * @param $_POST['POSSIBLE_RECVR'] Index
  *        	of the highest MAIL2 possible.
  * @param $_POST['MAIL2_?'] The
@@ -46,7 +46,7 @@ if (isset ( $_POST ['POSSIBLE_RECVR'] ) && ($_POST ['POSSIBLE_RECVR'] > 0)) {
 	while ( ++ $i <= $_POST ['POSSIBLE_RECVR'] )
 		if (isset ( $_POST ['MAIL2_' . $i] )) {
 			$nextID = $_POST ['MAIL2_' . $i];
-
+			
 			// Useradmin "whole course" special treatment
 			// The fields to be selected are labelled "MAIL2_[number]=#*[courseID]"
 			if (substr ( $nextID, 0, 2 ) == '#*' && (substr ( $url->get ( 'config' ), - 9 ) == 'useradmin') && $usr->isOfKind ( IS_ALL_MAILER )) {
@@ -68,7 +68,7 @@ if (isset ( $_POST ['POSSIBLE_RECVR'] ) && ($_POST ['POSSIBLE_RECVR'] > 0)) {
 	if (! empty ( $receivers )) {
 		$mailFunc->sendMail ( $usr, implode ( ',', $receivers ), $_POST ['SUBJECT'], $_POST ['MAILTEXT'], isset ( $_POST ['COPY2ME'] ) && ($_POST ['COPY2ME'] == 1) );
 		makeLogEntry ( 'system', 'mail sent' );
-
+		
 		$GLOBALS ['SYSINFO'] .= $lng->get ( "MailHasBeenSent" ) . ' ' . htmlentities ( $usr->foreName . ' ' . $usr->surName . ' <' . $usr->mailAddress . '>' );
 	} else {
 		$GLOBALS ['SYSALERT'] .= $lng->get ( "NoReceiver" );

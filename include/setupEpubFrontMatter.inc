@@ -61,7 +61,7 @@ if ($cfg->doesExist('imprintID') && $cfg->get('imprintID')!=''){
   <br>
   '.(isset($epubConfig['rights']) ? $epubConfig['rights'] : 'rights').'
 </p>
-  ';
+  '; 
 }
 $epubConfig['imprint'] = utf8_encode( $imprint->getePubContents() );
 ?>

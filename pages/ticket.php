@@ -47,7 +47,7 @@ $ticketCategories = array(
 );
 
 require( "../include/init.inc" );
-require( "../php/getFirstLastFinal.inc" );
+require( "../php/getFirstLastFinal.inc" ); 
 
 // fetch first final for context
 $id = $firstFinal{0}; $num = substr( $firstFinal, 1);
@@ -81,7 +81,7 @@ if (isset($_POST['topicId']) && $_POST['topicId'] == 'notSelected'){
 // 	}
 
 	# Fill in the data for the new ticket, this will likely come from $_POST.
-
+	
 	$data = array(
 // 	'name'      =>      'greezybacon',
 // 	'email'     =>      'mailbox@host.com',
@@ -92,24 +92,24 @@ if (isset($_POST['topicId']) && $_POST['topicId'] == 'notSelected'){
 	);
 	$data = array_merge($_POST, $data);
 	$data['link2Element'] = '<a href="'.$data['link2Element'].'">Open the element</a>';
-
+	
 	#pre-checks
 	if (!$debug&&!($cfg->doesExist('ticketReceiverUID')&&!empty($cfg->get('ticketReceiverUID')))){
  		function_exists('curl_version') or die('CURL support required');
 	}
 	function_exists('json_encode') or die('JSON support required');
-
+	
 // 	$data['attachments'][] =
 // 	array('filename.pdf' =>
 // 			'data:application/pdf;base64,' .
 // 			base64_encode(file_get_contents('/path/to/filename.pdf')));
-
+	
 	if (!$debug&&!($cfg->doesExist('ticketReceiverUID')&&!empty($cfg->get('ticketReceiverUID')))){
 		// normal ticket system handler
 		$data['topicId'] = $data['topicId']+1; // osTicket categories start with 1...
 		#set timeout
 		set_time_limit(30);
-
+		
 		#curl post
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $config['url']);
@@ -123,13 +123,13 @@ if (isset($_POST['topicId']) && $_POST['topicId'] == 'notSelected'){
 		$result=curl_exec($ch);
 		$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
-
+	
 		if ($code != 201){
 			trigger_error( 'Unable to create ticket: '.$result, E_USER_ERROR );
 			return false;
 			exit;
 		}
-
+		
 		$ticket_id = (int) $result;
 	}else{
 		$text = $data['message'].PHP_EOL.
@@ -140,7 +140,7 @@ if (isset($_POST['topicId']) && $_POST['topicId'] == 'notSelected'){
 			}
 			$text.=$itemName.': '.($itemName=='topicId'?$ticketCategories[$itemValue]:$itemValue).PHP_EOL;
 		}
-
+		
 		if (!$debug&&($cfg->doesExist('ticketReceiverUID')&&!empty($cfg->get('ticketReceiverUID')))){
 			// Mail handler
 			$mailFunc->sendMail($usr, $cfg->get('ticketReceiverUID'), '['.$ticketCategories[$data['topicId']].'] '.$data['subject'], $text);
@@ -148,12 +148,12 @@ if (isset($_POST['topicId']) && $_POST['topicId'] == 'notSelected'){
 		}else{
 			// Debug handler
 			$pge->put('<div class="labsys_mop_ticketElementView">'.htmlentities(json_encode($data)).'</div>');
-
+			
 			$pge->put(nl2br($text));
 			$ticket_id = 23;
 		}
 	}
-
+	
 	# Continue onward here if necessary. $ticket_id has the ID number of the
 	# newly-created ticket
 }

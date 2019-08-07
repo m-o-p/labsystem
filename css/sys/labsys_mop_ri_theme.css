@@ -8,9 +8,9 @@
  * CSS validated by http://jigsaw.w3.org/css-validator/ on 2005/09/09
  */
 
-
+ 
  /* All font sizes are relative to the selected font (em tag). */
-
+ 
  /* used Colors: ( to change you coul search and replace )
       Background: #89897c;
       MainElBack: #D5D5D5;
@@ -19,9 +19,9 @@
       MnuHover:   #ADD8E6; lightblue
       MnuTitle:   #4682B4; steelblue
   */
-
+  
 /* Background */
-body {
+body {  
                       background-color: #555555;
 }
   .labsys_mop_topmostHeader { /* for stuff like url (taken from ../ini/config*.ini: TopmostHeader) */
@@ -40,13 +40,13 @@ body {
                       border-right: solid 1px #555555;
   }
   .labsys_mop_menu { /* the menu's backrow when visible */
-                      border-right: solid 1px #555555;
+                      border-right: solid 1px #555555; 
   }
   .labsys_mop_bottomFooter { /* for stuff like copyright notices or impressum links (taken from ../ini/config*.ini: BottomFooter) */
                       border-top: solid 1px #555555;
   }
 /* /Background */
-
+  
 /* Midground */
   .labsys_mop_maintable {
                       background-color: #aaaaaa;
@@ -64,14 +64,14 @@ body {
                       background-color: #FFFFFF; /* should be the same as in content */
   }
 /* /Foreground */
-
+  
 a {                   color:#990000; text-decoration:none; }
 a:hover {             color:#990000; text-decoration:underline; }
 
   .labsys_mop_topHeader { /* for the custom logo etc. (taken from ../ini/config*.ini: TopHeader) */
                       background-color: #7A899E;
   }
-
+  
   .labsys_mop_ableMenuhover {
                       background-color: #A93900;
                       color: #ffffff;
@@ -79,30 +79,30 @@ a:hover {             color:#990000; text-decoration:underline; }
   .labsys_mop_ableMenuhover a {
                       color: #ffffff;
   }
-
+    
 /******************************* menu (menu.inc) *******************************/
     .labsys_mop_menu ul li.title {
                                           background-color: #7D92AA;
                                   }
 
-  /* links */
-    .labsys_mop_menu ul li  a:hover {
+  /* links */                                  
+    .labsys_mop_menu ul li  a:hover {  
                                           background-color: #B9CFE1;
     }
-
+    
   /* on */
     .labsys_mop_menu ul li.on {
                                           background-color: #A93900;
     }
-
+    
     .labsys_mop_menu ul li.on a {
                                           color: #ffffff;
     }
 
-  /* off */
-    .labsys_mop_menu ul li.off {
+  /* off */    
+    .labsys_mop_menu ul li.off {    
                                           background-color: #939FB7;
-    }
+    }    
   /* the off rows shade to show the submenu additionally to the indention */
     .labsys_mop_menu ul li ul li.off { /* 1st grade */
                                           background-color: #8592AD;
@@ -116,7 +116,7 @@ a:hover {             color:#990000; text-decoration:underline; }
     .labsys_mop_menu ul li ul li ul li ul li ul li.off { /* 4th grade */
                                           background-color: #5E6D8D;
     }
-
+     
 
 /******************************* form element styles *******************************/
 .labsys_mop_input,

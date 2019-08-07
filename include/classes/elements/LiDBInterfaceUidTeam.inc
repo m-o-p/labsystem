@@ -69,7 +69,7 @@ class LiDBInterfaceUidTeam {
       return $data['team'];
     }
   }
-
+  
   /**
    * Returns the team to the given uid and iIdx.
    * @param $team              Team to retrieve a UID for.

@@ -1,6 +1,6 @@
 <?php
 /**
- *  labsystem.m-o-p.de -
+ *  labsystem.m-o-p.de - 
  *                  the web based eLearning tool for practical exercises
  *  Copyright (C) 2010  Marc-Oliver Pahl
  *
@@ -89,7 +89,7 @@ class Url
   function available( $key ){
     return isset( $_GET[$key] ) || ( isset($_SESSION["uid"]) && // Session running?
                                      ( ($key == 'sysinfo') || ($key == 'sysalert') ) &&
-                                     isset($_SESSION[$key]) &&
+                                     isset($_SESSION[$key]) && 
                                      (!empty($_SESSION[$key]))
                                     ); // If session is running the cookie can be used for transport;
   }
