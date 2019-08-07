@@ -421,8 +421,10 @@ class EB{ /* ElementButtons */
    static function emojiMenu($fullAddress, $eIDXI){
    $emID = "emBttn". strtolower($eIDXI);
    $eIDX = strtolower($eIDXI);
-   global $pge, $eDBI;
-
+   global $eDBI, $usr;
+   
+   if (!$usr->isOfKind( IS_USER )) return;
+   
    require_once( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0};
    $labopen = !($GLOBALS[ $id."DBI" ]->isLabClosed); // add ! closed = true == open = false
 
