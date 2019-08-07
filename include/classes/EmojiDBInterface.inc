@@ -16,7 +16,8 @@ class EmojiDBInterface{
 
 	/** check if DB exists
 	$isDB = $this->myDBC->table_exists( $this->myTable );
-	if ( !$isDB )
+	if ( !$isDB ) // if not fix yourself.
+	// TODO: Put SQL file into setup and use that one here => only one place...
 	{
 		$sqlq = "CREATE TABLE emoji_selections (
 		id INT(32) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -93,6 +94,7 @@ class EmojiDBInterface{
      * @param $emojiId      emoji ID
      */
     function insertRow($elemId, $uid, $emojiId){
+        // TODO: use mkUpdIns from DBConnection (should do exactly this)
 
         // checks whether the user has already given an input for this element, (elemId, uid) - primary key
         $checkKey = $this->myDBC->row_exists("uid", $this->myTable, "elemId = '". $elemId ."' and uid = '". $uid ."'");
