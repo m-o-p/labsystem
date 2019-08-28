@@ -1504,7 +1504,7 @@ label.labsys_mop_multiselectoption:hover {
   margin-left: -32px;
 }
 
-.emoji-popupmenu a:hover {background-color: white;}
+.emoji-popupmenu a:hover {background-color: transparent;}
 
 
 .emoji-popupmenu button{

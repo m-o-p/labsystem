@@ -446,7 +446,8 @@ class EB{ /* ElementButtons */
 		break;
 	}
 
-   if (!$usr->isOfKind( IS_CONTENT_EDITOR )) $labopen=false;
+   if ($usr->isOfKind( IS_CORRECTOR )) $labopen=false;
+
    return "<div class=\"emoji-popup\">
 	  <button onmouseover='updateEmojiMenu(\"" . $eIDX . "\");' class=\"emoji-dropbtn4menu\"><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
               <div id=".$emID." class=\"emoji-popupmenu\">".
