@@ -431,25 +431,30 @@ class EB{ /* ElementButtons */
    $query1 = $eDBI->findUserSelectionsFor($_SESSION['uid'], $eIDX);
    $selections = $query1->fetch_array();
    $path = "../syspix/button_def.gif";
+   $color="transparent";
       switch($selections[0]){
 	case 1:
 		$path = "../syspix/button_like.gif";
+		$color="#33cc33";
 		break;
 	case 2:
 		$path = "../syspix/button_frust.gif";
+		$color="#0000ff";
 		break;
 	case 3:
 		$path = "../syspix/button_sleep.gif";
+		$color="#ffff00";
 		break;
 	case 4:
 		$path = "../syspix/button_dislike.gif";
+		$color="#ff0000";
 		break;
 	}
 
    if ($usr->isOfKind( IS_CORRECTOR )) $labopen=false;
 
-   return "<div class=\"emoji-popup\">
-	  <button onmouseover='updateEmojiMenu(\"" . $eIDX . "\");' class=\"emoji-dropbtn4menu\"><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
+   return "<div class=\"emoji-popup\" width=\"13\" height=\"12\" onmouseenter='updateEmojiMenu(\"" . $eIDX . "\");'>
+	  <button id=but".$emID." class=\"emoji-dropbtn4menu\" style=\"background-color:".$color."\"><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
               <div id=".$emID." class=\"emoji-popupmenu\">".
                 EB::likeButton($eIDX,$emID,$labopen).
                 EB::dislikeButton($eIDX,$emID,$labopen).
@@ -470,10 +475,10 @@ class EB{ /* ElementButtons */
         if ( $labopen )
         {
         return "
-                    <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 1);
+                    <button id=but".$emID."like onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 1);
                         updateEmojiButton($emID , 1); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
                     <img src=\"../syspix/button_like.gif\" width=\"24\" height=\"24\" ><span id=".$emID."like></span></button>
-            ";
+		";
         }else
         {
             return "<div>
@@ -488,7 +493,7 @@ class EB{ /* ElementButtons */
         if ( $labopen )
         {
         return "
-                    <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 2);
+                    <button id=but".$emID."confused onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 2);
                         updateEmojiButton($emID , 2); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
                     <img src=\"../syspix/button_frust.gif\" width=\"24\" height=\"24\" ><span id=".$emID."confused></span></button>
 
@@ -507,7 +512,7 @@ class EB{ /* ElementButtons */
         if ( $labopen )
         {
         return "
-                    <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 3);
+                    <button id=but".$emID."sleep onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 3);
                         updateEmojiButton($emID , 3); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
                     <img src=\"../syspix/button_sleep.gif\" width=\"24\" height=\"24\" ><span id=".$emID."sleep></span></button>
 
@@ -526,7 +531,7 @@ class EB{ /* ElementButtons */
         if ( $labopen )
         {
         return "
-                <button  onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 4);
+                <button id=but".$emID."dislike onclick='insertEmojiSelection(\"". $fullAddress ."\", \"". $_SESSION['uid'] ."\", 4);
                         updateEmojiButton($emID , 4); updateEmojiMenu(\"" . $fullAddress . "\");'class=\"emoji-dropbtn\">
                     <img src=\"../syspix/button_dislike.gif\" width=\"24\" height=\"24\" > <span id=".$emID."dislike></span>
                     </button>

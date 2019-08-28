@@ -2,14 +2,13 @@
 /** This file handles the XMLHttpRequest of the updateEmojiMenu() function in scripts.js */
 
 require_once ("../include/init.inc");
-
-if (! ($usr->isOfKind ( IS_USER )) /* valid call? */
-    ){
+global $eDBI, $usr;
+/**
+if (!$usr->isOfKind( IS_USER )){
         trigger_error ( $lng->get ( "NotAllowedToMkCall" ), E_USER_ERROR );
         exit ();
 }
-
-global $eDBI;
+*/
 
 if (!empty($_REQUEST['elemId'])) {
     $elemId = $_REQUEST['elemId'];
@@ -18,6 +17,7 @@ if (!empty($_REQUEST['elemId'])) {
     exit();
 }
 
+$data = [];
 $selections = $eDBI->findNumOfSelectionsFor(1, $elemId);
 $elem=$selections->fetch_array();
 $data['like'] = $elem[0];

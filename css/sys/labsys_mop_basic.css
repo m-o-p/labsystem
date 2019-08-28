@@ -1467,6 +1467,7 @@ label.labsys_mop_multiselectoption:hover {
   position: relative;
   display: inline-block;
   cursor: pointer;
+  background-color: grey;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -1476,43 +1477,28 @@ label.labsys_mop_multiselectoption:hover {
 /* The actual popup */
 .emoji-popupmenu {
   display: none;
-  width: 64px;
-  background-color: #1e90ff;
-  color: #fff;
   text-align: center;
-  border-radius: 6px;
-  padding: 8px 0;
   position: absolute;
   z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -32px;
 }
 
 /* The actual popup */
 .emoji-popupmenu a{
   display: block;
-  witdh: 64px;
-  background-color: #1e90ff;
-  color: #fff;
   text-align: center;
-  border-radius: 6px;
-  padding: 8px 0;
   z-index: 1;
-  bottom: 125%;
-  left: 100%;
-  margin-left: -32px;
 }
 
-.emoji-popupmenu a:hover {background-color: transparent;}
+.emoji-popupmenu a:hover {background-color: red;}
 
 
 .emoji-popupmenu button{
   cursor: pointer;
+  background-color: grey; 
 }
 
 .emoji-popupmenu: hover {
-  backgroundcolor: #3e8e41;
+background-color: red; 
 }
 
 .emoji-popup:hover .emoji-popupmenu {
@@ -1521,7 +1507,6 @@ label.labsys_mop_multiselectoption:hover {
 }
 
 .emoji-popup:hover .emoji-dropbtn4menu {
-  background-color: #1e90ff;
   display:none;
 }
 
@@ -1544,16 +1529,19 @@ label.labsys_mop_multiselectoption:hover {
 }
 
 .emoji-dropbtn {
-  color: white;
   padding: 8px;
   font-size: 16px;
   border: none;
+
+}
+
+.emoji-dropbtn:hover {
+  padding: 10px;   
+  font-size: 18px;
+  border: none; 
 }
 
 .emoji-dropbtn4menu {
-  color: white;
-  padding: 8px;
-  font-size: 16px;
-  border: none;
+  border: none; 
 }
 

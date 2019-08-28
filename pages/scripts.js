@@ -118,32 +118,58 @@ function insertEmojiSelection(elemId, uid, emojiId) {
 }
 
 function updateEmojiButton(emBId, emChoice){
- var path=""
+ var path="";
+ var colorMenu="transparent";
+ var colorLike="#66ff99";
+ var colorFrust="#66ccff";
+ var colorSleep="#ffffcc";
+ var colorDislike="#ff6666";
+
  switch(emChoice)
  {
    case 1:
    path = "../syspix/button_like.gif";
+   colorMenu = "#33cc33";
+   colorLike = "#33cc33";
    break;
   case 2:
    path = "../syspix/button_frust.gif";
+   colorMenu = "#0000ff";
+   colorFrust = "#0000ff";
    break;
   case 3:
    path = "../syspix/button_sleep.gif";
+   colorMenu = "#ffff00";
+   colorSleep = "#ffff00";
    break;
   case 4:
    path = "../syspix/button_dislike.gif";
+   colorMenu = "#ff0000";
+   colorDislike = "#ff0000";
    break;
   default:
    path = "../syspix/button_def.gif";
+   colorMenu = "transparent";
  }
  var emBIdVar="img"+emBId.id;
+ var butBIdVar="but"+emBId.id;
+ var likeBttn = "but"+emBId.id+"like";
+ var sleepBttn = "but"+emBId.id+"sleep";
+ var conBttn = "but"+emBId.id+"confused";
+ var dislikeBttn = "but"+emBId.id+"dislike";
  document.getElementById(emBIdVar).src=path;
+ document.getElementById(butBIdVar).style.backgroundColor = colorMenu;
+ document.getElementById(likeBttn).style.backgroundColor = colorLike;
+ document.getElementById(sleepBttn).style.backgroundColor = colorSleep;
+ document.getElementById(conBttn).style.backgroundColor = colorFrust;
+ document.getElementById(dislikeBttn).style.backgroundColor = colorDislike;
 }
 
 function updateEmojiMenu(elemId){
     var strURL=encodeURI("../php/emojiUpdate.php?elemId=" + elemId);
     var req = new XMLHttpRequest();
     req.onload = function() {
+	console.log(req.response); //Temporary
 	var obj = JSON.parse(req.response);
 	var likeBttn = "emBttn"+elemId+"like";
 	var sleepBttn = "emBttn"+elemId+"sleep";
