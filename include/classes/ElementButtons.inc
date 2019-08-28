@@ -431,30 +431,27 @@ class EB{ /* ElementButtons */
    $query1 = $eDBI->findUserSelectionsFor($_SESSION['uid'], $eIDX);
    $selections = $query1->fetch_array();
    $path = "../syspix/button_def.gif";
-   $color="transparent";
+   $chosen = 0;
       switch($selections[0]){
 	case 1:
-		$path = "../syspix/button_like.gif";
-		$color="#33cc33";
+		$chosen=1;
 		break;
 	case 2:
-		$path = "../syspix/button_frust.gif";
-		$color="#0000ff";
+                $chosen=2;
 		break;
 	case 3:
-		$path = "../syspix/button_sleep.gif";
-		$color="#ffff00";
+                $chosen=3;
 		break;
 	case 4:
-		$path = "../syspix/button_dislike.gif";
-		$color="#ff0000";
+                $chosen=4;
 		break;
 	}
 
    if ($usr->isOfKind( IS_CORRECTOR )) $labopen=false;
 
-   return "<div class=\"emoji-popup\" width=\"13\" height=\"12\" onmouseenter='updateEmojiMenu(\"" . $eIDX . "\");'>
-	  <button id=but".$emID." class=\"emoji-dropbtn4menu\" style=\"background-color:".$color."\"><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
+   return "<div class=\"emoji-popup\" width=\"13\" height=\"12\">
+	<script type=\"text/javascript\">updateEmojiButton( $emID , $chosen);</script>
+	  <button id=but".$emID." class=\"emoji-dropbtn4menu\" onmouseenter='updateEmojiMenu(\"" . $eIDX . "\");'><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
               <div id=".$emID." class=\"emoji-popupmenu\">".
                 EB::likeButton($eIDX,$emID,$labopen).
                 EB::dislikeButton($eIDX,$emID,$labopen).
