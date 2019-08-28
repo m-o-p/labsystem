@@ -286,6 +286,12 @@ registerIPprefixViolationNote = "You can only register from within the universit
 setupLinkNote       = "If you created a new config the following link may be useful as it points to the config that belongs to the currently open config."
 fileSelectNote      = "You are able to edit all files of this kind and save new ones.<br>To open a file select it from the select above. To save a new file change the file name left to the save button below the textfield."
 
+
+; emoji*.php
+elementMissing     = "Element ID missing from request"
+uidMissing         = "User ID missing from request"
+emojiMissing       = "Emoji ID missing form request"
+
 ;; names for the order by selector ********************************************************************
 restrictTo          = "Restrict to "
 searchFor           = "Search for "

@@ -5,7 +5,7 @@ if ( isset( $GLOBALS["eDBI"] ) ) return; /* require_once doesn't work well */
 
 require_once( INCLUDE_DIR."/classes/Wdbc.inc" );
 
-class EmojiDBInterface{
+class EmojiDBInterface extends Wdbc{
     var $myDBC;
     var $myTable;
 

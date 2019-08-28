@@ -14,27 +14,24 @@ global $eDBI;
 if (!empty($_REQUEST['elemId'])) {
     $elemId = $_REQUEST['elemId'];
 } else {
-    echo "Missing element ID!"; // TODO: use language strings
+    trigger_error ( $lng->get ( "elementMissing" ), E_USER_ERROR );
+    exit();
 }
 
 if (!empty($_REQUEST['uid'])) {
     $uid = $_REQUEST['uid'];
 } else {
-    echo "Missing user ID!";
+    trigger_error ( $lng->get ( "uidMissing" ), E_USER_ERROR );
+    exit();
 }
 
 if (!empty($_REQUEST['emojiId'])) {
     $emojiId = $_REQUEST['emojiId'];
 } else {
-    echo "Missing emoji ID!";
+    trigger_error ( $lng->get ( "emojiMissing" ), E_USER_ERROR );
+    exit();
 }
 
-//$emojiDBI = new EmojiDBInterface();
-//$insert = $emojiDBI->insertRow($_REQUEST['elemId'], $_REQUEST['uid'], $_REQUEST['emojiId']);
-
 $eDBI->insertRow($_REQUEST['elemId'], $_REQUEST['uid'], $_REQUEST['emojiId']);
-
-
-echo "OK";
 
 ?>

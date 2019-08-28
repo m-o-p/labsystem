@@ -446,7 +446,7 @@ class EB{ /* ElementButtons */
 		break;
 	}
 
-
+   if (!$usr->isOfKind( IS_CONTENT_EDITOR )) $labopen=false;
    return "<div class=\"emoji-popup\">
 	  <button onmouseover='updateEmojiMenu(\"" . $eIDX . "\");' class=\"emoji-dropbtn4menu\"><img id=img".$emID." src=".$path." width=\"13\" height=\"12\" ></button>
               <div id=".$emID." class=\"emoji-popupmenu\">".
@@ -462,7 +462,7 @@ class EB{ /* ElementButtons */
 
 
     /**
-     * If lab is open, renders clickable button to rate the lab
+     * Functions for EmojiButtons follow. If lab is open render clickable Button when Usr is User. Else render the accumulative results for this button.
      */
     static function likeButton($fullAddress,$emID,$labopen){
         global $pge;
@@ -482,9 +482,6 @@ class EB{ /* ElementButtons */
         }
     }
 
-    /**
-     * If lab is open, renders clickable button to rate the lab
-     */
     static function confusedButton($fullAddress,$emID,$labopen){
         global $pge;
         if ( $labopen )
@@ -504,10 +501,6 @@ class EB{ /* ElementButtons */
         }
     }
 
-
-    /**
-     * If lab is open, renders clickable button to rate the lab
-     */
     static function boredButton($fullAddress,$emID,$labopen){
         global $pge;
         if ( $labopen )
@@ -527,9 +520,6 @@ class EB{ /* ElementButtons */
         }
     }
 
-    /**
-     * If lab is open, renders clickable button to rate the lab
-     */
     static function dislikeButton($fullAddress,$emID,$labopen){
         global $pge;
         if ( $labopen )

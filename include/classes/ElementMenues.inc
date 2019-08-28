@@ -84,7 +84,7 @@ class EM{ /* ElementMenues */
       return "<div class=\"labsys_mop_elements_menu_".$elShortcut."\">\n".
 //              EB::mail ( $fullAddress, $theEl->elementId.$theEl->idx.': '.$theEl->title ).
              EB::ticket ( $fullAddress ).
-	         EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx).
+	     EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx).
              EB::history( $theEl->history, $fullAddress ).
              "</div>\n".
              "\n\n\t<!-- *************************stop of ".$elShortcut."-element************************* -->\n\n";
@@ -204,7 +204,7 @@ class EM{ /* ElementMenues */
 //                EB::mail ( $fullAddress, $eC->elementId.$eC->idx.': '.$eC->title ).
                EB::ticket ( $fullAddress ).
                EB::history( $eC->history, $fullAddress ).
-		EB::emojiMenu($fullAddress, $eC->elementId.$eC->idx).
+	       EB::emojiMenu($fullAddress, $eC->elementId.$eC->idx).
                //EB::viewStructure( $fullAddress ).
 		EB::link2Element( $fullAddress, $eC ).
                //EB::createNew( "c" ).
@@ -500,7 +500,7 @@ class EM{ /* ElementMenues */
     	   EB::link2Element(  $fullAddress ).
            //($theEl->elementId == 'l' ? EB::createNew(     $elShortcut  ).EB::delete(        $fullAddress ) : '').
            EB::view(          $fullAddress ).
-	       EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx).
+	   EB::emojiMenu($fullAddress, $theEl->elementId.$theEl->idx).
            EB::edit(          $fullAddress ).
            EB::cloneMe(   $theEl->elementId.$theEl->idx );
   }

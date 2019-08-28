@@ -14,7 +14,8 @@ global $eDBI;
 if (!empty($_REQUEST['elemId'])) {
     $elemId = $_REQUEST['elemId'];
 } else {
-    echo "Missing element ID!"; // TODO: use language strings
+    trigger_error ( $lng->get ( "elementMissing" ), E_USER_ERROR );
+    exit();
 }
 
 $selections = $eDBI->findNumOfSelectionsFor(1, $elemId);
