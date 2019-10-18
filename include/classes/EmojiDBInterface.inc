@@ -14,7 +14,7 @@ class EmojiDBInterface extends Wdbc{
         $this->myDBC = $wDBI;
         $this->myTable = "emoji_selections";
 
-	/** check if DB exists
+	/** check if DB exists */
 	$isDB = $this->myDBC->table_exists( $this->myTable );
 	if ( !$isDB ) // if not fix yourself.
 	// TODO: Put SQL file into setup and use that one here => only one place...
@@ -28,7 +28,6 @@ class EmojiDBInterface extends Wdbc{
 		)";
 		$this->myDBC->query( $sqlq );
 	}
-	*/
    }
 
     /** Finds the number of selections of a given emoji for a given element. Uses the full address of the element.
