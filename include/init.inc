@@ -39,8 +39,7 @@ ini_set( "register_globals", "Off" ); // a) security b) problems may arise with 
 
 /* The order of the includes should be like it is since the later
  * includes require the presence of the previous ones. */
-
-define( "INCLUDE_DIR", "../include" );
+define( "INCLUDE_DIR", __DIR__ );
 
 require( INCLUDE_DIR."/classes/Url.inc" );      // Include url handling and rewriting stuff. => Object $url.
                                                 // needed to get parameters from the url ($url->get, ->available)
