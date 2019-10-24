@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand navbar-dark text-light">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+        <span class="small">
+            {{ "now"|date(lng.get("DateFormat")) }}
+        </span>
+        </li>
+        <li class="nav-item">
+        <span class="small">
+            {{ parts['footer']['additional_strings']['totaltime'] }} sec
+        </span>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="https://github.com/m-o-p/labsystem/issues/new?title=Explanatory%20description&body='{{ parts['footer']['additional_strings']['ticketbody'] }}'"
+               title="{{ lng.get("newTicket") }}">
+            <i class="fas fa-bug"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <span class="nav-link">
+                © <a href='https://net.in.tum.de/' target='_blank'>Chair of Network Architectures and Services</a>
+            </span>
+        </li>
+        <li class="nav-item">
+            <!--
+                Please keep the link to the project page here to enable other people to find and use the system... Thank you!
+            -->
+            <a class="nav-link" href="http://labsystem.m-o-p.de" target="_blank"><img src="../syspix/labsystem_76x7.gif" width="76" height="7" alt="labsystem"></a>
+        </li>
+        <li class="nav-item">
+            <!--
+                Please do not remove this acknowledgement to me thanks!
+            -->
+            <a class="nav-link" href="http://www.pahl.de?site=__contact&amp;subject=labsystem@{{ parts['footer']['additional_strings']['servername'] }}" target="_blank">mop</a>
+        </li>
+    </ul>
+</nav>

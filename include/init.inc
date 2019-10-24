@@ -103,4 +103,6 @@ $labsystem_LogInLink = ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin
     '../pages/login.php' );
 
 $labsystem_LogOutLink = "../php/logout.php";
+
+require(INCLUDE_DIR."/twig.inc");
 ?>

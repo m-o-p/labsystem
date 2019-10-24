@@ -180,12 +180,16 @@ class Pge extends LpElement{
   */
   //function show(){
   function show( $fullAddress='', $paragraph="", $hideNavigation=false ){
+    echo $this->get($fullAddress, $paragraph, $hideNavigation );
+  }
+
+  function get( $fullAddress='', $paragraph="", $hideNavigation=false ){
     global $lng;
     if ( !$this->isVisible() ) // not enough rights->no content
       $this->contents = "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
 
     // The __LINKQUERY__ replacements must be set here since they may not be correct before.
-    echo( $this->replaceConstants( $this->contents ) );
+    return $this->replaceConstants( $this->contents );
   }
 
   /**

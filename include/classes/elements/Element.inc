@@ -229,8 +229,19 @@ class Element{
   */
   function getMenu( $fullAddress, &$menu2Populate, $paragraph="", $isActive=false ){
     global $url;
-    if ( $this->isVisible() ) return $menu2Populate->entry( ( $paragraph != "" ?  $paragraph.". "  : '' ).$this->getMatchingMenu(), "../pages/view.php?address=".$fullAddress, $isActive );
-                         else return "";
+    if ($this->isVisible()) {
+      return $menu2Populate->entry(($paragraph != "" ? $paragraph . ". " : '') . $this->getMatchingMenu(), "../pages/view.php?address=" . $fullAddress, $isActive);
+    } else {
+      return "";
+    }
+  }
+
+  function getMenuv2($fullAddress, &$menu2Populate, $paragraph = "", $isActive = false) {
+    if ($this->isVisible()) {
+      return $menu2Populate->entry(($paragraph != "" ? $paragraph . ". " : '') . $this->getMatchingMenu(), "../pages/view.php?address=" . $fullAddress, $isActive);
+    } else {
+      return null;
+    }
   }
 
   /**

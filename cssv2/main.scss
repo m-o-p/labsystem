@@ -1,0 +1,195 @@
+$header_height: 4rem;
+$footer_height: 3rem;
+
+html {
+    height: 100%
+}
+
+body {
+    min-height: 100%;
+
+    a {
+        outline: none;
+    }
+
+    // Truncate long text and append "..."
+    .txt-ellipsis {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #mainwrapper {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+
+        .header {
+            height: $header_height;
+
+            img {
+                max-height: 100%;
+                max-width: initial;
+            }
+
+            .topnav {
+                font-size: 90%;
+
+                .navbar-nav {
+                    align-items: center;
+
+                    .nav-item .nav-link {
+                        padding: 0 0.75rem;
+                        display: inline-block;
+                    }
+                }
+            }
+        }
+
+        .content {
+            position: relative;
+
+            height: calc(100vh - #{$header_height} - #{$footer_height});
+
+
+            #sidenav {
+                position: relative;
+                width: 20rem;
+
+                > ul {
+                    width: 19rem;
+                }
+
+                overflow-y: scroll;
+                overflow-x: hidden;
+                font-size: 11pt;
+                height: 100%;
+
+                transition: width ease-in-out .2s;
+
+                &.collapsed {
+                    width: 0;
+                }
+
+                .group .group ul {
+                    margin-left: 1em;
+                }
+
+                .nav-item {
+                    width: 100%;
+                    position: relative;
+
+                    .nav-link {
+                        padding: 0.3em 1rem;
+
+
+
+                        // Todo: Remove fix for mopstyle
+                        color: rgba(255, 255, 255, .5);
+
+                        &:hover {
+                            background-color: rgba(255, 255, 255, 0.1);
+
+                            &.wrapper a:hover {
+                                background-color: transparent;
+                            }
+                        }
+
+
+                        &.wrapper {
+                            position: relative;
+                            display: flex;
+                            justify-content: space-between;
+
+                            .navgroupheader {
+                                margin-right: 1.5em;
+                                max-width: 100%;
+                            }
+
+                            .nav-link {
+                                padding: 0;
+                            }
+
+                            // Spacing for expand/collapse
+                            .nav-link~.nav-link {
+                                margin-left: .5em;
+                            }
+                        }
+
+                        &.active {
+                            color: #eee;
+                        }
+
+                        &.bg-secondary {
+                            padding: 0.25rem 0.1rem;
+                        }
+
+                        &:after {
+                            font-family: serif;
+                            color: #222;
+
+                            width: 1.2em;
+                            height: 1.2em;
+
+                            position: absolute; // Do no render text-decoration: https://stackoverflow.com/a/3874248/9453030
+                            right: 0.2em;
+                            top: 0.4em;
+                            line-height: 1em;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+
+                            background: rgba(255, 255, 255, 0.4);
+                            border-radius: 50%;
+                        }
+
+                        &[data-toggle="collapse"] {
+                            &[aria-expanded="true"]:after {
+                                content: "–";
+                            }
+
+                            &[aria-expanded="false"]:after {
+                                content: "+";
+                            }
+                        }
+
+                        i {
+                            width: 1.3rem;
+                            text-align: center;
+                        }
+                    }
+                }
+
+                .subnav {
+                    .nav-item {
+                        width: 100%;
+                        position: relative;
+                    }
+                }
+            }
+
+            .page {
+                flex-grow: 1;
+                position: relative;
+                overflow-y: auto;
+            }
+        }
+
+        .footer {
+            font-size: 90%;
+            height: $footer_height;
+
+            .navbar-nav {
+                align-items: center;
+
+                .nav-item > * {
+                    padding: 0 0.75rem;
+                    display: inline-block;
+                }
+            }
+        }
+    }
+
+
+}

@@ -179,6 +179,17 @@ class Url
     }
     return $this->rawLink2($url, $this->getMergedParams($additionalParams, $params), $baseParams) . $fragment;
   }
+
+  /**
+   * Toggle presence of $key in URL
+   * @param $key
+   * @return The
+   */
+  function toggle_link($key) {
+    return $this->available($key) ? $this->rawLink2(NULL, NULL, removeFromArray($_GET, $key)) : $this->rawLink2(NULL, Array($key => 'true'), $_GET);
+  }
+
 }
+
 $url = new Url();
 ?>

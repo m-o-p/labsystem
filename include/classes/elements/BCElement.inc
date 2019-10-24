@@ -268,5 +268,37 @@ class BCElement extends LcElement{
 
     return $retVal;
   }
+
+
+  function getMenuv2($fullAddress, &$menu2Populate, $extParagraph = "", $unfold = false) {
+    global $lng, $url;
+    $children = [];
+
+    if (!$this->isVisible()) return "";
+
+
+    /** parse the submenu entries **/
+    $structureArray = $this->getMyVisibleElements();
+
+    foreach ($structureArray as $value) {
+      $linkAddr = $fullAddress . "." . $value;
+      $paragraph = ($extParagraph != "" ? $extParagraph . "." : '') . $this->getParagraph($value);
+      $isActive = ($linkAddr . '.' == substr($url->get('address') . '.', 0, strlen($linkAddr) + 1));
+
+      // show the element's menu entry
+      $id = $value{0};
+      $num = substr($value, 1);
+      $element = $GLOBALS[$id . "DBI"]->getMenuData2idx($num, true, $this->isInLab);
+      if (!$element) {
+        $children[] = $menu2Populate->entry($value . " " . $lng->get("doesNotExist"), "../pages/view.php?address=" . $linkAddr);
+      } else {
+        $children[] = $element->getMenuv2($linkAddr, $menu2Populate, $paragraph, $isActive, $unfold);
+      }
+    }
+    /** +++ **/
+    return $menu2Populate->entry(($extParagraph != "" ? $extParagraph . ". " : '') . $this->getMatchingMenu(), "../pages/view.php?address=" . $fullAddress, ($url->get('address') == $fullAddress), $unfold, $children);
+
+  }
 }
+
 ?>

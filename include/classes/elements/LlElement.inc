@@ -1275,6 +1275,77 @@ class LlElement extends Element{
   }
 
 
+  function getMenuv2($linkFullAddress, &$menu2Populate, $prefix = "", $unfold = false) {
+    global $lng, $url;
+
+    if (!$this->isVisible()) {
+      return;
+    }
+
+    $fullAddress = $url->get('address'); // to determine if active
+
+    // lab's menu entry
+    $children = [];
+
+    // Address splitting.
+    $parentAddr = $fullAddress;
+    $this->splitAddress($parentAddr, $myAddrArray);
+
+    if (count($myAddrArray) > 1) $first = $myAddrArray[1]; else $first = "";
+    if (count($myAddrArray) > 1) $last = $myAddrArray[count($myAddrArray) - 1]; else $last = "";
+
+    $unfold_lab_instance = substr($fullAddress, 0, strlen($linkFullAddress)) == $linkFullAddress;
+
+
+    // prelab's menu
+    if ($this->preLabIsVisible2Me) {
+      // Is the menu active and should unfold?
+      $unfold = ($first == "C" . $this->prelabCollectionIdx) || ($last == "allPrelabQ");
+
+      // unfold if active
+      $children[] = $this->preLab->getMenuv2($linkFullAddress . ".C" . $this->prelabCollectionIdx, $menu2Populate, $lng->get("lPrefixPreLab"), $unfold);
+      // additional menus
+      // close/ all questions
+      $children[] = $menu2Populate->entry(
+        ($this->preLabIsFinished || !$this->userIsViewing ? $lng->get("mnuEntryPrelabFin") : $lng->get("mnuEntryPrelab2Fin")),
+        "../pages/view.php?address=" . $linkFullAddress . ".allPrelabQ",
+        ($last == "allPrelabQ")
+      );
+
+
+      // prelab status
+      $children[] = $menu2Populate->entry(
+        $lng->get("mnuEntryPreLabStats"),
+        "../pages/view.php?address=" . $linkFullAddress . ".labStatus&orderBy=" . urlencode($lng->get("orderPrelabFin")),
+        ($last == "labStatus")
+      );
+
+    }
+
+    // lab's menu
+    if ($this->labIsVisible2Me) {
+      // Is the menu active and should unfold?
+      $unfold = ($first == "C" . $this->labCollectionIdx) || ($last == "allLabQ");
+
+      $children[] = $this->lab->getMenuv2($linkFullAddress . ".C" . $this->labCollectionIdx, $menu2Populate, $lng->get("lPrefixLab"), $unfold);
+      // additional menus
+      // close lab/ all lab questions
+      $children[] = $menu2Populate->entry(
+        ($this->labIsClosed || !$this->userIsViewing ? $lng->get("mnuEntryLabFin") : $lng->get("mnuEntryLab2Fin")),
+        "../pages/view.php?address=" . $linkFullAddress . ".allLabQ",
+        ($last == "allLabQ")
+      );
+
+    }
+    // lab status
+    $children[] = $menu2Populate->entry($lng->get("mnuEntryLabStatus"), "../pages/view.php?address=" . $linkFullAddress . ".labStatus", ($last == "labStatus"));
+
+
+    return $menu2Populate->entry($prefix . $this->getMatchingMenu(), "../pages/view.php?address=" . $linkFullAddress, ($linkFullAddress == $fullAddress), $unfold_lab_instance, $children);
+
+  }
+
+
 // The next functions are used for the element's edit page. *************************************************
 
   /**

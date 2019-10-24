@@ -120,12 +120,12 @@ MnuEntrySendMail     = "Mail senden"
 MnuEntryCourseContent= "Kursinhalt"
 
 ;l
-mnuEntryPrelab2Fin  = "&raquo;! alle Fragen" ; appears under the prelab section if the prelab is not finished
-mnuEntryPrelabFin   = "&raquo; alle Fragen" ; same as above but prelab finished
-mnuEntryPreLabStats = "&raquo; PrelabStatus"
-mnuEntryLab2Fin     = "&raquo;! alle Fragen"
-mnuEntryLabFin      = "&raquo; alle Fragen"
-mnuEntryLabStatus   = "&raquo; LabStatus"
+mnuEntryPrelab2Fin  = "»! alle Fragen" ; appears under the prelab section if the prelab is not finished
+mnuEntryPrelabFin   = "» alle Fragen" ; same as above but prelab finished
+mnuEntryPreLabStats = "» PrelabStatus"
+mnuEntryLab2Fin     = "»! alle Fragen"
+mnuEntryLabFin      = "» alle Fragen"
+mnuEntryLabStatus   = "» LabStatus"
 
 ; uaMyData.php
 MnuEntryUaMyData    = "meineDaten"
@@ -161,8 +161,11 @@ cloneThisElement    = "Dieses Element klonen"
 DataHasBeenSaved    = "Die Daten wurden gespeichert."
 
 ;l
-dataOf              = "Daten von "                ;; In title row when a corrector views someones data (followed by user's name)
-showAllUADesc       = "alle Benutzer"             ;; Follows to the previous if the user views all user's data.
+dataOf              = "Zeige Daten von: "        ;; In title row when a corrector views someones data (followed by user's name)
+showAllUADesc       = "Allen Benutzern"          ;; Follows to the previous if the user views all user's data.
+showAnswersText     = "Antworten anzeigen"       ;; Description for toggling visibility of user's answers.
+forceShowAllUsersData = "Antworten aller Benutzer anzeigen"        ;; Link for setting seeMe=all
+
 
 ; sendMail.php
 MailHasBeenSent     = "Die Mail wurde verschickt."
@@ -435,6 +438,7 @@ closeLab            = "Lab schlie&szlig;en"
 showAllUsersAnswers = "Antworten ALLEr BENUTZER"
 stopSeeingData      = "Ich will keine Daten von anderen mehr sehen." ;; below the user statistic page if the corrector is viewing someones data
 hideExampleSolutionInThisTab = "Musterl&ouml;sungen ausblenden"
+showExampleSolutionInThisTab = "Musterl&ouml;sungen anzeigen"
 exmpleSolutionHere  = "Musterl&ouml;sungen hier anzeigen/ ausblenden."
 pseudoNames         = "Pseudonamen verwenden"
 updateStatus        = "Status aktualisieren"

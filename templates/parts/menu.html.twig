@@ -1,0 +1,7 @@
+<nav id="sidenav" class="bg-dark text-light collapse show navbar-collapse">
+    <ul class="nav flex-column">
+        {% for e in parts['menu'] %}
+            {% include 'parts/menu-item.html.twig' with {'entry': e, 'fold_prefix': loop.index0} %}
+        {% endfor %}
+    </ul>
+</nav>

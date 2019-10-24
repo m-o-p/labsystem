@@ -1,0 +1,38 @@
+{% set navid = "navelt_" ~ fold_prefix ~"_" ~ loop.index0 %}
+<li class="nav-item">
+    {% if entry['children']|length > 0 %}
+        <div class="group">
+            {% if entry['href'] %}
+                <span class="nav-link wrapper {{ entry['css_class'] }}">
+                    <a class="nav-link txt-ellipsis"  href="{{ entry['href'] }}" {% if entry['target_blank'] %}target="_blank"{% endif %} title="{{ entry['title'] }}">
+                        {{ entry['text'] }}
+                    </a>
+                    <a class="nav-link bg-secondary text-center text-dark {{ entry['css_class'] }}" data-toggle="collapse" href="#{{ navid }}" aria-expanded="{{ entry['unfold'] ?'true': 'false' }}" aria-controls="{{ navid }}">
+                        {# +/- icon, added via css #}
+                    </a>
+                </span>
+            {% else %}
+                {# Gray menu seperators #}
+                <span class="nav-link wrapper bg-secondary d-flex {{ entry['css_class'] }}">
+                    <span class="navgroupheader text-center text-dark flex-grow-1 txt-ellipsis">
+                        {{ entry['text'] }}
+                    </span>
+                    <a class="nav-link bg-secondary text-center text-dark" data-toggle="collapse" href="#{{ navid }}" aria-expanded="{{ entry['unfold'] ?'true': 'false' }}" aria-controls="{{ navid }}">
+                        {# +/- icon, added via css #}
+                    </a>
+                </span>
+            {% endif %}
+
+            <ul id="{{ navid }}" class="subnav nav flex-column collapse {{ entry['unfold'] ?'show': '' }}">
+                {% for c in entry['children'] %}
+                    {% include 'parts/menu-item.html.twig' with {'entry': c, 'fold_prefix': fold_prefix ~"_" ~ loop.index0} %}
+                {% endfor %}
+            </ul>
+        </div>
+
+    {% else %}
+        <a class="nav-link txt-ellipsis {{ entry['css_class'] }}" href="{{ entry['href'] }}" {% if entry['target_blank'] %} target="_blank" {% endif %} title="{{ entry['title'] }}">
+            {{ entry['text'] }}
+        </a>
+    {% endif %}
+</li>

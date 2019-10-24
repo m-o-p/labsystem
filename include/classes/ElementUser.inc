@@ -89,6 +89,16 @@ class ElementUser {
   }
 
   /**
+   * Checks if the $usr->userRights or $ownRole are fulfilled.
+   * @param string $role      The bitmask (role) to check for. AS STRING!
+   * @param int $ownRole      If given, the $role is checked against this. (p.e. in helper.inc::rightsBox() ).
+   * @return bool             True, if the rights are fulfilled false otherwise.
+   */
+  function isOfKindS($role, $ownRole=-1) {
+    return $this->isOfKind(constant($role), $ownRole);
+  }
+
+  /**
   * Shows the relevant details in one row (for manageUsers).
   * @param $prefix        "$prefix_" is added to the Identifier (for form processing).
   * @param $disabled      Should the inputs be disabled?

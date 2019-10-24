@@ -19,31 +19,43 @@
  */
 
 /**
-* View the $firstFinal element from the database.
-*
-* @module     ../pages/view.php
-* @author     Marc-Oliver Pahl
-* @copyright  Marc-Oliver Pahl 2005
-* @version    1.0
-*
-* @param $_GET['address'] Address of element to be shown.
-*/
-require( "../include/init.inc" );
-require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0}; $num = substr( $firstFinal, 1);
-require( "../php/getDBIbyID.inc" ); /* -> $DBI */
+ * View the $firstFinal element from the database.
+ *
+ * @module     ../pages/view.php
+ * @param $_GET ['address'] Address of element to be shown.
+ * @copyright  Marc-Oliver Pahl 2005
+ * @version    1.0
+ *
+ * @author     Marc-Oliver Pahl
+ */
+header('Content-type: text/html; charset=utf-8');
 
-if ( !$element = $DBI->getData2idx( $num ) ){
-                                              header("HTTP/1.0 404 Not Found");
-                                              trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
-                                              die();
-                                             }
+require("../include/init.inc");
+require("../php/getFirstLastFinal.inc");
+$id = $firstFinal{0};
+$num = substr($firstFinal, 1);
+require("../php/getDBIbyID.inc"); /* -> $DBI */
 
-$pge->title        = $element->title;
+require(INCLUDE_DIR . "/sysalert.inc");
+
+
+
+
+if (!$element = $DBI->getData2idx($num)) {
+  header("HTTP/1.0 404 Not Found");
+  trigger_error($lng->get(strtolower($id) . "Number") . $num . " " . $lng->get("doesNotExist"), E_USER_ERROR);
+  die();
+}
+
+$pge->title = $element->title;
 $pge->matchingMenu = $element->getMatchingMenu();
 
-$pge->put( $element->show( $url->get("address"), "" ) );
+$pge->put($element->show($url->get("address"), ""));
 
 $GLOBALS['Logger']->logReferrerEvent();
 
-require( $cfg->get("SystemPageLayoutFile") );
+require($cfg->get("SystemPageLayoutFile"));
+
+
+
 ?>

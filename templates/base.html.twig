@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="{{ syslang }}">
+<head>
+    <meta name="generator" content="labsystem.m-o-p.de">
+    <meta charset="UTF-8">
+
+    <link rel="shortcut icon" href="{{ cfg.get('Favicon') }}">
+
+    <link rel="stylesheet" type="text/css" href="{{ cfg.get('SystemStyleSheet') }}">
+
+    {% if cfg.doesExist('SysOverridingSheet') and cfg.get('SysOverridingSheet') %}
+        <link rel="stylesheet" type="text/css" href="{{ cfg.get('SysOverridingSheet') }}">
+    {% endif %}
+
+    <link rel="stylesheet" type="text/css" href="{{ cfg.get('UserStyleSheet') }}">
+    <link rel="stylesheet" type="text/css" href="{{ cfg.get('PrintStyleSheet') }}" media="print">
+
+    <link rel="stylesheet" type="text/css" href="../plugins/bootstrap/css/bootstrap.min.css">
+
+    <link href="../plugins/fontawesome/css/all.css" rel="stylesheet"> <!--load all styles -->
+
+    <link rel="stylesheet" type="text/css" href="../cssv2/main.css">
+
+
+    <script type="text/javascript" src="../plugins/jquery/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="../plugins/popper.js/popper.min.js"></script>
+    <script type="text/javascript" src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../pages/scripts.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var discardChangesWarning = "{{ lng.get('discardChangesWarning') }}";
+    </script>
+
+    {% if cfg.doesExist('tinyMCE') and cfg.get('tinyMCE') == 'TRUE' and url.available('tinyMCE') %}
+        <script type="text/javascript" src="../plugins/tiny_mce/tiny_mce.js"></script>
+
+    {% endif %}
+
+    {% if cfg.doesExist('google-code-prettify') and cfg.get('google-code-prettify') == 'TRUE' %}
+        <link href="../plugins/google-code-prettify/prettify.css" type="text/css" rel="stylesheet"/>
+        <style type="text/css" media="screen">
+            .prettyprint, .labsys_mop_contentArea .labsys_mop_elements_p_around .prettyprint {
+                background-color: #fff;
+                color: #000;
+            }
+        </style>
+        <script type="text/javascript" src="../plugins/google-code-prettify/prettify.js"></script>
+    {% endif %}
+
+
+    <title>
+        {{ pge.replaceConstants(pge.title) }} [{{ usr.userName }}@{{ cfg.get('SystemTitle') }}]
+
+    </title>
+</head>
+
+<body
+        data-usercss="{{ cfg.get('UserStyleSheet') }}"
+        data-enable_prettyprint="{{ cfg.doesExist('google-code-prettify') and cfg.get('google-code-prettify') == 'TRUE' ? 1 : 0 }}"
+        data-enable_tinymce="{{ cfg.doesExist('tinyMCE') and cfg.get('tinyMCE') == 'TRUE' and url.available('tinyMCE') ? 1 : 0 }}"
+        data-nav_prevpage="{{ nav['prev'] }}"
+        data-nav_nextpage="{{ nav['next'] }}"
+        data-nav-tocpage="{{ nav['toc'] }}">
+<div id="mainwrapper">
+    <div class="header d-flex bg-dark justify-content-between align-items-center">
+        {% include "parts/header.html.twig" %}
+    </div>
+    <div class="content d-flex">
+        <div class="nav side">
+            {% include "parts/menu.html.twig" %}
+        </div>
+        <div class="page p-3 ">
+            <div class="mx-auto container">
+                {{ page|raw }}
+            </div>
+        </div>
+    </div>
+    <div class="footer bg-dark d-flex justify-content-end align-items-center">
+        {% include "parts/footer.html.twig" %}
+    </div>
+</div>
+
+{% if SYSALERT %}
+    <script type="text/javascript">alert({{ SYSALERT }});</script>
+{% endif %}
+{% if SYSINFO %}
+    <script type="text/javascript">alert({{ SYSINFO }});</script>
+{% endif %}
+
+</body>
+</html>
