@@ -26,6 +26,9 @@
  *   include/menu.inc
  *   pages/accessibleLabs.php
  */
+
+global $sDBI, $lDBI;
+
 $allVisibleLabIDX = array();
 // First the scheduled labs are collected as they should be displayed in the
 // order they are scheduled.
