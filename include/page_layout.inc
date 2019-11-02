@@ -65,6 +65,17 @@ require(INCLUDE_DIR . "/header.inc");
 require(INCLUDE_DIR . "/menu_v2.inc");
 require(INCLUDE_DIR . "/footer.inc");
 
+
+
+if($pge->get() == "" and $pge->isVisible()) {
+  $pge_mode = 'include';
+  $pge_content = $pge->get_template();
+} else {
+  $pge_mode = 'echo';
+  $pge_content = $pge->get();
+}
+
+
 $template->display([
   'cfg' => $cfg,
   'lng' => $lng,
@@ -72,7 +83,8 @@ $template->display([
   'url' => $url,
   'usr' => $usr,
   'syslang' => $runningSystemLanguage,
-  'page' => $pge->get(),
+  'pge_mode' => $pge_mode,
+  'pge_content' => $pge_content,
   'nav' => [
     'prev' => $linkToPreviousPage,
     'next' => $linkToNextPage,

@@ -71,7 +71,11 @@
         </div>
         <div class="page p-3 ">
             <div class="mx-auto container">
-                {{ page|raw }}
+                {% if pge_mode == 'echo' %}
+                    {{ pge_content|raw }}
+                {% elseif pge_mode == 'include' %}
+                    {% include pge_content %}
+                {% endif %}
             </div>
         </div>
     </div>

@@ -1,0 +1,24 @@
+<h2>{{ pge.title }}</h2>
+<p>{{ lng.get("TxtLogInPage")| replaceLabsystemConstants|raw }}</p>
+<form name="login" method="post" action="{{ url.rawLink2("../php/authenticate.php") }}">
+    {% if url.available('redirectTo') %}
+        <input type="hidden" name="REDIRECTTO" value="{{ url.get('redirectTo')|trim }}">
+    {% endif %}
+    <div class="form-group">
+        <label for="username">{{ lng.get("userName") }}</label>
+        <input type="text" class="form-control" id="username" name="USERNAME" autofocus>
+    </div>
+    <div class="form-group">
+        <label for="password">{{ lng.get("passWord") }}</label>
+        <input type="password" class="form-control" id="password" name="PASSWORD">
+    </div>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="stayloggedin" name="stayLoggedIn">
+        <label class="form-check-label" for="stayloggedin">{{ lng.get("StayLoggedIn") }}</label>
+    </div>
+    <button type="submit" name="login" class="btn btn-primary">{{ lng.get("MnuEntryLogIn") }}</button>
+</form>
+
+<div class="alert alert-secondary mt-5" role="alert">
+    <p>{{ lng.get("NoteLogInPage")|raw }}</p>
+</div>

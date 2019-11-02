@@ -37,6 +37,8 @@ class Pge extends LpElement{
   var $nextTab = 1; // the value of the next available TabNumber (for forms and menu elements)
   var $replaceKey;
 
+  private $template;
+
   /**
   * In this function the strings that will be replaced when displaying and their replacements are initialized.
   */
@@ -190,6 +192,14 @@ class Pge extends LpElement{
 
     // The __LINKQUERY__ replacements must be set here since they may not be correct before.
     return $this->replaceConstants( $this->contents );
+  }
+
+  function set_template($template_name) {
+    $this->template = $template_name;
+  }
+
+  function get_template() {
+    return $this->template;
   }
 
   /**
