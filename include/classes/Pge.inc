@@ -39,6 +39,10 @@ class Pge extends LpElement{
 
   private $template;
 
+
+  /** @var bool $renderModeLegacy **/
+  public $renderModeLegacy = true;
+
   /**
   * In this function the strings that will be replaced when displaying and their replacements are initialized.
   */

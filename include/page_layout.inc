@@ -66,13 +66,10 @@ require(INCLUDE_DIR . "/menu_v2.inc");
 require(INCLUDE_DIR . "/footer.inc");
 
 
-
-if($pge->get() == "" and $pge->isVisible()) {
-  $pge_mode = 'include';
-  $pge_content = $pge->get_template();
+if ($pge->get() == "" and $pge->isVisible()) {
+  $pge->renderModeLegacy = false;
 } else {
-  $pge_mode = 'echo';
-  $pge_content = $pge->get();
+  $pge->renderModeLegacy = true;
 }
 
 
@@ -83,8 +80,6 @@ $template->display([
   'url' => $url,
   'usr' => $usr,
   'syslang' => $runningSystemLanguage,
-  'pge_mode' => $pge_mode,
-  'pge_content' => $pge_content,
   'nav' => [
     'prev' => $linkToPreviousPage,
     'next' => $linkToNextPage,
