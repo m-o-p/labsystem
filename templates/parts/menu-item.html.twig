@@ -14,7 +14,7 @@
             {% else %}
                 {# Gray menu seperators #}
                 <span class="nav-link wrapper bg-secondary d-flex {{ entry['css_class'] }}">
-                    <span class="navgroupheader text-center text-dark flex-grow-1 txt-ellipsis">
+                    <span class="navgroupheader text-center flex-grow-1 txt-ellipsis">
                         {{ entry['text'] }}
                     </span>
                     <a class="nav-link bg-secondary text-center text-dark" data-toggle="collapse" href="#{{ navid }}" aria-expanded="{{ entry['unfold'] ?'true': 'false' }}" aria-controls="{{ navid }}">
