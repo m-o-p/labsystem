@@ -37,8 +37,11 @@ class Pge extends LpElement{
   var $nextTab = 1; // the value of the next available TabNumber (for forms and menu elements)
   var $replaceKey;
 
+  // Template to be rendered
   private $template;
 
+  // Twig additional twig context for template
+  private $template_context = [];
 
   /** @var bool $renderModeLegacy **/
   public $renderModeLegacy = true;
@@ -204,6 +207,14 @@ class Pge extends LpElement{
 
   function get_template() {
     return $this->template;
+  }
+
+  function add_context($key, $value) {
+    $this->template_context[$key] = $value;
+  }
+
+  function get_context($key) {
+    return $this->template_context[$key];
   }
 
   /**
