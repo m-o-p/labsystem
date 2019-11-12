@@ -1,0 +1,17 @@
+<h1>{{ pge.title }}</h1>
+<p>{{ lng.get("myRightsNote")| replaceLabsystemConstants|raw }}</p>
+
+<form name="myRightsEdit" method="POST" action="{{ url.rawLink2() }}">
+    {% for choice in pge.get_context('rights_choices') %}
+        <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" id="UR_{{ choice }}" name="UR_{{ choice }}" value="{{ choice }}" onchange='isDirty=true'
+                   {% if usr.isOfKind(choice, pge.get_context('rights')) %}checked=""{% endif %}
+                    {% if choice in pge.get_context('nonRemovableRights') %}disabled=""{% endif %}>
+
+            <label class="form-check-label" for="UR_{{ choice }}">{{ lng.get("Explain_UR_" ~ choice) }} ({{ choice }})</label>
+        </div>
+    {% endfor %}
+
+    <input type="submit" class="btn btn-primary" name="change_rights" value="{{ lng.get("apply") }}" onclick='isDirty=false'>
+    <input type="submit" class="btn btn-secondary" name="thisTabOnly" value="{{ lng.get('changeRightsInThisTabOnly') }}" onclick='isDirty=false'>
+</form>
