@@ -1,4 +1,4 @@
-<h2>{{ pge.title }}</h2>
+<h1>{{ pge.title }}</h1>
 <p>{{ lng.get("TxtLogInPage")| replaceLabsystemConstants|raw }}</p>
 <form name="login" method="post" action="{{ url.rawLink2("../php/authenticate.php") }}">
     {% if url.available('redirectTo') %}
