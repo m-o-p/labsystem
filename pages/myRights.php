@@ -60,7 +60,6 @@ if (!empty($_POST) && ($newUsrRights != $usr->userRights)) {
     $url->rem('myRights');
   } else {
     //only in this tab...
-    var_dump($newUsrRights);
     $url->put('myRights', $newUsrRights);
     // validity checked above already!
     $usr->userRights = $newUsrRights;
