@@ -104,6 +104,8 @@ titleUaCreateUsr    = "Create users"
 titleRegister       = "Registering for the course"
 
 ;; menu entries ***************************************************************************************
+toggleMenu          = "Toggle Menu"
+
 ; login.php
 MnuEntryLogIn       = "log in"
 MnuEntryLogOut      = "log out"

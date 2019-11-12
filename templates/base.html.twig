@@ -62,14 +62,17 @@
         data-nav_nextpage="{{ nav['next'] }}"
         data-nav-tocpage="{{ nav['toc'] }}">
 <div id="mainwrapper">
-    <div class="header d-flex bg-dark justify-content-between align-items-center">
+    <div class="header d-flex bg-dark justify-content-between align-items-center border-secondary border-bottom">
         {% include "parts/header.html.twig" %}
     </div>
+    <div id="shittybrowser" class="alert alert-danger m-2">
+        Internet Explorer is a shitty browser and not supported!
+    </div>
     <div class="content d-flex">
-        <div class="nav side">
+        <div class="nav">
             {% include "parts/menu.html.twig" %}
         </div>
-        <div class="page p-3 ">
+        <div class="page p-3">
             <div class="mx-auto container">
                 {% if pge_mode == 'echo' %}
                     {{ pge_content|raw }}
@@ -79,16 +82,16 @@
             </div>
         </div>
     </div>
-    <div class="footer bg-dark d-flex justify-content-end align-items-center">
+    <div class="footer bg-dark d-flex justify-content-end align-items-center border-secondary border-top">
         {% include "parts/footer.html.twig" %}
     </div>
 </div>
 
 {% if SYSALERT %}
-    <script type="text/javascript">alert({{ SYSALERT }});</script>
+    <script type="text/javascript">alert("{{ SYSALERT }}");</script>
 {% endif %}
 {% if SYSINFO %}
-    <script type="text/javascript">alert({{ SYSINFO }});</script>
+    <script type="text/javascript">alert("{{ SYSINFO }}");</script>
 {% endif %}
 
 </body>

@@ -1,25 +1,11 @@
-<nav class="navbar navbar-expand navbar-dark text-light topnav p-0">
-    <ul class="navbar-nav">
+<nav class="navbar navbar-expand navbar-dark text-light topnav p-0 col-12">
+    <ul class="navbar-nav flex-wrap w-100">
         <li class="nav-item">
-            <button class="btn" type="button" id="sidenav-toggler" aria-controls="sidenav" aria-expanded="true" aria-label="Toggle side navigation" title="Toggle side navigation">
+            <button class="btn ml-1 d-flex align-items-center" type="button" id="sidenav-toggler" aria-controls="sidenav" aria-expanded="true">
+                <span class="text-secondary mr-2">{{ lng.get("toggleMenu") }}</span>
                 <span class="navbar-toggler-icon"></span>
             </button>
         </li>
-
-        {% if parts['header']['display_items']['logout'] %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ parts['header']['hrefs']['logout'] }}">
-                    {{ lng.get('MnuEntryLogOut') }}: {{ parts['header']['additional_strings']['username'] }}
-                </a>
-            </li>
-        {% endif %}
-        {% if parts['header']['display_items']['login'] %}
-            <li class="nav-item ml-auto">
-                <a class="nav-link" href="{{ parts['header']['hrefs']['login'] }}">
-                    {{ lng.get('MnuEntryLogIn') }}
-                </a>
-            </li>
-        {% endif %}
 
         <li class="nav-item">
             <a class="nav-link" href="{{ parts['header']['hrefs']['lang'] }}">
@@ -92,9 +78,8 @@
                 </div>
             </li>
         {% endif %}
+        <li class="ml-auto p-2">
+            <img id="logo" src='{{ cfg.get('TopImg') }}' alt='internetlab-logo'>
+        </li>
     </ul>
 </nav>
-
-<div class="p-2">
-    <img src='{{ cfg.get('TopImg') }}' alt='internetlab-logo'>
-</div>

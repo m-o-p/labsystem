@@ -1,14 +1,9 @@
 <nav class="navbar navbar-expand navbar-dark text-light">
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav ml-auto flex-wrap">
         <li class="nav-item">
-        <span class="small">
-            {{ "now"|date(lng.get("DateFormat")) }}
-        </span>
-        </li>
-        <li class="nav-item">
-        <span class="small">
-            {{ parts['footer']['additional_strings']['totaltime'] }} sec
-        </span>
+            <span class="small">
+                {{ parts['footer']['additional_strings']['totaltime'] }} sec
+            </span>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="https://github.com/m-o-p/labsystem/issues/new?title=Explanatory%20description&body='{{ parts['footer']['additional_strings']['ticketbody'] }}'"
@@ -16,10 +11,10 @@
             <i class="fas fa-bug"></i>
             </a>
         </li>
-        <li class="nav-item">
-            <span class="nav-link">
-                © <a href='https://net.in.tum.de/' target='_blank'>Chair of Network Architectures and Services</a>
-            </span>
+         <li class="nav-item">
+            <a class="nav-link" href="https://github.com/m-o-p/labsystem/" target="_blank">
+                <i class="fab fa-github" title="GitHub project"></i>
+            </a>
         </li>
         <li class="nav-item">
             <!--
@@ -32,6 +27,9 @@
                 Please do not remove this acknowledgement to me thanks!
             -->
             <a class="nav-link" href="http://www.pahl.de?site=__contact&amp;subject=labsystem@{{ parts['footer']['additional_strings']['servername'] }}" target="_blank">mop</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href='https://net.in.tum.de/' target='_blank'>© Chair of Network Architectures and Services</a>
         </li>
     </ul>
 </nav>

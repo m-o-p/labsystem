@@ -5,8 +5,6 @@ function templatevars_header() {
 
   return [
     'display_items' => [
-      'login' => !$usr->isOfKind(IS_USER),
-      'logout' => $usr->isOfKind(IS_USER),
       'dropdown' => $usr->isOfKind(IS_CORRECTOR) || $usr->isOfKind(IS_EX_SOLUTION_VIEWER) || $usr->isOfKind(IS_CONTENT_EDITOR),
       'hideAnswers' => $usr->isOfKind(IS_CORRECTOR),
       'seeMe-all' => $usr->isOfKind(IS_CORRECTOR),

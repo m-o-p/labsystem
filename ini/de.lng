@@ -105,6 +105,8 @@ titleUaCreateUsr    = "Erstellen von Nutzern"
 titleRegister       = "Kursregistrierung"
 
 ;; menu entries ***************************************************************************************
+toggleMenu          = "Menü"
+
 ; login.php
 MnuEntryLogIn       = "einloggen"
 MnuEntryLogOut      = "ausloggen"
