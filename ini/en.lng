@@ -308,14 +308,14 @@ start               = "start" ; used in the sorter (manage schedules)
 stop                = "stop"
 
 ;; manage users
-foreName            = "foreName"
-surName             = "surName"
+foreName            = "Firstname"
+surName             = "Lastname"
 
 
 ;; field descriptors **********************************************************************************
 ; login.php
-userName            = "userName"
-passWord            = "password"
+userName            = "Username"
+passWord            = "Password"
 YouAreMemberOf      = "You are member of"
 
 ; sendMail.php

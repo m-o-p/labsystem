@@ -108,8 +108,8 @@ titleRegister       = "Kursregistrierung"
 toggleMenu          = "Menü"
 
 ; login.php
-MnuEntryLogIn       = "einloggen"
-MnuEntryLogOut      = "ausloggen"
+MnuEntryLogIn       = "Anmelden"
+MnuEntryLogOut      = "Abmelden"
 
 ; manageUser.php
 MnuEntryUserRights  = "Nutzerrechte"   ;; must be the same as in the menu file for proper highlighting
