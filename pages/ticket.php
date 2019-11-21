@@ -36,7 +36,7 @@ $debug=FALSE;
 #
 
 $config = array(
-	'url'=>'http://ilabxp.net.in.tum.de/api/http.php/tickets.json',
+	'url'=>'https://ilabxp.net.in.tum.de/api/http.php/tickets.json',
 	'key'=>'B54467A9901CD2AECA9BB39D32712B39' //<api key>
 );
 
