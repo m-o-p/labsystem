@@ -36,5 +36,53 @@ $pge->matchingMenu = $lng->get("MnuEntryLogIn");
 
 $pge->set_template('pages/login.html.twig');
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  authenticate();
+}
+
 require($cfg->get("SystemPageLayoutFile"));
+
+function authenticate() {
+  global $cfg, $url, $pge, $lng, $uDBI, $NEWSESSION;
+
+  if (!isset($_POST['USERNAME']) || !isset($_POST['PASSWORD'])) {
+    trigger_error($lng->get('NotAllNecValPosted'), E_USER_ERROR);
+    return;
+  }
+
+  require_once(INCLUDE_DIR . "/classes/DBInterfaceUser.inc");
+  require_once(INCLUDE_DIR . "/classes/DBInterfaceUserRights.inc");
+
+  // preserve the current url since we will probably link back (p.e. to give an error) or add something to the url.
+  $url->setToGetParameters();
+
+  if (!($authUserData = $uDBI->authenticate($_POST['USERNAME'], $_POST['PASSWORD']))) {
+    // not authenticated
+    $pge->add_context('errmsg', $lng->get("AlertWrongUsrPw"));
+    return;
+  }
+
+  // authenticated
+  if (isset($_POST['stayLoggedIn'])) {
+    // Set cookie lifetime to 1 year
+    session_set_cookie_params(365 * 24 * 60 * 60);
+  }
+  $NEWSESSION = $authUserData["uid"];
+  require(INCLUDE_DIR . "/session.inc");
+
+  // The following field is for security reasons:
+  // If the configuration would not be checked you could change the field in the url and would be logged on with your
+  // current rights for the different configuration...
+  $_SESSION["config"] = $url->get('config');
+
+  makeLogEntry('system', 'login');
+  makeLogEntry('system', 'loginLog');
+  $GLOBALS['Logger']->logToDatabase('system', logActions::login);
+  // Link to the after login page from the config file or to
+  if (isset($_POST['REDIRECTTO'])) {
+    header("Location: " . $url->rewriteExistingUrl($_POST['REDIRECTTO']));
+  } else {
+    header("Location: " . $url->rewriteExistingUrl($cfg->get("AfterLogInPage")));
+  }
+}
 

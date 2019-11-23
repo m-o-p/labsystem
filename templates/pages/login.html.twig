@@ -1,9 +1,16 @@
 <h1>{{ pge.title }}</h1>
 <p>{{ lng.get("TxtLogInPage")| replaceLabsystemConstants|raw }}</p>
-<form name="login" method="post" action="{{ url.rawLink2("../php/authenticate.php") }}">
+<form name="login" method="post" action="{{ url.rawLink2("../pages/login.php") }}">
     {% if url.available('redirectTo') %}
         <input type="hidden" name="REDIRECTTO" value="{{ url.get('redirectTo')|trim }}">
     {% endif %}
+
+    {% if pge.get_context('errmsg') %}
+        <div class="alert alert-danger">
+            <p class="m-0">{{ pge.get_context('errmsg') }}</p>
+        </div>
+    {% endif %}
+
     <div class="form-group">
         <label for="username">{{ lng.get("userName") }}</label>
         <input type="text" class="form-control" id="username" name="USERNAME" autofocus>
