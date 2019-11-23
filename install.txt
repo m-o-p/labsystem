@@ -27,6 +27,12 @@
    or copy the files from the archive on your webserver if you do not have
    shell access. (unzip labsystem.zip -d webroot/)
 
+3) Some dependencies (the newer ones) are managed using composer.
+	Install it and run `php composer.phar install` or `composer install`
+
+4) You also need a SCSS compiler
+	Once `npm -g install sass`
+	After every update `sass cssv2/sass main.scss cssv2/main.css`
 
 ..........................................................................
  Editing filerights
