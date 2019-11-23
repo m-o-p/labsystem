@@ -1,5 +1,12 @@
-@import "../plugins/bootstrap/scss/functions";
-@import "../plugins/bootstrap/scss/variables";
+@import "../vendor/twbs/bootstrap/scss/bootstrap";
+@import "../vendor/twbs/bootstrap/scss/functions";
+@import "../vendor/twbs/bootstrap/scss/variables";
+
+$fa-font-path: "../vendor/fortawesome/font-awesome/webfonts";
+@import "../vendor/fortawesome/font-awesome/scss/fontawesome";
+@import "../vendor/fortawesome/font-awesome/scss/solid";
+@import "../vendor/fortawesome/font-awesome/scss/regular";
+
 
 #shittybrowser {
     display: none;
