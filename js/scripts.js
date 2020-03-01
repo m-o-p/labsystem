@@ -50,19 +50,7 @@ function confirmLink(theLink, theMsg) {
     return is_confirmed;
 } // end of the 'confirmLink()' function
 
-/**
- * This variable is used for the dirty bit functionality.
- * The dirty bit is set by the inputs when they are changed.
- * It is cleared by the save vuttons.
- * If not cleared it shows a warning.
- */
-var isDirty = false;
-var retVal = null;
 
-function dirtyWarning() {
-    if (isDirty) return confirm(discardChangesWarning);
-    return retVal;
-}
 
 /**
  * Zooms and unzooms a thumbnail.
@@ -124,56 +112,13 @@ document.onkeydown = function (evt) {
     }
 };
 
-window.addEventListener('beforeunload', function (event) {
-    if (dirtyWarning()) {
-        event.preventDefault();
-        event.returnValue = '';
-    }
-});
 
-if (body.data('enable_tinymce') === 1) {
-    // Called when content is loaded from textarea
-    // Remove beginning [HTML]-tag of labsystem fields
-    function myCustomSetupContent(editor_id, body, doc) {
-        if (body.innerHTML.substring(0, 6) === "[HTML]") {
-            body.innerHTML = body.innerHTML.substring(6);
-        }
-    }
-
-    // Custom save callback, gets called when the contents is to be submitted
-    // Add beginning [HTML]-tag to labsystem fields
-    function myCustomSave(id, content) {
-        // gets somehow called twice...
-        if (content.substring(0, 6) !== "[HTML]") {
-            content = "[HTML]\n" + content;
-        }
-        return content;
-    }
-
-    tinyMCE.init({
-        // only fields called "CONTENTS" should get TinyMCEed
-        mode: "exact",
-        elements: "CONTENTS",
-        // Should the user be asked if TinyMCE should get started? (onClick)
-        ask: false,
-        setupcontent_callback: "myCustomSetupContent",
-        save_callback: "myCustomSave",
-        // Labsystems stylesheet to format the content correctly
-        content_css: body.data('usercss'),
-        theme: "advanced",
-        // hinders tinyMCE from putting <p> around [HTML]
-        forced_root_block: ""
-    });
-}
 
 if (body.data('enable_prettyprint') === 1) {
-    body.onload(function () {
+    try {
         prettyPrint();
-    });
-}
-$(document).ready(function () {
+    } catch (e) {
 
-    $('#sidenav-toggler').click(function (e) {
-        $('#sidenav').toggleClass('collapsed');
-    });
-});
+    }
+}
+
