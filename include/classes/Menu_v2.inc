@@ -111,9 +111,18 @@ class Menuv2 {
       (strpos($link, '/pages/login.php') === false) // pages within the system should be linked with additional tags...
     )) $link = $GLOBALS['url']->rewriteExistingUrl($link);
 
+    $n_id = false;
+
+    // Extract element id (e.g. 'l2.C6.c4') from $link for saving the UI state (expanded or not) of sidenav in the frontend
+    preg_match('/.*address=([\w.]+)+&.*/', $link, $matches);
+	if (sizeof($matches) == 2) {
+		$n_id = str_replace(".", "_", $matches[1]);
+	}
+
     return [
       'css_class' => $isOn ? $this->cssCellClassOn : $this->cssCellClassOff,
       'href' => $link,
+      'n_id' => $n_id,
       'target_blank' => (strpos($link, "http://") !== false),
       'title' => $strText,
       'text' => $this->subMenuIndenter . $strText,
@@ -126,10 +135,11 @@ class Menuv2 {
     return [
       'css_class' => '',
       'href' => false,
+      'n_id' => false,
       'target_blank' => '',
       'title' => $strText,
       'text' => $strText,
-      'unfold' => true,
+      'unfold' => false,
       'children' => $children,
     ];
   }

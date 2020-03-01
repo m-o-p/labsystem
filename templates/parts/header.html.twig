@@ -1,85 +1,87 @@
 <nav class="navbar navbar-expand navbar-dark text-light topnav p-0 col-12">
-    <ul class="navbar-nav flex-wrap w-100">
-        <li class="nav-item">
-            <button class="btn ml-1 d-flex align-items-center" type="button" id="sidenav-toggler" aria-controls="sidenav" aria-expanded="true">
-                <span class="text-secondary mr-2">{{ lng.get("toggleMenu") }}</span>
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </li>
+	<ul class="navbar-nav flex-wrap w-100">
+		<li class="nav-item">
+			<button class="btn ml-1 d-flex align-items-center" type="button" id="sidenav-toggler" aria-controls="sidenav" aria-expanded="true" title="{{ lng.get("toggleMenu") }}">
+				<i class="text-secondary fas fa-bars"></i>
+			</button>
+		</li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="{{ parts['header']['hrefs']['lang'] }}">
-                {{ parts['header']['additional_strings']['lang'] }}
-            </a>
-        </li>
+		<li class="nav-item">
+			<a class="nav-link" href="{{ parts['header']['hrefs']['lang'] }}">
+				{{ parts['header']['additional_strings']['lang'] }}
+			</a>
+		</li>
 
-        {% if parts['header']['display_items']['dropdown'] %}
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="toggleEditorTools" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="far fa-eye"></i>
-                </a>
-                <div class="dropdown-menu" aria-labelledby="toggleEditorTools">
-                    {% if parts['header']['display_items']['hideAnswers'] %}
-                        <p class="d-flex m-0">
-                            <a class="dropdown-item" href="{{ parts['header']['hrefs']['hideAnswers-toggle'] }}">
-                                {% if parts['header']['states_active']['hideAnswers'] %}
-                                    <i class="far fa-check-square"></i>
-                                {% else %}
-                                    <i class="far fa-square"></i>
-                                {% endif %}
-                                {{ lng.get("dataOf") }} {{ parts['header']['additional_strings']['displaying_data_of'] }}
-                            </a>
+		{% if parts['header']['display_items']['dropdown'] %}
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="toggleEditorTools" role="button" data-toggle="dropdown"
+				   aria-haspopup="true" aria-expanded="false">
+					<i class="far fa-eye"></i>
+				</a>
+				<div class="dropdown-menu" aria-labelledby="toggleEditorTools">
+					{% if parts['header']['display_items']['hideAnswers'] %}
+						<p class="d-flex m-0">
+							<a class="dropdown-item" href="{{ parts['header']['hrefs']['hideAnswers-toggle'] }}">
+								{% if parts['header']['states_active']['hideAnswers'] %}
+									<i class="far fa-check-square"></i>
+								{% else %}
+									<i class="far fa-square"></i>
+								{% endif %}
+								{{ lng.get("dataOf") }} {{ parts['header']['additional_strings']['displaying_data_of'] }}
+							</a>
 
-                            <a class="dropdown-item" href="{{ parts['header']['hrefs']['clear-seeMe'] }}">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        </p>
-                    {% endif %}
+							<a class="dropdown-item" href="{{ parts['header']['hrefs']['clear-seeMe'] }}">
+								<i class="fas fa-times"></i>
+							</a>
+						</p>
+					{% endif %}
 
-                    {% if parts['header']['display_items']['seeMe-all'] %}
-                        <a class="dropdown-item" href="{{ parts['header']['hrefs']['seeMe-all'] }}">
-                            <i class="fas fa-arrow-right"></i>
-                            {{ lng.get("forceShowAllUsersData") }}
-                        </a>
-                    {% endif %}
+					{% if parts['header']['display_items']['seeMe-all'] %}
+						<a class="dropdown-item" href="{{ parts['header']['hrefs']['seeMe-all'] }}">
+							<i class="fas fa-arrow-right"></i>
+							{{ lng.get("forceShowAllUsersData") }}
+						</a>
+					{% endif %}
 
-                    {% if parts['header']['display_items']['pseudeNames'] %}
-                        <a class="dropdown-item" href="{{ parts['header']['hrefs']['pseudoNames-toggle'] }}">
-                            {% if parts['header']['states_active']['pseudoNames'] %}
-                                <i class="far fa-check-square"></i>
-                            {% else %}
-                                <i class="far fa-square"></i>
-                            {% endif %}
-                            {{ lng.get('pseudoNames') }}
-                        </a>
-                    {% endif %}
+					{% if parts['header']['display_items']['pseudeNames'] %}
+						<a class="dropdown-item" href="{{ parts['header']['hrefs']['pseudoNames-toggle'] }}">
+							{% if parts['header']['states_active']['pseudoNames'] %}
+								<i class="far fa-check-square"></i>
+							{% else %}
+								<i class="far fa-square"></i>
+							{% endif %}
+							{{ lng.get('pseudoNames') }}
+						</a>
+					{% endif %}
 
-                    {% if parts['header']['display_items']['exampleSolutions'] %}
-                        <a class="dropdown-item" href="{{ parts['header']['hrefs']['exampleSolutions-toggle'] }}">
-                            {% if parts['header']['states_active']['exampleSolutions'] %}
-                                <i class="far fa-check-square"></i>
-                            {% else %}
-                                <i class="far fa-square"></i>
-                            {% endif %}
-                            {{ lng.get('showExampleSolutionInThisTab') }}
-                        </a>
-                    {% endif %}
+					{% if parts['header']['display_items']['exampleSolutions'] %}
+						<a class="dropdown-item" href="{{ parts['header']['hrefs']['exampleSolutions-toggle'] }}">
+							{% if parts['header']['states_active']['exampleSolutions'] %}
+								<i class="far fa-check-square"></i>
+							{% else %}
+								<i class="far fa-square"></i>
+							{% endif %}
+							{{ lng.get('showExampleSolutionInThisTab') }}
+						</a>
+					{% endif %}
 
-                    {% if parts['header']['display_items']['wysiwyg'] %}
-                        <a class="dropdown-item" href="{{ parts['header']['hrefs']['wysiwyg-toggle'] }}">
-                            {% if parts['header']['states_active']['wysiwyg'] %}
-                                <i class="far fa-check-square"></i>
-                            {% else %}
-                                <i class="far fa-square"></i>
-                            {% endif %}
-                            WYSIWYG
-                        </a>
-                    {% endif %}
-                </div>
-            </li>
-        {% endif %}
-        <li class="ml-auto p-2">
-            <img id="logo" src='{{ cfg.get('TopImg') }}' alt='internetlab-logo'>
-        </li>
-    </ul>
+					{#
+					{% if parts['header']['display_items']['wysiwyg'] %}
+						<a class="dropdown-item" href="{{ parts['header']['hrefs']['wysiwyg-toggle'] }}">
+							{% if parts['header']['states_active']['wysiwyg'] %}
+								<i class="far fa-check-square"></i>
+							{% else %}
+								<i class="far fa-square"></i>
+							{% endif %}
+							WYSIWYG
+						</a>
+					{% endif %}
+					#}
+				</div>
+			</li>
+		{% endif %}
+		<li class="ml-auto p-2">
+			<img id="logo" src='{{ cfg.get('TopImg') }}' alt='internetlab-logo'>
+		</li>
+	</ul>
 </nav>

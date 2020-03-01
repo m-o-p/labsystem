@@ -1,4 +1,4 @@
-{% set navid = "navelt_" ~ fold_prefix ~"_" ~ loop.index0 %}
+{% set navid = entry['n_id'] ? "navelt_" ~ entry['n_id'] : "navelt_" ~ fold_prefix ~"_" ~ loop.index0 %}
 <li class="nav-item">
     {% if entry['children']|length > 0 %}
         <div class="group">
@@ -7,7 +7,7 @@
                     <a class="nav-link txt-ellipsis"  href="{{ entry['href'] }}" {% if entry['target_blank'] %}target="_blank"{% endif %} title="{{ entry['title'] }}">
                         {{ entry['text'] }}
                     </a>
-                    <a class="nav-link bg-secondary text-center text-dark {{ entry['css_class'] }}" data-toggle="collapse" href="#{{ navid }}" aria-expanded="{{ entry['unfold'] ?'true': 'false' }}" aria-controls="{{ navid }}">
+                    <a class="nav-link subnavctrl bg-secondary text-center text-dark {{ entry['css_class'] }}" data-toggle="collapse" href="#{{ navid }}" aria-expanded="{{ entry['unfold'] ?'true': 'false' }}" aria-controls="{{ navid }}">
                         {# +/- icon, added via css #}
                     </a>
                 </span>
@@ -17,13 +17,13 @@
                     <span class="navgroupheader text-center flex-grow-1 txt-ellipsis">
                         {{ entry['text'] }}
                     </span>
-                    <a class="nav-link bg-secondary text-center text-dark" data-toggle="collapse" href="#{{ navid }}" aria-expanded="{{ entry['unfold'] ?'true': 'false' }}" aria-controls="{{ navid }}">
+                    <a class="nav-link subnavctrl bg-secondary text-center text-dark" data-toggle="collapse" href="#{{ navid }}" aria-expanded="{{ entry['unfold'] ?'true': 'false' }}" aria-controls="{{ navid }}">
                         {# +/- icon, added via css #}
                     </a>
                 </span>
             {% endif %}
 
-            <ul id="{{ navid }}" class="subnav nav flex-column collapse {{ entry['unfold'] ?'show': '' }}">
+            <ul id="{{ navid }}" class="subnav nav flex-column collapse {{ entry['unfold'] ? 'show': '' }}">
                 {% for c in entry['children'] %}
                     {% include 'parts/menu-item.html.twig' with {'entry': c, 'fold_prefix': fold_prefix ~"_" ~ loop.index0} %}
                 {% endfor %}
