@@ -5,7 +5,7 @@ function templatevars_header() {
 
   return [
     'display_items' => [
-      'dropdown' => $usr->isOfKind(IS_CORRECTOR) || $usr->isOfKind(IS_EX_SOLUTION_VIEWER) || $usr->isOfKind(IS_CONTENT_EDITOR),
+      'dropdown' => $usr->isOfKind(IS_CORRECTOR) || $usr->isOfKind(IS_EX_SOLUTION_VIEWER),
       'hideAnswers' => $usr->isOfKind(IS_CORRECTOR),
       'seeMe-all' => $usr->isOfKind(IS_CORRECTOR),
       'pseudeNames' => $usr->isOfKind(IS_CORRECTOR),
