@@ -3,3 +3,13 @@
 vendor/
 templates.cache/*
 !templates.cache/.gitkeep
+/node_modules/
+dist/*
+!dist/.gitkeep
+cssv2/*.css
+*.js.map
+*.css.map
+composer.lock
+composer.phar
+package-lock.json
+npm
