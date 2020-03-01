@@ -27,6 +27,7 @@
 * @version    1.0
 */
 
+use Michelf\Markdown;
 
 /**
 * Returns an info arrow with describing $text as title (appears at mousevoer in most browsers)
@@ -105,21 +106,30 @@ function cutHTMLText( $text, $where ){
 * If there is no [HTML] at the beginning of the string it gets nl2br( htmlspecialchars( string ) ); so all tags get filtered.
 * Since the object comes by reference it is directly manipulated! (Doesn't work on array elements in php 4.3).
 * @param &$object   The string to be parsed.
+ * @param &$ctype string Contains the content type of the element (how it shall be rendered)
 */
-function parseHTML( &$object ){
+function parseHTML( &$object, &$ctype="" ){
   global $pge;
-  if ( (substr( $object, 0, 4 ) == '[MD]') && file_exists( '../plugins/phpMarkDown/markdown.php' ) && include_once( '../plugins/phpMarkDown/markdown.php' ) ){ //phpMarkDown http://michelf.com/projects/php-markdown/
-    $object = Markdown( $pge->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
+  if ( substr( $object, 0, 4 ) == '[MD]'){
+    $object = md_format( $pge->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
+	  $ctype = "[MD]";
   }
   else if ( substr( $object, 0, 6 ) == '[HTML]' ){ // HTML
     $object = substr( $object, 6 ); // just remove [HTML]
+	  $ctype = "[HTML]";
   }else{ // assume it is plain text
 //    $object = preg_replace('/ ([\w\s])/', '&nbsp;\\1', nl2br( htmlspecialchars( $object ) ) );
 //    $object = nl2br( htmlspecialchars( $object ) );
     $object = str_replace(array('  ', "\t"), array('&nbsp; ', '&nbsp; &nbsp; '),
                            nl2br( htmlentities( $object ) )
               );
+	  $ctype = "";
   }
+}
+
+function md_format($string) {
+  //phpMarkDown http://michelf.com/projects/php-markdown/
+  return Markdown::defaultTransform($string);
 }
 
 function tidyHTML( &$string ){
