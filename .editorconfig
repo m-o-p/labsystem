@@ -81,7 +81,6 @@ ij_sass_space_before_opening_brace = true
 ij_sass_value_alignment = 0
 
 [*.scss]
-indent_size = 2
 indent_style = tab
 ij_scss_align_closing_brace_with_properties = false
 ij_scss_blank_lines_around_nested_selector = 1
