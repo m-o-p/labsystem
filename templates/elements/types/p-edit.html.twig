@@ -1,0 +1,107 @@
+<div class="elt_{{ elt.elementId }} codemirror_elt" id="elt_{{ elt.elementId }}{{ elt.idx }}">
+	<h2>{{ lng.get('editorHeading') }}</h2>
+	<form class="labsys_mop_std_form" name="pageEdit" method="POST" action="{{ url.rawLink2('../php/executeCommandOnElement.php', {'address': 'p'}) }}">
+		{# this function will statically be called by ../php/executeCommandOnElement.php #}
+		<input type="hidden" name="FUNCTIONNAME" value="save">
+		{# index of saved el. will be added on save.php! #}
+		<input type="hidden" name="REDIRECTTO" value="../pages/edit.php">
+		<input type="hidden" name="FULLADDRESS" value="{{ fullAddress }}">
+		<input type="hidden" name="IDX" value="{{ elt.idx }}">
+
+		<div class="form-group">
+			<label for="title" class="">{{ lng.get("inputTitle") }}</label>
+			<input type="text" id="title" name="TITLE" class="form-control" maxlength="255" aria-describedby="titleHelp" value="{{ title }}" onchange='isDirty=true'>
+			<small id="titleHelp" class="form-text text-muted">{{ lng.get("inputTitleHelp") }}</small>
+		</div>
+
+		<div class="form-group">
+			<label for="ta_edit_{{ elt.elementId }}{{ elt.idx }}" class="">{{ lng.get("inputContents") }}</label>
+
+			<ul class="nav nav-tabs" id="editortabs_{{ elt.elementId }}{{ elt.idx }}" role="tablist">
+				<!--
+				Use this for Ajax-based view
+				<li class="nav-item">
+					<a class="nav-link" id="{{ elt.elementId }}{{ elt.idx }}_view-tab" data-toggle="tab" href="#{{ elt.elementId }}{{ elt.idx }}_view" role="tab" aria-controls="{{ elt.elementId }}{{ elt.idx }}_view" aria-selected="true">{{ lng.get('editView')}}</a>
+				</li>
+				-->
+				<li class="nav-item">
+					<a class="nav-link active refresh_codemirror" id="{{ elt.elementId }}{{ elt.idx }}_edit_source-tab" data-toggle="tab" href="#{{ elt.elementId }}{{ elt.idx }}_edit_source" role="tab" aria-controls="{{ elt.elementId }}{{ elt.idx }}_edit_source" aria-selected="false">{{ lng.get('editSource') }}</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="{{ elt.elementId }}{{ elt.idx }}_edit_wysiwyg-tab" data-toggle="tab" href="#{{ elt.elementId }}{{ elt.idx }}_edit_wysiwyg" role="tab" aria-controls="{{ elt.elementId }}{{ elt.idx }}_edit_wysiwyg" aria-selected="false">{{ lng.get('editWysiwyg') }}</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link previewtab" id="{{ elt.elementId }}{{ elt.idx }}_preview-tab" data-toggle="tab" href="#{{ elt.elementId }}{{ elt.idx }}_preview" role="tab" aria-controls="{{ elt.elementId }}{{ elt.idx }}_preview" aria-selected="true">{{ lng.get('editPreview') }}</a>
+				</li>
+			</ul>
+			<div class="tab-content border border-top-0" id="myTabContent">
+				<div class="tab-pane fade" id="{{ elt.elementId }}{{ elt.idx }}_view" role="tabpanel" aria-labelledby="{{ elt.elementId }}{{ elt.idx }}_view-tab">
+					{{ content|replaceLabsystemConstants|raw }}
+				</div>
+
+				<div class="tab-pane fade show active" id="{{ elt.elementId }}{{ elt.idx }}_edit_source" role="tabpanel" aria-labelledby="{{ elt.elementId }}{{ elt.idx }}_edit_source-tab">
+					<label for="ta_edit_{{ elt.elementId }}{{ elt.idx }}" class="d-none">Content</label>
+					<textarea id="ta_edit_{{ elt.elementId }}{{ elt.idx }}" class="w-100 codemirror_target" name="CONTENTS" aria-label="Edit {{ elt.elementId }} element" data-previewtarget="frame_{{ elt.elementId }}{{ elt.idx }}_preview" onchange='isDirty=true' aria-describedby="contentHelp" autofocus>{{ ctype }}{{ content|replaceLabsystemConstants|raw }}</textarea>
+				</div>
+
+				<div class="tab-pane fade" id="{{ elt.elementId }}{{ elt.idx }}_edit_wysiwyg" role="tabpanel" aria-labelledby="{{ elt.elementId }}{{ elt.idx }}_edit_wysiwyg-tab">
+
+				</div>
+				<div class="tab-pane fade" id="{{ elt.elementId }}{{ elt.idx }}_preview" role="tabpanel" aria-labelledby="{{ elt.elementId }}{{ elt.idx }}_preview-tab">
+					<div id="frame_{{ elt.elementId }}{{ elt.idx }}_preview"></div>
+				</div>
+			</div>
+			<p id="contentHelp" class="form-text text-muted">
+				<small>{{ lng.get("inputContentsHtml")|raw }}<br></small>
+				<small>{{ lng.get('inputReplaceKeys') }}<br></small>
+				<small><code>{{ constants|raw }}</code></small>
+			</p>
+		</div>
+
+		<div class="form-group">
+			<label for="mM">{{ lng.get('inputMatchingMnu') }}</label>
+			<input type="text" id="mM" name="MATCHINGMENU" class="form-control" maxlength="255" value="{{ matchingMenu }}" aria-describedby="mmHelp" onchange='isDirty=true'>
+			<small id="mmHelp" class="form-text text-muted">{{ lng.get('inputMatchingMnuHelp')|raw }}</small>
+		</div>
+
+		<h4 class="mt-5">{{ lng.get('properties') }}</h4>
+
+		<fieldset class="form-group">
+			<legend class="col-form-label">{{ lng.get('visibility') }}</legend>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" id="visAlways" name="VISIBLE_ONLY_IN_COLLECTION" value="0" {% if visibleOnlyInCollection %}checked{% endif %} onchange='isDirty=true'>
+				<label class="form-check-label" for="visAlways">{{ lng.get("visAlways") }}</label>
+			</div>
+			<div class="form-check">
+				<input class="form-check-input" type="radio" id="visOnlyColl" name="VISIBLE_ONLY_IN_COLLECTION" value="1" {% if not visibleOnlyInCollection %}checked{% endif %} onchange='isDirty=true'>
+				<label class="form-check-label" for="visOnlyColl" class="labsys_mop_input_field_label">{{ lng.get("visOnlyInLab") }}</label>
+			</div>
+		</fieldset>
+
+		<fieldset class="form-group">
+			<legend class="col-form-label">{{ lng.get('visibleFor') }}</legend>
+
+			{% for choice in rightsList %}
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" id="UR_{{ choice }}" name="UR_{{ choice }}" value="{{ choice }}" onchange='isDirty=true' {% if choice in visibleFor %}checked{% endif %}>
+					<label class="form-check-label" for="UR_{{ choice }}">{{ lng.get("Explain_UR_" ~ choice) }} ({{ choice }})</label>
+				</div>
+			{% endfor %}
+		</fieldset>
+
+		<div class="form-check">
+			<input class="form-check-input" type="checkbox" id="saveAsNew" name="SAVEASNEW" value="1" {% if url.available("saveAsNew") or elt.idx==1 %}checked{% endif %} onchange='isDirty=true'>
+			<label class="form-check-label" for="saveAsNew" >{{ lng.get("saveAsNew") }}</label>
+		</div>
+
+		<div class="form-group mt-5">
+		<button type="submit" class="btn btn-primary" onclick='isDirty=false'>{{ lng.get('save') }}</button>
+		{% if url.get('backAddress') %}
+			<a class="btn btn-secondary" href="{{ url.rawLink2( '../pages/view.php', {'address': url.get('backAddress')}) }}">
+				{{ lng.get('cancel') }}
+			</a>
+		{% endif %}
+		</div>
+
+	</form>
+</div>

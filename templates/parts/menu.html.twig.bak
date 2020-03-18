@@ -1,0 +1,63 @@
+<nav id="sidenav" class="bg-dark text-light">
+    <ul class="nav flex-column">
+        {% if parts['menu']['display_items']['sys_login'] %}
+            <li class="nav-item">
+                <a class="nav-link bg-secondary text-center text-dark" data-toggle="collapse" href="#collapseUser" aria-expanded="true" aria-controls="collapseUser">
+                    {{ parts['menu']['additional_strings']['username'] }}
+                </a>
+
+                <ul id="collapseUser" class="subnav nav flex-column collapse show">
+                    {% if parts['menu']['states']['logged_in'] %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ parts['menu']['hrefs']['logout'] }}">
+                                <i class="fas fa-sign-out-alt"></i>
+                                {{ lng.get("MnuEntryLogOut") }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ parts['menu']['hrefs']['my_rights'] }}">
+                                <i class="fas fa-tasks"></i>
+                                {{ lng.get("MnuEntryMyRights") }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ parts['menu']['hrefs']['my_statistics'] }}">
+                                <i class="fas fa-chart-area"></i>
+                                {{ lng.get("MnuEntryMyStatistics") }}
+                            </a>
+                        </li>
+                        {% if parts['menu']['display_items']['user_rights'] %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ parts['menu']['hrefs']['user_rights'] }}">
+                                     <i class="fas fa-user-shield"></i>
+                                    {{ lng.get("MnuEntryUaUsrRights") }}
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ parts['menu']['hrefs']['send_mail'] }}">
+                                <i class="fas fa-envelope"></i>
+                                {{ lng.get("MnuEntrySendMail") }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ parts['menu']['hrefs']['login'] }}">
+                                <i class="fas fa-sign-in-alt"></i>
+                                {{ lng.get("MnuEntryLogIn") }}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ parts['menu']['hrefs']['register'] }}">
+                                <i class="fas fa-user-plus"></i>
+                                {{ lng.get("MnuEntryRegister") }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </li>
+
+        {% endif %}
+
+    </ul>
+</nav>

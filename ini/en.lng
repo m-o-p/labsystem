@@ -72,6 +72,7 @@ lPrefixLab          = ""                        ;; appears on the lab's TOC befo
 
 ;; explanation of the user roles **********************************************************************
 ;; user role explanation (found in ../include/user_roles.inc)
+Explain_UR_0        = "no restriction"
 Explain_UR_1        = "is logged in"                                        ; IS_USER
 Explain_UR_2        = "is able to set the userrights"                       ; IS_USER_RIGHTS_EDITOR
 Explain_UR_4        = "is able to edit contents"                            ; IS_CONTENTS_EDITOR
@@ -342,11 +343,22 @@ lastChange          = "last change"   ;; timestamp of last change of the dataset
 ; uaCreateUsers.php
 mailaddressesNewUsr = "Paste your <b>CSV</b> and <b>insert the given table fields in your first header row at the right places!</b> You will get a preview after clicking the button once."
 
+
+;editor general
+editorHeading       = "Edit element"
+editView            = "View"
+editSource          = "Edit source"
+editWysiwyg         = "Edit WYSIWYG"
+editPreview         = "Preview"
+
+
 ;p
-inputTitle          = "<b>Title</b> (e.g. the title of your element is used for the browser's caption.)"
-inputMatchingMnu    = "<b>Matching menu</b> (Menu row with this text will be highlighted when page is shown [can be empty].<br />If you use menu shortcuts (e.g. !p1, !C2) this will become the menu entry.)"
-inputContents       = "<b>Contents</b>"
-inputContentsHtml   = "(if you want the <b>html elements</b> to be interpreted the first line must be <b>[HTML]</b>, for <b>MarkDown [MD]</b>)"
+inputTitle          = "Title:"
+inputTitleHelp      = "Used e.g. for browser caption"
+inputMatchingMnu    = "Matching menu:"
+inputMatchingMnuHelp = "Menu row with this text will be highlighted when page is shown [can be empty].<br />If you use menu shortcuts (e.g. !p1, !C2) this will become the menu entry."
+inputContents       = "Contents:"
+inputContentsHtml   = "If you want the <b>html elements</b> to be interpreted the first line must be <b>[HTML]</b>, for <b>MarkDown [MD]</b>"
 inputReplaceKeys    = "The following constants will be replaced by their current values when displaying the page:"
 
 ;m
@@ -395,13 +407,16 @@ comment             = "comment"
 
 
 ;many
-properties          = "properties"
-visibility          = "visibility"
-visOnlyInLab       = "will <b>only</b> be visible <b>inside</b> a <b>lab</b>"
+properties          = "Properties"
+visibility          = "Visibility:"
+visOnlyInLab        = "will only be visible inside a lab"
 visAlways           = "will be visible"
-visibleFor          = "To <b>view</b> the page the user has to have set the following <b>rights</b>:"
-
-saveAsNew           = "<b>Save</b> this element <b>as new</b> element."
+visibleFor          = "To view the page the user has to have set the following rights:"
+element             = "element"
+copyOk              = "Copied to clipboard"
+copyFail            = "Can't copy to clipboard"
+saveAsNew           = "Save as new element."
+delete              = "Delete"
 
 schedule            = "schedule"  ;; schedule properties (visibleBefore1stSchedule, ...) fieldset legend title
 visibleBef1stSched  = "will be visible <b>before</b> the first schedule..."
@@ -410,9 +425,9 @@ visibleAftr1stSched = "will be visible <b>after</b> the first schedule..."
 
 
 ;; buttons ********************************************************************************************
-save                = "save"          ;; Text of any save button
-load                = "load"
-cancel              = "cancel"
+save                = "Save"          ;; Text of any save button
+load                = "Load"
+cancel              = "Cancel"
 
 ; sendMail.php
 checkAll            = "check all"

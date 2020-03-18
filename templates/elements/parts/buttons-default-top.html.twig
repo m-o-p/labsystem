@@ -1,0 +1,97 @@
+<div class="labsys_elt_toolbar labsys_elt_type-{{ elt.elementId }} d-flex flex-column">
+	{% if usr.isOfKindS('IS_CONTENT_EDITOR') %}
+		<div class="labsys_elt_info">
+			<p title="{{ lng.get('element')|capitalize }}: {{ elt.title }}">
+				<i class="fas fa-cube"></i>
+				{{ elt.elementId }}{{ elt.idx }}
+			</p>
+			<p title="{{ lng.get('visibility')|capitalize }}, c={{ lng.get('visOnlyInLab')|striptags }} ">
+				<span class="{% if elt.visibleFor >1 %}bg-warning{% endif %}">
+					<i class="far fa-eye"></i>
+					{{ elt.visibleFor }}
+					{% if elt.visibleOnlyInCollection %}c{% endif %}
+				</span>
+			</p>
+		</div>
+	{% endif %}
+
+	{% if usr.isOfKindS('IS_USER') %}
+		<div class="btn-group-vertical mt-1" role="toolbar">
+			{% if  cfg.doesExist('enableTicketLinks') and cfg.get('enableTicketLinks') %}
+				<a href="{{ url.rawLink2( '../pages/ticket.php', {'address': fullAddress} )~'#subject' }}" role="button" class="btn btn-secondary" title="{{ lng.get('explainTicket') }}">
+					<i class="fas fa-bug"></i>
+				</a>
+			{% endif %}
+
+			<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#elt_history-{{ fullAddress2 }}" title="{{ lng.get('explainHistory') }}">
+				<i class="fas fa-history"></i>
+			</button>
+		</div>
+	{% endif %}
+
+	{% if usr.isOfKindS('IS_CONTENT_EDITOR') %}
+		<div class="btn-group-vertical mt-1" role="toolbar">
+			<button type="button" class="btn btn-secondary copy2clipboard" title="{{ lng.get('explainLink2') }}" data-clipboard="<a href='{{ link2me }}'>{{ elt.title|url_encode }}</a>">
+				<i class="fas fa-share"></i>
+				<span class="copy-notification position-absolute alert alert-success">{{ lng.get("copyOk") }}</span>
+				<span class="copy-notification-fail position-absolute alert alert-danger">{{ lng.get("copyFail") }}</span>
+			</button>
+
+			<a href="{{ url.rawLink2( '../pages/edit.php', {'address': fullAddress, 'backAddress': url.get('address') }) }}" role="button" class="btn btn-secondary" title="{{ lng.get('explainEdit') }}">
+				<i class="far fa-edit"></i>
+			</a>
+
+			<button type="submit" class="btn btn-secondary d-none" title="{{ lng.get('explainSaveElement') }}">
+				<i class="fas fa-save"></i>
+			</button>
+
+			{% if show_delete %}
+				<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#deleteModal" title="{{ lng.get('explainDeleteElemnt') }}">
+					<i class="far fa-trash-alt"></i>
+				</button>
+			{% endif %}
+		</div>
+	{% endif %}
+</div>
+
+{% if not url.available( 'hideHistory' ) %}
+	{# temporarily handy for HTML diffs #}
+	<div id="elt_history-{{ fullAddress2 }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="historyModal{{ fullAddress }}" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="historyModal{{ fullAddress }}">{{ lng.get('historyOf') }}: {{ elt.title }}</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					{{ elt_history|raw|nl2br }}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endif %}
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">{{ lng.get('explainDeleteElemnt') }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				{# ToDo: Change this to perform a POST request #}
+				{{ lng.get('confirmDelete') }}
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-danger" href="{{ url.rawLink2( '../php/delete.php', {'address': fullAddress, 'isConfirmed':1}) }}" role="button" class="btn btn-secondary">
+					{{ lng.get('delete') }}
+				</a>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">{{ lng.get('cancel') }}</button>
+			</div>
+		</div>
+	</div>
+</div>

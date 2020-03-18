@@ -74,6 +74,7 @@ lPrefixLab          = ""                        ;; appears on the lab's TOC befo
 
 ;; explanation of the user roles **********************************************************************
 ;; user role explanation (found in ../include/user_roles.inc)
+Explain_UR_0        = "keine Einschränkung"
 Explain_UR_1        = "ist eingeloggt"                                      ; IS_USER
 Explain_UR_2        = "kann Benutzerrechte setzen."                         ; IS_USER_RIGHTS_EDITOR
 Explain_UR_4        = "kann Inhalte bearbeiten."                            ; IS_CONTENTS_EDITOR
@@ -344,11 +345,21 @@ lastChange          = "letzte &Auml;nderung"   ;; timestamp of last change of th
 ; uaCreateUsers.php
 mailaddressesNewUsr = "F&uuml;gen Sie Ihre <b>CSV</b> Daten ein. <b>Platzieren Sie die bereits angegebenen Feldbezeichner an den richtigen Stellen in der ersten Zeile, die vom Parser als header interpretiert wird!</b> Sie bekommen nach Dr&uuml;cken des Knopfes eine Vorschau angezeigt."
 
+
+;editor general
+editorHeading       = "Element bearbeiten"
+editView            = "Ansehen"
+editSource          = "Code bearbeiten"
+editWysiwyg         = "WYSIWYG bearbeiten"
+editPreview         = "Vorschau"
+
 ;p
-inputTitle          = "<b>Titel</b> (Wird z.B. f&uuml;r den Browsertitel verwendet.)"
-inputMatchingMnu    = "<b>Zuge&ouml;riges Menu</b> (Der Menueintrag mit diesem Text wird hervorgehoben, wenn diese Seite angezeigt wird [kann leer sein].<br />Wenn Sie Shortcuts (z.B. !p1, !C2) verwenden wird dieser Text als Menueintrag verwendet.)"
-inputContents       = "<b>Inhalt</b>"
-inputContentsHtml   = "(Wenn Sie html-Tags verwenden wollen, muss als Erstes <b>[HTML]</b> stehen, f&uuml;r <b>MarkDown [MD]</b>)."
+inputTitle          = "Titel:"
+inputTitleHelp      = "Wird z.B. für den Browsertitel verwendet."
+inputMatchingMnu    = "Zugehöriges Menü:"
+inputMatchingMnuHelp = "Der Menueintrag mit diesem Text wird hervorgehoben, wenn diese Seite angezeigt wird (kann leer sein).<br />Wenn Sie Shortcuts (z.B. !p1, !C2) verwenden wird dieser Text als Menueintrag verwendet."
+inputContents       = "Inhalt:"
+inputContentsHtml   = "Wenn Sie html-Tags verwenden wollen, muss als Erstes <b>[HTML]</b> stehen, f&uuml;r <b>MarkDown [MD]</b>."
 inputReplaceKeys    = "Die folgenden Konstanten werden beim Anzeigen der Seite durch ihre aktuellen Werte ersetzt:"
 
 ;m
@@ -398,12 +409,15 @@ comment             = "Kommentar"
 
 ;many
 properties          = "Eigenschaften"
-visibility          = "Sichtbarkeit"
-visOnlyInLab       = "<b>nur innerhalb eines Lab</b> sichtbar"
+visibility          = "Sichtbarkeit:"
+visOnlyInLab        = "nur innerhalb eines Labs sichtbar"
 visAlways           = "immer sichtbar"
-visibleFor          = "Die Seite ist sichtbar f&uuml;r Benutzer mit folgenden <b>Rechten</b>:"
-
-saveAsNew           = "Als <b>neues Element</b> speichern."
+visibleFor          = "Die Seite ist sichtbar für Benutzer mit folgenden Rechten:"
+element             = "Element"
+copyOk              = "In Zwischenablage kopiert"
+copyFail            = "Nicht kopiert"
+saveAsNew           = "Als neues Element speichern."
+delete              = "Löschen"
 
 schedule            = "Schedule"  ;; schedule properties (visibleBefore1stSchedule, ...) fieldset legend title
 visibleBef1stSched  = "sichtbar <b>vor</b> dem ersten Schedule..."
@@ -412,9 +426,9 @@ visibleAftr1stSched = "sichtbar <b>nach</b> dem ersten Schedule..."
 
 
 ;; buttons ********************************************************************************************
-save                = "speichern"          ;; Text of any save button
-load                = "laden"
-cancel              = "abbrechen"
+save                = "Speichern"          ;; Text of any save button
+load                = "Laden"
+cancel              = "Abbrechen"
 
 ; sendMail.php
 checkAll            = "alle ausw&auml;hlen"

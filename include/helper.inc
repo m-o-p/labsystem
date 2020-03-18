@@ -83,6 +83,32 @@ function showRightsVertical( $prefix, $rights, $disabled=false ){
   return $ret;
 }
 
+function getRightsList() {
+	$rights_choices = [];
+	for ($i = 1; $i <= MAX_USER_ROLE; $i = $i << 1) {
+		array_push($rights_choices, $i);
+	}
+
+	return $rights_choices;
+}
+
+/**
+ * Create a list of ints that sum up to $rights
+ * E.g [1,4] if $rights == 5
+ * @param $rights
+ * @return array
+ */
+function int2RightsList($rights) {
+	$lst = [];
+	for ($i = 0; $i <= ceil(log($rights, 2)); $i++) {
+		if($rights & (1 << $i)) {
+			array_push($lst, 2**$i);
+		}
+	}
+
+	return $lst;
+}
+
 /**
 * This function is called to cut $text at position $where if longer.
 * The special thing about that function is that it decodes html entities before counting (p.e. &nbsp; -> " ").
@@ -165,7 +191,7 @@ function returnHTML( $object ){
 * @return $string The altered $text.
 */
 function returnEditable( $text ){ /* removes anything with special purpose for editing */
-  return str_replace( "_", "&#x005F;", htmlentities( $text ) );
+  return str_replace( "_", "&#x005F;", $text );
 }
 
 /**

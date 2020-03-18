@@ -20,6 +20,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import "~codemirror/lib/codemirror.css";
 @import "~codemirror/addon/fold/foldgutter.css";
 
+@import "elements";
+@import "mop_fixes";
+
 
 #shittybrowser {
 	display: none;

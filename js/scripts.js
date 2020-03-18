@@ -19,6 +19,8 @@
  -->
  */
 
+import * as clipboard from "clipboard-polyfill";
+
 var body = $('body');
 
 /**
@@ -112,6 +114,26 @@ document.onkeydown = function (evt) {
     }
 };
 
+$(".copy2clipboard").click(function () {
+    var elt = $(this);
+    clipboard.writeText(decodeURI($(this).data('clipboard')))
+        .then(function () {
+            var cpn = elt.find('.copy-notification');
+            cpn.show();
+
+            setTimeout(function () {
+                cpn.hide()
+            }, 1000);
+        }).catch(function () {
+            var cpn = elt.find('.copy-notification-fail');
+            cpn.show();
+
+            setTimeout(function () {
+                cpn.hide()
+            }, 1000);
+            window.prompt("Copy to clipboard: Ctrl+C, Enter", elt.data('clipboard'));
+        });
+});
 
 
 if (body.data('enable_prettyprint') === 1) {

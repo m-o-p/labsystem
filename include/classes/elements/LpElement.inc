@@ -31,6 +31,7 @@
  * @version    1.0
  */
 require_once(INCLUDE_DIR . "/classes/elements/Element.inc");
+require_once(INCLUDE_DIR . "/twig.inc");
 
 class LpElement extends Element {
 	var $contents;    // The html code the page contains.
@@ -39,14 +40,14 @@ class LpElement extends Element {
 	/**
 	 * The constructor.
 	 *
-	 * @param int       $idx                       This instance's index.
-	 * @param string    $title                     The title (used as __ELEMENTTITLE__ and for html <title> if displayed alone).
-	 * @param string    $contents                  The html code the page contains.
-	 * @param string    $matchingMenu              The title of the menu that gets generated/ is highlighted to the element.
-	 * @param int       $visibleFor                The bitmask of rights a viewer has to match.
-	 * @param bool      $visibleOnlyInCollection   Is the element visible only inside a collection.
-	 * @param string    $history                   This' history.
-	 * @param bool      $isInColl                  Am I inside a collection? (important for visibility aspects).
+	 * @param int $idx This instance's index.
+	 * @param string $title The title (used as __ELEMENTTITLE__ and for html <title> if displayed alone).
+	 * @param string $contents The html code the page contains.
+	 * @param string $matchingMenu The title of the menu that gets generated/ is highlighted to the element.
+	 * @param int $visibleFor The bitmask of rights a viewer has to match.
+	 * @param bool $visibleOnlyInCollection Is the element visible only inside a collection.
+	 * @param string $history This' history.
+	 * @param bool $isInColl Am I inside a collection? (important for visibility aspects).
 	 */
 	function __construct($idx, $title, $contents, $matchingMenu, $visibleFor, $visibleOnlyInCollection, $history, $isInColl = false) {
 		global $usr;
@@ -59,8 +60,7 @@ class LpElement extends Element {
 		$this->visibleOnlyInCollection = $visibleOnlyInCollection;
 		$this->history = $history;
 
-		$this->IamVisible = (($this->visibleFor == "0") || $usr->isOfKind($this->visibleFor))
-			&& (!$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl));
+		$this->IamVisible = (($this->visibleFor == "0") || $usr->isOfKind($this->visibleFor)) && (!$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl));
 
 		$this->serializationArray = array('elementId', 'idx', 'title', 'contents', 'matchingMenu', 'visibleFor', 'visibleOnlyInCollection', 'history'); // see Element.inc for details
 	}
@@ -71,13 +71,14 @@ class LpElement extends Element {
 	/**
 	 * Returns the element's HTML-representation in the way the VIEWER should see it.
 	 *
-	 * @param string $fullAddress   The element's full address (p.e. C23.c42.p13)
-	 * @param string $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+	 * @param string $fullAddress The element's full address (p.e. C23.c42.p13)
+	 * @param string $paragraph The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+	 * @param bool $hideNavigation
 	 * @return string        The html code of the element's view view.
 	 */
 	//function show( $fullAddress, $paragraph='' ){
 	function show($fullAddress, $paragraph = '', $hideNavigation = false) {
-		global $usr, $lng, $url, $pge;
+		global $cfg, $usr, $lng, $url, $pge, $twig;
 		if (!$this->isVisible()) {              // not enough rights->no content
 			return "<div class=\"labsys_mop_note\">\n" . $lng->get("TxtNotEnoughRights") . "\n</div>";
 			exit;
@@ -87,23 +88,57 @@ class LpElement extends Element {
 
 		if ($this->contents == "") return "'()";  // is empty
 
+		// Process [HTML]. (../include/helper.inc).
+		parseHTML($this->contents, $ctype);
+
 		// replace the tag __ELEMENTTITLE__ by $paragraph.$this->title
-		parseHTML($this->contents);             // Process [HTML]. (../include/helper.inc).
+		$title = (!empty($paragraph) ? $paragraph . '. ' : '') . htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false);
+
+		$elt_history = preg_replace(
+			'/^@@([\d]*) (.*)/m',
+			'<a href="'.$url->link2( $_SERVER['PHP_SELF'], Array('address' => $url->get('address')) ).'&amp;historicVersion='.$fullAddress.'-$1#'.$fullAddress.'" target="_blank">$2</a>',
+			$this->history
+		);
+
+		$template = $twig->load('elements/wrapper.html.twig');
+		$content = $template->render(array(
+			"mode" => "show",
+			"lng" => $lng,
+			"cfg" => $cfg,
+			"url" => $url,
+			"usr" => $usr,
+			"elt" => $this,
+			"ctype" => $ctype,
+			'fullAddress' => $fullAddress,
+			'fullAddress2' => str_replace('.', '-', $fullAddress), // For bootstrap selectors. See https://github.com/twbs/bootstrap/issues/26516
+			'link2me' => EB::getLink2ElementURL( $fullAddress ),
+			'elt_history' => $elt_history,
+			'show_delete' => strpos(strtolower($fullAddress),'c') !== FALSE,
+			'paragraph' => $paragraph,
+			'title' => $title,
+			// ToDo: Render Title independently and add Checkbox to edit UI whether Title should be displayed (and maybe a dropdown for the h-level
+			'content' => $pge->replaceElementTitle($this->contents, $title),
+		));
+
+		return $content;
+		// replace the tag __ELEMENTTITLE__ by $paragraph.$this->title
+
+
 		$this->contents = $pge->replaceElementTitle($this->contents, '<div class="withLinkAnchor">' . (!empty($paragraph) ? $paragraph . '. ' : '') . htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false) . '<a href="#' . $fullAddress . '" class="link-anchor">¶</a></div>');
 
-		return EM::viewTopPage($this, $fullAddress) .
+		return "-------------" . EM::viewTopPage($this, $fullAddress) .
 			'<div id="' . $fullAddress . '" class="labsys_mop_contentArea">' .// anchor for retrieving after saving
 			"<div class=\"labsys_mop_elements_p_around\">" .
 			$this->contents . "</div></div>" .
-			EM::viewBottomPage($this, $fullAddress);
+			EM::viewBottomPage($this, $fullAddress) . "-------------";
 	}
 
 	/**
 	 * Produces the ePub version of this element.
 	 * Called by LcElement.inc
 	 *
-	 * @param string $fullAddress   The element's full address (p.e. C23.c42.p13)
-	 * @param string $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+	 * @param string $fullAddress The element's full address (p.e. C23.c42.p13)
+	 * @param string $paragraph The element's paragraph number (p.e. 2.3). Will be added to the title if given.
 	 * @return string
 	 */
 	function showEPub($fullAddress, $paragraph = "") {
@@ -146,12 +181,39 @@ class LpElement extends Element {
 	 * Returns the element's HTML-representation in the way the EDITOR should see it.
 	 *
 	 * param $_GET ["saveAsNew"] If $_GET["saveAsNew"] is set the save as new checkbox on the edit page should be set
-	 * @param string $fullAddress       The element's full address (p.e. C23.c42.p13)
+	 * @param string $fullAddress The element's full address (p.e. C23.c42.p13)
 	 * @return string            The html code of the element's edit view.
 	 */
 	function showEdit($fullAddress) {
-		global $lng, $url, $pge, $cfg;
+		global $cfg, $usr, $lng, $url, $pge, $twig;
 		$GLOBALS['Logger']->logToDatabase($fullAddress, logActions::pEditorOpen);
+
+		$title = (!empty($paragraph) ? $paragraph . '. ' : '') . htmlspecialchars($this->title, ENT_COMPAT, 'UTF-8', false);
+
+		$template = $twig->load('elements/wrapper.html.twig');
+		$content = $template->render(array(
+			"mode" => "edit",
+			"lng" => $lng,
+			"cfg" => $cfg,
+			"url" => $url,
+			"usr" => $usr,
+			"elt" => $this,
+			'visibleOnlyInCollection' => $this->visibleOnlyInCollection,
+			'visibleFor' => int2RightsList($this->visibleFor),
+			'matchingMenu' => $this->matchingMenu,
+			'constants' => str_replace("_", "&#x005F;", $pge->getConstants()),
+			'rightsList' => getRightsList(),
+			'fullAddress' => $fullAddress,
+			'fullAddress2' => str_replace('.', '-', $fullAddress), // For bootstrap selectors. See https://github.com/twbs/bootstrap/issues/26516
+			'show_delete' => strpos(strtolower($fullAddress),'c') !== FALSE,
+			'title' => returnEditable($this->title),
+			// ToDo: Render Title independently and add Checkbox to edit UI whether Title should be displayed (and maybe a dropdown for the h-level
+			'content' => $pge->replaceElementTitle($this->contents, $title),
+		));
+
+		return $content;
+
+
 		return EM::editTopPage($this, $fullAddress) .
 			"<FORM class=\"labsys_mop_std_form\" NAME=\"pageEdit\" METHOD=\"POST\" ACTION=\"" . $url->link2('../php/executeCommandOnElement.php', Array('address' => 'p')) . "\">\n" .
 			"<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n" .           // this function will statically be called by ../php/executeCommandOnElement.php
@@ -315,8 +377,8 @@ class LpElement extends Element {
 
 	/**
 	 * This function is called to display the element's properties.
-	 * @param string $prefix    If given this is put before the element's title (p.e. 1.2.3 title).
-	 * @param bool $disabled  Should the checkboxes, radio buttons etc. be disabled?
+	 * @param string $prefix If given this is put before the element's title (p.e. 1.2.3 title).
+	 * @param bool $disabled Should the checkboxes, radio buttons etc. be disabled?
 	 * @return string    The html-code of the elements properties horizontally arranged.
 	 */
 	function getPropertyRow($prefix, $disabled = false) {

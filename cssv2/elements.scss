@@ -1,0 +1,103 @@
+@import "variables";
+
+#mainwrapper .page {
+	.labsys_content {
+		position: relative;
+		padding: 1rem 0;
+
+		.codemirror_target {
+			height: 30rem;
+		}
+
+		.CodeMirror {
+			height: 30rem;
+		}
+
+
+		.labsys_elt_wrapper {
+			width: calc(100% - 4rem);
+			flex-grow: 1;
+			flex-shrink: 1;
+		}
+
+		.labsys_elt_toolbar {
+			width: 4rem;
+			flex-grow: 1;
+		}
+	}
+
+	.labsys_link2elt {
+		position: absolute;
+		display: none;
+		left: -2rem;
+		opacity: .2;
+		transition: opacity ease-in-out .2s;
+
+		a {
+			display: inline-block;
+			padding: 0 1rem .2rem .2rem;
+			margin: 0 1rem 4rem 0;
+			font-size: 16pt;
+			color: gray;
+		}
+
+		&:hover, *:active, *:focus {
+			opacity: 1;
+		}
+	}
+
+	.labsys_linkable_elt:hover .labsys_link2elt, .labsys_linkable_elt:active .labsys_link2elt {
+		display: block;
+	}
+
+	.labsys_elt_toolbar {
+		width: 4rem;
+		margin-left: 1rem;
+		padding: .5rem;
+		font-size: 80%;
+		opacity: .2;
+		transition: opacity ease-in-out .2s;
+
+		&:hover {
+			opacity: 1;
+		}
+
+		&.labsys_elt_type-p {
+			background-color: map_get($labsys_colors, "elt_p");
+		}
+		&.labsys_elt_type-m {
+			background-color: map_get($labsys_colors, "elt_m");
+		}
+		&.labsys_elt_type-i {
+			background-color: map_get($labsys_colors, "elt_i");
+		}
+		&.labsys_elt_type-c {
+			background-color: map_get($labsys_colors, "elt_c");
+		}
+		&.labsys_elt_type-l {
+			background-color: map_get($labsys_colors, "elt_l");
+		}
+		&.labsys_elt_type-s {
+			background-color: map_get($labsys_colors, "elt_s");
+		}
+
+		.labsys_elt_info {
+			margin-bottom: .5rem;
+
+			p {
+				margin: 0;
+			}
+		}
+
+		.copy2clipboard {
+			position: relative;
+
+			.copy-notification, .copy-notification-fail {
+				display: none;
+				left: 4rem;
+				top: 0;
+				width: 14em;
+			}
+		}
+	}
+}

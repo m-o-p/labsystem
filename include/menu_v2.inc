@@ -147,7 +147,6 @@ function templatevars_menu() {
       }
 
 
-
       if ($value_ !== "") {
         $child_entries[] = $myMenu->entry($key_, $value_);
       } // show the menu entry

@@ -1,0 +1,21 @@
+{% if mode == "show" %}
+	<div id="{{ fullAddress }}" class="labsys_content labsys_linkable_elt labsys_elt_type-{{ elt.elementId }}">
+		<div class="labsys_link2elt">
+			<a href="#{{ fullAddress }}">¶</a>
+		</div>
+
+		<div class="d-flex">
+			<div class="labsys_elt_wrapper">
+				{% include "elements/types/" ~ elt.elementId ~ "-show.html.twig" %}
+			</div>
+
+			{% include "elements/parts/buttons-default-top.html.twig" %}
+		</div>
+	</div>
+{% elseif mode == "edit" %}
+	{% if usr.isOfKindS('IS_CONTENT_EDITOR') %}
+		<div id="edit_{{ fullAddress }}" class="labsys_content labsys_linkable_elt labsys_elt_type-{{ elt.elementId }}">
+			{% include "elements/types/" ~ elt.elementId ~ "-edit.html.twig" %}
+		</div>
+	{% endif %}
+{% endif %}
