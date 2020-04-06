@@ -424,10 +424,12 @@ static function emojiMenu($fullAddress, $eIDXI){
    global $eDBI, $usr;
    
    if (!$usr->isOfKind( IS_USER )) return;
+   $labopen = false;
    
-   //require_once( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0};
-   //$labopen = !($GLOBALS[ $id."DBI" ]->isLabClosed); // add ! closed = true == open = false
-   $labopen = true;
+   $firstFinal = array_shift ( explode ( ".", $fullAddress ) );
+   $id = $firstFinal{0};
+   $labopen = !($GLOBALS[ $id."DBI" ]->isLabClosed); // add ! closed = true == open = false
+
    $query1 = $eDBI->findUserSelectionsFor($_SESSION['uid'], $eIDX);
    $selections = $query1->fetch_array();
    $path = "../syspix/button_def.gif";
