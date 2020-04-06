@@ -418,16 +418,16 @@ class EB{ /* ElementButtons */
     return EB::mkLink( $link, "<img src=\"../syspix/button_mail_13x12.gif\" width=\"13\" height=\"12\" border=\"0\" alt=\"mail\" title=\"".$lng->get("explainMailLink2")."\">" );
   }
 
-   static function emojiMenu($fullAddress, $eIDXI){
+static function emojiMenu($fullAddress, $eIDXI){
    $emID = "emBttn". strtolower($eIDXI);
    $eIDX = strtolower($eIDXI);
    global $eDBI, $usr;
    
    if (!$usr->isOfKind( IS_USER )) return;
    
-   require_once( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0};
-   $labopen = !($GLOBALS[ $id."DBI" ]->isLabClosed); // add ! closed = true == open = false
-
+   //require_once( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0};
+   //$labopen = !($GLOBALS[ $id."DBI" ]->isLabClosed); // add ! closed = true == open = false
+   $labopen = true;
    $query1 = $eDBI->findUserSelectionsFor($_SESSION['uid'], $eIDX);
    $selections = $query1->fetch_array();
    $path = "../syspix/button_def.gif";
@@ -455,7 +455,7 @@ class EB{ /* ElementButtons */
               <div id=".$emID." class=\"emoji-popupmenu\">".
                 EB::likeButton($eIDX,$emID,$labopen).
                 EB::dislikeButton($eIDX,$emID,$labopen).
-                EB::boredButton($eIDX,$emID,$labopen).
+                EB::sleepButton($eIDX,$emID,$labopen).
                 EB::confusedButton($eIDX,$emID,$labopen)."
         </div>
      </div>
@@ -498,13 +498,13 @@ class EB{ /* ElementButtons */
         }else
         {
             return "<div>
-                <span id=".$emID."consfused><img src=\"../syspix/button_frust.gif\" width=\"24\" height=\"24\" ></span>
+                <span id=".$emID."confused><img src=\"../syspix/button_frust.gif\" width=\"24\" height=\"24\" ></span>
             </div>
             ";
         }
     }
 
-    static function boredButton($fullAddress,$emID,$labopen){
+    static function sleepButton($fullAddress,$emID,$labopen){
         global $pge;
         if ( $labopen )
         {

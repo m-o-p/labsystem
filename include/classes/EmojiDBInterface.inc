@@ -1,4 +1,4 @@
-#<?php
+<?php
 
 if ( isset( $GLOBALS["eDBI"] ) ) return; /* require_once doesn't work well */
 

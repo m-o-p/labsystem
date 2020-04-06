@@ -135,7 +135,7 @@ function updateEmojiButton(emBId, emChoice){
   case 2:
    path = "../syspix/button_frust.gif";
    colorMenu = "#0000ff";
-   colorFrust = "#0000ff";
+   colorConfused = "#0000ff";
    break;
   case 3:
    path = "../syspix/button_sleep.gif";
@@ -161,7 +161,7 @@ function updateEmojiButton(emBId, emChoice){
  document.getElementById(butBIdVar).style.backgroundColor = colorMenu;
  document.getElementById(likeBttn).style.backgroundColor = colorLike;
  document.getElementById(sleepBttn).style.backgroundColor = colorSleep;
- document.getElementById(conBttn).style.backgroundColor = colorFrust;
+ document.getElementById(conBttn).style.backgroundColor = colorConfused;
  document.getElementById(dislikeBttn).style.backgroundColor = colorDislike;
 }
 
@@ -169,16 +169,16 @@ function updateEmojiMenu(elemId){
     var strURL=encodeURI("../php/emojiUpdate.php?elemId=" + elemId);
     var req = new XMLHttpRequest();
     req.onload = function() {
-	console.log(req.response); //Temporary
 	var obj = JSON.parse(req.response);
 	var likeBttn = "emBttn"+elemId+"like";
 	var sleepBttn = "emBttn"+elemId+"sleep";
 	var conBttn = "emBttn"+elemId+"confused";
 	var dislikeBttn = "emBttn"+elemId+"dislike";
+	//console.log(obj);
 	document.getElementById(likeBttn).innerHTML = obj["like"];
-        document.getElementById(sleepBttn).innerHTML = obj["bored"];
+        document.getElementById(sleepBttn).innerHTML = obj["sleep"];
         document.getElementById(conBttn).innerHTML = obj["confused"];
-        document.getElementById(dislikeBttn).innerHTML = obj["dislike"];
+        document.getElementById(dislikeBttn).innerHTML =  obj["dislike"];
 
     };
     if (req) {

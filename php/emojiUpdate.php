@@ -28,7 +28,7 @@ $data["confused"] = $elem[0];
 
 $selections = $eDBI->findNumOfSelectionsFor(3, $elemId);
 $elem=$selections->fetch_array();
-$data["bored"] = $elem[0];
+$data["sleep"] = $elem[0];
 
 $selections = $eDBI->findNumOfSelectionsFor(4, $elemId);
 $elem=$selections->fetch_array();
