@@ -138,7 +138,7 @@ class LiElement extends Element{
       $this->uaDBI = new LiDBInterfaceAnswers();
       $this->lkDBI = new LiDBInterfaceLocks();
 
-      $this->forceReLock = (( isset($_POST['forceReLock']) ) && ( $_POST['forceReLock'] == 1 ));
+      $this->forceReLock = isset($_POST['forceReLock']);
 
       $this->loadUserData4(); // Fills rest of the structures with neutral values.
     }
@@ -639,10 +639,10 @@ class LiElement extends Element{
                                                         "value=\"".$lng->get("giveAnswer")."\">\n";
                                        }
         else {// lock is set and is not set to this
-                                 $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"image\" ".
-                                                "src=\"../syspix/button_lock_closed_red_7x10.gif\" width=\"7\" height=\"10\" name=\"forceReLock\" value=\"1\" alt=\"".$lng->get("LockSetButForce").' '.$this->lockIsSetTo."\">\r\n";
-                                      // here the users gets indicated that another question is locked, so clicking on the red lock forces acquiring from another question.
-              }
+            // here the users gets indicated that another question is locked, so clicking on the red lock forces acquiring from another question.
+            $ret .= "<p><span style='color:red;'>" . $lng->get("MoveLockHere1") . " " . $this->lockIsSetTo .".".
+                "</span><br>".$lng->get("MoveLockHere2")."<br><input tabindex='".$pge->nextTab++."' type='submit' class='labsys_mop_button' name='forceReLock' value='" . $lng->get("MoveLockHere3") ."'></p>\r\n";
+        }
       }
 
 
