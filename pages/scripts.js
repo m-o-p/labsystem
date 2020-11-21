@@ -58,7 +58,6 @@ var isDirty = false;
 
 function dirtyWarning(){
   if (isDirty) return confirm(discardChangesWarning);
-  return retVal;
 }
 
 /**
