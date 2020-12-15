@@ -120,6 +120,7 @@ if (isset($_POST['topicId']) && $_POST['topicId'] == 'notSelected'){
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array( 'Expect:', 'X-API-Key: '.$config['key']));
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, FALSE);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V6);
 		$result=curl_exec($ch);
 		$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
