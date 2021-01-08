@@ -169,7 +169,8 @@ $content .= "<FORM class=\"labsys_mop_std_form\" NAME=\"MailForm\" METHOD=\"POST
 
 "</fieldset>\n" .
 
-"<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"checkbox\" id=\"copy2Me\" name=\"COPY2ME\" value=\"1\"" . (isset($_POST['COPY2ME']) && $_POST['COPY2ME'] == 1 ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" . "<label for=\"copy2Me\" class=\"labsys_mop_input_field_label\">" . $lng->get ( "copy2Me" ) . "</label>" .
+"<div><input tabindex=\"" . $pge->nextTab ++ . "\" type=\"checkbox\" id=\"copy2Me\" name=\"COPY2ME\" value=\"1\"" . (isset($_POST['COPY2ME']) && $_POST['COPY2ME'] == 1 ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" . "<label for=\"copy2Me\" class=\"labsys_mop_input_field_label\">" . $lng->get ( "copy2Me" ) . "</label></div>" .
+"<div><input tabindex=\"" . $pge->nextTab ++ . "\" type=\"checkbox\" id=\"noMailingID\" name=\"NOMAILINGID\" value=\"1\"" . (isset($_POST['NOMAILINGID']) && $_POST['NOMAILINGID'] == 1 ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" . "<label for=\"noMailingID\" class=\"labsys_mop_input_field_label\">" . $lng->get ( "noMailingIdentifier" ) . "</label></div>" .
 
 "<input tabindex=\"" . $pge->nextTab ++ . "\" type=\"submit\" class=\"labsys_mop_button_fullwidth\" value=\"" . $lng->get ( "sendMail" ) . "\" accesskey=\"s\" onclick='isDirty=false'>\n" .
 

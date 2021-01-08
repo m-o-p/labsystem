@@ -329,6 +329,7 @@ individualMails     = "Eine individualle Mail an jeden Empfänger senden."
 mailViaBcc          = "Mailempf&auml;nger verbergen."
 noCopy2Me           = "Keine Kopie an mich senden."
 copy2Me             = "Eine Kopie des Quelltextes dieser Mail und eine Empfängerliste an mich senden."
+noMailingIdentifier = "Keinen Kursidentifier in das Mail Subject prependen ([courseID])."
 
 ; uaMyData.php
 eMail               = "eMail"

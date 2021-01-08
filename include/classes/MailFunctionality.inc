@@ -31,7 +31,7 @@ class MailFunctionality{
    * @param Boolean $CCsender            Send mail via CC to sender?
    * @param Boolean $BCC                 Send mail via BCC?
    */
-  function sendMail( $senderUid, $receiverUIDs, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='' ){
+	function sendMail( $senderUid, $receiverUIDs, $subject, $text, $CCsender=FALSE, $BCC=FALSE, $additionalHeaders='', $NOMAILINGID=FALSE ){
     global $cfg, $usr, $uDBI, $urDBI;
 
     if (empty($senderUid) || empty($senderUid->mailAddress) || empty($senderUid->uid))
@@ -81,7 +81,7 @@ class MailFunctionality{
 
 	    //$this->printMail
 	    mail( ($BCC ? $senderMail : $receiver), // TO
-	          '['.$cfg->get("SystemTitle").'] ' . $this->mailHeaderEncode($replacedSubject),
+	        (!$NOMAILINGID ? '['.$cfg->get("SystemTitle").'] ' : '') . $this->mailHeaderEncode($replacedSubject),
 	          $replacedText.PHP_EOL.PHP_EOL.
 	          stripcslashes($cfg->get('mailFooter')).PHP_EOL,
 // 	          ($CCsender ? 'CC: '.$senderMail.PHP_EOL:''). // CC

@@ -66,7 +66,7 @@ if (isset ( $_POST ['POSSIBLE_RECVR'] ) && ($_POST ['POSSIBLE_RECVR'] > 0)) {
 			}
 		}
 	if (! empty ( $receivers )) {
-		$mailFunc->sendMail ( $usr, implode ( ',', $receivers ), $_POST ['SUBJECT'], $_POST ['MAILTEXT'], isset ( $_POST ['COPY2ME'] ) && ($_POST ['COPY2ME'] == 1) );
+	    $mailFunc->sendMail ( $usr, implode ( ',', $receivers ), $_POST ['SUBJECT'], $_POST ['MAILTEXT'], isset ( $_POST ['COPY2ME'] ) && ($_POST ['COPY2ME'] == 1), FALSE, '', isset ( $_POST ['NOMAILINGID'] ) && ($_POST ['NOMAILINGID'] == 1) );
 		makeLogEntry ( 'system', 'mail sent' );
 
 		$GLOBALS ['SYSINFO'] .= $lng->get ( "MailHasBeenSent" ) . ' ' . htmlentities ( $usr->foreName . ' ' . $usr->surName . ' <' . $usr->mailAddress . '>' );
