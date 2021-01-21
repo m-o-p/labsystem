@@ -164,4 +164,3 @@ foreach ( $mainMenuIni as $key => &$value ){
   }
 }
 echo("\t</ul></div>\n");
-?>

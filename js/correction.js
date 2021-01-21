@@ -2,7 +2,7 @@ function startCorrection(elem) {
     elem.off('click');
     elem.attr('value', 'Save');
     window.onbeforeunload = function (e) {
-        return "Discard changes?";
+        return discardChangesWarning;
     };
     // TODO: Transform div to textarea
     // - save original values as attributes

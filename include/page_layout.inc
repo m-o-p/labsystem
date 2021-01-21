@@ -60,18 +60,15 @@ $template = $twig->load('base.html.twig');
 // Unnecessary???
 //$loadPrettyPrint = $cfg->doesExist('google-code-prettify') && $cfg->get('google-code-prettify') == 'TRUE';
 
-
 require(INCLUDE_DIR . "/header.inc");
 require(INCLUDE_DIR . "/menu_v2.inc");
 require(INCLUDE_DIR . "/footer.inc");
-
 
 if ($pge->get() == "" and $pge->isVisible()) {
 	$pge->renderModeLegacy = false;
 } else {
 	$pge->renderModeLegacy = true;
 }
-
 
 $template->display([
 	'cfg' => $cfg,
@@ -96,5 +93,5 @@ $template->display([
 	],
 	'SYSALERT' => isset($SYSALERT) ? addslashes(strip_tags($SYSALERT)) : null,
 	'SYSINFO' => isset($SYSINFO) ? addslashes(strip_tags($SYSINFO)) : null,
-	'loadCorrectionScript' => $usr->isOfKind(IS_CORRECTOR)
+	'loadCorrectionScript' => $usr->isOfKind(IS_CORRECTOR) && !$url->available('hideAnswers') && $url->available('seeMe')
 ]);
