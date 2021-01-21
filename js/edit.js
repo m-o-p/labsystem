@@ -1,7 +1,7 @@
 /**
  * This variable is used for the dirty bit functionality.
  * The dirty bit is set by the inputs when they are changed.
- * It is cleared by the save vuttons.
+ * It is cleared by the save buttons.
  * If not cleared it shows a warning.
  */
 var isDirty = false;

@@ -8,7 +8,7 @@ function templatevars_header() {
       'dropdown' => $usr->isOfKind(IS_CORRECTOR) || $usr->isOfKind(IS_EX_SOLUTION_VIEWER),
       'hideAnswers' => $usr->isOfKind(IS_CORRECTOR),
       'seeMe-all' => $usr->isOfKind(IS_CORRECTOR),
-      'pseudeNames' => $usr->isOfKind(IS_CORRECTOR),
+      'pseudoNames' => $usr->isOfKind(IS_CORRECTOR),
       'exampleSolutions' => $usr->isOfKind(IS_EX_SOLUTION_VIEWER),
       'wysiwyg' => $usr->isOfKind(IS_CONTENT_EDITOR) && $cfg->doesExist('tinyMCE') && ($cfg->get('tinyMCE') == 'TRUE'),
     ],

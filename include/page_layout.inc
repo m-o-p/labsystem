@@ -67,33 +67,34 @@ require(INCLUDE_DIR . "/footer.inc");
 
 
 if ($pge->get() == "" and $pge->isVisible()) {
-  $pge->renderModeLegacy = false;
+	$pge->renderModeLegacy = false;
 } else {
-  $pge->renderModeLegacy = true;
+	$pge->renderModeLegacy = true;
 }
 
 
 $template->display([
-  'cfg' => $cfg,
-  'lng' => $lng,
-  'pge' => $pge,
-  'url' => $url,
-  'usr' => $usr,
-  'syslang' => $runningSystemLanguage,
-  'nav' => [
-    'prev' => $linkToPreviousPage,
-    'next' => $linkToNextPage,
-    'toc' => $linkToTOCPage,
-  ],
-  'links' => [
-    'login' => $labsystem_LogInLink,
-    'logout' => $labsystem_LogOutLink,
-  ],
-  'parts' => [
-    'header' => templatevars_header(),
-    'menu' => templatevars_menu(),
-    'footer' => templatevars_footer(),
-  ],
-  'SYSALERT' => isset($SYSALERT) ? addslashes(strip_tags($SYSALERT)) : null,
-  'SYSINFO' => isset($SYSINFO) ? addslashes(strip_tags($SYSINFO)) : null,
+	'cfg' => $cfg,
+	'lng' => $lng,
+	'pge' => $pge,
+	'url' => $url,
+	'usr' => $usr,
+	'syslang' => $runningSystemLanguage,
+	'nav' => [
+		'prev' => $linkToPreviousPage,
+		'next' => $linkToNextPage,
+		'toc' => $linkToTOCPage,
+	],
+	'links' => [
+		'login' => $labsystem_LogInLink,
+		'logout' => $labsystem_LogOutLink,
+	],
+	'parts' => [
+		'header' => templatevars_header(),
+		'menu' => templatevars_menu(),
+		'footer' => templatevars_footer(),
+	],
+	'SYSALERT' => isset($SYSALERT) ? addslashes(strip_tags($SYSALERT)) : null,
+	'SYSINFO' => isset($SYSINFO) ? addslashes(strip_tags($SYSINFO)) : null,
+	'loadCorrectionScript' => $usr->isOfKind(IS_CORRECTOR)
 ]);
