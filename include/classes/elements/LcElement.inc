@@ -63,11 +63,12 @@ class LcElement extends Element{
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   * @param $isInLab                   Am I inside a lab? (important for view visibility).
   */
-  function __construct( $idx, $title, $contents, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false, $isInLab=false ){
+  function __construct( $idx, $title, $contents, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false, $isInLab=false, $uidx=null ){
 
     $this->elementId                = "c";
 
     $this->idx                      = $idx;
+    $this->uidx                      = $uidx;
     $this->title                    = $title;
     $this->contents                 = $contents;
     $this->matchingMenu             = $matchingMenu;
@@ -93,7 +94,7 @@ class LcElement extends Element{
 
     $this->allowedElementIDs        = array('C', 'c', 'm', 'i', 'p', 's');
 
-    $this->serializationArray       = array( 'elementId', 'idx', 'title', 'contents', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'history' ); // see Element.inc for details
+    $this->serializationArray       = array( 'elementId', 'idx', 'uidx', 'title', 'contents', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'history' ); // see Element.inc for details
   }
 
 // The next functions are used for the element's view page. *************************************************
@@ -1005,6 +1006,20 @@ class LcElement extends Element{
                 yield $subData;
         }
     }
+  }
+  
+  function simpleHash($withId=false){
+      $myVisEl = $this->getMyVisibleElements();
+      
+      foreach( $myVisEl as $value ){
+          // load element
+          $id = $value{0}; $num = substr( $value, 1 );
+          if ($withId && !in_array(strtolower($id), $withId))
+              continue; // no need to load that element
+              require( "../php/getDBIbyID.inc" );
+              $element = $DBI->getData2Hash( $num, true, $this->isInLab );
+              yield array($value, $element->fetch_array());
+      }
   }
 
   /**

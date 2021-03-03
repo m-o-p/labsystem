@@ -1,0 +1,33 @@
+<?php
+
+$data = array(
+    "branch" => "master",
+    "commit_message" => "Update index file",
+    "actions" => array(
+        array(
+            "action" => "update",
+            "file_path" => "Index.txt",
+            "content" => "Data",
+        )
+      )
+);                                                                    
+$data_string = json_encode($data);                                                                                   
+                                                                                                                     
+$ch = curl_init('https://gitlab.lrz.de/api/v4/projects/69064/repository/commits');                                                                      
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
+    'PRIVATE-TOKEN: iy1xG3PXm-zHLid4ZvUG',
+    'Content-Type: application/json',                                                                                
+    'Content-Length: ' . strlen($data_string))                                                                       
+);                                                                                                                   
+                                                                                                                     
+$result = json_decode(curl_exec($ch),true);
+
+
+print_r($result)
+
+?>
+
+

@@ -104,6 +104,16 @@ class LiDBInterface extends Ddbc{
       return $this->createElementFromDbResult( $data, $isInColl );
     }
   }
+  
+  function getData2Hash( $idx, $isInColl=false, $isInLab=false ){
+      $result = $this->myDBC->mkSelect( "MD5(concat_ws('', question, example_solution))", $this->myTable, "idx='".$idx."'" );
+      if ( !($data = $result->fetch_array()) ){
+          trigger_error( $this->myDBC->link->error. "collection with idx not found: ".$idx, E_USER_WARNING );
+          return false;
+          exit;
+      }
+      return $data;
+  }
 
   /**
   * For the menu only a little amount of data is needed so here only that stuff is loaded.

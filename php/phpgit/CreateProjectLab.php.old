@@ -1,0 +1,42 @@
+<?php
+
+if (!empty($_REQUEST['name'])) {
+    $name = $_REQUEST['name'];
+} else {
+    exit();
+}
+
+if (!empty($_REQUEST['token'])) {
+    $token = $_REQUEST['token'];
+} else {
+    exit();
+}
+
+if (!empty($_REQUEST['url'])) {
+    $url = $_REQUEST['url'];
+} else {
+    exit();
+}
+
+$data = array(
+    "name" => $name,
+    "repository_access_level" => "private");                                                                    
+$data_string = json_encode($data);                                                                                   
+                                                                                                                     
+$ch = curl_init($url.'/api/v4/projects/');                                                                      
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
+    'PRIVATE-TOKEN: '. $token,
+    'Content-Type: application/json',                                                                                
+    'Content-Length: ' . strlen($data_string))                                                                       
+);                                                                                                                   
+                                                                                                                     
+$result = curl_exec($ch);
+
+echo $result
+
+?>
+
+

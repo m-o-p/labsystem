@@ -108,10 +108,11 @@ class LiElement extends Element{
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
-  function __construct( $idx, $question, $exampleSolution, $possibleCredits, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
+  function __construct( $idx, $uidx, $question, $exampleSolution, $possibleCredits, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
     global $usr;
     $this->elementId                = "i";
     $this->idx                      = $idx;
+    $this->uidx                      = $uidx;
     $this->title                    = trim(strip_tags(preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
                                         returnHTML( // remove [HTML] etc.
                                           substr( $question, 0, 100 )
@@ -143,7 +144,7 @@ class LiElement extends Element{
       $this->loadUserData4(); // Fills rest of the structures with neutral values.
     }
 
-    $this->serializationArray       = array( 'elementId', 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
+    $this->serializationArray       = array( 'elementId', 'idx', 'uidx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
     $this->varNamesForCSV           = array( 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'getDataOfTeam', 'isCorrected', 'userAnswer', 'answerHistory', 'answerComment', 'correctorsNote', 'givenCredits');
   }
 

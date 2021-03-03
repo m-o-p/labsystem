@@ -103,10 +103,12 @@ class LmElement extends Element{
                         $visibleFor,
                         $visibleOnlyInCollection,
                         $history,
-                        $isInColl=false ){
+                        $isInColl=false, 
+                        $uidx=null){
     global $usr, $cfg;
     $this->elementId                = "m";
     $this->idx                      = $idx;
+    $this->uidx                      = $uidx;
     $this->title                    = trim(strip_tags(preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
                                         returnHTML( // remove [HTML] etc.
                                           substr( $question, 0, 50 )
@@ -141,7 +143,7 @@ class LmElement extends Element{
     $this->mcDBI                    = new LmDBInterfaceAnswers();
     $this->loadUserData4(''); // Fills rest of the structures with neutral values.
 
-    $this->serializationArray       = array( 'elementId', 'idx', 'question', 'answerArray', 'reactionArray', ' doNotShuffleAnswers', 'onlyOneAnswerPossible', 'requiresNcorrect', 'enableReactions', 'showHintForClicked', 'reshowLastHint', 'enableDetailedGrading', 'horizontalLayout', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
+    $this->serializationArray       = array( 'elementId', 'idx', 'uidx','question', 'answerArray', 'reactionArray', ' doNotShuffleAnswers', 'onlyOneAnswerPossible', 'requiresNcorrect', 'enableReactions', 'showHintForClicked', 'reshowLastHint', 'enableDetailedGrading', 'horizontalLayout', 'answerExplanation', 'correctMask', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
     $this->specialCSVFields         = array('PLC_answerOption', 'PLC_answer'); // Placholder
     $this->varNamesForCSV           = array( 'idx', 'question', $this->specialCSVFields[0], $this->specialCSVFields[1], 'requiresNcorrect', 'answerExplanation', 'possibleCredits', 'givenCredits', 'answerCount', 'isCorrectlyAnswered', '$isAnswered', 'answerHistory'); // Attention: We overload the getCSVline and getCSVheaderLine method below.
     // PLC_ = placeholder that gets resolved in getCSVline()

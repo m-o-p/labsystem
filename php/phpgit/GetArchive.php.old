@@ -1,0 +1,32 @@
+<?php
+
+if (!empty($_REQUEST['id'])) {
+    $id = $_REQUEST['id'];
+} else {
+    exit();
+}
+
+if (!empty($_REQUEST['token'])) {
+    $token = $_REQUEST['token'];
+} else {
+    exit();
+}
+
+if (!empty($_REQUEST['url'])) {
+    $url = $_REQUEST['url'];
+} else {
+    exit();
+}
+
+$ch = curl_init();
+
+curl_setopt($ch, CURLOPT_URL, $url . '/api/v4/projects/'.$id.'/repository/archive.zip');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('PRIVATE-TOKEN: ' . $token));
+
+$data = curl_exec($ch);
+curl_close($ch);
+
+echo $data;
+
+?>

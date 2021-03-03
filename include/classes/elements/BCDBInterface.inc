@@ -89,6 +89,16 @@ class BCDBInterface extends LcDBInterface {
                           );
     }
   }
+  
+  function getData2Hash( $idx, $isInColl=false, $isInLab=false ){
+      $result = $this->myDBC->mkSelect( "MD5(concat_ws('', title, contents))", "collections", "idx='".$idx."'" );
+      if ( !($result->fetch_array()) ){
+          trigger_error( $this->myDBC->link->error. "collection with idx not found: ".$idx, E_USER_WARNING );
+          return false;
+          exit;
+      }
+      return $result;
+  }
 
   /**
   * For the menu only a little amount of data is needed so here only that stuff is loaded.

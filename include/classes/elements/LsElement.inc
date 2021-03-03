@@ -52,10 +52,11 @@ class LsElement extends Element{
   * @param $isInColl  Am I inside a collection? (with other elements important for visibility aspects).
   *                   Only passed because it is given. Has no use in this implementation.
   */
-  function __construct( $idx, $id, $num, $start, $stop, $comment, $history, $isInColl=false ){
+  function __construct( $idx, $id, $num, $start, $stop, $comment, $history, $isInColl=false, $uidx=null ){
     global $usr;
     $this->elementId                = "s";
     $this->idx                      = $idx;
+    $this->uidx                      = $uidx;
     $this->title                    = $this->elementId." ".$idx;
     $this->matchingMenu             = "schedule";
     $this->id                       = $id;
@@ -67,7 +68,7 @@ class LsElement extends Element{
 
     $this->IamVisible               = true; // schedules are always visible
 
-    $this->serializationArray       = array( 'elementId', 'idx', 'id', 'num', 'start', 'stop', 'comment', 'history' ); // see Element.inc for details
+    $this->serializationArray       = array( 'elementId', 'idx', 'udix', 'id', 'num', 'start', 'stop', 'comment', 'history' ); // see Element.inc for details
   }
 
   /**

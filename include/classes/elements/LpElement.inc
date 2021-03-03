@@ -48,10 +48,11 @@ class LpElement extends Element{
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
-  function __construct( $idx, $title, $contents, $matchingMenu, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
+  function __construct( $idx, $title, $contents, $matchingMenu, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false, $uidx=null ){
     global $usr;
     $this->elementId                = "p";
     $this->idx                      = $idx;
+    $this->uidx                     = $uidx;
     $this->title                    = $title;
     $this->contents                 = $contents;
     $this->matchingMenu             = $matchingMenu;
@@ -62,7 +63,7 @@ class LpElement extends Element{
     $this->IamVisible               = ( ($this->visibleFor == "0") || $usr->isOfKind( $this->visibleFor ) )
                                       && ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) );
 
-    $this->serializationArray       = array( 'elementId', 'idx', 'title', 'contents', 'matchingMenu', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
+    $this->serializationArray       = array( 'elementId', 'idx', 'uidx', 'title', 'contents', 'matchingMenu', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
   }
 
 

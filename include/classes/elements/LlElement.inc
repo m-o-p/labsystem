@@ -87,11 +87,12 @@ class LlElement extends Element{
   * @param $history                   This' history.
   * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
   */
-  function __construct( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false ){
+  function __construct( $idx, $uniqueID, $title, $authors, $comment, $prelabCollectionIdx, $labCollectionIdx, $matchingMenu, $visibleBefore1stSched, $visibleDuringSched, $visibleAfter1stSched, $visibleOnlyInCollection, $history, $isInColl=false, $uidx=null ){
     global $CDBI, $usr, $sDBI, $cfg, $lng, $url, $mailFunc;
     $this->elementId                = "l";
 
     $this->idx                      = $idx;
+    $this->uidx                     = $uidx;
     $this->uniqueID                 = $uniqueID;
 
     $this->title                    = $title;
@@ -185,7 +186,7 @@ class LlElement extends Element{
                                       ( $this->preLabIsVisible2Me || $this->labIsVisible2Me ) && // is anything visible?
                                       ( !$this->userIsViewing || $visiblePerSchedule ) &&  // is it visible by a schedule?
                                       ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) ); // in collection restriction fulfilled?
-    $this->serializationArray       = array( 'elementId', 'idx', 'uniqueID', 'title', 'authors', 'comment', 'prelabCollectionIdx', 'labCollectionIdx', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'visibleOnlyInCollection', 'history' );  // see Element.inc for details
+    $this->serializationArray       = array( 'elementId', 'idx', 'uidx', 'uniqueID', 'title', 'authors', 'comment', 'prelabCollectionIdx', 'labCollectionIdx', 'matchingMenu', 'visibleBefore1stSched', 'visibleDuringSched', 'visibleAfter1stSched', 'visibleOnlyInCollection', 'history' );  // see Element.inc for details
 
     $this->lastUploadedFile         = false;
   }
@@ -2218,6 +2219,14 @@ class LlElement extends Element{
 	    }
     }
     //header('Location: ' . $url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
+  }
+  
+  function calculateLocalHash(){
+      $prelabElems = $this->preLab->simpleHash();
+      $labElems = $this->lab->simpleHash();
+      foreach ($prelabElems as $data)
+       print_r($data);
+      //md5(md5(serialize($prelabElems)) . md5(serialize($labElems)));
   }
 }
 ?>

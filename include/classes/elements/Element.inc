@@ -79,6 +79,7 @@ class Element{
   var $elementId;               // Used for some Identifiers in the stylesheet (see rows below)
 
   var $idx;                     // The element's idx in the database.
+  var $uidx;                    // The element's unique idx for github
   var $title;                   // The element's page title (p.e. for html-title).
   var $matchingMenu;            // If present this will get the element's menu entry.
   var $visibleOnlyInCollection; // Is the element visible "standalone" or only aggregated in a collection.
