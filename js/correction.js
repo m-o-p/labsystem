@@ -1,6 +1,6 @@
 function startCorrection(elem) {
     elem.off('click');
-    elem.attr('value', 'Save');
+    elem.attr('value', elem.attr('saveValue') );
     window.onbeforeunload = function (e) {
         return discardChangesWarning;
     };
@@ -11,7 +11,7 @@ function startCorrection(elem) {
     elem.click(function() {
         saveCorrection($(this));
     });
-    elem.after('<input type="button" class="labsys_mop_i_cancel_button" value="Cancel" onclick="cancelCorrection(this)">');
+    elem.after('<input type="button" class="labsys_mop_i_cancel_button" value="' + elem.attr('cancelValue') + '" onclick="cancelCorrection(this)">');
 }
 
 function saveCorrection(elem) {
