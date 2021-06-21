@@ -262,7 +262,6 @@ class LiElement extends Element {
 	function showComment($isInCorrection = false, $fullAddress = '') {
 		global $usr, $pge, $cfg;
 		if ($isInCorrection) {
-			// TODO TW Remove dead code
 			return "<a name=\"" . $fullAddress . "." . $this->getDataOfTeam . "_correctorsComment\"></a>\n" . // anchor for retrieving after saving
 				"<textarea tabindex=\"" . $pge->nextTab++ . "\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"" . $cfg->get("DefaultICommentRows") . "\" onchange='isDirty=true'>" .
 				returnEditable($this->answerComment) .
@@ -272,10 +271,11 @@ class LiElement extends Element {
 				"</textarea>\n";
 		} else {
 			return "<a name=\"" . $fullAddress . "." . $this->getDataOfTeam . "_correctorsComment\"></a>\n" . // anchor for retrieving after saving
-				("<div class=\"labsys_mop_i_comment\">" .
+				(empty($this->answerComment) ? '' :
+					"<div class=\"labsys_mop_i_comment\">" .
 					$this->returnPREformatted($this->answerComment) .
 					"</div>\n") .
-				(!$usr->isSeeingSomeonesData() ? '' :
+				(!$usr->isSeeingSomeonesData() || empty($this->correctorsNote) ? '' :
 					'<div class="labsys_mop_i_correctorsNote">' .
 					$this->returnPREformatted($this->correctorsNote) .
 					"</div>\n"
@@ -465,7 +465,6 @@ class LiElement extends Element {
 				"<input type=\"checkbox\" id=\"IS_CORRECTED-" . $this->idx . '-' . $this->getDataOfTeam . "\" name=\"IS_CORRECTED\" value=\"1\" " .
 				"tabindex=\"" . $pge->nextTab++ . '"' .
 				($this->isCorrected ? ' checked="checked"' : '') . // so it will be checked by default
-				// TODO: Do change onChange
 				" onchange='isDirty=true;" .
 				"if(this.checked){" .
 				"document.getElementById(\"imgIsCorrected-" . $this->idx . '-' . $this->getDataOfTeam . "\").setAttribute(\"src\", \"../syspix/labCorrected_yes_12x12.gif\");" .
@@ -547,7 +546,6 @@ class LiElement extends Element {
 		 *    + comment/ points not editable
 		 *    + correct button shown
 		 *  - in correction (corrector opened the input)
-		 * // TODO TW Update doc
 		 *    user:
 		 *    + answer not editable
 		 *    + comment/ points not visible
@@ -619,14 +617,19 @@ class LiElement extends Element {
 		if ($usr->isOfKind(IS_CORRECTOR)) {
 			// corrector:
 			if (!$this->isClosed && !$isInCorrection) {
-				// START correction (but warn corrector because question is not yet closed)
-				$ret .= "<input id=\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\" tabindex=\"" . $pge->nextTab++ . "\" type=\"button\" class=\"labsys_tw_save_button labsys_mop_i_save_button_warn\" " .
-					"value=\"" . $lng->get("correctThoughNotClosed") . "\" saveValue=\"" . $lng->get("save") . "\" cancelValue=\"" . $lng->get("cancel") . "\" onclick='isDirty=false;'>\n";
-			} else if (!isset($_POST['FULLADDRESS'])) {
-				// START correction (without warning)
-				$ret .= "<input id=\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\" tabindex=\"" . $pge->nextTab++ . "\" type=\"button\" class=\"labsys_tw_save_button labsys_mop_i_save_button\" " .
-					"value=\"" . $lng->get("correct") . "\" saveValue=\"" . $lng->get("save") . "\" cancelValue=\"" . $lng->get("cancel") . "\" onclick='isDirty=false;'>\n";
-			} // else another is opened yet
+				$ret .= "<input id=\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\" tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_i_save_button_warn\" " .
+					"value=\"" . $lng->get("correctThoughNotClosed") . "\" onclick='isDirty=false;'>\n";
+			} elseif ($isInCorrection) {
+				$ret .= '<input tabindex="' . $pge->nextTab++ . '" type="submit" class="labsys_mop_i_save_button' . ($this->isClosed ? '' : '_warn') . '" ' .
+					"value=\"" . ($this->isClosed ? $lng->get("save") : $lng->get("correctThoughNotClosed")) . "\" accesskey=\"s\" onclick='isDirty=false;'>\n" .
+					"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" " .
+					"value=\"" . $lng->get("cancel") . "\" name=\"cancel\">\n";
+			} elseif (!isset($_POST['FULLADDRESS'])) {
+				$ret .= "<input id=\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\" tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_i_save_button\" " .
+					"value=\"" . $lng->get("correct") . "\" onclick='isDirty=false;'>\n";
+			} else {
+				;
+			}// another is opened yet
 		} else {
 			// user
 			if ($this->isClosed) {
@@ -649,7 +652,7 @@ class LiElement extends Element {
 
 		$ret .= "</FORM>\n" .
 
-			(($isGettingAnswered) ?
+			(($isGettingAnswered || $isInCorrection) ?
 				'<script language="JavaScript" type="text/javascript">' . "\n" .
 				'<!--' . "\n" .
 				'if (document.InputAnswer' . $this->idx . ') document.InputAnswer' . $this->idx . '.' . ($isGettingAnswered ? "ANSWER" : "COMMENT") . '.focus();' .

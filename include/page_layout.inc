@@ -92,6 +92,5 @@ $template->display([
 		'footer' => templatevars_footer(),
 	],
 	'SYSALERT' => isset($SYSALERT) ? addslashes(strip_tags($SYSALERT)) : null,
-	'SYSINFO' => isset($SYSINFO) ? addslashes(strip_tags($SYSINFO)) : null,
-	'loadCorrectionScript' => $usr->isOfKind(IS_CORRECTOR) && !$url->available('hideAnswers') && $url->available('seeMe')
+	'SYSINFO' => isset($SYSINFO) ? addslashes(strip_tags($SYSINFO)) : null
 ]);
