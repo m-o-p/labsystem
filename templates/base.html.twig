@@ -17,8 +17,9 @@
     <link rel="stylesheet" type="text/css" href="{{ cfg.get('PrintStyleSheet') }}" media="print">
 
     <link rel="stylesheet" type="text/css" href="../dist/main.css">
+	<script type="text/javascript" src="../dist/bundle.js"></script>
 
-    <script type="text/javascript">
+	<script type="text/javascript">
         var discardChangesWarning = "{{ lng.get('discardChangesWarning') }}";
     </script>
 
@@ -38,7 +39,6 @@
     {% endif %}
 
 	{% if parts['header']['display_items']['exampleSolutions'] %}
-		<script type="text/javascript" src="/ba-wasner/shared/jquery-3.5.1.min.js"></script>
 		<script type="text/javascript">const apiKey = "some_static_secret";</script>
 		<script type="text/javascript" src="/ba-wasner/measurements/ilab-time-measurement.js"></script>
 		<script type="text/javascript" src="/ba-wasner/correction/correction-criteria.js"></script>
@@ -89,8 +89,6 @@
 {% if SYSINFO %}
     <script type="text/javascript">alert("{{ SYSINFO }}");</script>
 {% endif %}
-
-<script type="text/javascript" src="../dist/bundle.js"></script>
 
 </body>
 </html>

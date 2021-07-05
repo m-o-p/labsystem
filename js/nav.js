@@ -56,5 +56,7 @@ function init_persist_sidenavstate() {
     sidenav.removeClass("no-transition");
 }
 
-init_sidenav_toggle();
-init_persist_sidenavstate();
+$(document).ready(function () {
+    init_sidenav_toggle();
+    init_persist_sidenavstate();
+});
