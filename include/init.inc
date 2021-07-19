@@ -50,7 +50,7 @@ require( INCLUDE_DIR."/configuration.inc" );    // Include the global configurat
 if ($cfg->doesExist('myTimeZone'))
 	date_default_timezone_set($cfg->get('myTimeZone'));
 
-require( $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles") );  // Include the user role constants.
+require( INCLUDE_DIR . '/' . $cfg->get("SystemResourcePath").$cfg->get("SystemUserRoles") );  // Include the user role constants.
 require( INCLUDE_DIR."/language.inc" );         // Include the localized Strings. => Object $lng.
 
 $url->preserve("nomenu");                       //  keep in url if present (menu off)
