@@ -5,20 +5,21 @@
  * =====================================================================================
  *
  */
-@import "~bootstrap/scss/bootstrap";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
 
 //Set path where scss-loader finds the font files. On the website, fonts are loaded from a dataURI inside bundle.js
-$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+$fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 
-@import "~@fortawesome/fontawesome-free/scss/fontawesome";
-@import "~@fortawesome/fontawesome-free/scss/solid";
-@import "~@fortawesome/fontawesome-free/scss/regular";
-@import "~@fortawesome/fontawesome-free/scss/brands";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/solid";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/regular";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/brands";
 
-@import "~codemirror/lib/codemirror.css";
-@import "~codemirror/addon/fold/foldgutter.css";
+@import "../node_modules/codemirror/lib/codemirror.css";
+@import "../node_modules/codemirror/addon/fold/foldgutter.css";
 
 
 #shittybrowser {
