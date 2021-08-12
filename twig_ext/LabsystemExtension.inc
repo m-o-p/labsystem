@@ -1,6 +1,6 @@
 <?php
 
-require_once '../vendor/autoload.php';
+require_once INCLUDE_DIR . '/../vendor/autoload.php';
 
 use \Twig\Extension\AbstractExtension;
 use \Twig\TwigFilter;

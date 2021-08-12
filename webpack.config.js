@@ -14,6 +14,15 @@ module.exports = {
     module: {
         rules: [
             {
+                test: require.resolve('jquery'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: {
+                        exposes: ["$", "jQuery"],
+                    },
+                }]
+            },
+            {
                 test: /\.css$/,
                 use: [
                     MiniCssExtractPlugin.loader,

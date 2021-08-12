@@ -67,10 +67,10 @@ if (file_exists(INCLUDE_DIR."/config.inc")){
    */
   if (php_sapi_name() != 'cli'){
     // normal call via URL
-      $h2cFile = "../ini/host2config.ini";
+      $h2cFile = INCLUDE_DIR . "/../ini/host2config.ini";
       if ( !file_exists( $h2cFile ) ) {
          trigger_error( $h2cFile.' missing! Falling back to sample. Use "../ini/host2config-sample.ini" to create yours and get rid of the warning.' , E_USER_WARNING );
-         $h2cFile = "../ini/host2config-sample.ini";
+         $h2cFile = INCLUDE_DIR . "/../ini/host2config-sample.ini";
       } // no configuration there
       $h2c = new Rom( parse_ini_file( $h2cFile ) );
       $subHost = strtoupper( substr($_SERVER['SERVER_NAME'], 0, strpos($_SERVER['SERVER_NAME'], '.') ) );
@@ -100,7 +100,7 @@ while ( $configData['include'] != '' ){
   $configData['include'] = ''; // clear field, might be refilled in the parsing process
 
   foreach ( $nextConfigs2Include as $configFile ){
-    $configFile = trim( $configFile ); // remove white spaces at borders
+    $configFile = INCLUDE_DIR . '/' . trim( $configFile ); // remove white spaces at borders
     if ( !file_exists( $configFile ) ){ // File there?
         header( "Location: ".'http'.( isset($_SERVER['HTTPS']) ? 's' : '').'://'.$_SERVER['SERVER_NAME'] );
         exit;

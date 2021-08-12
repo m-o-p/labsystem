@@ -1,4 +1,4 @@
 #!/bin/bash
-svn --force export http://google-code-prettify.googlecode.com/svn/trunk/ tmp/
-mv tmp/src/*.* .
-rm -rf tmp
+git clone https://github.com/googlearchive/code-prettify.git
+mv code-prettify/src/* .
+rm -rf code.prettify/

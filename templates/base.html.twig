@@ -17,14 +17,14 @@
     <link rel="stylesheet" type="text/css" href="{{ cfg.get('PrintStyleSheet') }}" media="print">
 
     <link rel="stylesheet" type="text/css" href="../dist/main.css">
+	<script type="text/javascript" src="../dist/bundle.js"></script>
 
-    <script type="text/javascript">
+	<script type="text/javascript">
         var discardChangesWarning = "{{ lng.get('discardChangesWarning') }}";
     </script>
 
     {% if cfg.doesExist('tinyMCE') and cfg.get('tinyMCE') == 'TRUE' and url.available('tinyMCE') %}
         <script type="text/javascript" src="../plugins/tiny_mce/tiny_mce.js"></script>
-
     {% endif %}
 
     {% if cfg.doesExist('google-code-prettify') and cfg.get('google-code-prettify') == 'TRUE' %}
@@ -38,10 +38,18 @@
         <script type="text/javascript" src="../plugins/google-code-prettify/prettify.js"></script>
     {% endif %}
 
+	{% if parts['header']['display_items']['exampleSolutions'] %}
+		<script type="text/javascript">const apiKey = "some_static_secret";</script>
+		<script type="text/javascript" src="/ba-wasner/correction/libs/node_modules/diff/dist/diff.js"></script>
+		<script type="text/javascript" src="/ba-wasner/correction/libs/diff2html.min.js"></script>
+		<script type="text/javascript" src="/ba-wasner/correction/libs/jquery.mark.min.js"></script>
+		<script type="text/javascript" src="/ba-wasner/measurements/ilab-time-measurement.js"></script>
+		<script type="text/javascript" src="/ba-wasner/correction/correction-criteria.js"></script>
+		<link rel="stylesheet" type="text/css" href="/ba-wasner/correction/correction.css">
+	{% endif %}
 
     <title>
         {{ pge.replaceConstants(pge.title) }} [{{ usr.userName }}@{{ cfg.get('SystemTitle') }}]
-
     </title>
 </head>
 
@@ -84,8 +92,6 @@
 {% if SYSINFO %}
     <script type="text/javascript">alert("{{ SYSINFO }}");</script>
 {% endif %}
-
-<script type="text/javascript" src="../dist/bundle.js"></script>
 
 </body>
 </html>

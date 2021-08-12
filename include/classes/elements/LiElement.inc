@@ -19,14 +19,14 @@
  */
 
 /**
-* implementation of the i (input) element.
-*
-* This element consists of a question the user can answer.
-*
-* @module     ../include/classes/elements/LiElement.inc
-* @author     Marc-Oliver Pahl, Sebastian Hoecht (FileUpload)
-* @version    1.1
-*/
+ * implementation of the i (input) element.
+ *
+ * This element consists of a question the user can answer.
+ *
+ * @module     ../include/classes/elements/LiElement.inc
+ * @author     Marc-Oliver Pahl, Sebastian Hoecht (FileUpload)
+ * @version    1.1
+ */
 
 /*
 The inputs are arbitrated by a lock.
@@ -56,1175 +56,1183 @@ Suppose now the case B grabbed the lock but A does not know that (they should co
 A wants to save the answer but the lock is not set to the question anymore.
 Instead of discarding the answer what would be the normal case as the team did not coordinate itself, the system saves the answer now anyway but replaces all spaces by "NO_LOCK" to show the team that this behavior was not intended.
  */
-require_once( INCLUDE_DIR."/classes/elements/Element.inc" );
+require_once(INCLUDE_DIR . "/classes/elements/Element.inc");
 
 // The following DBI is used in loadUserData4() (connects UID and team for one answer).
-require( INCLUDE_DIR."/classes/elements/LiDBInterfaceUidTeam.inc" );
+require(INCLUDE_DIR . "/classes/elements/LiDBInterfaceUidTeam.inc");
 // The following DBI is used in loadUserData4() (connects to the user's answers).
-require( INCLUDE_DIR."/classes/elements/LiDBInterfaceAnswers.inc" );
+require(INCLUDE_DIR . "/classes/elements/LiDBInterfaceAnswers.inc");
 // The following DBI is used in loadUserData4() (connects to the user's locks).
-require( INCLUDE_DIR."/classes/elements/LiDBInterfaceLocks.inc" );
+require(INCLUDE_DIR . "/classes/elements/LiDBInterfaceLocks.inc");
 
-class LiElement extends Element{
-  var $question;              // The question.
-  var $exampleSolution;       // Example solution.
-  var $possibleCredits;       // Possible credits as float :2.
+class LiElement extends Element {
+	var $question;              // The question.
+	var $exampleSolution;       // Example solution.
+	var $possibleCredits;       // Possible credits as float :2.
 
-  var $visibleFor;            // Visibility constraints.
+	var $visibleFor;            // Visibility constraints.
 
-  var $userAnswer;            // The user's answer to this question.
-  var $answerComment;         // The correctors comment to this question.
-  var $correctorsNote;        // Comments ONLY for the correctors.
-  var $givenCredits;          // The correctors given credits.
+	var $userAnswer;            // The user's answer to this question.
+	var $answerComment;         // The correctors comment to this question.
+	var $correctorsNote;        // Comments ONLY for the correctors.
+	var $givenCredits;          // The correctors given credits.
 
-  var $isClosed;              // Is the user answer closed?
-  var $isCorrected;           // Is the user answer corrected?
-  var $hasFileUpload;         // If true users can upload files to this question.
-  var $answerHistory;         // The user answer's history.
+	var $isClosed;              // Is the user answer closed?
+	var $isCorrected;           // Is the user answer corrected?
+	var $hasFileUpload;         // If true users can upload files to this question.
+	var $answerHistory;         // The user answer's history.
 
-  var $getDataOfTeam;         // The tem number data should be loaded of.
-                              // For each Input the team is set to this beeing the $usr->currentTeam at the moment of first opening.
+	var $getDataOfTeam;         // The tem number data should be loaded of.
+	// For each Input the team is set to this beeing the $usr->currentTeam at the moment of first opening.
 
-  var $lockIsSetTo;           /* A team can only answer the questions one by one.  Reason: Force them to work together.
+	var $lockIsSetTo;           /* A team can only answer the questions one by one.  Reason: Force them to work together.
                                * The lock tells, which question is currently in answer mode (it contains its index or false).
                                */
 
-  var $forceReLock;           // This gets set if the user clicked on the red lock so when he is sure he wants to get the lock from
-                              // another input which meant the other input could not be saved anymore (set to student friendly mod: save anyway)
+	var $forceReLock;           // This gets set if the user clicked on the red lock so when he is sure he wants to get the lock from
+	// another input which meant the other input could not be saved anymore (set to student friendly mod: save anyway)
 
-  var $utDBI;                 // new LiDBInterfaceUidTeam();
-  var $uaDBI;                 // new LiDBInterfaceAnswers();
-  var $lkDBI;                 // new LiDBInterfaceLocks();
+	var $utDBI;                 // new LiDBInterfaceUidTeam();
+	var $uaDBI;                 // new LiDBInterfaceAnswers();
+	var $lkDBI;                 // new LiDBInterfaceLocks();
 
-  /**
-  * The constructor.
-  *
-  * @param $idx                       This instance's index.
-  * @param $question                  The input's question.
-  * @param $exampleSolution           Example solution.
-  * @param $possibleCredits           Possible credits as float :2.
-  * @param $visibleFor                The bitmask of rights a viewer has to match.
-  * @param $visibleOnlyInCollection   Is the element visible only inside a collection.
-  * @param $history                   This' history.
-  * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
-  */
-  function __construct( $idx, $question, $exampleSolution, $possibleCredits, $visibleFor, $visibleOnlyInCollection, $history, $isInColl=false ){
-    global $usr;
-    $this->elementId                = "i";
-    $this->idx                      = $idx;
-    $this->title                    = trim(strip_tags(preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
-                                        returnHTML( // remove [HTML] etc.
-                                          substr( $question, 0, 100 )
-                                        )))
-                                      );
-    $this->matchingMenu             = "";                         // will be handled by ->getMatchingMenu();
-    $this->question                 = $question;
-    $this->exampleSolution          = $exampleSolution;
-    $this->possibleCredits          = $possibleCredits;
-    $this->visibleFor               = $visibleFor;
-    $this->visibleOnlyInCollection  = $visibleOnlyInCollection;
-    $this->history                  = $history;
+	/**
+	 * The constructor.
+	 *
+	 * @param $idx                       This instance's index.
+	 * @param $question                  The input's question.
+	 * @param $exampleSolution           Example solution.
+	 * @param $possibleCredits           Possible credits as float :2.
+	 * @param $visibleFor                The bitmask of rights a viewer has to match.
+	 * @param $visibleOnlyInCollection   Is the element visible only inside a collection.
+	 * @param $history                   This' history.
+	 * @param $isInColl                  Am I inside a collection? (important for visibility aspects).
+	 */
+	function __construct($idx, $question, $exampleSolution, $possibleCredits, $visibleFor, $visibleOnlyInCollection, $history, $isInColl = false) {
+		global $usr;
+		$this->elementId = "i";
+		$this->idx = $idx;
+		$this->title = trim(strip_tags(preg_replace("(\r\n|\n|\r)", '', // used to remove linebreaks
+				returnHTML( // remove [HTML] etc.
+					substr($question, 0, 100)
+				)))
+		);
+		$this->matchingMenu = "";                         // will be handled by ->getMatchingMenu();
+		$this->question = $question;
+		$this->exampleSolution = $exampleSolution;
+		$this->possibleCredits = $possibleCredits;
+		$this->visibleFor = $visibleFor;
+		$this->visibleOnlyInCollection = $visibleOnlyInCollection;
+		$this->history = $history;
 
-    $this->IamVisible               = ($this->visibleFor == "0") || $usr->isOfKind( $this->visibleFor )
-                                      && ( !$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl) );
-    if ( $history ){ // history is false if only menu data is wanted (following not necessary)
-      /* The mapping user team is stored separately for each input's answer.
-       * Why? The user could change its team and should still be able to see its answers.
-       * This could be a problem when a user changes his team during a lab.
-       * Then all mappings for this user and this lab have to be deleted in order to let them be recreated
-       * with the new teamnumber.
-       */
-      $this->utDBI = new LiDBInterfaceUidTeam();
-      $this->uaDBI = new LiDBInterfaceAnswers();
-      $this->lkDBI = new LiDBInterfaceLocks();
+		$this->IamVisible = ($this->visibleFor == "0") || $usr->isOfKind($this->visibleFor)
+			&& (!$this->visibleOnlyInCollection || ($this->visibleOnlyInCollection && $isInColl));
+		if ($history) { // history is false if only menu data is wanted (following not necessary)
+			/* The mapping user team is stored separately for each input's answer.
+			 * Why? The user could change its team and should still be able to see its answers.
+			 * This could be a problem when a user changes his team during a lab.
+			 * Then all mappings for this user and this lab have to be deleted in order to let them be recreated
+			 * with the new teamnumber.
+			 */
+			$this->utDBI = new LiDBInterfaceUidTeam();
+			$this->uaDBI = new LiDBInterfaceAnswers();
+			$this->lkDBI = new LiDBInterfaceLocks();
 
-      $this->forceReLock = (( isset($_POST['forceReLock']) ) && ( $_POST['forceReLock'] == 1 ));
+			$this->forceReLock = ((isset($_POST['forceReLock'])) && ($_POST['forceReLock'] == 1));
 
-      $this->loadUserData4(); // Fills rest of the structures with neutral values.
-    }
+			$this->loadUserData4(); // Fills rest of the structures with neutral values.
+		}
 
-    $this->serializationArray       = array( 'elementId', 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history' ); // see Element.inc for details
-    $this->varNamesForCSV           = array( 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'getDataOfTeam', 'isCorrected', 'userAnswer', 'answerHistory', 'answerComment', 'correctorsNote', 'givenCredits');
-  }
-
-  /**
-   * Serializes the element as CSV line.
-   */
-  function getCSVline(){
-  	global $usr;
-  	$csvData = array();
-  	if ( $usr->theSeeingUid() != "all" ){
-  		$this->loadUserData4( ( $usr->isSeeingSomeonesData() ? $usr->theSeeingUid() : $usr->uid )); // empty or my answer
-  		parent::getCSVline();
-  	}else{
-  		// Seeing all's data
-  		$this->mcDBI->getAllUIDs( $this->idx );
-  		while ( ($nextUID = $this->mcDBI->getNextData()) ){
-  			//information row
-  			$userData = $usr->getGlobalUserData( $nextUID );
-  			// answer
-  			$this->loadUserData4( $nextUID );
-  			parent::getCSVline();
-  		}
+		$this->serializationArray = array('elementId', 'idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'visibleFor', 'visibleOnlyInCollection', 'history'); // see Element.inc for details
+		$this->varNamesForCSV = array('idx', 'question', 'exampleSolution', 'hasFileUpload', 'possibleCredits', 'getDataOfTeam', 'isCorrected', 'userAnswer', 'answerHistory', 'answerComment', 'correctorsNote', 'givenCredits');
 	}
-  }
 
-  /**
-  * Serialize the element for export.
-  */
+	/**
+	 * Serializes the element as CSV line.
+	 */
+	function getCSVline() {
+		global $usr;
+		$csvData = array();
+		if ($usr->theSeeingUid() != "all") {
+			$this->loadUserData4(($usr->isSeeingSomeonesData() ? $usr->theSeeingUid() : $usr->uid)); // empty or my answer
+			parent::getCSVline();
+		} else {
+			// Seeing all's data
+			$this->mcDBI->getAllUIDs($this->idx);
+			while (($nextUID = $this->mcDBI->getNextData())) {
+				//information row
+				$userData = $usr->getGlobalUserData($nextUID);
+				// answer
+				$this->loadUserData4($nextUID);
+				parent::getCSVline();
+			}
+		}
+	}
 
-  /**
-  * DeSerialize the element for import.
-  */
+	/**
+	 * Serialize the element for export.
+	 */
 
-  /**
-  * Loads the answer data to the given $uid into this instance's field.
-  *
-  * @param $teamNumber  The number of the team data should be loaded of.
-  */
-  function loadUserData4( $teamNumber=0 ){
-    global $usr, $cfg, $url;
-    if ( $teamNumber != 0 ){
-      $this->getDataOfTeam = $teamNumber;
-      $answerData          = $this->uaDBI->getData4( $teamNumber,
-                                                     $this->idx,
-                                                     $teamNumber != 0 );
-      $this->userAnswer    = $answerData["answer"];
-      $this->answerComment = $answerData["comment"];
-      $this->correctorsNote= $answerData['correctorsNote'];
-      $this->givenCredits  = $answerData["givenCredits"];
-      $this->isClosed      = $answerData["isClosed"];
-      $this->isCorrected   = $answerData["isCorrected"];
-      $this->answerHistory = $answerData["history"];
+	/**
+	 * DeSerialize the element for import.
+	 */
 
-      /* A team can only answer the questions one by one. Reason: Force them to work together.
-       * The lock tells, which question is currently in answer mode (p.e. i142).
-       */
-      $this->lockIsSetTo   = $this->lkDBI->getData4( $this->getDataOfTeam );
-    } else {
-      $this->userAnswer    = '';
-      $this->answerComment = '';
-      $this->correctorsNote= '';
-      $this->givenCredits  = 0;
-      $this->isClosed      = false;
-      $this->isCorrected   = false;
-      $this->answerHistory = '';
+	/**
+	 * Loads the answer data to the given $uid into this instance's field.
+	 *
+	 * @param $teamNumber  The number of the team data should be loaded of.
+	 */
+	function loadUserData4($teamNumber = 0) {
+		global $usr, $cfg, $url;
+		if ($teamNumber != 0) {
+			$this->getDataOfTeam = $teamNumber;
+			$answerData = $this->uaDBI->getData4($teamNumber,
+				$this->idx,
+				$teamNumber != 0);
+			$this->userAnswer = $answerData["answer"];
+			$this->answerComment = $answerData["comment"];
+			$this->correctorsNote = $answerData['correctorsNote'];
+			$this->givenCredits = $answerData["givenCredits"];
+			$this->isClosed = $answerData["isClosed"];
+			$this->isCorrected = $answerData["isCorrected"];
+			$this->answerHistory = $answerData["history"];
 
-      $this->lockIsSetTo   = false;
-    }
-  }
+			/* A team can only answer the questions one by one. Reason: Force them to work together.
+			 * The lock tells, which question is currently in answer mode (p.e. i142).
+			 */
+			$this->lockIsSetTo = $this->lkDBI->getData4($this->getDataOfTeam);
+		} else {
+			$this->userAnswer = '';
+			$this->answerComment = '';
+			$this->correctorsNote = '';
+			$this->givenCredits = 0;
+			$this->isClosed = false;
+			$this->isCorrected = false;
+			$this->answerHistory = '';
 
-  /**
-   * Adds a pre tag around non-HTML $text. Used to format the corrector's comments and the example solutions.
-   * @param String $text
-   * @return The HTML of the text.
-   */
-  private function returnPREformatted($text){
-    return ( $text[0] == '[' ? // formatted?
-        returnHTML( $text )
-        :
-        '<pre style="width: 100%; border: 0; padding: 0; margin: 0; background-color: transparent; display: inline;">'.
-        htmlentities( $text ).
-        '</pre>' );
-  }
+			$this->lockIsSetTo = false;
+		}
+	}
 
-  /**
-   * Returns the credits given by the corrector.
-   *
-   * @return $this->givenCredits
-   */
-   function getGivenCredits(){
-     return $this->givenCredits;
-   }
+	/**
+	 * Adds a pre tag around non-HTML $text. Used to format the corrector's comments and the example solutions.
+	 * @param String $text
+	 * @return The HTML of the text.
+	 */
+	private function returnPREformatted($text) {
+		return ($text[0] == '[' ? // formatted?
+			returnHTML($text)
+			:
+			'<pre style="width: 100%; border: 0; padding: 0; margin: 0; background-color: transparent; display: inline;">' .
+			htmlentities($text) .
+			'</pre>');
+	}
 
-  /**
-   * Returns the credits one can get for the correct answer.
-   *
-   * @return $this->possibleCredits
-   */
-   function getPossibleCredits(){
-     return $this->possibleCredits;
-   }
+	/**
+	 * Returns the credits given by the corrector.
+	 *
+	 * @return $this->givenCredits
+	 */
+	function getGivenCredits() {
+		return $this->givenCredits;
+	}
+
+	/**
+	 * Returns the credits one can get for the correct answer.
+	 *
+	 * @return $this->possibleCredits
+	 */
+	function getPossibleCredits() {
+		return $this->possibleCredits;
+	}
 
 
 // The next functions are used for the element's view page. *************************************************
 
 // helper (if this exists some time they should be declared private)  - - - - - - - - - - - - - - - - - - -
-  /**
-  * Shows the corrector's comments.
-  *
-  * @param  $isInCorrection   If true the comment is returned as textarea. Otherwise as division.
-  *
-  * @param $fullAddress       The elements full address. (Used for the anchor.)
-  *
-  * @return string            The html representation of the correctors comment.
-  */
-  function showComment( $isInCorrection=false, $fullAddress='' ){
-    global $usr, $pge, $cfg;
-    if ( $isInCorrection ){
-      return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n". // anchor for retrieving after saving
-             "<textarea tabindex=\"".$pge->nextTab++."\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultICommentRows")."\" onchange='isDirty=true'>".
-             returnEditable( $this->answerComment ).
-             "</textarea>\n".
-             '<textarea tabindex="'.$pge->nextTab++.'" name="CORRECTORS_NOTE" class="labsys_mop_textareaNote" rows="'.$cfg->get("DefaultICommentRows").'" onchange="isDirty=true">'.
-             returnEditable( $this->correctorsNote ).
-             "</textarea>\n";
-    } else {
-      return "<a name=\"".$fullAddress.".".$this->getDataOfTeam."_correctorsComment\"></a>\n". // anchor for retrieving after saving
-             (empty($this->answerComment) ? '' :
-                 "<div class=\"labsys_mop_i_comment\">".
-                 $this->returnPREformatted( $this->answerComment ).
-                 "</div>\n").
-             (!$usr->isSeeingSomeonesData() || empty($this->correctorsNote) ? '' :
-                 '<div class="labsys_mop_i_correctorsNote">'.
-                 $this->returnPREformatted( $this->correctorsNote ).
-                 "</div>\n"
-                 );
-    }
-  }
+	/**
+	 * Shows the corrector's comments.
+	 *
+	 * @param  $isInCorrection   If true the comment is returned as textarea. Otherwise as division.
+	 *
+	 * @param $fullAddress       The elements full address. (Used for the anchor.)
+	 *
+	 * @return string            The html representation of the correctors comment.
+	 */
+	function showComment($isInCorrection = false, $fullAddress = '') {
+		global $usr, $pge, $cfg;
+		if ($isInCorrection) {
+			return "<a name=\"" . $fullAddress . "." . $this->getDataOfTeam . "_correctorsComment\"></a>\n" . // anchor for retrieving after saving
+				"<textarea tabindex=\"" . $pge->nextTab++ . "\" name=\"COMMENT\" class=\"labsys_mop_textarea\" rows=\"" . $cfg->get("DefaultICommentRows") . "\" onchange='isDirty=true'>" .
+				returnEditable($this->answerComment) .
+				"</textarea>\n" .
+				'<textarea tabindex="' . $pge->nextTab++ . '" name="CORRECTORS_NOTE" class="labsys_mop_textareaNote" rows="' . $cfg->get("DefaultICommentRows") . '" onchange="isDirty=true">' .
+				returnEditable($this->correctorsNote) .
+				"</textarea>\n";
+		} else {
+			return "<a name=\"" . $fullAddress . "." . $this->getDataOfTeam . "_correctorsComment\"></a>\n" . // anchor for retrieving after saving
+				(empty($this->answerComment) ? '' :
+					"<div class=\"labsys_mop_i_comment\">" .
+					$this->returnPREformatted($this->answerComment) .
+					"</div>\n") .
+				(!$usr->isSeeingSomeonesData() || empty($this->correctorsNote) ? '' :
+					'<div class="labsys_mop_i_correctorsNote">' .
+					$this->returnPREformatted($this->correctorsNote) .
+					"</div>\n"
+				);
+		}
+	}
 
-  /**
-  * Shows the user's answer.
-  *
-  * @param  $isGettingAnswered  If true the comment is returned as textarea. Otherwise as division.
-  *
-  * @return string              The html representation of the correctors comment.
-  */
-  function showAnswer( $isGettingAnswered=false ){
-    global $cfg, $pge;
-    if ( $isGettingAnswered ) return  "<textarea  tabindex=\"".$pge->nextTab++."\" ".
-                                                  'name="ANSWER" '.
-                                                  'class="labsys_mop_textarea" '.
-                                                  'rows="'.$cfg->get("DefaultIAnswerRows").'"'.
-                                                  ' onchange="isDirty=true">'.
-                                                  htmlentities( $this->userAnswer ).
-                                                  "</textarea>\n";
-                         else if ( $this->userAnswer != "" ) return "<div class=\"labsys_mop_textarea\">".
-                                                                    $this->returnPREformatted( $this->userAnswer ).
-                                                                    "</div>\n";
-                              else return "";
-  }
+	/**
+	 * Shows the user's answer.
+	 *
+	 * @param  $isGettingAnswered  If true the comment is returned as textarea. Otherwise as division.
+	 *
+	 * @return string              The html representation of the correctors comment.
+	 */
+	function showAnswer($isGettingAnswered = false) {
+		global $cfg, $pge;
+		if ($isGettingAnswered) return "<textarea  tabindex=\"" . $pge->nextTab++ . "\" " .
+			'name="ANSWER" ' .
+			'class="labsys_mop_textarea" ' .
+			'rows="' . $cfg->get("DefaultIAnswerRows") . '"' .
+			' onchange="isDirty=true">' .
+			htmlentities($this->userAnswer) .
+			"</textarea>\n";
+		else if ($this->userAnswer != "") return "<div class=\"labsys_mop_textarea\">" .
+			$this->returnPREformatted($this->userAnswer) .
+			"</div>\n";
+		else return "";
+	}
 
-  /**
-   * Checks if $thumbnailFileName exists and creates it otherwise based on $fileSrc.
-   * $fileSrc The original image.
-   * $thumbnailFileName The thumbnail file.
-   * $width The desired thumbnail width.
-   * $height Thedesired thumbnail height.
-   */
-  public static function checkThumb($fileSrc, $thumbnailFileName, $width = 50, $height = 50) {
-    if (! file_exists ( $thumbnailFileName ) || ($fileSrc == $thumbnailFileName)) {
-      // Thumbnail erzeugen
-      if ($fileSrc == $thumbnailFileName){
-        list ( $width_orig, $height_orig ) = getimagesize ( $fileSrc );
-        if ($width_orig <= $width && $height_orig <= $height){
-          // already resized;
-          return;
-        }
-      }
+	/**
+	 * Checks if $thumbnailFileName exists and creates it otherwise based on $fileSrc.
+	 * $fileSrc The original image.
+	 * $thumbnailFileName The thumbnail file.
+	 * $width The desired thumbnail width.
+	 * $height Thedesired thumbnail height.
+	 */
+	public static function checkThumb($fileSrc, $thumbnailFileName, $width = 50, $height = 50) {
+		if (!file_exists($thumbnailFileName) || ($fileSrc == $thumbnailFileName)) {
+			// Thumbnail erzeugen
+			if ($fileSrc == $thumbnailFileName) {
+				list ($width_orig, $height_orig) = getimagesize($fileSrc);
+				if ($width_orig <= $width && $height_orig <= $height) {
+					// already resized;
+					return;
+				}
+			}
 
-      // Get new dimensions
-      list ( $width_orig, $height_orig ) = getimagesize ( $fileSrc );
+			// Get new dimensions
+			list ($width_orig, $height_orig) = getimagesize($fileSrc);
 
-      $ratio_orig = $width_orig / $height_orig;
+			$ratio_orig = $width_orig / $height_orig;
 
-      if ($width / $height > $ratio_orig) {
-        $width = $height * $ratio_orig;
-      } else {
-        $height = $width / $ratio_orig;
-      }
+			if ($width / $height > $ratio_orig) {
+				$width = $height * $ratio_orig;
+			} else {
+				$height = $width / $ratio_orig;
+			}
 
-      // Resample
-      $image_p = imagecreatetruecolor ( $width, $height );
+			// Resample
+			$image_p = imagecreatetruecolor($width, $height);
 
-      // Get mime
-      switch(mime_content_type($fileSrc)){
-        case 'image/gif':
-          $image = imagecreatefromgif ( $fileSrc );
-          break;
-        case 'image/png':
-          $image = imagecreatefrompng ( $fileSrc );
-          break;
-        default:
-          $image = imagecreatefromjpeg ( $fileSrc );
-      }
+			// Get mime
+			switch (mime_content_type($fileSrc)) {
+				case 'image/gif':
+					$image = imagecreatefromgif($fileSrc);
+					break;
+				case 'image/png':
+					$image = imagecreatefrompng($fileSrc);
+					break;
+				default:
+					$image = imagecreatefromjpeg($fileSrc);
+			}
 
-      imagecopyresampled ( $image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig );
+			imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
 
-    imagejpeg ( $image_p, $thumbnailFileName, 75 );
+			imagejpeg($image_p, $thumbnailFileName, 75);
 
-      // Clean
-      imagedestroy ( $image_p );
-      imagedestroy ( $image );
-    }
-  }
-  /**
-   * Checks if the file is an image that could have a preview. Retrieves/ creates the preview and returns the HTML code for it.
-   * @param unknown $filePath The full path to the original file.
-   */
-  private function thumbnailHTML($iIdx, $team, $fileName){
-    global $url;
-    $filePath = LiDBInterfaceAnswers::getUploadDirectory($iIdx, $team).DIRECTORY_SEPARATOR.$fileName;
-    $mime = mime_content_type($filePath);
+			// Clean
+			imagedestroy($image_p);
+			imagedestroy($image);
+		}
+	}
 
-    // For those we create thumbs:
-    $possibleMimes=array( 'png' => 'image/png',
-                    'jpe' => 'image/jpeg',
-                    'jpeg' => 'image/jpeg',
-                    'jpg' => 'image/jpeg',
-                    'gif' => 'image/gif');
+	/**
+	 * Checks if the file is an image that could have a preview. Retrieves/ creates the preview and returns the HTML code for it.
+	 * @param unknown $filePath The full path to the original file.
+	 */
+	private function thumbnailHTML($iIdx, $team, $fileName) {
+		global $url;
+		$filePath = LiDBInterfaceAnswers::getUploadDirectory($iIdx, $team) . DIRECTORY_SEPARATOR . $fileName;
+		$mime = mime_content_type($filePath);
 
-    if (in_array($mime, $possibleMimes)){
-      // We want a thumbnail for this...
-      $thumbFilePath = $filePath.'.thumb.jpg';
-      $this->checkThumb( $filePath, $thumbFilePath );
-      // get lab index from address:
-      require( "../php/getFirstLastFinal.inc" );
-      return ' <a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $team, 'lIdx' => $firstFinal, 'iIdx' => $iIdx, 'filename' => $fileName) ).'">' .
-        '<img src="'.$url->link2('../php/getUploadedFile.php', Array('team' => $team, 'lIdx' => $firstFinal, 'iIdx' => $iIdx, 'filename' => $fileName.'.thumb.jpg') ).'" onclick="zoomPreviewImage(this); return false">'.
-        '</a>';
-    }
-  }
-  /**
-  * Returns the HTML code of the fileUpload.
-  *
-  * @param  $isGettingAnswered  If true files can be uploaded and deleted. Otherwhise they can only be downloaded.
-  *
-  * @return string            The html representation of the correctors comment.
-  */
-  private function showFileUpload( $isGettingAnswered=false ){
-    global $lng, $url;
-    if (!$this->hasFileUpload) return ''; // Has no upload -> nothing to see here
+		// For those we create thumbs:
+		$possibleMimes = array('png' => 'image/png',
+			'jpe' => 'image/jpeg',
+			'jpeg' => 'image/jpeg',
+			'jpg' => 'image/jpeg',
+			'gif' => 'image/gif');
 
-    $ret = '<div class="labsys_mop_i_fileUpload">';
-    $ret .= '<h3><img src="../syspix/button_save_13x12.gif" width="13" height="12" alt="'.$lng->get('upload').'"> '.$lng->get('fileList').'</h3>';
-    $files = $this->uaDBI->getFiles($this->getDataOfTeam, $this->idx);
-    if (empty($files)) $ret .= '<div class="labsys_mop_i_noUploads">'.$lng->get('noFilesYet').'</div>';
-    else {
-      if ( $isGettingAnswered ) // allow deleting files with this button
-        $ret .= '<img class="labsys_mop_i_arrow" src="../syspix/delete-arrow.gif" alt="delete" /><input type="submit" class="labsys_mop_button" name="fileDelete" value="'.$lng->get('deleteFile').'">';
+		if (in_array($mime, $possibleMimes)) {
+			// We want a thumbnail for this...
+			$thumbFilePath = $filePath . '.thumb.jpg';
+			$this->checkThumb($filePath, $thumbFilePath);
+			// get lab index from address:
+			require("../php/getFirstLastFinal.inc");
+			return ' <a href="' . $url->link2('../php/getUploadedFile.php', array('team' => $team, 'lIdx' => $firstFinal, 'iIdx' => $iIdx, 'filename' => $fileName)) . '">' .
+				'<img src="' . $url->link2('../php/getUploadedFile.php', array('team' => $team, 'lIdx' => $firstFinal, 'iIdx' => $iIdx, 'filename' => $fileName . '.thumb.jpg')) . '" onclick="zoomPreviewImage(this); return false">' .
+				'</a>';
+		}
+	}
 
-      $ret .= '<ul class="labsys_mop_i_file_list">';
-      foreach ($files as $file) { // List files. If isGettingAnswered with delete button.
-        if (substr($file['fileName'], -9) == 'thumb.jpg'){
-          continue; // jump over thumbnail files.
-        }
-        $pathInfo = pathinfo($file['fileName']);
-        $ret .= '<li>';
-        $filesize = round($file['size'] / 1024).' KB';
-        $fileTime = date('H:i j.n.Y', $file['timestamp']);
-        $ret .= '<input type="checkbox" name="deleteFileNames[]" value="'.$pathInfo['basename'].'"'.($isGettingAnswered ? '' : ' disabled="disabled"').' />';
-        // get lab index from address:
-        require( "../php/getFirstLastFinal.inc" );
-        $ret .= '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'lIdx' => $firstFinal, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'], 'download' => 'true')).'">' .
-                $pathInfo['basename'].
-                '</a> '.
-                '<a href="'.$url->link2('../php/getUploadedFile.php', Array('team' => $this->getDataOfTeam, 'lIdx' => $firstFinal, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'])).'">' .
-                '<img src="../syspix/button_view_13x12.gif">'.
-                '</a> '.
-                '<div class="labsys_mop_i_file_description"> '.$filesize.' | '.$fileTime.'</div>'.
-                $this->thumbnailHTML($this->idx, $this->getDataOfTeam, $pathInfo['basename']).
-            '</li>';
-      }
-      $ret .= '</ul>';
-    }
+	/**
+	 * Returns the HTML code of the fileUpload.
+	 *
+	 * @param  $isGettingAnswered  If true files can be uploaded and deleted. Otherwhise they can only be downloaded.
+	 *
+	 * @return string            The html representation of the correctors comment.
+	 */
+	private function showFileUpload($isGettingAnswered = false) {
+		global $lng, $url;
+		if (!$this->hasFileUpload) return ''; // Has no upload -> nothing to see here
 
-    if ( $isGettingAnswered ){ // if we can answer we can upload.
-      $max_upload = (int)(ini_get('upload_max_filesize'));
-      $max_post = (int)(ini_get('post_max_size'));
-      $memory_limit = (int)(ini_get('memory_limit'));
-      $upload_mb = min($max_upload, $max_post, $memory_limit);
-      $ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" multiple name=\"file[]\" \">".
-              "<input type=\"submit\"  class=\"labsys_mop_button\" name=\"fileUpload\" value=\"".$lng->get('upload').' (<'.$upload_mb.'M)'."\">".'<br><br>';
-    }
-    $ret .= '</div>';
-    return $ret;
-  }
+		$ret = '<div class="labsys_mop_i_fileUpload">';
+		$ret .= '<h3><img src="../syspix/button_save_13x12.gif" width="13" height="12" alt="' . $lng->get('upload') . '"> ' . $lng->get('fileList') . '</h3>';
+		$files = $this->uaDBI->getFiles($this->getDataOfTeam, $this->idx);
+		if (empty($files)) $ret .= '<div class="labsys_mop_i_noUploads">' . $lng->get('noFilesYet') . '</div>';
+		else {
+			if ($isGettingAnswered) // allow deleting files with this button
+				$ret .= '<img class="labsys_mop_i_arrow" src="../syspix/delete-arrow.gif" alt="delete" /><input type="submit" class="labsys_mop_button" name="fileDelete" value="' . $lng->get('deleteFile') . '">';
 
-  /**
-  * Shows the credits.
-  *
-  * @param  $isInCorrection   If true the credits are an input.
-  * @param  $possiblePtsOnly  If set only the possible points are shown (to be placed below the example solution).
-  *
-  * @return string            The html representation of the correctors comment.
-  */
-  function showCredits( $isInCorrection=false, $possiblePtsOnly=false ){
-    global $lng, $pge, $usr, $cfg;
-    return "<div class=\"labsys_mop_i_credits".
-          // if we are viewing someone the color of the credits division tells whether the input is marked as corrected
-          ( $usr->isOfKind( IS_CORRECTOR ) && !$possiblePtsOnly ?
-                     ( $this->isCorrected ?  "_green" :  "_red" ) : '' ).
-          "\">".
-            // the "is corrected" checkbox
-            ( $usr->isOfKind( IS_CORRECTOR )
+			$ret .= '<ul class="labsys_mop_i_file_list">';
+			foreach ($files as $file) { // List files. If isGettingAnswered with delete button.
+				if (substr($file['fileName'], -9) == 'thumb.jpg') {
+					continue; // jump over thumbnail files.
+				}
+				$pathInfo = pathinfo($file['fileName']);
+				$ret .= '<li>';
+				$filesize = round($file['size'] / 1024) . ' KB';
+				$fileTime = date('H:i j.n.Y', $file['timestamp']);
+				$ret .= '<input type="checkbox" name="deleteFileNames[]" value="' . $pathInfo['basename'] . '"' . ($isGettingAnswered ? '' : ' disabled="disabled"') . ' />';
+				// get lab index from address:
+				require("../php/getFirstLastFinal.inc");
+				$ret .= '<a href="' . $url->link2('../php/getUploadedFile.php', array('team' => $this->getDataOfTeam, 'lIdx' => $firstFinal, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'], 'download' => 'true')) . '">' .
+					$pathInfo['basename'] .
+					'</a> ' .
+					'<a href="' . $url->link2('../php/getUploadedFile.php', array('team' => $this->getDataOfTeam, 'lIdx' => $firstFinal, 'iIdx' => $this->idx, 'filename' => $pathInfo['basename'])) . '">' .
+					'<img src="../syspix/button_view_13x12.gif">' .
+					'</a> ' .
+					'<div class="labsys_mop_i_file_description"> ' . $filesize . ' | ' . $fileTime . '</div>' .
+					$this->thumbnailHTML($this->idx, $this->getDataOfTeam, $pathInfo['basename']) .
+					'</li>';
+			}
+			$ret .= '</ul>';
+		}
+
+		if ($isGettingAnswered) { // if we can answer we can upload.
+			$max_upload = (int)(ini_get('upload_max_filesize'));
+			$max_post = (int)(ini_get('post_max_size'));
+			$memory_limit = (int)(ini_get('memory_limit'));
+			$upload_mb = min($max_upload, $max_post, $memory_limit);
+			$ret .= "<input type=\"checkbox\" name=\"dummy\" value=\"0\" disabled><input class=\"labsys_mop_i_file\" type=\"file\" multiple name=\"file[]\" \">" .
+				"<input type=\"submit\"  class=\"labsys_mop_button\" name=\"fileUpload\" value=\"" . $lng->get('upload') . ' (<' . $upload_mb . 'M)' . "\">" . '<br><br>';
+		}
+		$ret .= '</div>';
+		return $ret;
+	}
+
+	/**
+	 * Shows the credits.
+	 *
+	 * @param  $isInCorrection   If true the credits are an input.
+	 * @param  $possiblePtsOnly  If set only the possible points are shown (to be placed below the example solution).
+	 *
+	 * @return string            The html representation of the correctors comment.
+	 */
+	function showCredits($isInCorrection = false, $possiblePtsOnly = false) {
+		global $lng, $pge, $usr, $cfg;
+		return "<div class=\"labsys_mop_i_credits" .
+			// if we are viewing someone the color of the credits division tells whether the input is marked as corrected
+			($usr->isOfKind(IS_CORRECTOR) && !$possiblePtsOnly ?
+				($this->isCorrected ? "_green" : "_red") : '') .
+			"\">" .
+			// the "is corrected" checkbox
+			($usr->isOfKind(IS_CORRECTOR)
 //             		&& $this->isClosed
-            		&& ($isInCorrection || ($this->isClosed && !$this->isCorrected)) && $usr->isSeeingSomeonesData() ?
-                "<input type=\"checkbox\" id=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" name=\"IS_CORRECTED\" value=\"1\" ".
-                "tabindex=\"".$pge->nextTab++.'"'.
-                ( $this->isCorrected ? ' checked="checked"' : '' ). // so it will be checked by default
-                        " onchange='isDirty=true;".
-                "if(this.checked){".
-                "document.getElementById(\"imgIsCorrected-".$this->idx.'-'.$this->getDataOfTeam."\").setAttribute(\"src\", \"../syspix/labCorrected_yes_12x12.gif\");".
-                "}else{".
-                "document.getElementById(\"imgIsCorrected-".$this->idx.'-'.$this->getDataOfTeam."\").setAttribute(\"src\", \"../syspix/labCorrected_no_12x12.gif\");".
-                "};".
-                "if (document.getElementById(\"FULL_CREDITS-".$this->idx.'-'.$this->getDataOfTeam."\").checked || (this.checked!=this.defaultChecked)){".
-                  "document.getElementById(\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\").value=\"".$lng->get("save")."\"".
-                "}else{".
-                  "document.getElementById(\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\").value=\"".$lng->get("correct")."\"".
-                "}'>".
-                        "<label for=\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\" class=\"labsys_mop_input_field_label_right\">".
-                                  '<img id="imgIsCorrected-'.$this->idx.'-'.$this->getDataOfTeam.'" src="../syspix/labCorrected_'.($this->isCorrected ?'yes':'no').'_12x12.gif" width="12" height="12" border="0" alt="'.$lng->get("inputIsCorrected").'" title="'.$lng->get("inputIsCorrected").'">'.
-                        '</label> '
-                        : ''
-                      ).
-            // the credits
-    ( !$possiblePtsOnly &&
-      ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )) ?
-        // show given credits
-        LlElement::percentBar(($this->possibleCredits == 0?1:$this->givenCredits/$this->possibleCredits), 0, "labsys_mop_i_answer_percentBarDiv") : ''
-          ).
-            "[".
-            ( $isInCorrection ?
-                       // show input
-                       "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".
-                       // on first entering set the points to full points
-                       ( $this->isCorrected || /* pre corrected: */$this->givenCredits>0 || !$this->isClosed || !empty($this->answerComment) ?  $this->givenCredits :  $this->possibleCredits  ).
-                       "\" onchange='isDirty=true'>"."/ " :
-                       ( !$possiblePtsOnly ?
-                                  ( ($this->isCorrected || $usr->isOfKind( IS_CORRECTOR )) ?
-                                              // show given credits
-                                              $this->givenCredits :
-                                              '0')."/ "
-                                 : '' )
-                      ).
-            // given credits = 0 && not in correction && corrector -> full credits box
-    ( $usr->isOfKind( IS_CORRECTOR ) && $usr->isSeeingSomeonesData() && $this->isClosed && !$this->isCorrected && !$isInCorrection ?
-        "<input type=\"checkbox\" name=\"FULL_CREDITS".$this->idx."\" id=\"FULL_CREDITS-".$this->idx.'-'.$this->getDataOfTeam."\" value=\"1\" ".
-                          "tabindex=\"".$pge->nextTab++.'"'.
-                          " onchange='isDirty=true;if(this.checked||(document.getElementById(\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\").checked!=document.getElementById(\"IS_CORRECTED-".$this->idx.'-'.$this->getDataOfTeam."\").defaultChecked)){document.getElementById(\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\").value=\"".$lng->get("save")."\"}else{document.getElementById(\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\").value=\"".$lng->get("correct")."\"}'>".
-        "<label for=\"FULL_CREDITS-".$this->idx.'-'.$this->getDataOfTeam."\" class=\"labsys_mop_input_field_label_right\">".
-        $this->possibleCredits." ".$lng->get("Credits").
-        '</label>'
-        :
-        $this->possibleCredits." ".$lng->get("Credits") ).
-            "]".
-          "</div>\n";
-  }
+			&& ($isInCorrection || ($this->isClosed && !$this->isCorrected)) && $usr->isSeeingSomeonesData() ?
+				"<input type=\"checkbox\" id=\"IS_CORRECTED-" . $this->idx . '-' . $this->getDataOfTeam . "\" name=\"IS_CORRECTED\" value=\"1\" " .
+				"tabindex=\"" . $pge->nextTab++ . '"' .
+				($this->isCorrected ? ' checked="checked"' : '') . // so it will be checked by default
+				" onchange='isDirty=true;" .
+				"if(this.checked){" .
+				"document.getElementById(\"imgIsCorrected-" . $this->idx . '-' . $this->getDataOfTeam . "\").setAttribute(\"src\", \"../syspix/labCorrected_yes_12x12.gif\");" .
+				"}else{" .
+				"document.getElementById(\"imgIsCorrected-" . $this->idx . '-' . $this->getDataOfTeam . "\").setAttribute(\"src\", \"../syspix/labCorrected_no_12x12.gif\");" .
+				"};" .
+				"if (document.getElementById(\"FULL_CREDITS-" . $this->idx . '-' . $this->getDataOfTeam . "\").checked || (this.checked!=this.defaultChecked)){" .
+				"document.getElementById(\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\").value=\"" . $lng->get("save") . "\"" .
+				"}else{" .
+				"document.getElementById(\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\").value=\"" . $lng->get("correct") . "\"" .
+				"}'>" .
+				"<label for=\"IS_CORRECTED-" . $this->idx . '-' . $this->getDataOfTeam . "\" class=\"labsys_mop_input_field_label_right\">" .
+				'<img id="imgIsCorrected-' . $this->idx . '-' . $this->getDataOfTeam . '" src="../syspix/labCorrected_' . ($this->isCorrected ? 'yes' : 'no') . '_12x12.gif" width="12" height="12" border="0" alt="' . $lng->get("inputIsCorrected") . '" title="' . $lng->get("inputIsCorrected") . '">' .
+				'</label> '
+				: ''
+			) .
+			// the credits
+			(!$possiblePtsOnly &&
+			($this->isCorrected || $usr->isOfKind(IS_CORRECTOR)) ?
+				// show given credits
+				LlElement::percentBar(($this->possibleCredits == 0 ? 1 : $this->givenCredits / $this->possibleCredits), 0, "labsys_mop_i_answer_percentBarDiv") : ''
+			) .
+			"[" .
+			($isInCorrection ?
+				// show input
+				"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"" .
+				// on first entering set the points to full points
+				($this->isCorrected || /* pre corrected: */ $this->givenCredits > 0 || !$this->isClosed || !empty($this->answerComment) ? $this->givenCredits : $this->possibleCredits) .
+				"\" onchange='isDirty=true'>" . "/ " :
+				(!$possiblePtsOnly ?
+					(($this->isCorrected || $usr->isOfKind(IS_CORRECTOR)) ?
+						// show given credits
+						$this->givenCredits :
+						'0') . "/ "
+					: '')
+			) .
+			// given credits = 0 && not in correction && corrector -> full credits box
+			($usr->isOfKind(IS_CORRECTOR) && $usr->isSeeingSomeonesData() && $this->isClosed && !$this->isCorrected && !$isInCorrection ?
+				"<input type=\"checkbox\" name=\"FULL_CREDITS" . $this->idx . "\" id=\"FULL_CREDITS-" . $this->idx . '-' . $this->getDataOfTeam . "\" value=\"1\" " .
+				"tabindex=\"" . $pge->nextTab++ . '"' .
+				" onchange='isDirty=true;if(this.checked||(document.getElementById(\"IS_CORRECTED-" . $this->idx . '-' . $this->getDataOfTeam . "\").checked!=document.getElementById(\"IS_CORRECTED-" . $this->idx . '-' . $this->getDataOfTeam . "\").defaultChecked)){document.getElementById(\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\").value=\"" . $lng->get("save") . "\"}else{document.getElementById(\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\").value=\"" . $lng->get("correct") . "\"}'>" .
+				"<label for=\"FULL_CREDITS-" . $this->idx . '-' . $this->getDataOfTeam . "\" class=\"labsys_mop_input_field_label_right\">" .
+				$this->possibleCredits . " " . $lng->get("Credits") .
+				'</label>'
+				:
+				$this->possibleCredits . " " . $lng->get("Credits")) .
+			"]" .
+			"</div>\n";
+	}
 
-  /**
-  * Shows the user's answer. Includes some misc!
-  *                       Since there might be many independent inputs on one page the
-  *                       corrector is prevented from forgetting to save the same way
-  *                       as the user is with the multiple choice questions.
-  *                       The inputs are disabled until the userpresses the answer button.
-  *                       Then he can answer and the button is used to save.
-  *
-  * @param $fullAddress   The elements full address.
-  *
-  * @return string        The html representation of the user's answer.
-  */
-  function showAnswerData( $fullAddress ){
-    global $usr, $url, $pge, $cfg, $lng;
+	/**
+	 * Shows the user's answer. Includes some misc!
+	 *                       Since there might be many independent inputs on one page the
+	 *                       corrector is prevented from forgetting to save the same way
+	 *                       as the user is with the multiple choice questions.
+	 *                       The inputs are disabled until the userpresses the answer button.
+	 *                       Then he can answer and the button is used to save.
+	 *
+	 * @param $fullAddress   The elements full address.
+	 *
+	 * @return string        The html representation of the user's answer.
+	 */
+	function showAnswerData($fullAddress) {
+		global $usr, $url, $pge, $cfg, $lng;
 
-    /* The element can have 5 states:
-     *  - answerable (user did not close the input)
-     *    + answer not editable
-     *    + give answer button is shown
-     *    corrector: -
-     *  - getting answered (user opened the input)
-     *    user:
-     *    + answer editable (textarea)
-     *    + save button shown
-     *    corrector: -
-     *  - corectable (user closed the input)
-     *    + answer not editable
-     *    corrector:
-     *    + comment/ points not editable
-     *    + correct button shown
-     *  - in correction (corrector opened the input)
-     *    user:
-     *    + answer not editable
-     *    + comment/ points not visible
-     *    corrector:
-     *    + comment/ points editable
-     *    + save button shown
-     *  - corrected (corrector set the isCorrected bit)
-     *    user:
-     *    + answer not editable
-     *    + comment/ points visible
-     *    corrector:
-     *    + same as correctable
-     */
+		/* The element can have 5 states:
+		 *  - answerable (user did not close the input)
+		 *    + answer not editable
+		 *    + give answer button is shown
+		 *    corrector: -
+		 *  - getting answered (user opened the input)
+		 *    user:
+		 *    + answer editable (textarea)
+		 *    + save button shown
+		 *    corrector: -
+		 *  - corectable (user closed the input)
+		 *    + answer not editable
+		 *    corrector:
+		 *    + comment/ points not editable
+		 *    + correct button shown
+		 *  - in correction (corrector opened the input)
+		 *    user:
+		 *    + answer not editable
+		 *    + comment/ points not visible
+		 *    corrector:
+		 *    + comment/ points editable
+		 *    + save button shown
+		 *  - corrected (corrector set the isCorrected bit)
+		 *    user:
+		 *    + answer not editable
+		 *    + comment/ points visible
+		 *    corrector:
+		 *    + same as correctable
+		 */
 
-         $isInCorrection  = ( $usr->isOfKind( IS_CORRECTOR ) &&
+		$isInCorrection = ($usr->isOfKind(IS_CORRECTOR) &&
 //                               $this->isClosed &&
-                              isset( $_POST['FULLADDRESS'] ) && ( $_POST['FULLADDRESS'] == $fullAddress ) &&
-                              $_POST['TEAM'] == $this->getDataOfTeam
-                             );
-      if ($isInCorrection){
-        $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iCorrectorOpen, $this->getDataOfTeam);
-      }
+			isset($_POST['FULLADDRESS']) && ($_POST['FULLADDRESS'] == $fullAddress) &&
+			$_POST['TEAM'] == $this->getDataOfTeam
+		);
+		if ($isInCorrection) {
+			$GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iCorrectorOpen, $this->getDataOfTeam);
+		}
 
-      $isGettingAnswered  = ( $this->lockIsSetTo && ( $this->lockIsSetTo == $this->idx ) );
-      if ($isGettingAnswered){
-        //makeLogEntry( 'i', 'getting answered', $fullAddress );
-        $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iStudentOpen);
-      }
+		$isGettingAnswered = ($this->lockIsSetTo && ($this->lockIsSetTo == $this->idx));
+		if ($isGettingAnswered) {
+			//makeLogEntry( 'i', 'getting answered', $fullAddress );
+			$GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iStudentOpen);
+		}
 
-      $ret =   '<a name="i'.$this->idx.'"></a>'."<a name=\"".$fullAddress.".".$this->getDataOfTeam."\"></a>\n". // anchor for retrieving after saving
-               "<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer".$this->idx."\" METHOD=\"POST\" ".
-               "ACTION=\"".( ($usr->isOfKind( IS_CORRECTOR )
+		$ret = '<a name="i' . $this->idx . '"></a>' . "<a name=\"" . $fullAddress . "." . $this->getDataOfTeam . "\"></a>\n" . // anchor for retrieving after saving
+			"<FORM enctype=\"multipart/form-data\" class=\"labsys_mop_std_form\" NAME=\"InputAnswer" . $this->idx . "\" METHOD=\"POST\" " .
+			"ACTION=\"" . (($usr->isOfKind(IS_CORRECTOR)
 //                		         && $this->isClosed
-               		         && !$isInCorrection) ?
-                                      // link for the corrector to unlock... (-> see description above method)
-                                      $url->link2('../pages/view.php', Array('address' => $url->get('address')))."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' ) :
-                                      // normal handling -> pass method to executeCommandOnElement.php
-                                      $url->link2('../php/executeCommandOnElement.php', Array('address' => 'i'))
-                                     ).
-                "\">\n".
+				&& !$isInCorrection) ?
+				// link for the corrector to unlock... (-> see description above method)
+				$url->link2('../pages/view.php', array('address' => $url->get('address'))) . "#" . $fullAddress . "." . $this->getDataOfTeam . ($usr->isOfKind(IS_CORRECTOR) ? '_correctorsComment' : '') :
+				// normal handling -> pass method to executeCommandOnElement.php
+				$url->link2('../php/executeCommandOnElement.php', array('address' => 'i'))
+			) .
+			"\">\n" .
 
-                (  $isInCorrection ?
-                                       // the corrector has opened this for correction
-                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveCorrectorStuff\">\n"
-                                      :
-                            ( $isGettingAnswered ?
-                                       // user set lock to this
-                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveUserAnswer\">\n" :
-                                       // user may set a lock to this
-                                       "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"setUserAnswerLock\">\n"
-                                      )
-                ).
-              "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=".$url->get('address')."#".$fullAddress.".".$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' )."\">\n". // return so self
-              "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
-              "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
-              "<input type=\"hidden\" name=\"TEAM\" value=\"".$this->getDataOfTeam."\">\n".
-            // Contains File Upload?
-              ( $this->hasFileUpload ? $this->showFileUpload( $isGettingAnswered && !$usr->isOfKind( IS_CORRECTOR ) ) : '').
-            // answer
-              $this->showAnswer( $isGettingAnswered && !$usr->isOfKind( IS_CORRECTOR ) ); // correctors never edit answers
+			($isInCorrection ?
+				// the corrector has opened this for correction
+				"<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveCorrectorStuff\">\n"
+				:
+				($isGettingAnswered ?
+					// user set lock to this
+					"<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"saveUserAnswer\">\n" :
+					// user may set a lock to this
+					"<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"setUserAnswerLock\">\n"
+				)
+			) .
+			"<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/view.php?address=" . $url->get('address') . "#" . $fullAddress . "." . $this->getDataOfTeam . ($usr->isOfKind(IS_CORRECTOR) ? '_correctorsComment' : '') . "\">\n" . // return so self
+			"<input type=\"hidden\" name=\"FULLADDRESS\" value=\"" . $fullAddress . "\">\n" .
+			"<input type=\"hidden\" name=\"IDX\" value=\"" . $this->idx . "\">\n" .            // needed by ../php/executeCommandOnElement.php
+			"<input type=\"hidden\" name=\"TEAM\" value=\"" . $this->getDataOfTeam . "\">\n" .
+			// Contains File Upload?
+			($this->hasFileUpload ? $this->showFileUpload($isGettingAnswered && !$usr->isOfKind(IS_CORRECTOR)) : '') .
+			// answer
+			$this->showAnswer($isGettingAnswered && !$usr->isOfKind(IS_CORRECTOR)); // correctors never edit answers
 
-    // comment
-      if ( $this->isCorrected || $usr->isOfKind( IS_CORRECTOR ) ) $ret .= $this->showComment( $isInCorrection, $fullAddress );
+		// comment
+		if ($this->isCorrected || $usr->isOfKind(IS_CORRECTOR)) $ret .= $this->showComment($isInCorrection, $fullAddress);
 
-    // credits
-      $ret .= $this->showCredits( $isInCorrection );
+		// credits
+		$ret .= $this->showCredits($isInCorrection);
 
-    // button
-      if ( $usr->isOfKind( IS_CORRECTOR ) ){
-        // corrector:
-        if ( !$this->isClosed && !$isInCorrection ){ $ret .= "<input id=\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\" tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button_warn\" ".
-                                                                   "value=\"".$lng->get("correctThoughNotClosed")."\" onclick='isDirty=false;'>\n";
-                                }
-        elseif ( $isInCorrection ){ $ret .= '<input tabindex="'.$pge->nextTab++.'" type="submit" class="labsys_mop_i_save_button'.($this->isClosed?'':'_warn').'" '.
-                                                   "value=\"".($this->isClosed?$lng->get("save"):$lng->get("correctThoughNotClosed"))."\" accesskey=\"s\" onclick='isDirty=false;'>\n".
-                                            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
-                                                   "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
-                                   }
-        elseif ( !isset( $_POST['FULLADDRESS'] ) ){  $ret .= "<input id=\"saveButton-".$this->idx.'-'.$this->getDataOfTeam."\" tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                                   "value=\"".$lng->get("correct")."\" onclick='isDirty=false;'>\n";
-                                                  }
-        else{ ; }// another is opened yet
-      } else {
-        // user
-        if ( $this->isClosed ){ ; }
-        elseif ( $isGettingAnswered ){ $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                      "value=\"".$lng->get('save')."\" onclick='isDirty=false'>\n".
-                                               "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" ".
-                                                      "value=\"".$lng->get("cancel")."\" name=\"cancel\">\n";
-                                       }
-        elseif ( !$this->lockIsSetTo ){
-                                         $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_i_save_button\" ".
-                                                        "value=\"".$lng->get("giveAnswer")."\">\n";
-                                       }
-        else {// lock is set and is not set to this
-                                 $ret .= "<input tabindex=\"".$pge->nextTab++."\" type=\"image\" ".
-                                                "src=\"../syspix/button_lock_closed_red_7x10.gif\" width=\"7\" height=\"10\" name=\"forceReLock\" value=\"1\" alt=\"".$lng->get("LockSetButForce").' '.$this->lockIsSetTo."\">\r\n";
-                                      // here the users gets indicated that another question is locked, so clicking on the red lock forces acquiring from another question.
-              }
-      }
+		// button
+		if ($usr->isOfKind(IS_CORRECTOR)) {
+			// corrector:
+			if (!$this->isClosed && !$isInCorrection) {
+				$ret .= "<input id=\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\" tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_i_save_button_warn\" " .
+					"value=\"" . $lng->get("correctThoughNotClosed") . "\" onclick='isDirty=false;'>\n";
+			} elseif ($isInCorrection) {
+				$ret .= '<input tabindex="' . $pge->nextTab++ . '" type="submit" class="labsys_mop_i_save_button' . ($this->isClosed ? '' : '_warn') . '" ' .
+					"value=\"" . ($this->isClosed ? $lng->get("save") : $lng->get("correctThoughNotClosed")) . "\" accesskey=\"s\" onclick='isDirty=false;'>\n" .
+					"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" " .
+					"value=\"" . $lng->get("cancel") . "\" name=\"cancel\">\n";
+			} elseif (!isset($_POST['FULLADDRESS'])) {
+				$ret .= "<input id=\"saveButton-" . $this->idx . '-' . $this->getDataOfTeam . "\" tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_i_save_button\" " .
+					"value=\"" . $lng->get("correct") . "\" onclick='isDirty=false;'>\n";
+			} else {
+				;
+			}// another is opened yet
+		} else {
+			// user
+			if ($this->isClosed) {
+				;
+			} elseif ($isGettingAnswered) {
+				$ret .= "<input tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_i_save_button\" " .
+					"value=\"" . $lng->get('save') . "\" onclick='isDirty=false'>\n" .
+					"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_i_cancel_button\" " .
+					"value=\"" . $lng->get("cancel") . "\" name=\"cancel\">\n";
+			} elseif (!$this->lockIsSetTo) {
+				$ret .= "<input tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_i_save_button\" " .
+					"value=\"" . $lng->get("giveAnswer") . "\">\n";
+			} else {// lock is set and is not set to this
+				$ret .= "<input tabindex=\"" . $pge->nextTab++ . "\" type=\"image\" " .
+					"src=\"../syspix/button_lock_closed_red_7x10.gif\" width=\"7\" height=\"10\" name=\"forceReLock\" value=\"1\" alt=\"" . $lng->get("LockSetButForce") . ' ' . $this->lockIsSetTo . "\">\r\n";
+				// here the users gets indicated that another question is locked, so clicking on the red lock forces acquiring from another question.
+			}
+		}
 
 
-      $ret .= "</FORM>\n".
+		$ret .= "</FORM>\n" .
 
-              (  ( $isGettingAnswered || $isInCorrection ) ?
-                          '<script language="JavaScript" type="text/javascript">'."\n".
-                          '<!--'."\n".
-                          'if (document.InputAnswer'.$this->idx.') document.InputAnswer'.$this->idx.'.'.( $isGettingAnswered ?  "ANSWER" :  "COMMENT"  ).'.focus();'.
-                          '//-->'."\n".
-                          '</script>'."\n" : '' ).
+			(($isGettingAnswered || $isInCorrection) ?
+				'<script language="JavaScript" type="text/javascript">' . "\n" .
+				'<!--' . "\n" .
+				'if (document.InputAnswer' . $this->idx . ') document.InputAnswer' . $this->idx . '.' . ($isGettingAnswered ? "ANSWER" : "COMMENT") . '.focus();' .
+				'//-->' . "\n" .
+				'</script>' . "\n" : '') .
 
-                        // answer history
-              ( $this->answerHistory != "" ? EM::viewInputAnswerHistory( $this ) : '' );
+			// answer history
+			($this->answerHistory != "" ? EM::viewInputAnswerHistory($this) : '');
 
-    return $ret;
-  }
+		return $ret;
+	}
 // /helper - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  /**
-  * Returns the element's HTML-representation in the way the VIEWER should see it.
-  *
-  * @param $_GET['hideExampleSolutionInThisTab'] If set the example solution is hidden.
-  * @param $fullAddress     The element's full address (p.e. C23.c42.p13)
-  * @param $paragraph       The element's paragraph number (p.e. 2.3). Will be added to the title if given.
-  * @return string          The html code of the element's view view.
-  */
-  //function show( $fullAddress, $paragraph="" ){
-  function show( $fullAddress, $paragraph='', $hideNavigation=false ){
-    global $usr, $lng, $pge, $url;
-    if (  !$this->isVisible() ){ // not enough rights->no content
-      return "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>";
-      exit;
-    }
+	/**
+	 * Returns the element's HTML-representation in the way the VIEWER should see it.
+	 *
+	 * @param $_GET ['hideExampleSolutionInThisTab'] If set the example solution is hidden.
+	 * @param $fullAddress     The element's full address (p.e. C23.c42.p13)
+	 * @param $paragraph       The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+	 * @return string          The html code of the element's view view.
+	 */
+	//function show( $fullAddress, $paragraph="" ){
+	function show($fullAddress, $paragraph = '', $hideNavigation = false) {
+		global $usr, $lng, $pge, $url;
+		if (!$this->isVisible()) { // not enough rights->no content
+			return "<div class=\"labsys_mop_note\">\n" . $lng->get("TxtNotEnoughRights") . "\n</div>";
+			exit;
+		}
 
-    // start over quick
-    if ( $this->isStartOver() ){
-      $this->saveCorrectorStuff(); // directly save without editing further fields
-      exit;
-    };
+		// start over quick
+		if ($this->isStartOver()) {
+			$this->saveCorrectorStuff(); // directly save without editing further fields
+			exit;
+		};
 
-    if ($this->question == "") return "'()";
+		if ($this->question == "") return "'()";
 
-    $answers = "";
-    // Load the dynamic data from the working table.
-    if ( !$usr->isOfKind( IS_CORRECTOR ) && !$usr->isOfKind( IS_EX_SOLUTION_VIEWER ) ){ // "normal" user
-      $this->loadUserData4( $this->utDBI->getData4( $usr->uid, $this->idx, $usr->currentTeam ) );    // create dataset tith user's team
-      $answers = $this->showAnswerData( $fullAddress );
-    }
+		$answers = "";
+		// Load the dynamic data from the working table.
+		if (!$usr->isOfKind(IS_CORRECTOR) && !$usr->isOfKind(IS_EX_SOLUTION_VIEWER)) { // "normal" user
+			$this->loadUserData4($this->utDBI->getData4($usr->uid, $this->idx, $usr->currentTeam));    // create dataset tith user's team
+			$answers = $this->showAnswerData($fullAddress);
+		}
 
-    if ( $usr->isSeeingSomeonesData() ) // correcting someone
-      if ( $usr->theSeeingUid() != "all" ){
-								$seeMeTeam = $this->utDBI->getData4( $usr->theSeeingUid(), $this->idx, 0 ); // ( 0 = don't create the record )
-								if(empty($seeMeTeam)){
-									// No question specific mapping existing... assume lab wide mapping...
-									$seeMeTeam = $usr->theSeeingTeam(); // use the user's current team as fallback
-								}
-                                $this->loadUserData4( $seeMeTeam );
-                                $answers = $this->showAnswerData( $fullAddress );
-      }else{ // crosscorrecting all
-                                $this->uaDBI->getAllTeams( $this->idx/*, "team"*/ ); // as is unsorted/ order of answering
-                                while ( ($nextTeam = $this->uaDBI->getNextData()) ){
-                                  $this->loadUserData4( $nextTeam );
-                                  $link2ThisCorrection = $url->link2('../pages/view.php', Array('address' => $url->get('address'), 'seeMe' => $this->utDBI->getUID4( $nextTeam, $this->idx ))) . '#'.$fullAddress.'.'.$this->getDataOfTeam.( $usr->isOfKind( IS_CORRECTOR ) ? '_correctorsComment' : '' );
-                                  $answers .= '<div class="labsys_mop_i_teamnr"><a href="javascript:showExampleSolutionHere('.$this->idx.','.$nextTeam.')" title="'.$lng->get('exmpleSolutionHere').'">s |</a> <a href="'.$link2ThisCorrection.'">'.$lng->get("team")." ".($url->available('pseudoNames')?'':$nextTeam)."</a></div>\n".
-                                    		  '<div class="labsys_mop_i_example_solution_hidden" id="i'.$this->idx.'_exampleSolution_'.$nextTeam.'"></div>'.PHP_EOL.
-                                              $this->showAnswerData( $fullAddress );
-                                }
-      }
+		if ($usr->isSeeingSomeonesData()) // correcting someone
+			if ($usr->theSeeingUid() != "all") {
+				$seeMeTeam = $this->utDBI->getData4($usr->theSeeingUid(), $this->idx, 0); // ( 0 = don't create the record )
+				if (empty($seeMeTeam)) {
+					// No question specific mapping existing... assume lab wide mapping...
+					$seeMeTeam = $usr->theSeeingTeam(); // use the user's current team as fallback
+				}
+				$this->loadUserData4($seeMeTeam);
+				$answers = $this->showAnswerData($fullAddress);
+			} else { // crosscorrecting all
+				$this->uaDBI->getAllTeams($this->idx/*, "team"*/); // as is unsorted/ order of answering
+				while (($nextTeam = $this->uaDBI->getNextData())) {
+					$this->loadUserData4($nextTeam);
+					$link2ThisCorrection = $url->link2('../pages/view.php', array('address' => $url->get('address'), 'seeMe' => $this->utDBI->getUID4($nextTeam, $this->idx))) . '#' . $fullAddress . '.' . $this->getDataOfTeam . ($usr->isOfKind(IS_CORRECTOR) ? '_correctorsComment' : '');
+					$answers .= '<div class="labsys_mop_i_teamnr"><a href="javascript:showExampleSolutionHere(' . $this->idx . ',' . $nextTeam . ')" title="' . $lng->get('exmpleSolutionHere') . '">s |</a> <a href="' . $link2ThisCorrection . '">' . $lng->get("team") . " " . ($url->available('pseudoNames') ? '' : $nextTeam) . "</a></div>\n" .
+						'<div class="labsys_mop_i_example_solution_hidden" id="i' . $this->idx . '_exampleSolution_' . $nextTeam . '"></div>' . PHP_EOL .
+						$this->showAnswerData($fullAddress);
+				}
+			}
 
 
-    parseHTML( $this->question ); // Process [HTML].
+		parseHTML($this->question); // Process [HTML].
 
-    return "<a name=\"".$fullAddress."\"></a>\n". // anchor for retrieving after saving
-           '<div id="'.$fullAddress.'" class="labsys_mop_elements_i_around">'.
-           EM::viewTopInput( $this, $fullAddress ).
-           "<div class=\"labsys_mop_contentArea\">\n".
-             '<div class="labsys_mop_i_question" id="'.$fullAddress.'">'.
-             '<div class="withLinkAnchor">'.( !empty($paragraph) ?  $paragraph.'. '  : '' ).$this->question.'<a href="#'.$fullAddress.'" class="link-anchor">¶</a></div>'.
-             "</div>\n".
+		return "<a name=\"" . $fullAddress . "\"></a>\n" . // anchor for retrieving after saving
+			'<div id="' . $fullAddress . '" class="labsys_mop_elements_i_around">' .
+			EM::viewTopInput($this, $fullAddress) .
+			"<div class=\"labsys_mop_contentArea\">\n" .
+			'<div class="labsys_mop_i_question" id="' . $fullAddress . '">' .
+			'<div class="withLinkAnchor">' . (!empty($paragraph) ? $paragraph . '. ' : '') . $this->question . '<a href="#' . $fullAddress . '" class="link-anchor">¶</a></div>' .
+			"</div>\n" .
 
-           // example solution
-             ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) && ($this->exampleSolution != "") && !$url->available('hideExampleSolutionInThisTab') ?
-                                   '<div id="i'.$this->idx.'_exampleSolution" class="labsys_mop_i_example_solution">'.
-                                   '<!-- example solution -->'."\r\n".
-                                   $this->returnPREformatted( $this->exampleSolution ).
-                                   '<!-- /example solution -->'."\r\n".
-                                   "</div>\n" : ''
-                       ).
-             ( $this->hasFileUpload && !$usr->isSeeingSomeonesData() /* contains upload already... */ && ( $usr->isOfKind( IS_EX_SOLUTION_VIEWER ) || $usr->isOfKind( IS_CONTENT_EDITOR ) ) ? $this->showFileUpload() : ''). // show Upload for editors. Others see it in showAnswer.
+			// example solution
+			($usr->isOfKind(IS_EX_SOLUTION_VIEWER) && ($this->exampleSolution != "") && !$url->available('hideExampleSolutionInThisTab') ?
+				'<div id="i' . $this->idx . '_exampleSolution" class="labsys_mop_i_example_solution">' .
+				'<!-- example solution -->' . "\r\n" .
+				$this->returnPREformatted($this->exampleSolution) .
+				'<!-- /example solution -->' . "\r\n" .
+				"</div>\n" : ''
+			) .
+			($this->hasFileUpload && !$usr->isSeeingSomeonesData() /* contains upload already... */ && ($usr->isOfKind(IS_EX_SOLUTION_VIEWER) || $usr->isOfKind(IS_CONTENT_EDITOR)) ? $this->showFileUpload() : '') . // show Upload for editors. Others see it in showAnswer.
 
-           // answer + eventually comment + credits
-             $answers.
-             ( $answers == '' ? $this->showCredits( false, true ) : '' ).
-           "</div>\n".
-           EM::viewBottomInput( $this, $fullAddress ).
-           "</div>";
-  }
+			// answer + eventually comment + credits
+			$answers .
+			($answers == '' ? $this->showCredits(false, true) : '') .
+			"</div>\n" .
+			EM::viewBottomInput($this, $fullAddress) .
+			"</div>";
+	}
 
-  /**
-  * Produces the ePub version of this element.
-  * Called by LcElement.inc
-  *
-  * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
-  * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
-  */
-  function showEPub( $fullAddress, $paragraph="" ){
-    global $usr, $lng, $pge, $url;
-    if (  !$this->isVisible() ){ // not enough rights->no content
-      echo( "<div class=\"labsys_mop_note\">\n".$lng->get("TxtNotEnoughRights")."\n</div>" );
-      exit;
-    }
+	/**
+	 * Produces the ePub version of this element.
+	 * Called by LcElement.inc
+	 *
+	 * @param $fullAddress   The element's full address (p.e. C23.c42.p13)
+	 * @param $paragraph     The element's paragraph number (p.e. 2.3). Will be added to the title if given.
+	 */
+	function showEPub($fullAddress, $paragraph = "") {
+		global $usr, $lng, $pge, $url;
+		if (!$this->isVisible()) { // not enough rights->no content
+			echo("<div class=\"labsys_mop_note\">\n" . $lng->get("TxtNotEnoughRights") . "\n</div>");
+			exit;
+		}
 
-    parseHTML( $this->question );
-    $this->question = $pge->replaceConstants( $this->question ); // Process custon fields
+		parseHTML($this->question);
+		$this->question = $pge->replaceConstants($this->question); // Process custon fields
 
-    $epubExporter = LSE_Exporter::getInstance();
-    $epubExporter->save('Li',
-        $fullAddress,
-        ( ($paragraph!="") ?  $paragraph.". "  : '' ).$this->question
-    );
+		$epubExporter = LSE_Exporter::getInstance();
+		$epubExporter->save('Li',
+			$fullAddress,
+			(($paragraph != "") ? $paragraph . ". " : '') . $this->question
+		);
 
-    // echo ('[i-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
-  }
+		// echo ('[i-element '.$fullAddress.'] question:'.htmlentities( $this->question ).'<br>');
+	}
 
 // The next functions are used for the element's edit page. *************************************************
 
-  /**
-  * Returns the element's HTML-representation in the way the EDITOR should see it.
-  *
-  * @param $_GET["saveAsNew"] If $_GET["saveAsNew"] is set the save as new checkbox on the edit page should be set
-  * @param $fullAddress       The element's full address (p.e. C23.c42.p13)
-  * @return string            The html code of the element's edit view.
-  */
-  function showEdit( $fullAddress ){
-    global $lng, $url, $pge, $cfg;
-    $GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iEditorOpen);
+	/**
+	 * Returns the element's HTML-representation in the way the EDITOR should see it.
+	 *
+	 * @param $_GET ["saveAsNew"] If $_GET["saveAsNew"] is set the save as new checkbox on the edit page should be set
+	 * @param $fullAddress       The element's full address (p.e. C23.c42.p13)
+	 * @return string            The html code of the element's edit view.
+	 */
+	function showEdit($fullAddress) {
+		global $lng, $url, $pge, $cfg;
+		$GLOBALS['Logger']->logToDatabase($fullAddress, logActions::iEditorOpen);
 
-     return EM::editTopInput( $this, $fullAddress ).
-            "<FORM class=\"labsys_mop_std_form\" NAME=\"InputEdit\" METHOD=\"POST\" ACTION=\"".$url->link2('../php/executeCommandOnElement.php', Array('address' => 'i'))."\">\n".
-            "<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n".           // this function will statically be called by ../php/executeCommandOnElement.php
-            "<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n". /* index of saved el. will be added on save.php! */
-            "<input type=\"hidden\" name=\"FULLADDRESS\" value=\"".$fullAddress."\">\n".
-            "<input type=\"hidden\" name=\"IDX\" value=\"".$this->idx."\">\n".            // needed by ../php/executeCommandOnElement.php
+		return EM::editTopInput($this, $fullAddress) .
+			"<FORM class=\"labsys_mop_std_form\" NAME=\"InputEdit\" METHOD=\"POST\" ACTION=\"" . $url->link2('../php/executeCommandOnElement.php', array('address' => 'i')) . "\">\n" .
+			"<input type=\"hidden\" name=\"FUNCTIONNAME\" value=\"save\">\n" .           // this function will statically be called by ../php/executeCommandOnElement.php
+			"<input type=\"hidden\" name=\"REDIRECTTO\" value=\"../pages/edit.php\">\n" . /* index of saved el. will be added on save.php! */
+			"<input type=\"hidden\" name=\"FULLADDRESS\" value=\"" . $fullAddress . "\">\n" .
+			"<input type=\"hidden\" name=\"IDX\" value=\"" . $this->idx . "\">\n" .            // needed by ../php/executeCommandOnElement.php
 
-          // question
-            "<label for=\"question\" class=\"labsys_mop_input_field_label_top\">".$lng->get("question")."</label>".
-            "<textarea tabindex=\"".$pge->nextTab++."\" id=\"question\" name=\"QUESTION\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultIQuestionRows")."\" onchange='isDirty=true'>".
-            returnEditable( $this->question ). /* _ -> &#x005F; needed cause otherwise Replacement on $pge->show */
-            "</textarea>\n".
+			// question
+			"<label for=\"question\" class=\"labsys_mop_input_field_label_top\">" . $lng->get("question") . "</label>" .
+			"<textarea tabindex=\"" . $pge->nextTab++ . "\" id=\"question\" name=\"QUESTION\" class=\"labsys_mop_textarea\" rows=\"" . $cfg->get("DefaultIQuestionRows") . "\" onchange='isDirty=true'>" .
+			returnEditable($this->question) . /* _ -> &#x005F; needed cause otherwise Replacement on $pge->show */
+			"</textarea>\n" .
 
-          // example solution
-            "<label for=\"exSol\" class=\"labsys_mop_input_field_label_top\">".$lng->get("inputExSolutionExpl")."</label>".
-            "<textarea tabindex=\"".$pge->nextTab++."\" id=\"exSol\" name=\"EXAMPLE_SOLUTION\" class=\"labsys_mop_textarea\" rows=\"".$cfg->get("DefaultIExSolutionRows")."\" onchange='isDirty=true'>".
-            returnEditable( $this->exampleSolution ). /* _ -> &#x005F; needed cause otherwise Replacement on $pge->show */
-            "</textarea>\n".
+			// example solution
+			"<label for=\"exSol\" class=\"labsys_mop_input_field_label_top\">" . $lng->get("inputExSolutionExpl") . "</label>" .
+			"<textarea tabindex=\"" . $pge->nextTab++ . "\" id=\"exSol\" name=\"EXAMPLE_SOLUTION\" class=\"labsys_mop_textarea\" rows=\"" . $cfg->get("DefaultIExSolutionRows") . "\" onchange='isDirty=true'>" .
+			returnEditable($this->exampleSolution) . /* _ -> &#x005F; needed cause otherwise Replacement on $pge->show */
+			"</textarea>\n" .
 
-          // credits
-            "<div class=\"labsys_mop_i_credits\">".
-            "<label for=\"pC\" class=\"labsys_mop_input_field_label\">".$lng->get("Credits")."</label> ".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"text\" id=\"pC\" name=\"POSSIBLE_CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"".$this->possibleCredits."\" onchange='isDirty=true'>".
-            "</div>\n".
+			// credits
+			"<div class=\"labsys_mop_i_credits\">" .
+			"<label for=\"pC\" class=\"labsys_mop_input_field_label\">" . $lng->get("Credits") . "</label> " .
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"text\" id=\"pC\" name=\"POSSIBLE_CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"" . $this->possibleCredits . "\" onchange='isDirty=true'>" .
+			"</div>\n" .
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" accesskey=\"s\" onclick='isDirty=false'>\n".
-          // element options
-            "<fieldset><legend>".$lng->get("options")."</legend>\n".
-              "<div>".
-              "<input type=\"hidden\" name=\"HAS_FILE_UPLOAD\" value=\"0\" /><input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"hasFileUpload\" name=\"HAS_FILE_UPLOAD\" value=\"1\"".( $this->hasFileUpload ? " checked=\"checked\"" : '').">".
-              "<label for=\"hasFileUpload\" class=\"labsys_mop_input_field_label\">".$lng->get("hasFileUpload")."</label>".
-              "</div>\n".
-            "</fieldset>\n".
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_button\" value=\"" . $lng->get("save") . "\" accesskey=\"s\" onclick='isDirty=false'>\n" .
+			// element options
+			"<fieldset><legend>" . $lng->get("options") . "</legend>\n" .
+			"<div>" .
+			"<input type=\"hidden\" name=\"HAS_FILE_UPLOAD\" value=\"0\" /><input tabindex=\"" . $pge->nextTab++ . "\" type=\"checkbox\" id=\"hasFileUpload\" name=\"HAS_FILE_UPLOAD\" value=\"1\"" . ($this->hasFileUpload ? " checked=\"checked\"" : '') . ">" .
+			"<label for=\"hasFileUpload\" class=\"labsys_mop_input_field_label\">" . $lng->get("hasFileUpload") . "</label>" .
+			"</div>\n" .
+			"</fieldset>\n" .
 
-          // element properties
-            "<fieldset><legend>".$lng->get("properties")."</legend>\n".
-              "<table width=\"100%\"><tr><td valign=\"top\" width=\"40%\">\n".
-                  "<fieldset><legend>".$lng->get("visibility")."</legend>\n".
-                    "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
-                      "<label for=\"visAlways\" class=\"labsys_mop_input_field_label\">".$lng->get("visAlways")."</label>".
-                    "</div>\n".
-                    "<div>".
-                      "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' )." onchange='isDirty=true'>".
-                      "<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">".$lng->get("visOnlyInLab")."</label>".
-                    "</div>\n".
-                  "</fieldset>\n".
-              "</td><td valign=\"top\" width=\"60%\">\n".
-                "<fieldset><legend>".$lng->get("rights")." (".$this->visibleFor.")</legend>\n".
-                "<div class=\"labsys_mop_input_field_note\">".$lng->get("visibleFor")."</div>\n".
-                "<div class=\"labsys_mop_in_fieldset\">\n".
-                showRightsVertical( "UR", $this->visibleFor, false ).
-                "</div>\n".
-                "</fieldset>\n".
-              "</td></tr></table>\n".
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"".( ( $GLOBALS['url']->available("saveAsNew") || ($this->idx == 1) ) ?   " checked=\"checked\""  : '' )." onchange='isDirty=true'>".
-            "<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">".$lng->get("saveAsNew")."</label>".
-            "</fieldset>\n".
+			// element properties
+			"<fieldset><legend>" . $lng->get("properties") . "</legend>\n" .
+			"<table width=\"100%\"><tr><td valign=\"top\" width=\"40%\">\n" .
+			"<fieldset><legend>" . $lng->get("visibility") . "</legend>\n" .
+			"<div>" .
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"radio\" id=\"visAlways\" name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"0\"" . (!$this->visibleOnlyInCollection ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" .
+			"<label for=\"visAlways\" class=\"labsys_mop_input_field_label\">" . $lng->get("visAlways") . "</label>" .
+			"</div>\n" .
+			"<div>" .
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"radio\"  id=\"visOnlyColl\"name=\"VISIBLE_ONLY_IN_COLLECTION\" value=\"1\"" . ($this->visibleOnlyInCollection ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" .
+			"<label for=\"visOnlyColl\" class=\"labsys_mop_input_field_label\">" . $lng->get("visOnlyInLab") . "</label>" .
+			"</div>\n" .
+			"</fieldset>\n" .
+			"</td><td valign=\"top\" width=\"60%\">\n" .
+			"<fieldset><legend>" . $lng->get("rights") . " (" . $this->visibleFor . ")</legend>\n" .
+			"<div class=\"labsys_mop_input_field_note\">" . $lng->get("visibleFor") . "</div>\n" .
+			"<div class=\"labsys_mop_in_fieldset\">\n" .
+			showRightsVertical("UR", $this->visibleFor, false) .
+			"</div>\n" .
+			"</fieldset>\n" .
+			"</td></tr></table>\n" .
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"checkbox\" id=\"saveAsNew\" name=\"SAVEASNEW\" value=\"1\"" . (($GLOBALS['url']->available("saveAsNew") || ($this->idx == 1)) ? " checked=\"checked\"" : '') . " onchange='isDirty=true'>" .
+			"<label for=\"saveAsNew\" class=\"labsys_mop_input_field_label\">" . $lng->get("saveAsNew") . "</label>" .
+			"</fieldset>\n" .
 
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"submit\" class=\"labsys_mop_button\" value=\"".$lng->get("save")."\" onclick='isDirty=false'>\n".
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"submit\" class=\"labsys_mop_button\" value=\"" . $lng->get("save") . "\" onclick='isDirty=false'>\n" .
 
-            "</FORM>\n".
-            '<script language="JavaScript" type="text/javascript">
+			"</FORM>\n" .
+			'<script language="JavaScript" type="text/javascript">
             <!--
             if (document.InputEdit) document.InputEdit.question.focus();
             //-->
-            </script>'.
-            EM::editBottomInput( $this, $fullAddress ).
-            $this->show($fullAddress);
-  }
+            </script>' .
+			EM::editBottomInput($this, $fullAddress) .
+			$this->show($fullAddress);
+	}
 
-  /**
-  * Used to save the edited element.
-  *
-  * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
-  * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */
-  /*static*/  function save(){
-    global $iDBI, $url, $lng, $usr;
+	/**
+	 * Used to save the edited element.
+	 *
+	 * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
+	 * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
+	 */
+	/*static*/
+	function save() {
+		global $iDBI, $url, $lng, $usr;
 
-    // check for all necessary values posted
-    if ( !isset($_POST['IDX']) ||
-         !isset($_POST['REDIRECTTO']) ||
-         !isset($_POST['FULLADDRESS']) ||
-         !isset($_POST['QUESTION']) ||
-         !isset($_POST['EXAMPLE_SOLUTION']) ||
-         !isset($_POST['POSSIBLE_CREDITS']) ||
-         !isset($_POST['HAS_FILE_UPLOAD'])
-       ){
-          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
-          exit;
-         }
+		// check for all necessary values posted
+		if (!isset($_POST['IDX']) ||
+			!isset($_POST['REDIRECTTO']) ||
+			!isset($_POST['FULLADDRESS']) ||
+			!isset($_POST['QUESTION']) ||
+			!isset($_POST['EXAMPLE_SOLUTION']) ||
+			!isset($_POST['POSSIBLE_CREDITS']) ||
+			!isset($_POST['HAS_FILE_UPLOAD'])
+		) {
+			trigger_error($lng->get("notAllNecPosted"), E_USER_ERROR);
+			exit;
+		}
 
-    // Validity (session ID) is checked by the calling script yet.
+		// Validity (session ID) is checked by the calling script yet.
 
-    // only content editors are allowed to save
-    if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
-                                                  trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
-                                                  exit;
-                                                }
+		// only content editors are allowed to save
+		if (!$usr->isOfKind(IS_CONTENT_EDITOR)) {
+			trigger_error($lng->get("notAllowed"), E_USER_ERROR);
+			exit;
+		}
 
-    // compute user rights:
-    $userRights=0;
-    for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1) if ( isset( $_POST[ "UR_".$i] ) ) $userRights += $_POST["UR_".$i];
+		// compute user rights:
+		$userRights = 0;
+		for ($i = 1; $i <= MAX_USER_ROLE; $i = $i << 1) if (isset($_POST["UR_" . $i])) $userRights += $_POST["UR_" . $i];
 
-    $newInput = new LiElement(  $_POST['IDX'],
-                                $_POST['QUESTION'],
-                                $_POST['EXAMPLE_SOLUTION'],
-                                $_POST['POSSIBLE_CREDITS'],
-                                $userRights,
-                                ($_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1"),
-                                $this->history
-                               );
-    $newInput->hasFileUpload = $_POST['HAS_FILE_UPLOAD'];
+		$newInput = new LiElement($_POST['IDX'],
+			$_POST['QUESTION'],
+			$_POST['EXAMPLE_SOLUTION'],
+			$_POST['POSSIBLE_CREDITS'],
+			$userRights,
+			($_POST["VISIBLE_ONLY_IN_COLLECTION"] == "1"),
+			$this->history
+		);
+		$newInput->hasFileUpload = $_POST['HAS_FILE_UPLOAD'];
 
-    // if $_POST["SAVEASNEW"] is set the element is saved as new element
-    if ( isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1") ){
-                                      $newInput->idx = $iDBI->setData( $newInput, true );
-                                      $url->put( 'address', 'i'.$newInput->idx );        // the address of the new element
-                                     }
-    else{
-                                      $iDBI->setData( $newInput );
-                                      $url->put( 'address', $_POST['FULLADDRESS'] );  // the address remains
-    }
+		// if $_POST["SAVEASNEW"] is set the element is saved as new element
+		if (isset($_POST["SAVEASNEW"]) && ($_POST["SAVEASNEW"] == "1")) {
+			$newInput->idx = $iDBI->setData($newInput, true);
+			$url->put('address', 'i' . $newInput->idx);        // the address of the new element
+		} else {
+			$iDBI->setData($newInput);
+			$url->put('address', $_POST['FULLADDRESS']);  // the address remains
+		}
 
-    // some user information
-    $url->put( 'sysinfo', $lng->get("DataHasBeenSaved")." ".$lng->get("iNumber")." ".$newInput->idx );
-    $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iEditorSave);
+		// some user information
+		$url->put('sysinfo', $lng->get("DataHasBeenSaved") . " " . $lng->get("iNumber") . " " . $newInput->idx);
+		$GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iEditorSave);
 
-    // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
-  }
-
+		// One could also display the page here but that way it is left to the normal mechanism...
+		header("Location: " . $url->rewriteExistingUrl($_POST['REDIRECTTO']));
+	}
 
 
-  /**
-  * Acquires the lock for $this->idx and $this->getDataOfTeam.
-  *
-  *@param $fullAddress  The elements full address (only passed for logging purposes).
-  */
-  function acquireLock4( $fullAddress ){
-    $this->lkDBI->setData4( $this->getDataOfTeam, $this->idx, $fullAddress );
-  }
+	/**
+	 * Acquires the lock for $this->idx and $this->getDataOfTeam.
+	 *
+	 * @param $fullAddress  The elements full address (only passed for logging purposes).
+	 */
+	function acquireLock4($fullAddress) {
+		$this->lkDBI->setData4($this->getDataOfTeam, $this->idx, $fullAddress);
+	}
 
-  /**
-  * Removes all locks for $this->getDataOfTeam.
-  */
-  function removeLock(){
-    if ( $this->lockIsSetTo ){
-      $this->lkDBI->remLock4( $this->getDataOfTeam );
-    }
-  }
+	/**
+	 * Removes all locks for $this->getDataOfTeam.
+	 */
+	function removeLock() {
+		if ($this->lockIsSetTo) {
+			$this->lkDBI->remLock4($this->getDataOfTeam);
+		}
+	}
 
-  /**
-  * Used to save the users answer.
-  *
-  * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
-  * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */
-  /*static*/ function saveUserAnswer(){
-    global $url, $lng, $usr;
+	/**
+	 * Used to save the users answer.
+	 *
+	 * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
+	 * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
+	 */
+	/*static*/
+	function saveUserAnswer() {
+		global $url, $lng, $usr;
 
-    // check for all necessary values posted
-    if ( !isset($_POST['IDX']) ||
-         !isset($_POST['REDIRECTTO']) ||
-         !isset($_POST['ANSWER']) ||
-         !isset($_POST['FULLADDRESS'])
-       ){
-          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
-          exit;
-         }
+		// check for all necessary values posted
+		if (!isset($_POST['IDX']) ||
+			!isset($_POST['REDIRECTTO']) ||
+			!isset($_POST['ANSWER']) ||
+			!isset($_POST['FULLADDRESS'])
+		) {
+			trigger_error($lng->get("notAllNecPosted"), E_USER_ERROR);
+			exit;
+		}
 
-    $currentTeam = $this->utDBI->getData4( $usr->uid, $_POST['IDX'], 0 );
+		$currentTeam = $this->utDBI->getData4($usr->uid, $_POST['IDX'], 0);
 
-    $this->loadUserData4( $currentTeam ); // loads the dynamic data from the working table.
+		$this->loadUserData4($currentTeam); // loads the dynamic data from the working table.
 
-    if (isset($_POST['cancel'])){ // cancel action
-      if ( $this->lockIsSetTo == $this->idx ){
-        $this->removeLock();
-        $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentCancel);
-      }
-      // One could also display the page here but that way it is left to the normal mechanism...
-      header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
-      exit;
-    }
+		if (isset($_POST['cancel'])) { // cancel action
+			if ($this->lockIsSetTo == $this->idx) {
+				$this->removeLock();
+				$GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentCancel);
+			}
+			// One could also display the page here but that way it is left to the normal mechanism...
+			header("Location: " . $url->rewriteExistingUrl($_POST['REDIRECTTO']));
+			exit;
+		}
 
-    if ((substr($_POST['ANSWER'], 0, 4) === '[MD]') || (substr($_POST['ANSWER'], 0, 6) === '[HTML]')){
-      $_POST['ANSWER'] = '!'.$_POST['ANSWER'];
-    }
+		if ((substr($_POST['ANSWER'], 0, 4) === '[MD]') || (substr($_POST['ANSWER'], 0, 6) === '[HTML]')) {
+			$_POST['ANSWER'] = '!' . $_POST['ANSWER'];
+		}
 
-    if ( $this->lockIsSetTo == $this->idx ){
-      $this->history='';
-      if ( isset($_POST['fileUpload']) || isset($_POST['fileDelete'])){
-        // file handling
-        $this->handleUploadedFiles( $currentTeam ); // modifies $this->history!
-      } else {
-        // non file handling operation
-        // makeLogEntry( 'i', 'saved', $this->idx );
-        $this->removeLock();
-      }
-      $this->uaDBI->setData4( $currentTeam, $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get( 'answered' )."\n".$this->answerHistory );
-    } else{ // You are only allowed to answer one question at the same time.
-           // Since you can move the lock this ensures the desired behavior.
-           // In case the lock is not at this question anymore, the data is discarded and the error is shown...
-            $url->put( 'sysalert', $lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
+		if ($this->lockIsSetTo == $this->idx) {
+			$this->history = '';
+			if (isset($_POST['fileUpload']) || isset($_POST['fileDelete'])) {
+				// file handling
+				$this->handleUploadedFiles($currentTeam); // modifies $this->history!
+			} else {
+				// non file handling operation
+				// makeLogEntry( 'i', 'saved', $this->idx );
+				$this->removeLock();
+			}
+			$this->uaDBI->setData4($currentTeam, $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get('answered') . "\n" . $this->answerHistory);
+		} else { // You are only allowed to answer one question at the same time.
+			// Since you can move the lock this ensures the desired behavior.
+			// In case the lock is not at this question anymore, the data is discarded and the error is shown...
+			$url->put('sysalert', $lng->get("NotAllowedSaveLockAt") . " " . $this->lockIsSetTo);
 
-           // As this case should never happen, we save the data below the existing answer with a hint, not to lose data:
-            $existingData = $this->uaDBI->getData4( $currentTeam, $this->idx, false );
-           // To abondon parallel answering we replace all spaces by NO_LOCK so the user has to remove this later again.
-            $_POST['ANSWER'] = $lng->get( 'noiLockNote' )."\r\n\r\n- - - - -\r\n\r\n".
-                               $_POST['ANSWER']."\r\n\r\n- - - - -\r\n\r\n".
-                               $existingData["answer"];
-            $this->uaDBI->setData4( $currentTeam, $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get( 'answered' ).' '.$lng->get( 'noiLockNote' )."\n".$this->answerHistory );
-    }
+			// As this case should never happen, we save the data below the existing answer with a hint, not to lose data:
+			$existingData = $this->uaDBI->getData4($currentTeam, $this->idx, false);
+			// To abondon parallel answering we replace all spaces by NO_LOCK so the user has to remove this later again.
+			$_POST['ANSWER'] = $lng->get('noiLockNote') . "\r\n\r\n- - - - -\r\n\r\n" .
+				$_POST['ANSWER'] . "\r\n\r\n- - - - -\r\n\r\n" .
+				$existingData["answer"];
+			$this->uaDBI->setData4($currentTeam, $this->idx, $_POST['ANSWER'], $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isClosed, $this->isCorrected, $lng->get('answered') . ' ' . $lng->get('noiLockNote') . "\n" . $this->answerHistory);
+		}
 
-    $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentSave);
-    // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
-  }
+		$GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iStudentSave);
+		// One could also display the page here but that way it is left to the normal mechanism...
+		header("Location: " . $url->rewriteExistingUrl($_POST['REDIRECTTO']));
+	}
 
-  /**
-  * uploads a file, if a file has been sent, and deletes files, if they have been marked for deletion.
-  */
-  private function handleUploadedFiles( $currentTeam ){
-    global $url, $lng, $usr;
-    if ($this->hasFileUpload){
-      if (!empty($_FILES['file']['size'][0])) {
-        for($moreFiles = count($_FILES['file'.$pathID]['size'])-1; $moreFiles>=0; $moreFiles--){
-          $this->uaDBI->uploadFile($currentTeam, $this->idx, $_FILES['file']['tmp_name'][$moreFiles], $_FILES['file']['name'][$moreFiles]);
-          $this->answerHistory = $_FILES['file']['name'][$moreFiles].' uploaded'."\n".$this->answerHistory;
-        }
-      } else if (!empty($_POST['deleteFileNames'])) {
- 	      foreach ($_POST['deleteFileNames'] as $fileName) {
-          $this->uaDBI->deleteFile($currentTeam, $this->idx, $fileName);
-          $this->uaDBI->deleteFile($currentTeam, $this->idx, $fileName.'.thumb.jpg'); // Also delete a preview image if available...
-          $this->answerHistory = $fileName.' deleted'."\n".$this->answerHistory;
-        }
-      }
-    } else $url->put( 'sysalert', $lng->get("ElementHasNoFileUpload"));
-  }
+	/**
+	 * uploads a file, if a file has been sent, and deletes files, if they have been marked for deletion.
+	 */
+	private function handleUploadedFiles($currentTeam) {
+		global $url, $lng, $usr;
+		if ($this->hasFileUpload) {
+			if (!empty($_FILES['file']['size'][0])) {
+				for ($moreFiles = count($_FILES['file' . $pathID]['size']) - 1; $moreFiles >= 0; $moreFiles--) {
+					$this->uaDBI->uploadFile($currentTeam, $this->idx, $_FILES['file']['tmp_name'][$moreFiles], $_FILES['file']['name'][$moreFiles]);
+					$this->answerHistory = $_FILES['file']['name'][$moreFiles] . ' uploaded' . "\n" . $this->answerHistory;
+				}
+			} else if (!empty($_POST['deleteFileNames'])) {
+				foreach ($_POST['deleteFileNames'] as $fileName) {
+					$this->uaDBI->deleteFile($currentTeam, $this->idx, $fileName);
+					$this->uaDBI->deleteFile($currentTeam, $this->idx, $fileName . '.thumb.jpg'); // Also delete a preview image if available...
+					$this->answerHistory = $fileName . ' deleted' . "\n" . $this->answerHistory;
+				}
+			}
+		} else $url->put('sysalert', $lng->get("ElementHasNoFileUpload"));
+	}
 
-  /**
-   * Used for quick correction. Checks if the start over funtionality is used...
-   */
-  function isStartOver(){
-    global $usr;
-    return  $usr->isOfKind( IS_CORRECTOR )
-            && ((isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED']!=($this->isCorrected ? 1 : 0)) || isset($_POST['FULL_CREDITS'.$this->idx])) // these buttons are available when not opened...
-            && !isset($_POST['CREDITS'])
-            && ($_POST['IDX'] == $this->idx);
-  }
+	/**
+	 * Used for quick correction. Checks if the start over funtionality is used...
+	 */
+	function isStartOver() {
+		global $usr;
+		return $usr->isOfKind(IS_CORRECTOR)
+			&& ((isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] != ($this->isCorrected ? 1 : 0)) || isset($_POST['FULL_CREDITS' . $this->idx])) // these buttons are available when not opened...
+			&& !isset($_POST['CREDITS'])
+			&& ($_POST['IDX'] == $this->idx);
+	}
 
-  /**
-  * Used to save the corrector's comment and given points.
-  *
-  * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
-  * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */
-  /*static*/ function saveCorrectorStuff(){
-    global $url, $lng, $usr;
-    // check for all necessary values posted
-    if ( !isset($_POST['IDX']) ||
-         !isset($_POST['REDIRECTTO']) ||
-         !isset($_POST['FULLADDRESS']) ||
-         !isset($_POST['TEAM'])
-       ){
-          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
-          exit;
-         }
+	/**
+	 * Used to save the corrector's comment and given points.
+	 *
+	 * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
+	 * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
+	 */
+	/*static*/
+	function saveCorrectorStuff() {
+		global $url, $lng, $usr;
+		// check for all necessary values posted
+		if (!isset($_POST['IDX']) ||
+			!isset($_POST['REDIRECTTO']) ||
+			!isset($_POST['FULLADDRESS']) ||
+			!isset($_POST['TEAM'])
+		) {
+			trigger_error($lng->get("notAllNecPosted"), E_USER_ERROR);
+			exit;
+		}
 
-    // Validity (session ID) is checked by the calling script yet.
+		// Validity (session ID) is checked by the calling script yet.
 
-    // only correctors are allowed to save
-    if ( !$usr->isOfKind( IS_CORRECTOR ) ){
-                                             trigger_error( $lng->get("notAllowed"), E_USER_ERROR );
-                                             exit;
-                                           }
+		// only correctors are allowed to save
+		if (!$usr->isOfKind(IS_CORRECTOR)) {
+			trigger_error($lng->get("notAllowed"), E_USER_ERROR);
+			exit;
+		}
 
-    $this->loadUserData4( $_POST['TEAM'] ); // loads the dynamic data from the working table.
+		$this->loadUserData4($_POST['TEAM']); // loads the dynamic data from the working table.
 
-    if ( !isset($_POST['CREDITS']) ){ // quick correction is used
-      //makeLogEntry( 'i', 'quick correcting', $this->idx );
-      $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorQuick, $_POST['TEAM']);
-      $_POST['CREDITS'] = (isset($_POST['FULL_CREDITS'.$this->idx]) ? $this->possibleCredits : $this->givenCredits);
-    }
+		if (!isset($_POST['CREDITS'])) { // quick correction is used
+			//makeLogEntry( 'i', 'quick correcting', $this->idx );
+			$GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorQuick, $_POST['TEAM']);
+			$_POST['CREDITS'] = (isset($_POST['FULL_CREDITS' . $this->idx]) ? $this->possibleCredits : $this->givenCredits);
+		}
 
-    if (!isset($_POST['cancel'])){ // cancel? -> do nothing
-      $isCorrected=isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1;
-      $this->uaDBI->setData4( $_POST['TEAM'],
-                              $this->idx,
-                              $this->userAnswer,
-                              $_POST['CREDITS'],
-                              ( isset($_POST['COMMENT']) ?  $_POST['COMMENT'] :  $this->answerComment ),
-                              ( isset($_POST['CORRECTORS_NOTE']) ?  $_POST['CORRECTORS_NOTE'] :  $this->correctorsNote ),
-                              $this->isClosed || $isCorrected,
-                              $isCorrected,
-                              $lng->get( 'correctionSaved')."\n".$this->answerHistory );
-      $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorSave, $_POST['TEAM']);
-    }else{
-      $GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorCancel, $_POST['TEAM']);
-    }
-    // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
-  }
+		if (!isset($_POST['cancel'])) { // cancel? -> do nothing
+			$isCorrected = isset($_POST['IS_CORRECTED']) && $_POST['IS_CORRECTED'] == 1;
+			$this->uaDBI->setData4($_POST['TEAM'],
+				$this->idx,
+				$this->userAnswer,
+				$_POST['CREDITS'],
+				(isset($_POST['COMMENT']) ? $_POST['COMMENT'] : $this->answerComment),
+				(isset($_POST['CORRECTORS_NOTE']) ? $_POST['CORRECTORS_NOTE'] : $this->correctorsNote),
+				$this->isClosed || $isCorrected,
+				$isCorrected,
+				$lng->get('correctionSaved') . "\n" . $this->answerHistory);
+			$GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorSave, $_POST['TEAM']);
+		} else {
+			$GLOBALS['Logger']->logToDatabase($_POST['FULLADDRESS'], logActions::iCorrectorCancel, $_POST['TEAM']);
+		}
+		// One could also display the page here but that way it is left to the normal mechanism...
+		header("Location: " . $url->rewriteExistingUrl($_POST['REDIRECTTO']));
+	}
 
-  /**
-  * Tries to set the answer lock.
-  *
-  * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
-  * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
-  */
-  /*static*/ function setUserAnswerLock(){
-    global $url, $usr, $lng;
-    if ( !isset($_POST['IDX']) ||
-         !isset($_POST['REDIRECTTO']) ||
-         !isset($_POST['FULLADDRESS'])
-       ){
-          trigger_error( $lng->get("notAllNecPosted"), E_USER_ERROR );
-          exit;
-         }
+	/**
+	 * Tries to set the answer lock.
+	 *
+	 * This function gets STATICALLY called from ../php/executeCommandOnElement.php?address=[elementID].
+	 * It handles the $_POSTed data and then redirects to the $_POST['REDIRECTTO'] with the address of the element added.
+	 */
+	/*static*/
+	function setUserAnswerLock() {
+		global $url, $usr, $lng;
+		if (!isset($_POST['IDX']) ||
+			!isset($_POST['REDIRECTTO']) ||
+			!isset($_POST['FULLADDRESS'])
+		) {
+			trigger_error($lng->get("notAllNecPosted"), E_USER_ERROR);
+			exit;
+		}
 
-    $currentTeam = $this->utDBI->getData4( $usr->uid, $_POST['IDX'], 0 );
+		$currentTeam = $this->utDBI->getData4($usr->uid, $_POST['IDX'], 0);
 
-    $this->loadUserData4( $currentTeam ); // loads the dynamic data from the working table.
+		$this->loadUserData4($currentTeam); // loads the dynamic data from the working table.
 
-    if ($this->isClosed){
-      $url->put( 'sysalert', $lng->get("InputAlreadyClosed") );
-    }elseif ( $this->lockIsSetTo && ($this->lockIsSetTo != $this->idx) ){ // we do not have the lock
-      if ($this->forceReLock){
-        // lock is set to something else and we want to acquire it (click onlock)
-        $url->put( 'sysalert', $lng->get("LockTakenFrom")." ".$this->lockIsSetTo );
-      }else{
-        $url->put( 'sysalert', $lng->get("NotAllowedSaveLockAt")." ".$this->lockIsSetTo );
-      }
-    }
-    if (!$this->lockIsSetTo || $this->forceReLock){
-      $this->acquireLock4( $_POST['FULLADDRESS'] );
-      //makeLogEntry( 'i', 'open', $this->idx );
-    }
+		if ($this->isClosed) {
+			$url->put('sysalert', $lng->get("InputAlreadyClosed"));
+		} elseif ($this->lockIsSetTo && ($this->lockIsSetTo != $this->idx)) { // we do not have the lock
+			if ($this->forceReLock) {
+				// lock is set to something else and we want to acquire it (click onlock)
+				$url->put('sysalert', $lng->get("LockTakenFrom") . " " . $this->lockIsSetTo);
+			} else {
+				$url->put('sysalert', $lng->get("NotAllowedSaveLockAt") . " " . $this->lockIsSetTo);
+			}
+		}
+		if (!$this->lockIsSetTo || $this->forceReLock) {
+			$this->acquireLock4($_POST['FULLADDRESS']);
+			//makeLogEntry( 'i', 'open', $this->idx );
+		}
 
-    // One could also display the page here but that way it is left to the normal mechanism...
-    header( "Location: ".$url->rewriteExistingUrl( $_POST['REDIRECTTO'] ) );
-  }
+		// One could also display the page here but that way it is left to the normal mechanism...
+		header("Location: " . $url->rewriteExistingUrl($_POST['REDIRECTTO']));
+	}
 
-  /**
-  * Closes the input.
-  *
-  * Gets called by the l (lab) element.
-  *
-  * @param $teamNumber  The number of the team to open the input of.
-  */
-  function closeInput( $teamNumber ){
-    global $usr, $lng;
-    $this->loadUserData4( $teamNumber );
-    $this->removeLock();
-    if (!$this->isClosed) {
+	/**
+	 * Closes the input.
+	 *
+	 * Gets called by the l (lab) element.
+	 *
+	 * @param $teamNumber  The number of the team to open the input of.
+	 */
+	function closeInput($teamNumber) {
+		global $usr, $lng;
+		$this->loadUserData4($teamNumber);
+		$this->removeLock();
+		if (!$this->isClosed) {
 //                              $team,       $iIdx,      $answer="",        $givenCredits="0",   $comment="",          $correctorsNote='', $closed=false, $corrected=false, $history = ""
-        $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, true, false, $lng->get("closesInput")."\n".$this->answerHistory  );
-        $this->isClosed = true;
-        $this->isCorrected = false;
-    }
-    //makeLogEntry( 'i', 'closed', 'i'.$this->idx );
-  }
+			$this->uaDBI->setData4($teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, true, false, $lng->get("closesInput") . "\n" . $this->answerHistory);
+			$this->isClosed = true;
+			$this->isCorrected = false;
+		}
+		//makeLogEntry( 'i', 'closed', 'i'.$this->idx );
+	}
 
-  /**
-  * ReOpens the input.
-  *
-  * Gets called by the l (lab) element.
-  *
-  * @param $teamNumber  The number of the team to open the input of.
-  */
-  function reOpenInput( $teamNumber ){
-    global $usr, $lng;
-    $this->loadUserData4( $teamNumber );
-    if ($this->isClosed && !$this->isCorrected) $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isCorrected, $this->isCorrected, $lng->get("reOpensInput")."\n".$this->answerHistory  );
-  }
+	/**
+	 * ReOpens the input.
+	 *
+	 * Gets called by the l (lab) element.
+	 *
+	 * @param $teamNumber  The number of the team to open the input of.
+	 */
+	function reOpenInput($teamNumber) {
+		global $usr, $lng;
+		$this->loadUserData4($teamNumber);
+		if ($this->isClosed && !$this->isCorrected) $this->uaDBI->setData4($teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, $this->isCorrected, $this->isCorrected, $lng->get("reOpensInput") . "\n" . $this->answerHistory);
+	}
 
-  /**
-  * Creates the mapping $UID->$team.
-  * Normally the mapping should exist but if the user never viewed the question
-  * (only one teammember opened for answering) it might be missing.
-  *
-  * @param $uid   The user's unique identifier.
-  * @param $team  The team to be mapped to.
-  */
-  function mapInput( $uid, $team ){
-    global $lng;
-    if ( $this->utDBI->getData4( $uid, $this->idx, 0 ) != $team ){ // changes?
-      $this->utDBI->setData4( $uid, $this->idx, $team, $lng->get("userReMapped").' ('.$team.')' );
-    }
-    $this->loadUserData4( $team ); // necessary to create an answer
-  }
+	/**
+	 * Creates the mapping $UID->$team.
+	 * Normally the mapping should exist but if the user never viewed the question
+	 * (only one teammember opened for answering) it might be missing.
+	 *
+	 * @param $uid   The user's unique identifier.
+	 * @param $team  The team to be mapped to.
+	 */
+	function mapInput($uid, $team) {
+		global $lng;
+		if ($this->utDBI->getData4($uid, $this->idx, 0) != $team) { // changes?
+			$this->utDBI->setData4($uid, $this->idx, $team, $lng->get("userReMapped") . ' (' . $team . ')');
+		}
+		$this->loadUserData4($team); // necessary to create an answer
+	}
 
 // The next functions are used for the element's manage page. ***********************************************
 
-  /**
-  * Displays the element's property legend on the manage page.
-  * All entries of getPropertyRow() should be explained here.
-  */
-  function showPropertyLegend(){
-    global $lng, $pge;
-    $lgnd = "<div class=\"labsys_mop_".$this->elementId."_row\">\n".
-            "<div class=\"labsys_mop_h3\">".$lng->get("legend")."</div>\n".
-          // visible only in collection?
-            "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" checked=\"checked\">".
-                infoArrow( $lng->get("visAlways") ).
-                $lng->get("visAlways")."<br>\n".
+	/**
+	 * Displays the element's property legend on the manage page.
+	 * All entries of getPropertyRow() should be explained here.
+	 */
+	function showPropertyLegend() {
+		global $lng, $pge;
+		$lgnd = "<div class=\"labsys_mop_" . $this->elementId . "_row\">\n" .
+			"<div class=\"labsys_mop_h3\">" . $lng->get("legend") . "</div>\n" .
+			// visible only in collection?
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"radio\" name=\"legend_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" checked=\"checked\">" .
+			infoArrow($lng->get("visAlways")) .
+			$lng->get("visAlways") . "<br>\n" .
 
-             "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled>".
-                infoArrow( $lng->get("visAlways"), false ).
-                "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" checked=\"checked\">".
-                infoArrow( $lng->get("visOnlyInLab") ).
-                $lng->get("visOnlyInLab")."<br>\n";
-    // rights
-    for ($i=1; $i<=MAX_USER_ROLE; $i=$i<<1){
-      $lgnd .= "<input type=\"radio\" disabled>".infoArrow( $lng->get("visAlways"), true )."<input type=\"radio\" disabled>".infoArrow( $lng->get("visOnlyInLab"), true )." | ";
-      for ($j=1; $j<$i; $j=$j<<1) $lgnd .= '<input type="checkbox" disabled>'.infoArrow( $lng->get("Explain_UR_".$j), true )/* ."\n" saves space! */;
-      $lgnd .= rightsBox( "legend_".$i, $i, $i )." ".$lng->get("Explain_UR_".$i)."<br>\n";
-    }
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"0\" disabled>" .
+			infoArrow($lng->get("visAlways"), false) .
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"radio\" name=\"legend2_VISIBLE_ONLY_IN_COLLECTION\" value=\"1\" checked=\"checked\">" .
+			infoArrow($lng->get("visOnlyInLab")) .
+			$lng->get("visOnlyInLab") . "<br>\n";
+		// rights
+		for ($i = 1; $i <= MAX_USER_ROLE; $i = $i << 1) {
+			$lgnd .= "<input type=\"radio\" disabled>" . infoArrow($lng->get("visAlways"), true) . "<input type=\"radio\" disabled>" . infoArrow($lng->get("visOnlyInLab"), true) . " | ";
+			for ($j = 1; $j < $i; $j = $j << 1) $lgnd .= '<input type="checkbox" disabled>' . infoArrow($lng->get("Explain_UR_" . $j), true)/* ."\n" saves space! */
+			;
+			$lgnd .= rightsBox("legend_" . $i, $i, $i) . " " . $lng->get("Explain_UR_" . $i) . "<br>\n";
+		}
 
-    $lgnd .= "</div>\n";
+		$lgnd .= "</div>\n";
 
-    return $lgnd;
-  }
+		return $lgnd;
+	}
 
-  /**
-  * This function is called to display the element's properties.
-  * @param $prefix    If given this is put before the element's title (p.e. 1.2.3 title).
-  * @param $disabled  Should the checkboxes, radio buttons etc. be disabled?
-  * @return string    The html-code of the elements properties horizontally arranged.
-  */
-  function getPropertyRow( $prefix, $disabled=false ){
-    global $pge, $lng, $cfg;
-    return
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"0\"".( !$this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
-              infoArrow( $lng->get("visAlways"), $disabled ).
-              "<input tabindex=\"".$pge->nextTab++."\" type=\"radio\" ".( !$disabled ?  "name=\"".$prefix."_VISIBLE_ONLY_IN_COLLECTION\" "  : '' )."value=\"1\"".( $this->visibleOnlyInCollection ?  " checked=\"checked\"" : '' ).( $disabled ?  " disabled=\"disabled\"" : '' )." onchange='isDirty=true'>".
-              infoArrow( $lng->get("visOnlyInLab"), $disabled ).
-            ( $disabled ?  "<span class=\"labsys_mop_grayed\">"  : '' ).
-            " | ".
-            ( $disabled ?  "</span>"  : '' ).
-              showRightsHorizontal( $prefix, $this->visibleFor, $disabled ).
-            " ".
-              cutHTMLText( $this->title, $cfg->get("maxCharMngRowTitleShort") );
-  }
+	/**
+	 * This function is called to display the element's properties.
+	 * @param $prefix    If given this is put before the element's title (p.e. 1.2.3 title).
+	 * @param $disabled  Should the checkboxes, radio buttons etc. be disabled?
+	 * @return string    The html-code of the elements properties horizontally arranged.
+	 */
+	function getPropertyRow($prefix, $disabled = false) {
+		global $pge, $lng, $cfg;
+		return
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"radio\" " . (!$disabled ? "name=\"" . $prefix . "_VISIBLE_ONLY_IN_COLLECTION\" " : '') . "value=\"0\"" . (!$this->visibleOnlyInCollection ? " checked=\"checked\"" : '') . ($disabled ? " disabled=\"disabled\"" : '') . " onchange='isDirty=true'>" .
+			infoArrow($lng->get("visAlways"), $disabled) .
+			"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"radio\" " . (!$disabled ? "name=\"" . $prefix . "_VISIBLE_ONLY_IN_COLLECTION\" " : '') . "value=\"1\"" . ($this->visibleOnlyInCollection ? " checked=\"checked\"" : '') . ($disabled ? " disabled=\"disabled\"" : '') . " onchange='isDirty=true'>" .
+			infoArrow($lng->get("visOnlyInLab"), $disabled) .
+			($disabled ? "<span class=\"labsys_mop_grayed\">" : '') .
+			" | " .
+			($disabled ? "</span>" : '') .
+			showRightsHorizontal($prefix, $this->visibleFor, $disabled) .
+			" " .
+			cutHTMLText($this->title, $cfg->get("maxCharMngRowTitleShort"));
+	}
 }
+
 ?>

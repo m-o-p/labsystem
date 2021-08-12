@@ -13,3 +13,4 @@ composer.lock
 composer.phar
 package-lock.json
 npm
+*.iml

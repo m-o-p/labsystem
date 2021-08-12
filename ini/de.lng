@@ -437,7 +437,7 @@ correctThoughNotClosed = "!geschlossen, trotzdem KORRIGIEREN"
 ;l
 checkPrelab         = "PreLab-Fragen korrigieren" ; label of the button...
 closeLab            = "Lab schlie&szlig;en"
-showAllUsersAnswers = "Antworten ALLEr BENUTZER"
+showAllUsersAnswers = "Antworten ALLER BENUTZER"
 stopSeeingData      = "Ich will keine Daten von anderen mehr sehen." ;; below the user statistic page if the corrector is viewing someones data
 hideExampleSolutionInThisTab = "Musterl&ouml;sungen ausblenden"
 showExampleSolutionInThisTab = "Musterl&ouml;sungen anzeigen"

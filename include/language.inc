@@ -43,9 +43,9 @@ require_once( INCLUDE_DIR."/configuration.inc" );
 require_once( INCLUDE_DIR."/classes/Rom.inc" );
 
 if ( $GLOBALS['url']->available("lng") )
-  $languageFile = $cfg->get("SystemResourcePath").$GLOBALS['url']->get("lng").'.lng';
+  $languageFile = INCLUDE_DIR . '/' . $cfg->get("SystemResourcePath").$GLOBALS['url']->get("lng").'.lng';
 else
-  $languageFile = $cfg->get("SystemResourcePath").$cfg->get("SystemDefaultLanguage");
+  $languageFile = INCLUDE_DIR . '/' . $cfg->get("SystemResourcePath").$cfg->get("SystemDefaultLanguage");
 
 if ( !file_exists( $languageFile ) ){
                                       trigger_error( $languageFile.' missing! (language-file)' , E_USER_ERROR );
