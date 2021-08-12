@@ -34,6 +34,7 @@
 4) You also need a SCSS compiler
 	Once `npm -g install sass`
 	After every update `sass cssv2/main.scss cssv2/main.css`
+    and `npx webpack`
 
 ..........................................................................
  Editing filerights
