@@ -490,9 +490,7 @@ class LiElement extends Element {
 			"[" .
 			($isInCorrection ?
 				// show input
-				"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"" .
-				// on first entering set the points to full points
-				($this->isCorrected || /* pre corrected: */ $this->givenCredits > 0 || !$this->isClosed || !empty($this->answerComment) ? $this->givenCredits : $this->possibleCredits) .
+				"<input tabindex=\"" . $pge->nextTab++ . "\" type=\"text\" name=\"CREDITS\" class=\"labsys_mop_input\" maxlength=\"5\" value=\"" . $this->givenCredits .
 				"\" onchange='isDirty=true'>" . "/ " :
 				(!$possiblePtsOnly ?
 					(($this->isCorrected || $usr->isOfKind(IS_CORRECTOR)) ?
