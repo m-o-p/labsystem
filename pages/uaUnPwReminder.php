@@ -48,7 +48,7 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 	$userDBC = new DBConnection ( $cfg->get ( 'UserDatabaseHost' ), $cfg->get ( 'UserDatabaseUserName' ), $cfg->get ( 'UserDatabasePassWord' ), $cfg->get ( 'UserDatabaseName' ) );
 
 	// check if the mailAddress exists:
-	$result = $userDBC->mkSelect ( 'pwReminderToken,pwReminderValidUntil,' . $cfg->get ( 'UserDBField_uid' ) . ' AS uid', $cfg->get ( 'UserDatabaseTable' ), 'UPPER(' . $cfg->get ( 'UserDBField_email' ) . ")=UPPER('" . $requesterEmail . "')" );
+	$result = $userDBC->mkSelect ( 'pwReminderToken,pwReminderValidUntil,' . $cfg->get ( 'UserDBField_uid' ) . ' AS uid', $cfg->get ( 'UserDatabaseTable' ), 'UPPER(' . $cfg->get ( 'UserDBField_email' ) . ")=UPPER('" . $userDBC->escapeString( $requesterEmail ) . "')" );
 	if ($result->num_rows < 1)
 		$pge->put ( "<div class=\"labsys_mop_note\">\n" . $requesterEmail . ' ' . $lng->get ( 'uaNotBelong2Usr' ) . "\n</div>" );
 	else {
