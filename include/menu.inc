@@ -132,9 +132,9 @@ foreach ( $mainMenuIni as $key => &$value ){
     // Parse the section and make the menu entries
     if ( ( ( $posBang = strpos( $value_, "!" ) ) !== FALSE ) ){
       // We have to test if restriction is fulfilled.
-      if ( ($posBang == 0) && is_string( $value_{1} ) && !is_numeric( $value_{1} ) && is_numeric( substr( $value_, 2) ) ){
+      if ( ($posBang == 0) && is_string( $value_[1] ) && !is_numeric( $value_[1] ) && is_numeric( substr( $value_, 2) ) ){
         // is syntactically a shortcut (p.e. "!p2")
-        $id = $value_{1};
+        $id = $value_[1];
         require( "../php/getDBIbyID.inc" ); /* -> $DBI */
         $element = $DBI->getMenuData2idx( substr( $value_, 2) );
         if ( $element && $element->isVisible() ){

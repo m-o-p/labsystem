@@ -160,7 +160,7 @@ class LiDBInterfaceAnswers {
   * @param integer $iIdx the id of the input Element.
   * @return an array of the paths of the files relative to upload dir.
   */
-  public static function getFiles($team, $iIdx) {
+  function getFiles($team, $iIdx) {
     global $lng;
     $filePaths = array();
     self::createUploadFolderIfNotExisting($iIdx, $team);

@@ -109,7 +109,7 @@ class ElementUser {
   * Shows the legend of the property rows (for manageUsers).
   * @return               The html code of the legend.
   */
-  function showPropertyLegend(){
+  public static function showPropertyLegend(){
     global $lng, $pge;
     $lgnd = "<div class=\"labsys_mop_u_row\">\n".
             "<div class=\"labsys_mop_h3\">".$lng->get("legend")."</div>\n";

@@ -198,5 +198,43 @@ class LmDBInterface {
                   $lng->get("onlyInCollection") => "visible_only_in_collection"
                  );
   }
+
+
+  var $queryResult;
+  /**
+  * Queries for all elements. P.e. used at the manage page.
+  *
+  * @param $orderBy    Can be any of the table's keys. The result will be ordered by this key.
+  * @param $asc        Should the datasets be in ascending order?
+  */
+  function getAllData( $orderBy="", $asc=true ){
+    if ( $orderBy != "" ) if ( $asc ) $orderBy .= " ASC"; else $orderBy .= " DESC";
+    $this->queryResult = $this->myDBC->mkSelect( "*", $this->myTable, "", $orderBy );
+  }
+
+  /**
+   * Returns the amount of returned datasets from the query;
+   *
+   * @return  amount of returned datasets from the query
+   */
+  function allSize(){
+    return $this->myDBC->datasetsIn( $this->queryResult );
+  }
+
+  /**
+  * Returns the next element from the getAllData() query or false (no more results).
+  *
+  * @return LpElement
+  * @return FALSE     If no more datasets are available.
+  */
+  function getNextData( $isInColl=false ){
+    if ( $data = $this->queryResult->fetch_array() ){
+      return $this->createElementFromDbResult($data, $isInColl);
+    }else{
+      return false;
+    }
+  }
+
+
 }
 $GLOBALS["mDBI"] = new LmDBInterface();

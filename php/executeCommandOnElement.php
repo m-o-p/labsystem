@@ -32,7 +32,7 @@
 * @param $_POST['SESSION_ID']   To verify that the user is the user that set the call and is logged in.
 */
 require( "../include/init.inc" );
-require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0};
+require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal[0];
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
 // Only predefined functions are allowed

@@ -52,7 +52,8 @@ if (isset ( $_POST ['EMAIL'] ) || isset ( $_GET ['EMAIL'] )) {
 	if ($result->num_rows < 1)
 		$pge->put ( "<div class=\"labsys_mop_note\">\n" . $requesterEmail . ' ' . $lng->get ( 'uaNotBelong2Usr' ) . "\n</div>" );
 	else {
-		$mailPage = $GLOBALS ["pDBI"]->getData2idx ( $cfg->get ( 'PidPasswordMail' ) );
+		$mailPage = $pDBI->getData2idx ( $cfg->get ( 'PidPasswordMail' ) );
+
 		while ( $data = $result->fetch_assoc() ) {
 			if (isset ( $_GET ['TOKEN'] ) && ($data ['pwReminderToken'] == $_GET ['TOKEN']) && ($data ['pwReminderValidUntil'] - time () > 0)) {
 				// Token fits and is still valid

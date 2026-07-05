@@ -65,7 +65,7 @@ class BCElement extends LcElement{
         $paragraph = ( $extParagraph != "" ?  $extParagraph."."  : '' ).$this->getParagraph( $value );
 
        // show the element
-        $id = $value{0}; $num = substr( $value, 1 );
+        $id = $value[0]; $num = substr( $value, 1 );
         $element = $GLOBALS[ $id."DBI" ]->getMenuData2idx( $num, true, $this->isInLab );
 
         if ( $element ){ $myRetVal .= "<div class=\"labsys_mop_C_TOC_entry\">".
@@ -101,7 +101,7 @@ class BCElement extends LcElement{
                             // "C123", "C123.C234" (so it is not incremental "C123", "C234").
 
     foreach( $menuStructure as $value ){
-      if (empty($value) || $value{0} == "*") continue;
+      if (empty($value) || $value[0] == "*") continue;
       if ($value == "("){ array_push( $parentArray, $nextEl ); continue; }
       if ($value == ")"){ array_pop( $parentArray ); continue; }
 
@@ -178,7 +178,7 @@ class BCElement extends LcElement{
 
    // show final
     elseif ( $this->isVisibleFinal( $first ) ){
-                                          $id = $first{0};
+                                          $id = $first[0];
                                           $num = substr( $first, 1 );
                                           require( "../php/getDBIbyID.inc" );
                                           $element = $DBI->getData2idx( $num, true, $this->isInLab );
@@ -253,7 +253,7 @@ class BCElement extends LcElement{
           $isActive = ( $linkAddr . '.' == substr( $url->get('address') . '.', 0, strlen( $linkAddr ) + 1 ) );
 
          // show the element's menu entry
-          $id = $value{0}; $num = substr( $value, 1 );
+          $id = $value[0]; $num = substr( $value, 1 );
           $element = $GLOBALS[ $id."DBI" ]->getMenuData2idx( $num, true, $this->isInLab );
           if ( !$element ) $retVal .= $menu2Populate->entry( $value." ".$lng->get("doesNotExist"), "../pages/view.php?address=".$linkAddr );
                       else $retVal .= $element->getMenu(  $linkAddr,

@@ -29,7 +29,7 @@
 */
 require( "../include/init.inc" );
 
-require( "../php/getFirstLastFinal.inc" ); $id = $lastFinal{0}; $num = substr( $lastFinal, 1);
+require( "../php/getFirstLastFinal.inc" ); $id = $lastFinal[0]; $num = substr( $lastFinal, 1);
 
 if ( !$usr->isOfKind( IS_CONTENT_EDITOR ) ){
 	trigger_error( $lng->get("notAllowed"), E_USER_ERROR );

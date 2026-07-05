@@ -431,7 +431,7 @@ class EM{ /* ElementMenues */
   * @return     The html code of the menu.
   */
   static function manageBottom( $id ){
-    return  "<div class=\"labsys_mop_elements_menu_".$id{0}."\">\n".
+    return  "<div class=\"labsys_mop_elements_menu_".$id[0]."\">\n".
             EB::link2Element( $id ).
             EB::createNew( $id ).
             // EB::manageElements().

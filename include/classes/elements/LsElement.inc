@@ -560,7 +560,7 @@ class LsElement extends Element{
 
     // create a new schedule element with the given values
     $newSchedule = new LsElement( $_POST['IDX'],
-                                  $_POST['COLL_LAB']{0},
+                                  $_POST['COLL_LAB'][0],
                                   substr( $_POST['COLL_LAB'], 1 ),
                                   mktime( $_POST['START_HOUR'], $_POST['START_MINUTE'], 0, $_POST['START_MONTH'], $_POST['START_DAY'], $_POST['START_YEAR'] ),
                                   mktime( $_POST['STOP_HOUR'], $_POST['STOP_MINUTE'], 59, $_POST['STOP_MONTH'], $_POST['STOP_DAY'], $_POST['STOP_YEAR'] ),

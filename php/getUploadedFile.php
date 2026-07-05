@@ -36,7 +36,7 @@ if (!$usr->isOfKind( IS_CORRECTOR )) {
 	// might differ from the $usr->currentTeam!)
 	$givenLab = $GLOBALS['url']->get('lIdx');
 	$labStatusTeamNumber = NULL;
-	if ($givenLab{0} == 'l' && is_numeric(substr( $givenLab, 1))){
+	if ($givenLab[0] == 'l' && is_numeric(substr( $givenLab, 1))){
 		$labStatusTeamNumber = $GLOBALS['lDBI']->getData2idx(substr( $givenLab, 1))->labTeam;
 	}
 

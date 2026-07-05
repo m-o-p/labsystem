@@ -164,7 +164,7 @@ class Pge extends LpElement{
     	                             htmlentities( $usr->currentTeam ),
     	                             htmlentities( $usr->mailAddress ),
     	                             $_SERVER['SERVER_NAME'],
-    	                             $this->elementTitle,
+    	                             $this->title,
     	                             urlencode( $_SERVER['REQUEST_URI'] ),
     	                             $cfg->get("Link2UserAdminInterface"),
     	                             htmlentities( date( $lng->get("DateFormat") ) ) );

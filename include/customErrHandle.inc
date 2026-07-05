@@ -181,7 +181,7 @@ function getErrorReport($number, $message, $file, $line, $vars){
 }
 
 //This error handler sends an email with all relevant information
-function mail_error_handler($number, $message, $file, $line, $vars){
+function mail_error_handler($number, $message, $file, $line, ...$vars){
   global $ERRORMAIL_RECEIVER_UID, $mailSent, $mailFunc, $errorUID, $usr;
 
   if (!$mailSent){

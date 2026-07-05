@@ -126,8 +126,9 @@ class MailFunctionality{
     $urDBI->getAllData();
     // iterate over all users that have rights
     $receivers = array();
+    $emptyUserInstance = new elementUser();
     while( $userRightsData = $urDBI->getNextData() ){
-      if (ElementUser::isOfKind($accessRightsMask, $userRightsData["rights"])) {
+      if ($emptyuserInstance->isOfKind($accessRightsMask, $userRightsData["rights"])) {
         // aggregate users first:
       	array_push( $receivers, $userRightsData['uid'] );
       }

@@ -42,7 +42,7 @@ define('EXPORT_DATA_DIR_PUBLIC', 'data');
  */
 function createIdMapping(&$labElementArray)
 {
-    $labElementArray = array_map(create_function('$element', 'return strtolower( $element );'), $labElementArray); // uncapitalise all IDS
+    $labElementArray = array_map(function($element){return strtolower( $element );}, $labElementArray); // uncapitalise all IDS
     natsort($labElementArray); // sort values lexicographically
                                  // remove stared values as they describe not existing elements:
     $labElementArray = array_filter($labElementArray, 'notStared');
@@ -282,20 +282,20 @@ function removeExampleSolutions(&$HTMLcode)
 {
     // inputs
     $HTMLcode = preg_replace_callback('#(?<=<!-- example solution -->)' . // Assertion "must be preceded by"
-    '(.*)' . '(?=<!-- /example solution -->)' . '#msU', create_function('$matches', 'return "<br><br><br><br>";'), $HTMLcode);
+    '(.*)' . '(?=<!-- /example solution -->)' . '#msU', function($matches){return "<br><br><br><br>";}, $HTMLcode);
     // MCs
     // remove checked boxes
     $HTMLcode = str_replace(' checked="checked"', '', $HTMLcode);
     // remove answer explanations
     $HTMLcode = preg_replace_callback('#(<div class="labsys_mop_m_answer_explanation">' . // Assertion "must be preceded by"
-    '.*' . '</div>)' . '#msU', create_function('$matches', 'return "";'), $HTMLcode);
+    '.*' . '</div>)' . '#msU', function($matches) { return ""; }, $HTMLcode);
     // remove disabled (just for fun)
     $HTMLcode = str_replace(' disabled="disabled" ', '', $HTMLcode);
     // remove graying showing right solutions
     $HTMLcode = preg_replace_callback('#(<span class="labsys_mop_grayed">)' . // Assertion "must be preceded by"
-    '(.*)' . '(</span>)' . '#msU', create_function('$matches', 'return $matches[2];'), $HTMLcode);
+    '(.*)' . '(</span>)' . '#msU', function($matches) { return $matches[2]; }, $HTMLcode);
     // remove graying showing right solutions
-    $HTMLcode = preg_replace_callback('#(<a href="/pages/XIport.php\?)(\S+)#s', create_function('$matches', 'return "...";'), $HTMLcode);
+    $HTMLcode = preg_replace_callback('#(<a href="/pages/XIport.php\?)(\S+)#s', function($matches) { return "..."; }, $HTMLcode);
 }
 
 /**
@@ -459,9 +459,9 @@ function handleLocalFile($localFileWithPath, $destDir, $doCopy)
 
     // maybe the file is fully linked but on the local server.
     // The following assumes we run just on the hosts root.
-    $localFileWithPath = preg_replace_callback('/=["|\'](?:http(?:s?)\:\/\/)?(' . preg_quote($_SERVER['SERVER_NAME']) . ')\/(.*)/', create_function('$matches',
+    $localFileWithPath = preg_replace_callback('/=["|\'](?:http(?:s?)\:\/\/)?(' . preg_quote($_SERVER['SERVER_NAME']) . ')\/(.*)/', function($matches){
         // only replace it if something follows. Links to the server itself may be intended...
-        'return ( (strlen($matches[2]) > 0) ? \'"../\'.$matches[2] : $matches[0] );'), $localFileWithPath);
+        return ( (strlen($matches[2]) > 0) ? '"../'.$matches[2] : $matches[0] );}, $localFileWithPath);
 
     // Now there could be a fragment in case of linked html files...
     $fragment = '';
@@ -547,9 +547,20 @@ function importFile($file2importWithPath, $destDir)
  * @param
  *            &$text Text to be searched in
  */
+// WOuld be clean but requires rewriting the callers (not too many)
+//function applyFunctionOnRegEx($regEx, callable $func, &$text)
+//{
+//    $text = preg_replace_callback($regEx, $func, $text);
+//}
 function applyFunctionOnRegEx($regEx, $func, &$text)
 {
-    $text = preg_replace_callback($regEx, create_function('$matches', $func), $text);
+    $text = preg_replace_callback(
+        $regEx,
+        function ($matches) use ($func) {
+            return eval($func);
+        },
+        $text
+    );
 }
 
 /**

@@ -50,7 +50,7 @@ require( "../include/init.inc" );
 require( "../php/getFirstLastFinal.inc" );
 
 // fetch first final for context
-$id = $firstFinal{0}; $num = substr( $firstFinal, 1);
+$id = $firstFinal[0]; $num = substr( $firstFinal, 1);
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 if ( !$element = $DBI->getData2idx( $num ) ){
 	header("HTTP/1.0 404 Not Found");
@@ -59,9 +59,9 @@ if ( !$element = $DBI->getData2idx( $num ) ){
 }
 
 // fetch last final
-$id = $lastFinal{0}; $num = substr( $lastFinal, 1);
+$id = $lastFinal[0]; $num = substr( $lastFinal, 1);
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
-if ( !$lastElement = $DBI->getData2idx( $num, ($firstFinal != $lastFinal), (strtolower($firstFinal{0})=='l') ) ){
+if ( !$lastElement = $DBI->getData2idx( $num, ($firstFinal != $lastFinal), (strtolower($firstFinal[0])=='l') ) ){
 	header("HTTP/1.0 404 Not Found");
 	trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );
 	die();

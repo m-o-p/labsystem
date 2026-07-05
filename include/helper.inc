@@ -27,7 +27,6 @@
 * @version    1.0
 */
 
-
 /**
 * Returns an info arrow with describing $text as title (appears at mousevoer in most browsers)
 * @param $text    The description the arrow should show.
@@ -108,8 +107,12 @@ function cutHTMLText( $text, $where ){
 */
 function parseHTML( &$object ){
   global $pge;
-  if ( (substr( $object, 0, 4 ) == '[MD]') && file_exists( '../plugins/phpMarkDown/markdown.php' ) && include_once( '../plugins/phpMarkDown/markdown.php' ) ){ //phpMarkDown http://michelf.com/projects/php-markdown/
-    $object = Markdown( $pge->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
+//  if ( (substr( $object, 0, 4 ) == '[MD]') && file_exists( '../plugins/phpMarkDown/markdown.php' ) && include_once( '../plugins/phpMarkDown/markdown.php' ) ){ //phpMarkDown http://michelf.com/projects/php-markdown/
+//    $object = Markdown( $pge->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
+//  }
+  if ( (substr( $object, 0, 4 ) == '[MD]') && file_exists( '../plugins/parsedown/Parsedown.php' ) && include_once( '../plugins/parsedown/Parsedown.php' ) ){ // https://parsedown.org/
+    $Parsedown = new Parsedown();
+    $object = $Parsedown->text( $pge->sanitizeKeys( substr( $object, 4 ) ) ); // sanitize necessary as __ has a meaning in MarkDown...
   }
   else if ( substr( $object, 0, 6 ) == '[HTML]' ){ // HTML
     $object = substr( $object, 6 ); // just remove [HTML]
@@ -165,13 +168,14 @@ function returnEditable( $text ){ /* removes anything with special purpose for e
 * @return $newIdx;
 */
 function createNew( $elementID ){
+  global $SYSINFO;
   $elementIDsmall = strtolower( $elementID ); // for C we want to give a capital letter but the interfaces always hav small ones
   if ( !in_array ($elementIDsmall, array('c', 'p', 'm', 'i', 'l', 's')) ) return;
   $newElement = $GLOBALS[ $elementIDsmall.'DBI' ]->getData2idx( 1 ); // load default prototype
   $newElement->history .= ': '.$elementID.' auto created';
 
   $newIdx = $newElement->cloneAndReturnNewIdx();
-  $GLOBALS['SYSINFO'] .= $elementID.$newIdx.' auto created; ';
+  $SYSINFO .= $elementID.$newIdx.' auto created; ';
   return $newIdx;
 }
 

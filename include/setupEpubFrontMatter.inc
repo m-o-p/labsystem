@@ -35,7 +35,7 @@ $epubConfig['coverImage'] = ( $cfg->doesExist('courseLogo') && ($cfg->get('cours
 // imprint:
 if ($cfg->doesExist('imprintID') && $cfg->get('imprintID')!=''){
   $imprintID = $cfg->get('imprintID');
-  $id = $imprintID{0}; $num = substr( $imprintID, 1);
+  $id = $imprintID[0]; $num = substr( $imprintID, 1);
   require( "../php/getDBIbyID.inc" ); /* -> $DBI */
   if ( !$imprint = $DBI->getData2idx( $num ) ){
     trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_ERROR );

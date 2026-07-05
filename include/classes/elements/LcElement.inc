@@ -133,8 +133,8 @@ class LcElement extends Element{
       $structureArray = explode( " ", $this->getStructure() );
 
       foreach( $structureArray as $value ){
-        if ( $value{0} == "*" ) $value = substr( $value, 1 ); /* Cut the * since it is not important if the element is visible. */
-        $id = $value{0};
+        if ( $value[0] == "*" ) $value = substr( $value, 1 ); /* Cut the * since it is not important if the element is visible. */
+        $id = $value[0];
         $num = substr( $value, 1 );
 
         $element = $GLOBALS[ $id."DBI" ]->getData2idx( $num, true, $this->isInLab );
@@ -182,7 +182,7 @@ class LcElement extends Element{
     $visibleArray = $this->getMyVisibleElements();
 
     foreach( $visibleArray as $value ){
-       $id = $value{0};
+       $id = $value[0];
        $num = substr( $value, 1 );
 
       // only enumerate if shown separately (otherwhise each m element etc. has a number...).
@@ -232,7 +232,7 @@ class LcElement extends Element{
     $returnVal = "";
     $visibleArray = $this->getMyVisibleElements();
     foreach( $visibleArray as $value ){
-      $id = $value{0};
+      $id = $value[0];
       $num = substr( $value, 1 );
 
       require( "../php/getDBIbyID.inc" );
@@ -254,7 +254,7 @@ class LcElement extends Element{
   function showEpubifiedChildren( $fullAddress, $extParagraph, $labelPelements=true ){
     $visibleArray = $this->getMyVisibleElements();
     foreach( $visibleArray as $value ){
-        $id = $value{0};
+        $id = $value[0];
         $num = substr( $value, 1 );
 
         // only enumerate if shown separately (otherwhise each m element etc. has a number...).
@@ -268,7 +268,7 @@ class LcElement extends Element{
         $element = $DBI->getData2idx( $num, true, $this->isInLab );
 
         // echo('<hr>');
-        // show the element
+	// show the element
         if ( strtoupper($id) == 'C' ){
          $element->show( $fullAddress.'.'.$id.$num.'.epub', $paragraph );
         }else{ // call directly the show ePub method of non collections
@@ -549,7 +549,7 @@ class LcElement extends Element{
                 // parse the entries
                  $tokens = $this->getTokens();
                  foreach ( $tokens as $value ){
-                   $id = $value{0}; $num = substr( $value, 1 );
+                   $id = $value[0]; $num = substr( $value, 1 );
                    $prefix = ( $id == strtoupper( $id ) ?  "B" :  "L"  ).$id;
                        if ( !is_numeric($num) )  $myRetVal .= $value."\t;***".$id.$num."\t; ".$lng->get("parseErrNotNum")."\n";
                    elseif ( !file_exists ( INCLUDE_DIR."/classes/elements/".$prefix."DBInterface.inc" ) )
@@ -636,18 +636,18 @@ class LcElement extends Element{
   function cloneAndReturnNewIdx(){
   	global $cDBI;
   	// Here starts the fun since all child elements must be cloned...
-  	$newContent = Array();
-  	$structureArray = Array();
+  	$newContent = array();
+  	$structureArray = array();
   	if (!empty($this->contents))
   		$structureArray = explode( ' ', $this->getStructure() );
   	foreach( $structureArray as $value ){
-  		$id = $value{0};
+  		$id = $value[0];
   		$num = substr( $value, 1 );
   		require( "../php/getDBIbyID.inc" ); // Macro setting $DBI to the DBI belonging to $id
   		$element = $DBI->getData2idx( $num, true, $this->isInLab );
   		array_push( $newContent, $id.$element->cloneAndReturnNewIdx() );
   	}
-  	$this->contents = implode( $newContent, ' ' );
+  	$this->contents = implode( ' ', $newContent );
   	return $cDBI->setData( $this, true );
   }
 
@@ -676,6 +676,7 @@ class LcElement extends Element{
     // reformat contents:
     $contents = Array();
     $lines = explode ("\r\n", $_POST['CONTENTS']);
+    $elType = array();
     foreach( $lines as $value ){
       $i = 0;
       $elType = $value[$i++];
@@ -687,7 +688,7 @@ class LcElement extends Element{
       array_push( $contents, $elType.$elNum );
     }
 
-    $contents = implode( $contents, " " );
+    $contents = implode( ' ', $contents );
 
     $newCollection = new LcElement( $_POST['IDX'],
                                     $_POST['TITLE'],
@@ -830,7 +831,7 @@ class LcElement extends Element{
 
     $tokens = $this->getTokens();
     foreach ( $tokens as $value ){
-      $id = $value{0};
+      $id = $value[0];
       $num = substr( $value, 1 );
 
       $element = $GLOBALS[ strtolower($id)."DBI" ]->getMenuData2idx( $num, true, $this->isInLab );
@@ -873,7 +874,7 @@ class LcElement extends Element{
     global $cDBI, $usr;
     $tokens = $this->getTokens();
     foreach ( $tokens as $value ){
-      $id = $value{0};
+      $id = $value[0];
       $num = substr( $value, 1 );
         $element = $GLOBALS[ $id."DBI" ]->getMenuData2idx( $num, true, $this->isInLab );
         if ( $element && $element->isVisible( true ) ) return true; /* found an element */
@@ -894,7 +895,7 @@ class LcElement extends Element{
     }
     $structureArray = explode( " ", $this->getStructure() );
     foreach( $structureArray as $value )
-      if ($value{0} == "*") continue; // not visible
+      if ($value[0] == "*") continue; // not visible
       else array_push ($retArray, $value);
 
     return $retArray;
@@ -929,7 +930,7 @@ class LcElement extends Element{
 
     foreach( $structureArray as $value ){
       $elNumber++;
-      if ($value{0} != "*")
+      if ($value[0] != "*")
         $ret[$value] = $elNumber;
     }
 
@@ -974,7 +975,7 @@ class LcElement extends Element{
 
     foreach( $myVisEl as $value ){
      // load element
-      $id = $value{0}; $num = substr( $value, 1 );
+      $id = $value[0]; $num = substr( $value, 1 );
       if ($withId && !in_array(strtolower($id), $withId))
         continue; // no need to load that element
       require( "../php/getDBIbyID.inc" );
@@ -995,13 +996,13 @@ class LcElement extends Element{
   function deepIterate($elId, $addrPrefix="", $fragmentPrefix="", $pSmallC=false){
     foreach ($this->simpleIterate(array("c", $elId)) as $data) {
         list($value, $element) = $data;
-        if ($value{0} == $elId) {
+        if ($value[0] == $elId) {
             array_push($data, $addrPrefix, $fragmentPrefix . "." . $value);
             yield $data;
         }
         else { // must be c or C
             $subAddrPrefix = ($pSmallC ? $addrPrefix : $addrPrefix . "." . $value);
-            foreach ($element->deepIterate($elId, $subAddrPrefix, $fragmentPrefix . "." . $value, ($value{0} == "c" ? true : false)) as $subData)
+            foreach ($element->deepIterate($elId, $subAddrPrefix, $fragmentPrefix . "." . $value, ($value[0] == "c" ? true : false)) as $subData)
                 yield $subData;
         }
     }

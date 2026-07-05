@@ -34,7 +34,7 @@ $myCG->setDstImagePath($file);
 $myCG->setText( $cfg->get('SystemTitle') );
 if ( $GLOBALS['url']->available('address') ){
   $address = $GLOBALS['url']->get('address'); // address provided
-  require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0}; $num = substr( $firstFinal, 1);
+  require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal[0]; $num = substr( $firstFinal, 1);
   if ($id == 'l'){
     require( "../php/getDBIbyID.inc" ); /* -> $DBI */
     if ( $element = $DBI->getMenuData2idx( $num ) ){

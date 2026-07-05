@@ -1137,10 +1137,13 @@ class LiElement extends Element{
     $this->loadUserData4( $teamNumber );
     $this->removeLock();
     if (!$this->isClosed) {
+// auto close empty answers.
+        $myIsCorrected = empty($this->userAnswer);
+	$myGivenCredits = $myIsCorrected ? 0 : $this->givenCredits;
 //                              $team,       $iIdx,      $answer="",        $givenCredits="0",   $comment="",          $correctorsNote='', $closed=false, $corrected=false, $history = ""
-        $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $this->givenCredits, $this->answerComment, $this->correctorsNote, true, false, $lng->get("closesInput")."\n".$this->answerHistory  );
+        $this->uaDBI->setData4( $teamNumber, $this->idx, $this->userAnswer, $myGivenCredits, $this->answerComment, $this->correctorsNote, true, $myIsCorrected, $lng->get("closesInput")."\n".$this->answerHistory  );
         $this->isClosed = true;
-        $this->isCorrected = false;
+        $this->isCorrected = $myIsCorrected;
     }
     //makeLogEntry( 'i', 'closed', 'i'.$this->idx );
   }

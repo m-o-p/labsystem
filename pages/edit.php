@@ -29,7 +29,7 @@
 * @param $_GET['address'] Address of element to be edited.
 */
 require( "../include/init.inc" );
-require( "../php/getFirstLastFinal.inc" ); $id = $lastFinal{0}; $num = substr( $lastFinal, 1);
+require( "../php/getFirstLastFinal.inc" ); $id = $lastFinal[0]; $num = substr( $lastFinal, 1);
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
 if ( !$element = $DBI->getData2idx( $num ) ){

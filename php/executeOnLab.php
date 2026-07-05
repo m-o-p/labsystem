@@ -36,7 +36,7 @@
 */
 
 require( "../include/init.inc" );
-require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal{0}; $num = substr( $firstFinal, 1);
+require( "../php/getFirstLastFinal.inc" ); $id = $firstFinal[0]; $num = substr( $firstFinal, 1);
 require( "../php/getDBIbyID.inc" ); /* -> $DBI */
 
 // functionName => callerRestriction

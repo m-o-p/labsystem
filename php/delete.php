@@ -30,7 +30,7 @@
 */
 require( "../include/init.inc" );
 
-require( "../php/getFirstLastFinal.inc" ); $id = $lastFinal{0}; $num = substr( $lastFinal, 1);
+require( "../php/getFirstLastFinal.inc" ); $id = $lastFinal[0]; $num = substr( $lastFinal, 1);
 
 if ( ( !$usr->isOfKind( IS_CONTENT_EDITOR ) &&       // only content editors
        !($id=="s" && $usr->isOfKind( IS_SCHEDULER )) // or in case of a schedule element schedulers are allowed to delete.

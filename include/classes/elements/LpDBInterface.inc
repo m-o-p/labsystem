@@ -242,4 +242,4 @@ class LpDBInterface {
                 );
   }
 }
-$GLOBALS["pDBI"] = new LpDBInterface();
+$pDBI = new LpDBInterface();

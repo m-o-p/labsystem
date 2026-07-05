@@ -106,7 +106,7 @@ if (!$returnEpub){
 // possibly preface
 if ($cfg->doesExist('prefaceID') && $cfg->get('prefaceID')!=''){
   $prefaceID = $cfg->get('prefaceID');
-  $id = $prefaceID{0}; $num = substr( $prefaceID, 1);
+  $id = $prefaceID[0]; $num = substr( $prefaceID, 1);
   require( "../php/getDBIbyID.inc" ); /* -> $DBI */
   if ( !$preface = $DBI->getData2idx( $num ) ){
     trigger_error( $lng->get(strtolower( $id )."Number").$num." ".$lng->get("doesNotExist"), E_USER_WARNING );

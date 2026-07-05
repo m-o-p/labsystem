@@ -95,10 +95,11 @@ if($url->available('seeMe') && $usr->isOfKind(IS_CORRECTOR) && $url->get('seeMe'
 // used by menu.inc and page_layout.inc
 $labsystem_LogInLink = ( $cfg->doesExist( 'SSLLogin' ) && ( $cfg->get( 'SSLLogin' ) == 1 ) ?
     'https://'.$_SERVER[ 'SERVER_NAME' ].preg_replace_callback( '#(\S*pages\/)[^\?]*(\?\S*)#',
-        create_function(
-            '$matches',
-            'return $matches[1]."login.php";'
-        ),
+//        create_function(
+//            '$matches',
+//            'return $matches[1]."login.php";'
+//        ),
+	function($matches){return $matches[1]."login.php";},
         $_SERVER["REQUEST_URI"]
     ) :
     '../pages/login.php' );
