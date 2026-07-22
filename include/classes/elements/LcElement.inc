@@ -679,7 +679,13 @@ class LcElement extends Element{
     $elType = array();
     foreach( $lines as $value ){
       $i = 0;
-      $elType = $value[$i++];
+      //$elType = $value[$i++];
+      if (is_array($value) && array_key_exists($i, $value)) {
+	    $elType = $value[$i];
+	    $i++;
+	} else {
+	    $elType = false;
+	}
       if (!(in_array($elType, $this->allowedElementIDs))) continue; // invalid type -> ignore
       $elNum = '';
       while( is_numeric( $value[$i] ) ) $elNum .= $value[$i++];
